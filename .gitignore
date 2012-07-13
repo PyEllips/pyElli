@@ -1,0 +1,15 @@
+*.py[co]
+
+*.aux
+*.idx
+*.log
+*.toc
+*.ist
+*.bbl
+*.blg
+*.dvi
+*.lof
+*.lot
+*.out
+*.pdf
+

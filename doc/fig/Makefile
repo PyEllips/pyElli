@@ -1,0 +1,4 @@
+
+%.pdf: %.ipe
+	ipetoipe -pdf $<
+

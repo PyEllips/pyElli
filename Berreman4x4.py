@@ -1,0 +1,1361 @@
+# Encoding: utf-8
+
+# Copyright (C) 2012 Olivier Castany
+# This program is free software
+
+"""Berreman4x4: module implementing Berreman's 4x4 matrix method.
+
+See file "documentation.pdf"
+
+TODO :
+- mettre tous les paramètres du calcul dans une classe et la passer comme
+   paramètre aux fonctions ?
+- ou autrement, on peut appeler les fonctions avec argument unpacking
+- ajouter un miroir modèle (T,R,A) ?
+- fields, modes 
+- préciser que les éléments doivent être des _listes ou arrays_ de _dim 1_
+
+Author: O. Castany
+"""
+
+
+import numpy
+import scipy.linalg
+from numpy import newaxis
+
+#########################################################
+# Constants...
+
+c = 2.998e8     # speed of light in vacuum
+pi = numpy.pi
+
+
+#########################################################
+# Rotations... 
+
+def rotation_Euler(angles):
+    """Returns rotation matrix defined by Euler angles (p,n,r)
+    
+    'angles' : tuple (p,n,r)
+    
+    Returns : rotation matrix M_R.
+    If A is an initial vector,  B = M_R * A is the rotated vector
+
+    Successive rotations : z,x',z'
+        p = precession angle, 1st rotation, around z (0..2π)
+        n = nutation angle, 2nd rotation, around x' (0..π)
+        r = 3rd rotation, around z' (0..2π)
+    
+    Euler rotation for the coordinates is Rz(p)·Rx(n)·Rz(r),
+    where Rj(θ) is the matrix rotation for the coordinates.
+    (see for example Fujiwara, p. 217)
+
+    Note : The inverse rotation is (-r,-n,-p)
+    """
+    (p,n,r) = angles
+    c1 = numpy.cos(p)
+    s1 = numpy.sin(p)
+    c2 = numpy.cos(n)
+    s2 = numpy.sin(n)
+    c3 = numpy.cos(r)
+    s3 = numpy.sin(r)
+    return numpy.matrix([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
+                         [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
+                         [s2*s3,           s2*c3,           c2   ]])
+
+
+def rotation_V(V):
+    """Returns rotation matrix defined by a rotation vector V
+
+    'V' : rotation vector (list or array)
+
+    Returns : rotation matrix M_R
+    If A is an initial vector,  B = M_R * A is the rotated vector
+
+    The calculation is made with the matrix exponential
+    M_R = exp(W), with W_{ij} = - ε_{ijk} V_{k},
+    where ε_{ijk} is the Levi-Civita antisymmetric tensor.
+    If V is separated in a unit vector v and a magnitude θ, V = θ·v, with
+    θ = ∥V∥, the calculation of the matrix exponential is avoided, and only 
+    sin(θ) and cos(θ) are needed instead.
+
+    Note : The inverse rotation is -V
+    """
+    W = numpy.matrix([[0, -V[2], V[1]], 
+                      [V[2], 0, -V[0]], 
+                      [-V[1], V[0], 0]])
+    return numpy.matrix(scipy.linalg.expm(W))
+
+
+def rotation_v_theta(v,theta):
+    """Returns rotation matrix defined by a unit rotation vector and an angle
+
+    'v' : unit vector orienting the rotation (list or array)
+    'theta' : rotation angle around v in radians
+
+    Returns : rotation matrix M_R.
+    If A is an initial vector,  B = M_R * A is the rotated vector
+
+    Notes : The inverse rotation is (v,-theta) 
+    """
+    w = numpy.matrix([[0, -v[2], v[1]], 
+                      [v[2], 0, -v[0]], 
+                      [-v[1], v[0], 0]])
+    return numpy.identity(3) + w * numpy.sin(theta) \
+                             + w**2 * (1 - numpy.cos(theta))
+
+
+#########################################################
+# Dispersion laws...
+
+class DispersionLaw:
+    """Dispersion law (abstract class).
+ 
+    Method that should be implemented in derived classes:
+    * getValue(lbda) : returns refractive index for wavelength 'lbda'
+    """
+
+    def getValue(self, lbda):
+        """Returns refractive index for wavelength 'lbda'."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+
+class SellmeierLaw(DispersionLaw):
+    """Sellmeier dispersion law equation."""
+
+    A, B, lbda0 = None, None, None  # Sellmeier coefficients
+
+    def __init__(self, coeff=(1.0, 1.0, 300e-9)):
+        """Creates a Sellmeier dispersion law.
+        
+        'coeff' : Sellmeier coefficients (A, B, λ0)
+            A, B : without unit
+            λ0 : resonance wavelength (m)
+
+        n²(λ) = A + B × λ²/(λ²-λ0²)
+        """
+        self.A, self.B, self.lbda0 = coeff
+
+    def getValue(self, lbda):
+        """Returns refractive index value for wavelength 'lbda'."""
+        n2 = self.A + self.B * lbda**2 / (lbda**2 - self.lbda0**2)
+        return numpy.sqrt(n2)
+
+#########################################################
+# Materials...
+
+class Material:
+    """Base class for materials (abstract class).
+
+    Method that should be implemented in derived classes:
+    * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    """
+
+    def getTensor(self, lbda):
+        """Returns permittivity tensor matrix for the desired wavelength."""
+        raise NotImplementedError("Should be implemented in derived classes")
+    
+
+class NonDispersiveMaterial(Material):
+
+    epsilon = None   # Permittivity tensor matrix
+
+    def __init__(self, epsilon=None):
+        """Creates a Material with a non-dispersive permittivity tensor. 
+        
+        'epsilon' : permittivity tensor, 3x3 array or a matrix
+
+        Notes (sloppy... should be clarified) : 
+        * Definition of electromagnetic energy requires that Re(E) > 0
+        * Im(E) > 0 for an absorbing medium
+        * Im(E) < 0 for an amplifying medium
+        """
+        if epsilon is None: 
+            epsilon = numpy.matrix(numpy.identity(3))
+        self.epsilon = numpy.matrix(epsilon)
+
+    def getTensor(self, lbda=None):
+        """Returns permittivity tensor matrix for the desired wavelength.
+        
+        Note : permittivity tensor ε in Gaussian units.
+        """
+        return self.epsilon
+
+    def rotated(self, R):
+        """Returns a rotated Material.
+        
+        'R' : rotation matrix (from rotation_Euler() or others)
+        """
+        E = R * self.epsilon * R.T
+        return NonDispersiveMaterial(E)
+    
+
+class IsotropicMaterial(Material):
+    """Isotropic material (abstract class).
+    
+    Method that should be implemented in derived classes:
+    * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda' 
+    * getTensor(lbda) : required from class Material
+    """
+
+    def getRefractiveIndex(self, lbda):
+        """Returns refractive index for wavelength 'lbda'."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+
+class IsotropicNonDispersiveMaterial(NonDispersiveMaterial, IsotropicMaterial):
+    """Isotropic non-dispersive material."""
+    
+    n = None    # refractive index
+
+    def __init__(self, n=1.5):
+        """Creates an isotropic non-dispersive material.
+        
+        'n' : refractive index
+        
+        Notes : 
+        * Im(n) > 0 for an absorbing medium
+        * Im(n) < 0 for an amplifying medium
+        """
+        self.n = n
+        self.epsilon = n**2 * numpy.matrix(numpy.identity(3))
+
+    def getRefractiveIndex(self, lbda=None):
+        """Returns refractive index."""
+        return self.n
+
+
+class IsotropicDispersive(IsotropicMaterial):
+    """Isotropic material with dispersion law."""
+
+    law = None      # Dispersion law
+
+    def __init__(self, law=None):
+        """Creates isotropic material with dispersion law.
+        
+        'law' : DispersionLaw object (for example SellmeierLaw)
+        """
+        self.law = law
+
+    def getTensor(self, lbda):
+        """Returns permittivity tensor matrix for the desired wavelength."""
+        n = self.law.getValue(lbda)
+        return numpy.matrix(n**2 * numpy.identity(3))
+
+    def getRefractiveIndex(self, lbda):
+        """Returns refractive index."""
+        return self.law.getValue(lbda)
+        
+        
+
+class UniaxialNonDispersiveMaterial(NonDispersiveMaterial):
+    """Non-dispersive uniaxial material."""
+
+    def __init__(self, no=1.5, ne=1.7):
+        """Creates a uniaxial non-dispersive material.
+        
+        'no' : ordinary refractive index
+        'ne' : extraordinary refractive index (oriented along the z direction)
+        """
+        n = numpy.diag([no,no,ne])
+        self.epsilon = numpy.matrix(n**2)
+
+
+class BiaxialNonDispersiveMaterial(NonDispersiveMaterial):
+    """Non-dispersive biaxial material."""
+
+    def __init__(self, diag=(1.5,1.6,1.7)):
+        """Creates a biaxial non-dispersie material
+        
+        'diag' : xyz refractive indices, tuple (n1,n2,n3)
+        """
+        n = numpy.diag(diag)
+        self.epsilon = numpy.matrix(n**2)
+
+
+#########################################################
+# Inhomogeneous materials...
+
+class InhomogeneousMaterial:
+    """Base class for inhomogeneous materials (abstract class).
+
+    Method that should be implemented in derived classes:
+    * getTensor(z, lbda) : permittivity tensor at position z
+    * getSlices() : returns z_i, position of the slices
+    """
+
+    def getTensor(self, z, lbda):
+        """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
+
+        'z' : position where the tensor is evaluated
+        'lbda' : wavelength
+        """
+        raise NotImplementedError("Should be implemented in derived classes")
+
+    def getSlices(self):
+        """Returns z slicing."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+
+class TwistedMaterial(InhomogeneousMaterial):
+    """Twisted material.
+    
+    Used to describe twisted nematic or cholesteric liquid crystal for example.
+    """
+    
+    material = None     # Material for the twisted layer
+    d = None            # Thickness of the layer
+    angle = None        # Angle of the twist
+    div = None          # Number of slices
+
+    def __init__(self, material=None, d=4e-6, angle=pi/2, div=25):
+        """Creates a layer with a twisted material.
+       
+        'material' : material for the twisted layer
+        'd' : thickness of the layer
+        'angle' : rotation angle for distance 'd'
+        'div' : number of slices
+
+        Note: Let us call h = d / div. It is useful to assess whether k0·h is 
+        greater or smaller than 1. If it is greater than 1, evaluation of the
+        exponential for the propagator will not be possible with linear 
+        expansion, and may require a Taylor expansion with a very high order
+        for convergence. In this case, use the Padé approximation or the 
+        exact result with eigenvector decomposition. On the other hand, if
+        k0·h is small, a linear or Taylor approximation may suffice.
+        """
+        self.d = d
+        self.material = material
+        self.angle = angle
+        self.div = div
+
+    def getTensor(self, z, lbda=None):
+        """Returns permittivity tensor matrix for position 'z'."""
+        epsilon = self.material.getTensor(lbda)
+        R = rotation_v_theta([0,0,1], self.angle * z /self.d)
+        return R * epsilon * R.T
+
+    def getSlices(self):
+        """Returns z slicing.
+        
+        Returns : array of 'z' positions [z0, z1,... , zmax]
+        
+        Notes:
+        * The number of divisions is 'div' (see constructor)
+        * Position is relative to this material, not to the whole structure.
+        """
+        return numpy.linspace(0, self.d, self.div+1)
+
+
+
+#########################################################
+# Delta matrix...
+
+def buildDeltaMatrix(Kx, eps):
+    """Returns Delta matrix for given permittivity and reduced wave number.
+    
+    'Kx' : reduce wave number, Kx = kx/k0
+    'eps' : permittivity tensor
+    
+    Returns : Delta 4x4 matrix, generator of infinitesimal translations
+    """
+    return numpy.matrix(
+        [[-Kx * eps[2,0] / eps[2,2], -Kx * eps[2,1] / eps[2,2], 
+          0, 1 - Kx**2 / eps[2,2]],
+         [0, 0, -1, 0],
+         [eps[1,2] * eps[2,0] / eps[2,2] - eps[1,0],
+          Kx**2 - eps[1,1] + eps[1,2] * eps[2,1] / eps[2,2],
+          0, Kx * eps[1,2] / eps[2,2]],
+         [eps[0,0] - eps[0,2] * eps[2,0] / eps[2,2],
+          eps[0,1] - eps[0,2] * eps[2,1] / eps[2,2],
+          0, -Kx * eps[0,2] / eps[2,2]]])
+
+
+#########################################################
+# Propagator for a homogeneous slab of material...
+
+def hs_propagator(Delta, h, k0, method="linear", q=None):
+    """Returns propagator for homogeneous slab of thickness h.
+
+    'Delta' : Delta matrix of the homogeneous material
+    'h' : thickness of the homogeneous slab
+    'k0' : wave vector in vacuum, k0 = ω/c
+    'q' : order of the approximation method, if useful
+
+    Returns : propagator matrix, exact or approximated, depending on the 
+    value of the 'method' parameter.
+    
+    The exact propagator is: P_hs = exp(i h k0 Δ)
+
+    This function is a prototype and mainly useful for this docstring.
+    Calculation is performed by function hs_propagator_xxxxx(), depending on 
+    the value of 'method':
+        "linear" -> first order approximation of exp()
+        "Padé"   -> Padé approximation of exp()
+        "Taylor" -> Taylor development of exp()
+        "eig"    -> calculation with eigenvalue decomposition
+    """
+    if   method == "linear":    return hs_propagator_lin(Delta, h, k0)
+    elif method == "Padé":      return hs_propagator_Pade(Delta, h, k0, q)
+    elif method == "Taylor":    return hs_propagator_Taylor(Delta, h, k0, q)
+    elif method == "eig":       return hs_propagator_eig(Delta, h, k0)
+
+def hs_propagator_lin(Delta, h, k0, q=None):
+    """Returns propagator with linear approximation.
+    
+    'q' is swallowed. It is here so as to offer the same protoype as 
+    the other hs_propagator_*() functions.
+    """
+    P_hs_lin = numpy.identity(4) + 1j * h * k0 * Delta
+    return numpy.matrix(P_hs_lin)
+
+def hs_propagator_Pade(Delta, h, k0, q=7):
+    """Returns propagator with Padé approximation of order 'q'.
+    
+    The diagonal Padé approximant of any order 'q' is symplectic, i.e. 
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1. 
+    Such property may be suitable for use with Lu's method.
+    """
+    P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta, q)
+    return numpy.matrix(P_hs_Pade)
+
+def hs_propagator_Taylor(Delta, h, k0, q=5):
+    """Returns propagator using Taylor series of order 'q'."""
+    P_hs_Taylor = scipy.linalg.expm3(1j * h * k0 * Delta, q+1)
+    # 'q+1' to correct SciPy bug 1687
+    return numpy.matrix(P_hs_Taylor)
+
+def hs_propagator_eig(Delta, h, k0, q=None):
+    """Returns propagator using eigenvalue decomposition.
+ 
+    'q' is swallowed. It is here so as to offer the same protoype as 
+    the other hs_propagator_*() functions.
+
+    The calculation is (see scipy.linalg.expm2() source code):
+        s,vr = eig()    # eigenvalues, eigenvector array
+        vri = inv(vr)   # eigenvector array inversion
+        result = vr * diag(exp(s)) * vri
+    """
+    P_hs = scipy.linalg.expm2(1j * h * k0 * Delta)
+    return numpy.matrix(P_hs)
+
+
+#########################################################
+# Half-spaces...
+
+class HalfSpace:
+    """Homogeneous half-space with arbitrary permittivity.
+    
+    Method that a HalfSpace must provide:
+    * getTransitionMatrix(k0, Kx) : return transition matrix
+    
+    """
+
+    material = None     # Material object
+
+    def __init__(self, material=None):
+        """Create a homogeneous half-space of the given material."""
+        self.setMaterial(material)
+
+    def setMaterial(self, material):
+        """Defines the material for this half-space"""
+        self.material = material
+
+    def getTransitionMatrix(self, Kx, k0=1e6):
+        """Returns transition matrix L.
+        
+        'Kx' : reduced wavenumber in the x direction, Kx = kx/k0
+        'k0' : wavenumber in vacuum, k0 = ω/c
+
+        Sort eigenvectors of the Delta matrix according to propagation
+        direction first, then according to $y$ component. 
+
+        Returns eigenvectors ordered like (s+,s-,p+,p-)
+        """
+        epsilon = self.material.getTensor(2*pi/k0)
+        Delta = buildDeltaMatrix(Kx, epsilon)
+        q, Psi = scipy.linalg.eig(Delta)
+
+        # Sort according to z propagation direction, highest Re(q) first
+        i = numpy.argsort(-numpy.real(q))
+        q, Psi = q[i], Psi[:,i]     # Result should be (+,+,-,-)
+        # For each direction, sort according to Ey component, highest Ey first
+        i1 = numpy.argsort(-numpy.abs(Psi[1,:2]))
+        i2 = 2 + numpy.argsort(-numpy.abs(Psi[1,2:]))
+        i = numpy.hstack((i1,i2))   # Result should be (s+,p+,s-,p-)
+        # Reorder
+        i[[1,2]] = i[[2,1]]
+        q, Psi = q[i], Psi[:,i]     # Result should be(s+,s-,p+,p-)
+
+        # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
+        E = numpy.hstack((Psi[1,:2], Psi[0,2:]))
+        nE = numpy.abs(E)
+        c = numpy.ones_like(E)
+        i = (nE != 0.0)
+        c[i] = E[i]/nE[i]
+        Psi = Psi * c
+        # Normalize so that Ey = c1 + c2, analog to Ey = Eis + Ers
+        # For an isotropic half-space, this should return the same matrix 
+        # as IsotropicHalfSpace
+        c = Psi[1,0] + Psi[1,1]
+        if abs(c) == 0:
+            c = 1.
+        Psi = 2 * Psi / c
+        return numpy.matrix(Psi)
+
+
+class IsotropicHalfSpace(HalfSpace):
+    """Homogeneous Isotropic HalfSpace.
+ 
+    * Provides transition matrix L and the inverse.
+    
+      Can be equally used for the front half-space (Φ = Φi) or for the back 
+      half-space (Φ = Φt).
+
+    * Provides relations between angle Φ and reduced wave vector Kx.
+
+      'Φ' is the angle of the plane wave traveling to the right (angle measured
+      with respect to z axis and oriented by y). '-Φ' is the angle of the wave 
+      traveling to the left.
+    """
+
+    def __init__(self, material=None):
+        """Create a HalfSpace of the given material.
+        
+        'material' : IsotropicMaterial
+        """
+        self.setMaterial(material)
+
+    def get_Kx_from_Phi(self, Phi, k0=1e6):
+        """Returns the value of Kx.
+        
+        'Phi' : angle of the wave traveling to the right (radians)
+        'k0' : wavenumber in vacuum
+
+        kx = n k0 sin(Φ) : Real and constant throughout the structure. 
+                           If n ∈ ℂ, then Φ ∈ ℂ
+        Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
+        """
+        n = self.material.getRefractiveIndex(2*pi/k0)
+        Kx = n * numpy.sin(Phi)
+        return Kx
+
+    def get_Phi_from_Kx(self, Kx, k0=1e6):
+        """Returns the value of angle Phi according to the value of Kx.
+        
+        'Kx' : Reduced wavenumber,      Kx = kx/k0 = n sin(Φ)
+        'k0' : wavenumber in vacuum,    kx = n k0 sin(Φ)
+
+        Returns : angle Phi in radians.
+        """
+        n = self.material.getRefractiveIndex(2*pi/k0)
+        sin_Phi = Kx/n
+        if abs(sin_Phi) > 1:
+            sin_Phi = complex(sin_Phi)
+        Phi = numpy.arcsin(sin_Phi)
+        return Phi
+
+    def getTransitionMatrix(self, Kx, k0=1e6, inv=False):
+        """Returns transition matrix L.
+        
+        'Kx' : Reduced wavenumber
+        'k0' : wavenumber in vacuum
+        'inv' : if True, returns inverse transition matrix L^-1
+
+        Returns : transition matrix L
+        """
+        n = self.material.getRefractiveIndex(2*pi/k0)
+        sin_Phi = Kx/n
+        if abs(sin_Phi) > 1:
+            sin_Phi = complex(sin_Phi)
+        cos_Phi = numpy.sqrt(1 - sin_Phi**2)
+        if inv:
+            return 0.5 * numpy.matrix( 
+                    [[ 0        , 1, -1/(n*cos_Phi),  0   ],
+                     [ 0        , 1,  1/(n*cos_Phi),  0   ],
+                     [ 1/cos_Phi, 0,  0            ,  1/n ],
+                     [ 1/cos_Phi, 0,  0            , -1/n ]])
+        else:
+            return numpy.matrix( 
+                    [[0         , 0        , cos_Phi, cos_Phi],
+                     [1         , 1        , 0      , 0      ],
+                     [-n*cos_Phi, n*cos_Phi, 0      , 0      ],
+                     [0         , 0        , n      , -n     ]])
+
+
+#########################################################
+# Layers...
+
+class Layer:
+    """A very general layer (abstract class).
+    
+    Method that should be implemented in derived classes:
+    * getPropagationMatrix(Kx, k0, inv) : returns propagator
+      'Kx' : reduced wavenumber along x
+      'k0' : wavenumber in vacuum
+      'inv': boolean, if True, the propagator is from back to front.
+    """
+
+    material = None     # Material making the layer
+
+    def setMaterial(self, material):
+        """Defines the material for this layer. """
+        self.material = material
+
+    def getPropagationMatrix(self, Kx, k0, inv):
+        """Returns propagation matrix P for this layer."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+    
+class HomogeneousLayer(Layer):
+    """Homogeneous layer of dielectric material."""
+
+    h = None                # Thickness of the layer
+    material = None         # Material object
+    hs_propagator = None    # Function used for the propagator calculation
+    hs_order = None         # Approximation order, if useful
+
+    def __init__(self, material=None, h=1e-6, hs_method="eig", hs_order=2):
+        """New homogeneous layer of material 'material', with thickness 'h'
+        
+        'hs_method', 'hs_order': see setMethod()
+        """
+        self.setThickness(h)
+        self.setMaterial(material)
+        self.setMethod(hs_method, hs_order)
+
+    def setThickness(self, h):
+        """Defines the thickness of this homogeneous layer."""
+        self.h = h
+
+    def setMethod(self, hs_method, hs_order=2):
+        """Defines how the homogeneous slab propagator is calculated.
+        
+        "linear" -> first order approximation of exp()
+        "Padé"   -> Padé approximation of exp()
+        "Taylor" -> Taylor development of exp()
+        "eig"    -> calculation with eigenvalue decomposition
+
+        'hs_order' : order of approximation, if useful
+        """
+        if hs_method == "linear":  
+            self.hs_propagator = hs_propagator_lin
+        elif hs_method == "Padé":    
+            self.hs_propagator = hs_propagator_Pade
+        elif hs_method == "Taylor":  
+            self.hs_propagator = hs_propagator_Taylor
+        elif hs_method == "eig":     
+            self.hs_propagator = hs_propagator_eig
+        else: 
+            raise NotImplementedError("Method " + hs_method + 
+                        " not available for propagator calculation")
+        self.hs_order = hs_order
+
+    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+        """Returns propagation matrix P 
+        
+        Psi(z+h) = P * Psi(z)
+        P = exp(i h k0 Delta h), where 'exp' is the matrix exponential.
+
+        'Kx' : reduced wavenumber along x
+        'k0' : vacuum wavenumber
+        'inv' : returns the inverse matrix, BP = exp(-i h k0 Delta)
+        """
+        epsilon = self.material.getTensor(2*pi/k0)
+        Delta = buildDeltaMatrix(Kx, epsilon)
+        if inv:
+            h = -self.h
+        else:
+            h = self.h
+        return self.hs_propagator(Delta, h, k0, self.hs_order)
+
+    def getDeltaMatrix(self, Kx, k0=1e6):
+        """Returns Delta matrix of the homogeneous layer."""
+        epsilon = self.material.getTensor(2*pi/k0)
+        Delta = buildDeltaMatrix(Kx, epsilon)
+        return Delta
+
+class HomogeneousIsotropicLayer(HomogeneousLayer):
+    """Homogeneous Isotropic Layer.
+    
+    Must be made of an isotropic material.
+
+    Provodes function QWP_thickness(lbda) returning the thickness of a
+    Quarter Wave Plate at wavelength 'lbda'
+    """
+
+    def __init__(self, material=None, h=1e-6, lbda=1e-6, 
+                       hs_method="eig", hs_order=2):
+        """Creates a homogeneous isotropic layer with thickness 'h'.
+        
+        If h = 'QWP', the thickness for a quarter-wave plate at wavelength 
+        'lbda' is used.
+        """
+        self.setMaterial(material)
+        self.setMethod(hs_method, hs_order)
+        if h == "QWP":
+            h = self.get_QWP_thickness(lbda)
+        self.setThickness(h)
+
+    def get_QWP_thickness(self, lbda=1e-6):
+        """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
+        nr = numpy.real(self.material.getRefractiveIndex(lbda))
+        return lbda / (4.*nr)
+
+
+#########################################################
+# Inhomogeneous layers...
+
+class InhomogeneousLayer(Layer):
+    """Inhomogeneous layer.
+    
+    Must be fabricated with an InhomogemeousMaterial object.
+    """
+
+    material = None     # InhomogemeousMaterial object
+    z = None            # Position of the slices (array)
+
+    # Method used to decompose the inhomogeneous layer into homogeneous slabs:
+    getSlicePropagator = None
+    # Method used to calculate the propagator of a homogeneous slab:
+    hs_propagator = None
+    # Order for the above method, if useful:
+    hs_order = None
+
+    def __init__(self, material=None, evaluation="midpoint", 
+                                      hs_method="Padé", q=2):
+        """Creates an inhomogeneous layer.
+        
+        'material' : InhomogemeousMaterial object
+
+        The propagation matrix is evaluated depending on parameters 
+        'evaluation', 'hs_method' and order 'q', see setMethod().
+        """
+        self.setMaterial(material)
+        self.z = material.getSlices()
+        self.setMethod(evaluation, hs_method, q)
+
+    def setMethod(self, evaluation, hs_method, q):
+        """Defines the calculation method.
+
+        The propagator for the inhomogeneous layer is decomposed and evaluated
+        depending on parameter 'evaluation':
+        "midpoint"   -> Evaluation of Δ(z) at midpoint. 
+        "symplectic" -> Z. Lu's symplectic method with three evaluation points.
+        
+        The propagator for a thin and homogeneous slice is calculated according 
+        to arguement 'hs_method':
+        "linear" -> first order approximation of exp()
+        "Padé"   -> Padé approximation of exp()
+        "Taylor" -> Taylor development of exp()
+        "eig"    -> calculation with eigenvalue decomposition
+        
+        The midpoint method may use any of these, provided that the 
+        approximation is not too bad. For example, the linear approximation 
+        is quick but only works if the argument of the exponential is small.
+        A "Padé" approximation of order 2 may be a good choice.
+
+        The symplectic method requires P(h)·P(-h) = Id, which is true for
+        the "Padé" approximation and the exact "eig" method.
+      
+        The error on the propagator for an inhomogeneous thin slice due to the 
+        replacement by a homogeneous slice is O(h^3) in the midpoint method and 
+        O(h^5) in the symplectic method. A Padé approximant of order q gives an
+        approximation of the propagator to order O(h^(2q)). Consequently, q = 3
+        should be a good enough for the syplectic method.
+        """
+        if evaluation == "midpoint":
+            self.getSlicePropagator = self.getSlicePropagator_mid
+            if hs_method == "linear":  
+                self.hs_propagator = hs_propagator_lin
+            elif hs_method == "Padé":    
+                self.hs_propagator = hs_propagator_Pade
+            elif hs_method == "Taylor":  
+                self.hs_propagator = hs_propagator_Taylor
+            elif hs_method == "eig":     
+                self.hs_propagator = hs_propagator_eig
+            else: 
+                raise NotImplementedError("Method " + hs_method + 
+                            " not available for midpoint evaluation")
+        elif evaluation == "symplectic":
+            self.getSlicePropagator = self.getSlicePropagator_sym
+            if hs_method == "Padé":    
+                self.hs_propagator = hs_propagator_Pade
+            elif hs_method == "eig":
+                self.hs_propagator = hs_propagator_eig
+            else:
+                raise NotImplementedError("Method " + hs_method +
+                            " not available for symplectic evaluation")
+        self.hs_order = q
+
+    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+        """Returns propagation matrix P."""
+        if inv:
+            z = self.z[::-1]
+        else:
+            z = self.z
+        P_tot = numpy.matrix(numpy.identity(4))
+        for i in range(len(z)-1):
+            P = self.getSlicePropagator(z[i+1], z[i], Kx, k0)
+            P_tot = P * P_tot
+        return P_tot
+
+    def getSlicePropagator_mid(self, z2, z1, Kx, k0=1e6):
+        """Returns propagation matrix P(z2,z1) for a thin slice. 
+
+        Evaluates the Delta Matrix at midpoint between z1 and z2. The
+        resulting global error is O(h^2).
+
+        Note: The propagation matrix is calculated with one of the 
+        hs_propagator_*() functions, pointed by the attribute
+        InhomogeneousLayer.midpoint_hs_propagator().
+        """
+        epsilon = self.material.getTensor((z1+z2)/2., 2*pi/k0)
+        Delta = buildDeltaMatrix(Kx, epsilon)
+        P = self.hs_propagator(Delta, z2-z1, k0, self.hs_order)
+        return P
+
+    # Coefficients from Z. Lu's article for the sympletic method
+    s = 2.**(1./3)
+    b1 = 1/(2-s)
+    b2 = -s/(2-s)
+    t1 = 1./(2*(2-s))
+    t2 = 1./2
+    t3 = 1./2 - (s-1)/(2*(2-s))
+
+    def getSlicePropagator_sym(self, z2, z1, Kx, k0=1e6):
+        """Returns propagation matrix P_sym(z2,z1) for a thin slice.
+
+        Uses Z. Lu's symplectic method, leading to a global error in O(h^4).
+
+        Note : We have P_sym(z2,z1) P_sym(z1,z2) = Id. This can be 
+        demonstrated by the relations z1 + t1 h = z2 - t3 h and 
+        z1 + t2 h = z2 - t2 h.
+        """
+        h = z2 - z1
+        epsilon1 = self.material.getTensor(z1+self.t1*h)
+        epsilon2 = self.material.getTensor(z1+self.t2*h)
+        epsilon3 = self.material.getTensor(z1+self.t3*h)
+        Delta1 = buildDeltaMatrix(Kx, epsilon1)
+        Delta2 = buildDeltaMatrix(Kx, epsilon2)
+        Delta3 = buildDeltaMatrix(Kx, epsilon3)
+        q = self.hs_order
+        P1 = self.hs_propagator(Delta1, self.b1*h, k0, q)
+        P2 = self.hs_propagator(Delta2, self.b2*h, k0, q)
+        P3 = self.hs_propagator(Delta3, self.b1*h, k0, q)
+        return P1*P2*P3
+
+
+
+#########################################################
+# Repeated layers...
+
+class RepeatedLayers:
+    """Repetition of a structure."""
+
+    n = None        # Number of repetitions
+    before = None   # additionnal layers before the first period
+    after = None    # additionnal layers after the last period
+    layers = None   # layers to repeat
+
+    def __init__(self, layers=None, n=2, before=0, after=0):
+        """Repeated structure of layers
+
+        'layers' : list of the repeated layers
+        'n' : number of repetitions
+        'before', 'after' : see method setRepetition()
+        """
+        self.setRepetition(n, before, after)
+        self.setLayers(layers)
+
+    def setRepetition(self, n,  before=0, after=0):
+        """Defines the number of repetitions.
+        
+        'n' : number of repetitions
+        'before' : number of additionnal layers before the first period
+        'after' : number of additionnal layers after the last period
+
+        Example : For layers [1,2,3] with n=2, before=1 and after=0, the 
+        structure will be 3123123.
+        """
+        self.n = n
+        self.before = before
+        self.after = after
+
+    def setLayers(self, layers):
+        """Set list of layers.
+
+        'layers' : list of layers, starting from z=0
+        """
+        self.layers = layers
+
+    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+        """Returns propagation matrix P for the repeated layers."""
+        P_list = [L.getPropagationMatrix(Kx,k0,inv) for L in self.layers]
+        P_period = P_before = numpy.matrix(numpy.identity(4))
+        i_after = self.after
+        i_before = len(P_list) - self.before
+        if inv:
+            for (i,P) in enumerate(P_list):
+                if i == i_after:
+                    P_after = P_period
+                P_period = P_period * P
+                if i >= i_before:
+                    P_before = P_before * P
+            return P_before * P_period**self.n * P_after
+        else:
+            for (i,P) in enumerate(P_list):
+                if i == i_after:
+                    P_after = P_period
+                P_period = P * P_period
+                if i >= i_before:
+                    P_before = P * P_before
+            return P_after * P_period**self.n * P_before
+        
+
+
+#########################################################
+# Structures...
+
+class Structure:
+    """Description of the whole structure.
+ 
+    * front half-space (incident), must be isotropic
+    * back half-space (exit), may be anisotropic
+    * layer succession
+    """
+    frontHalfSpace = None
+    backHalfSpace = None    
+    layers = None               # list of layers
+    
+    def __init__(self, front=None, layers=None, back=None):
+        """Creates an empty structure.
+        
+        'front' : front half space, see setFrontHalfSpace()
+        'layers' : layer list, see setLayers()
+        'back' : back half space, see setBackHalfSpace()
+        """
+        self.layers = []        # list of layers
+        if front is not None:
+            self.setFrontHalfSpace(front)
+        if layers is not None:
+            self.setLayers(layers)
+        if back is not None:
+            self.setBackHalfSpace(back)
+        
+    def setFrontHalfSpace(self, halfSpace):
+        """Defines the front half-space.
+        
+        'halfSpace' : HalfSpace object
+        """
+        self.frontHalfSpace = halfSpace
+
+    def setBackHalfSpace(self, halfSpace):
+        """Defines the back half-space.
+        
+        'halfSpace' : HalfSpace object
+        """
+        self.backHalfSpace = halfSpace
+
+    def setLayers(self, layers):
+        """Set list of layers.
+        
+        'layers' : list of layers, starting from z=0
+        """
+        self.layers = layers
+
+    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+        """Gives the propagation matrix of the structure.
+
+        'Kx' : reduced wavenumber along x
+        'k0' : wavenumber in vacuum
+        'inv' : returns propagation matrix for decreasing z
+
+        Returns : propagation matrix P(zb,zf) for the full structure 
+
+        Psi(zb) = P_(zb, z_{N-1}) * ... * P(z1,zf) * Psi(zf)
+                = P(zb,zf) * Psi(zf)
+        """
+        if inv:
+            layers = reversed(self.layers)
+        else:
+            layers = self.layers
+        P_tot = numpy.matrix(numpy.identity(4))
+        # Cumulative products :
+        for L in layers:
+            P = L.getPropagationMatrix(Kx,k0,inv)
+            P_tot = P * P_tot
+        return P_tot
+   
+
+    def drawStructure(self):
+        """Draws the structure."""
+        pass
+
+
+    def getStructureMatrix(self, Kx, k0=1e6):
+        """Returns the transfer matrix T of the structure.
+
+        [Eis, Ers, Eip, Erp].T = T * [c1, c2, c3, c4].T
+        T = Lf^-1 * P(zf,zb) * Lb
+        """
+        ILf = self.frontHalfSpace.getTransitionMatrix(Kx, k0, inv=True)
+        P = self.getPropagationMatrix(Kx, k0, inv=True)
+        Lb = self.backHalfSpace.getTransitionMatrix(Kx, k0)
+        T = ILf * P * Lb
+        return T
+
+    def getJones(self,Kx,k0=1e6):
+        """Returns the Jones matrices.
+        
+        Returns : array([T_ri, T_ti])
+
+        T_ri is the Jones matrix in reflexion : [[r_pp, r_ps],
+                                                 [r_sp, r_ss]]
+
+        T_ti is the Jones matrix in transmission : [[t_pp, t_ps],
+                                                    [t_sp, t_ss]]
+       
+        Naming convention (Fujiwara, p. 220):
+        't_ps' : transmitted p component for a s incident wave
+        't_ss' : transmitted s component for a s incident wave
+        ...
+
+        Note: If all materials are isotropic, r_ps = r_sp = t_sp = t_ps = 0
+        """
+        T = self.getStructureMatrix(Kx,k0)
+        # Extraction of T_it out of T. "2::-2" means integers {2,0}.
+        T_it = T[2::-2,2::-2]
+        T_ti = numpy.matrix(scipy.linalg.inv(T_it))
+        
+        # Extraction of T_rt out of T. "3::-2" means integers {3,1}.
+        T_rt = T[3::-2,2::-2]
+        
+        # Then we have T_ri = T_rt * T_ti
+        T_ri = numpy.dot(T_rt, T_ti)
+        return (T_ri, T_ti)
+
+#########################################################
+# Data extraction from the Jones matrices...
+
+def extractCoefficient(Jones, coeff_name):
+    """Extracts the desired coefficient from the Jones matrix.
+    
+    'Jones' : pair of (Jr, Jt) reflexion and transmission Jones matrices
+              may be an array of shape [...,2,2,2]
+    
+    'coeff_name' : 'r_sp', 't_pp',...
+
+    Returns : desired coefficient value
+    """
+    J = numpy.array(Jones)
+    if   coeff_name == 'r_ss': coeff = J[...,0,1,1]
+    elif coeff_name == 'r_pp': coeff = J[...,0,0,0]
+    elif coeff_name == 'r_ps': coeff = J[...,0,0,1]
+    elif coeff_name == 'r_sp': coeff = J[...,0,1,0]
+    elif coeff_name == 't_ss': coeff = J[...,1,1,1]
+    elif coeff_name == 't_pp': coeff = J[...,1,0,0]
+    elif coeff_name == 't_ps': coeff = J[...,1,0,1]
+    elif coeff_name == 't_sp': coeff = J[...,1,1,0]
+    return coeff
+
+def extractEllipsoParam(Jr):
+    """Return the ellipsomerty parameters.
+    
+    'Jr' : Jones matrix for reflection
+
+    Ellipsometry coefficients are introduced by 
+    Jr / r_ss = [[ tan(Ψ_pp)*exp(-i Δ_pp) , tan(Ψ_ps)*exp(-i Δ_ps) ]
+                 [ tan(Ψ_sp)*exp(-i Δ_sp) ,           1            ]]
+
+    Returns : matrix([[Ψ_pp, Δ_pp],          Angles in degrees with:
+                      [Ψ_ps, Δ_ps],          * tan(Ψ) ≥ 0, Ψ ∈ [0, π/2]
+                      [Ψ_sp, Δ_sp]])         * Δ ∈ [-π, π]
+    
+    Note: Convention for ellipsometry is used.
+    See Fujiwara, (4.4), (4.6), (6.14), (6.15)     
+    """
+    r_ss = Jr[1,1]
+    S = Jr / r_ss   # Normalized matrix (element-wise division)
+    S[0] = -S[0]    # Change to ellipsometry convention
+
+    Psi = numpy.arctan(numpy.abs(S))*180/pi
+    Delta = -numpy.angle(S, deg=True)
+
+    PsiDelta = numpy.vstack((Psi.flatten(), Delta.flatten())).T
+    # Ordering: matrix([[Psi_pp, Delta_pp],
+    #                   [Psi_ps, Delta_ps],
+    #                   [Psi_sp, Delta_sp]
+    #                   [  45  ,     0   ]])
+    return PsiDelta[:3,:]
+
+
+
+###############################################################################
+###############################################################################
+# To revise
+
+class TwistedLayer:
+    """Twisted layer (like a cholesteric liquid crystal)."""
+
+    """Faire un produit modulo la période, période**n"""
+    """Attention : 
+        il faut donner la possibilité d'une hélice droite ou gauche.
+        p > 0 <=> hélice droite ? à vérifier """
+
+    # From parent class :
+    #   h = None            # thickness
+    #   epsilon = Tensor()  # permittivity tensor 
+
+    p = +1e-6           # pitch (one helix turn, sign matters) 
+    theta_i = None      # Orientation of the tensor at the input plane
+    theta_t = None      # and at the output plane
+    M = 24              # Discretization per pitch (helix turn)
+
+    def __init__(self,h,tensor=None,pitch=+1e-6,theta_i=0,theta_t=0):
+        """New layer of twisted material."""
+        self.h = h
+        self.theta_i = theta_i
+        self.theta_t = theta_t
+        self.p = pitch 
+        if tensor != None:
+            self.epsilon = tensor
+            
+    def adjust_pitch(self,symmetry=2,pitch=None):
+        """Adjusts the value of the pitch to satisfy the boundary conditions.
+
+        The boundary conditions are the values of theta_i and theta_t on
+        the left and right surfaces of the twisted layer. 
+        The distance between the two surfaces is 'h'.
+
+        'symmetry' is the number of equivalent orientations (the default is 2,
+        which is the case of a nematic/cholesteric liquid crystal).
+        """
+        s = float(symmetry)
+        if pitch != None: 
+            p = pitch
+        else: 
+            p = self.p
+
+        # We want to set p to a value p' such that : 
+        # h*2pi/p' = theta_t - theta_i [2pi/s]
+        # This implies that there exist an integer n such that :
+        # h*2pi/p' = theta_t - theta_i - n*2pi/s
+        # We calculate the closest integer n with the current value of p
+        # and deduce the appropriate value of p'.
+        D = (self.theta_t-self.theta_i) / (2 * numpy.pi)
+        n = (D - self.h / p) * s
+        n = numpy.round(n)
+        pp = self.h / (D - n / s)
+        self.p = pp
+        return pp
+
+
+    def setSlicing(self,M=24):
+        """Defines the number M of slices in one pitch."""
+        self.M = M
+    
+    def getSlicing(self):
+        """Returns the number M of slices in one pitch."""
+        return self.M
+
+    def optimizeSlicing(self,M_min=14,M_max=24):
+        """Optimizes slicing of the pitch of a twisted material.
+        
+        M_min, M_max : minimum and maximum values allowed for M,
+        where M is the number of slices in one pitch.
+        """
+
+        # An efficient slicing of the structure requires :
+        # p = M dz and h = N dz, where M and N are both integers. 
+        # Obviously, this may not be possible.
+        # M is definitely taken to be an integer in order to have a good 
+        # approximation for a whole pitch (thickness p). 
+        # We then want to have : h = N*p/M.
+        # This algorithm tries to find the most appropriate value for M. It 
+        # should produce an exact slicing when h/p is a 'simple' rational
+        # number. In the case of idealized twisted liquid crystal cells, 
+        # the values for h/p are often 1/4 (TN) or 3/4 (STN). In the case of
+        # a cholesteric liquid crystal, we can have for example h/p = 10.0 or
+        # 10.5. If the range M_min..M_max includes a multiple of 4, the 
+        # algorithm will then find an exact slicing.
+
+        # See also the function getPropagationMatrix for further details.
+        # Note : There may exist a better algorithm, but this one is simple.
+        # Note : If the pitch has not been adjusted to the boundary conditions,
+        # the program will proceed, based on the value of theta_i, but the value
+        # theta_t will not be respected.
+
+        M = numpy.arange(M_min,M_max+1)
+        dz = abs(p)/M                       # dz = |p|/M
+        dh = numpy.abs(self.h - numpy.round(self.h / dz)*dz)    
+        self.M = M[numpy.argmin(dh)]
+        return self.M
+
+    def getPropagationMatrix(self, theta=[0.], Kx=[0.], k0=[1e7], backwards=0):
+        """ Gives the propagation matrix for the twisted layer.
+        
+        'theta', 'Kx', 'k0' : lists or arrays
+        
+        Returns an array of propagation matrices with shape (theta,Kx,k0,4,4).
+        """
+
+        # The real twisted material is making a helix where the orientaion 
+        # alpha varies continuously. The structure will be approximated 
+        # by slices of homogeneous material.
+
+        # Basic slices.
+        # A generic pitch is divided in M thin slices with orientations :
+        # alpha_m = theta_0 + theta_i + d_alpha*(0.5+m), m=0..M-1
+        # (see below for an explanation of the term theta_0)
+        # Thickness of a slice : dz = |p|/M
+        # Corresponding angle variation : d_alpha = 2pi/M signe(p) = 2pi/p*dz
+
+        # Structure slicing.
+        # The real structure is approximated by a succession of the previous
+        # basic slices (N slices). If the whole structure is rotated by angle 
+        # theta, the average angle of the first slice is : 
+        #   average_alpha = theta_i + theta + d_alpha*0.5
+        # For this slice to be nicely approximated by one of the basic slices,
+        # there should exist an index ms verifying :
+        #   average_alpha = alpha_ms = theta_i + theta_0 + d_alpha*(0.5+ms)
+        # Thus : ms = ((theta - theta_0) / d_alpha) % M
+        # However, the values of theta and theta_i may not allow the
+        # fullfilment of the exact situation and the value of ms calculated 
+        # above may not be an integer, so the ratio will be rounded beforehand.
+        
+        # The number theat_0 is an alignment value. The slice approximation
+        # will be closer to the real twisted structure if (theta - theta_0) is
+        # a multiple of d_alpha, so a good value for theta_0 is to choose 
+        # theta[0]. As a consequence, when this function is called with an 
+        # array theta[] containing several values for theta, the result will be
+        # more accurate for the other theta if they are spaced by d_alpha with
+        # respect to theta[0].
+
+        # For the backwards propagation matrix, we inverse dz and d_alpha, 
+        # and start with angle theta_t.
+        
+        # Here we go...
+        
+        M = self.M
+        dz = abs(self.p) / M                # slice thickness
+        if backwards: dz = -dz             
+        d_alpha = 2*numpy.pi / self.p * dz  # sign matters
+            
+        # Alignment.
+        theta_0 = theta[0]      # I don't see a better choice
+
+        # Basic slices.
+        if backwards: 
+            theta_start = self.theta_t
+        else:
+            theta_start = self.theta_i
+            
+        alpha = theta_0 + theta_start + d_alpha * (0.5 + numpy.arange(M))
+        Deltas = self.getDelta(alpha,Kx)
+ 
+        # Structure slicing.
+        N = abs(int(round(self.h / dz)))        # h = N |dz|
+        theta = numpy.array(theta)
+        m_s = numpy.mod(numpy.round((theta-theta_0) / d_alpha), M).astype(int)
+
+        # Propagation matrices of the base slices.
+        # Name AP : A for "alpha", P for "propagation matrix"
+        left_idx = Deltas.shape[:-2]  
+                # left indices of array Deltas : (alpha,Kx)
+        ap = [ [ scipy.linalg.expm(1j * k_0 * Deltas[i] * dz, q=3)
+                 for k_0 in k0 ]
+               for i in numpy.ndindex(left_idx) ]
+        AP = numpy.array(ap)            # shape : (prod(left_idx),k0,4,4)
+        right_idx = AP.shape[-3:]       # (k0,4,4)
+        AP.shape = left_idx + right_idx # (tuple concatenation)
+                # shape reconstruction : (alpha,Kx,k0,4,4)
+
+        if N == 0:
+           P = ones((len(theta),) + AP.shape[1:]) * numpy.identity(4)
+           # Note the tuple concatenation and the broadcasting
+           # shape : (theta, Kx, k0, 4, 4)
+           return P
+        
+        if N < 2*M:
+            p = []
+            # Memory reservation
+            s = list(AP.shape)  
+            s[0] = 2 * s[0]
+            CP = numpy.zeros(s)
+            for ms in m_s:
+                # Cumulative products of the propagation matrices :
+                CP[0] = P[ms]
+                for n in range(1,N):           # matrix product :
+                    m = (ms + n) % M
+                    CP[n] = (AP[m][...,:,:,newaxis] * 
+                              CP[n-1][...,newaxis,:,:]).sum(axis=-2)
+                p.append(CP[-1])
+            P = numpy.array(p)
+            return P
+            # shape of the returned array : (theta, Kx, k0, 4, 4)
+            # à vérifier 
+
+        if N >= 2*M:
+            # Here we separate three regions :
+            # - left region from n = 0 to the next n1 such that n1%m = M-1
+            # - middle region made of full pitches
+            # - right region with the rest.
+            
+            # Cumulative products for one pitch :
+            # Name PCP : P for "pitch", CP for "cumulative product"
+            CP = numpy.zeros(AP.shape)
+            CP[0] = P[0]
+            for m in range(1,M):           # matrix product :
+                CP[m] = (AP[m][...,:,:,newaxis] * 
+                          CP[m-1][...,newaxis,:,:]).sum(axis=-2)
+            PCP = CP[-1]                    # shape : (Kx,k0,4,4)
+            # Number of guaranteed full pitches :
+            fp = N//M - 1
+            # Matrix power for the succession of full pitches :
+            # Name PP : P for "pitches", P for "propagation matrix"
+            left_idx = PCP.shape[:-2]
+            pp = [ numpy.linalg.matrix_power(PCP[i],fp)
+                    for i in numpy.ndindex(left_idx) ]
+            PP = numpy.array(pp)
+            right_idx = PP.shape[-2:]
+            PP.shape = left_idx + right_idx # shape : (Kx,k0,4,4)
+
+            # Cumulative products for the slices on the left
+            p = []
+            CP = numpy.zeros(AP.shape)
+            for ms in m_s:
+                # Cumulative products of the propagation matrices :
+                CP[ms] = P[ms]
+                for m in range(ms+1,M):           # matrix product :
+                    CP[m] = (AP[m][...,:,:,newaxis] * 
+                              CP[m-1][...,newaxis,:,:]).sum(axis=-2)
+                p.append(CP[-1])
+            LP = numpy.array(p)
+ 
+            # Cumulative products for the slices on the right
+            p = []
+            # Preparation of an array of identity matrices.
+            ID = ones(AP.shape[1:]) * numpy.identity(4) 
+            # shape : (Kx,k0,4,4) ; note the broadcasting. 
+            for ms in m_s:
+                # Cumulative products of the propagation matrices :
+                CP[0] = ZP
+                # Number of slices on the right :
+                me = (ms+N)%M
+                for m in range(me):           # matrix product :
+                    CP[m+1] = (AP[m][...,:,:,newaxis] * 
+                                CP[m][...,newaxis,:,:]).sum(axis=-2)
+                p.append(CP[me])
+            RP = numpy.array(p)
+            
+            # Total propagation matrix for the structure : RP*PP*LP
+            P = (PP[...,:,:,newaxis] * LP[...,newaxis,:,:]).sum(axis=-2)
+            P = (RP[...,:,:,newaxis] * P[...,newaxis,:,:]).sum(axis=-2)
+            return P
+
+class BraggLayer:
+    """Repeated pair of layers."""
+        
+
+  

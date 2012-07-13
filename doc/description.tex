@@ -1,0 +1,382 @@
+% Encoding: utf-8
+
+\chapterdoc{Description of Berreman4x4}
+\chapterauthor{Olivier Castany}
+
+Electromagnetic wave propagation in stratified media is important in several applications like ellipsometry analysis, Bragg mirrors or twisted liquid crystal structures.
+Propagation of plane waves in isotropic media can be solved with 2$\times$2 propagation matrix methods \cite{BornWolf}.
+In the case of anisotropic layers, a 4$\times$4 propagation matrix method was developed \cite{1970_TeilerHenvis, Berreman} and is now known as Berreman's method. 
+
+The present work is an open-source implementation of the method in Python.
+This programming language was chosen for ease of use, readability of the source code, portability and availability of scientific libraries (NumPy and SciPy).
+A drawback is slow speed, because the language is interpreted%
+\footnote{%
+High speed calculations are possible with NumPy and SciPy if array operations are vectorized.
+However the structure of Berreman4x4 does not easily lead to a vectorization with enough generality.}.
+
+Calculations are based on articles from D.~Berreman \cite{Berreman} (1972) and M.~Schubert \cite{Schubert} (1996).
+Application to ellipsometry is based on the book from H.~Fujiwara \cite{Fujiwara} (2007).
+General references for optics in anisotropic media are found in the books from M.~Born and E.~Wolf \cite{BornWolf} and J.~Jackson \cite{Jackson}.
+
+\section{Presentation}
+
+As described on figure~\ref{fig:geometry}, we consider a stratified sample with layers invariant in the $(x,y)$ plane and stacked in the $z$ direction, starting from $z_f=0$.
+Because of the translation invariance, modes with bounded fields can be classified according to wave numbers $(k_x,k_y)\in\mathbb{R}^2$.
+Without loss of generality, we consider plane waves in the $(x,z)$ direction, i.e. $k_y=0$.
+
+The front half-space is isotropic and a plane wave can be decomposed into $s$ and $p$ polarizations.
+The $s$ polarization is a wave with electric field perpendicular (\emph{senkrecht}) to the plane of incidence, i.e. along $y$.
+The $p$ polarization is a wave with electric field parallel to the plane of incidence.
+A plane wave $i$ is incident from the front half-space with incidence angle $\phi_i$ and reflected into a plane wave $r$ with the same angle.
+Angles are oriented by the $y$ direction.
+In the general case, the back half-space is anisotropic and two transmitted plane waves $t$ are induced, with the same $k_x$ but different angles $\phi_t$.
+The electric vector is not necessarily perpendicular to $\vec k$ and $s$ and $p$ waves can not be considered.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig/geometry}
+\caption{\label{fig:geometry}Geometry of the sample, with input and output plane waves. }
+\end{figure}
+
+\section{Conventions and units}
+
+Formulas are mostly based on M.~Schubert's article \cite{Schubert}, with one difference being the orientation of the $p$ polarization after reflection.
+M.~Schubert takes the convention used in ellipsometry, where the base electric vectors point towards the sample in the front and exit half spaces.
+In our work, we used a different convention, in which the base electric vectors point towards the $x$ direction in both half-spaces.
+With our convention, the base electric vectors for the incident, reflected and transmitted waves are in the same direction in the case of normal reflection.
+
+Gaussian units are used in the detail of the calculation.
+This makes it easier to compare our results with past literature, which uses Gaussian units for the most part.
+Of course, reflection and transmission coefficients have no unit and do not depend on the choice of unit.
+Conversion between units is presented in the appendix on electromagnetic units in reference~\onlinecite{Jackson}.
+In Gaussian units, Maxwell's equations read
+$$
+\nabla\times E = -\frac{1}{c} \frac{\partial B}{\partial t} 
+\quad \mathrm{and} \quad
+\nabla\times H = \frac{1}{c} \frac{\partial D}{\partial t}.
+$$
+We consider linear materials with the constitutive relations
+$D = \varepsilon E$ and $B = \mu H$.
+In Gaussian units, $\varepsilon_0=\mu_0=1$ and the relation to S.I. units is
+$$
+E_\mathrm{S.I.} = \frac{E}{\sqrt{4\pi\varepsilon_0}}
+\quad \mathrm{and} \quad
+H_\mathrm{S.I.} = \frac{H}{\sqrt{4\pi\mu_0}},
+$$
+where $\varepsilon_0$ and $\mu_0$ are the usual S.I. values.
+We will consider non-magnetic materials, i.e. $\mu = 1$.
+
+The convention for time-varying complex fields is taken as $\exp(-i\omega t)$, and Maxwell's equations read
+$$
+\nabla\times E = k_0 H
+\quad \mathrm{and} \quad
+\nabla\times H = -k_0 \varepsilon E,
+$$
+with $k_0=\omega/c$.
+
+\section{Propagation inside the sample}
+
+In the stratified sample, Maxwell's equations lead to a propagation equation for the transverse components $(E_x,E_y,H_x,H_y)$.
+The demonstration can be found in reference~\onlinecite{Berreman} and leads to%
+\footnote{Equation~(3) in Berreman's article should read $\mathbf{C=MG}$.}
+%
+\begin{equation}\label{eq:propagation}
+\frac{\partial \Psi}{\partial z} = i k_0 \Delta(z) \Psi(z),
+\quad\mathrm{with}\quad
+\Psi = 
+\begin{pmatrix}
+E_x\\
+E_y\\
+H_x\\
+H_y
+\end{pmatrix},
+\end{equation}
+where $\Delta(z)$ is a $4\times4$ matrix.
+For a general dielectric tensor, the matrix is \cite{Schubert} $\Delta(z) =$
+$$
+\renewcommand*{\arraystretch}{2}
+\newcommand{\Kx}{\ensuremath{{\scriptstyle K_x}}}
+\newcommand{\KxSq}{\ensuremath{{\scriptstyle K_x^2}}}
+\begin{pmatrix}
+-\Kx \dfrac{\eps_{3,1}}{\eps_{3,3}} & 
+-\Kx \dfrac{\eps_{3,2}}{\eps_{3,3}} &
+0 & 1 - \dfrac{\KxSq}{\eps_{3,3}}    \\
+0 & 0 & -1 & 0 \\
+\eps_{2,3} \dfrac{\eps_{3,1}}{\eps_{3,3}} - \eps_{2,1} &
+\KxSq - \eps_{2,2} + \eps_{2,3} \dfrac{\eps_{3,2}}{\eps_{3,3}} &
+0 & \Kx \dfrac{\eps_{2,3}}{\eps_{3,3}} \\
+\eps_{1,1} - \eps_{1,3} \dfrac{\eps_{3,1}}{\eps_{3,3}} &
+\eps_{1,2} - \eps_{1,3} \dfrac{\eps_{3,2}}{\eps_{3,3}} & 
+0 & -\Kx \dfrac{\eps_{1,3}}{\eps_{3,3}}
+\end{pmatrix}
+$$
+The reduced wave number $K_x = k_x/k_0$ is a constant throughout the sample and depends only on the angle of the incident wave.
+
+For a homogeneous slab $z_1 < z < z_2$, the matrix $\Delta(z)$ is constant and equation~\ref{eq:propagation} can be integrated into $\Psi(z_2) = P_{hs}(z_2,z_1) \times  \Psi(z_1)$, where the propagator is given by the matrix exponential
+$$
+P_{hs}(z_2,z_1) = 
+\exp\big(\displaystyle i\ (z_2-z_1)\ k_0\ \Delta\big)
+$$
+The numerical computation of a matrix exponential is generally slow.
+Berreman suggested to diagonalize the matrix by searching the eigenvalues and eigenvectors \cite{Berreman}.
+However, the knowledge of the eigenvectors is not necessary and the result can be expressed based on the eigenvalues only%
+\footnote{Knowledge of the eigenvectors is necessary only for the exit transition matrix if the back half-space is anisotropic.}.
+%
+I.~Abdulhalim \emph{et al.} used the Lagrange-Sylvester interpolation polynomial \cite{1985_Abdulhalim, 1999_Abdulhalim, Gantmakher} and Wöhler \emph{et al.} used Cayley-Hamilton's theorem \cite{1988_Wohler, 1991_Wohler}. 
+Both approaches lead to the same expression.
+%
+The eigenvalues can be calculated numerically as the roots of the characteristic polynomial.
+Literal expressions can be found for specific situations, like for a uniaxial material \cite{1988_Wohler, 1991_Wohler} or in the case of normal incidence \cite{1985_Abdulhalim}.
+Also, in the case of a diagonal tensor, a specific solution for $P_{hs}$ is available \cite{1999_Abdulhalim}.
+
+If a part of the sample is inhomogeneous, it is subdivided into slices over which the variation of $\Delta(z)$ is small. 
+For such a slice, the propagator $P(z_2,z_1)$ is approximated by a homogeneous slab for which the $\Delta$ matrix is evaluated in the middle of the interval,
+$$
+P(z_2,z_1) \simeq 
+\exp\left(i\ (z_2-z_1)\ k_0\ \Delta\left(\frac{z_1+z_2}{2}\right)\right).
+$$
+The total propagator $P(z_N,z_0)$ for $N$ slices between $z_0$ and $z_N$ is approximated the product
+$$P_a(z_N,z_0) = P_{hs}(z_N, z_{N-1})\times \cdots  \times P_{hs}(z_1,z_0).$$
+The order of the error is
+$$P(z_N,z_0)-P_a(z_N,z_0) = O(1/N^2)$$
+and  Z.~Lu demonstrated \cite{2007_Lu} that this does not depend whether the thin slab propagator $P_{hs}$ is the exact propagator or an approximation, possibly to first order.
+Consequently, the simplest solution to equation~\ref{eq:propagation} is to take the first order expansion
+$$
+\Psi(z_2) \simeq 
+i (z_2-z_1) k_0\ \Delta\left(\frac{z_1+z_2}{2}\right)\times \Psi(z_1),
+$$
+which corresponds to the first order expansion of the exponential,
+$$
+P_{hs}(z_2,z_1) \simeq i (z_2-z_1) k_0\ \Delta\left(\frac{z_1+z_2}{2}\right)
+$$
+For improving convergence and efficiency, Z.~Lu presented an extrapolation method to eliminate the leading terms of the error \cite{2007_Lu}.
+If the propagator used for the thin homogeneous slabs is the exact propagator $P_{hs}$, the error is reduced to $O(1/N^4)$.
+Z.~Lu presented another version with a symplectic integrator that showed improved convergence \cite{2010_Lu}.
+In this version, the propagator for a thin slab is simply the product of three homogeneous slab propagators evaluated for different thickness and position (see equation~(10) in the reference).
+
+\section{Transition to half-spaces}
+
+For isotropic half-spaces, the relation between the waves and the vector $\Psi$ at the boundary is given by the transition matrices $L_f$ and $L_b$,
+$$
+\Psi(0) = L_f 
+\begin{pmatrix}
+E_{is}\\
+E_{rs}\\
+E_{ip}\\
+E_{rp}
+\end{pmatrix}_{z=z_f}
+\quad\mathrm{and} \quad 
+\Psi(z_b) = L_b
+\begin{pmatrix}
+E_{ts}\\
+0 \\
+E_{tp}\\
+0
+\end{pmatrix}_{z=z_b}
+$$
+The ordering of the components is $(s^+,s^-,p^+,p^-)$, where the superscript indicates the traveling direction of the wave along the $z$ axis.
+If the angle of the wave traveling in the $z$ direction is $\phi$ and the refractive index of the half-space is $n$, we have
+$$
+L = 
+\begin{pmatrix}
+0 & 0 & \cos(\phi) & \cos(\phi) \\
+1 & 1 & 0 & 0 \\
+-n \cos(\phi) & n \cos(\phi) & 0 & 0 \\
+0 & 0 & n & -n 
+\end{pmatrix}
+$$
+
+When the back half-space is anisotropic, we can not decompose the transmitted wave on $s$ and $p$ polarizations, but by analogy, we decompose $\Psi(z_b)$ over the eigenvectors $\Psi_k$ of the $\Delta_b$ matrix, 
+$$
+\Psi(z_b)= \sum_{k=1}^4 c_k \Psi_k
+$$
+We sort the eigenvectors so that $\Psi_1$ and $\Psi_3$ correspond to waves propagating in the $z$ direction, i.e. the eigenvalues $q_1$ and $q_3$ have positive real part.
+This description incorporates the isotropic case for which $(c_1,c_3) = (E_{ts}, E_{tp})(z_b)$.
+We can write 
+$$
+\Psi(z_b) = L_b
+\begin{pmatrix}
+c_1\\
+0 \\
+c_3\\
+0
+\end{pmatrix}
+\quad\mathrm{with}\quad
+L_b =
+\begin{pmatrix} 
+\Psi_{1_1} & 0 & \Psi_{3_1} & 0 \\ 
+\Psi_{1_2} & 0 & \Psi_{3_2} & 0 \\ 
+\Psi_{1_3} & 0 & \Psi_{3_3} & 0 \\ 
+\Psi_{1_4} & 0 & \Psi_{3_4} & 0 \\ 
+\end{pmatrix}
+$$
+
+\section{Matrix assembling and result}
+
+The global propagation matrix and the two transition matrices are assembled in order to relate the coefficients of the waves in the two half-spaces.
+We obtain the total transfer matrix $T$ with
+$$
+\begin{pmatrix}
+E_{is}\\
+E_{rs}\\
+E_{ip}\\
+E_{rp}
+\end{pmatrix}_{z_f}
+\!\!
+= 
+\ \ 
+L_f^{-1}\ P(z_f, z_b)\ L_b \ 
+\begin{pmatrix}
+c_1\\ 0 \\ c_3\\ 0
+\end{pmatrix} 
+\ \ 
+= 
+\ \ 
+T \ 
+\begin{pmatrix}
+c_1\\ 0 \\ c_3\\ 0
+\end{pmatrix}.
+$$
+The two useful relations can be extracted,
+\begin{align*}
+& 
+\begin{pmatrix}
+E_{ip} \\ E_{is}
+\end{pmatrix}_{z_f} \!\! = \ \ 
+\begin{pmatrix}
+T_{33} & T_{31} \\
+T_{13} & T_{11} 
+\end{pmatrix}
+\begin{pmatrix}
+c_3 \\ c_1
+\end{pmatrix} = \ T_{it} \ 
+\begin{pmatrix}
+c_3 \\ c_1
+\end{pmatrix}\hphantom{.} 
+\\[3pt]
+&
+\begin{pmatrix}
+E_{rp} \\ E_{rs} 
+\end{pmatrix}_{z_f} \!\! = \ \ 
+\begin{pmatrix}
+T_{43} & T_{41} \\
+T_{23} & T_{21} 
+\end{pmatrix}
+\begin{pmatrix}
+c_3\\ c_1
+\end{pmatrix} =\ T_{rt} \ 
+\begin{pmatrix}
+c_3\\ c_1
+\end{pmatrix}.
+\end{align*}
+%
+Reflection of the incident wave can be described by a Jones matrix $T_{ri}$, and if the back half-space is isotropic, a Jones matrix $T_{ti}$ for transmission can also be defined \cite{Jones, Fujiwara},
+\begin{align*}
+\begin{pmatrix}
+E_{rp} \\ E_{rs}
+\end{pmatrix}_{z_f} \!\! = \ \ 
+\begin{pmatrix}
+r_{pp} & r_{ps} \\
+r_{sp} & r_{ss} 
+\end{pmatrix}
+\begin{pmatrix}
+E_{ip} \\ E_{is}
+\end{pmatrix}_{z_f} \!\! = \ \ T_{ri} \ 
+\begin{pmatrix}
+E_{ip} \\ E_{is}
+\end{pmatrix}_{z_f}
+\\[3pt]
+\begin{pmatrix}
+E_{tp} \\ E_{ts}
+\end{pmatrix}_{z_b} \!\! = \ \ 
+\begin{pmatrix}
+t_{pp} & t_{ps} \\
+t_{sp} & t_{ss} 
+\end{pmatrix}
+\begin{pmatrix}
+E_{ip} \\ E_{is}
+\end{pmatrix}_{z_f} \!\! = \ \ T_{ti} \ 
+\begin{pmatrix}
+E_{ip} \\ E_{is}
+\end{pmatrix}_{z_f}
+\end{align*}
+These matrices contain all the information on reflexion and transmission of the sample. 
+They are obtained by the relations 
+$$T_{ri} = T_{rt} T_{it}^{-1} 
+\quad\mathrm{and}\quad 
+T_{ti} = T_{it}^{-1}.$$
+
+Ellipsometry parameters describe the reflection of the sample by the normalized reflection matrix $T_{ri}/r_{ss}$ (see reference~\onlinecite{Fujiwara}, p.~220).
+However, since we use an opposite orientation convention for $E_{rp}$, a change of sign is necessary for matching the convention of ellipsometry and we have the definition
+\begin{multline*}
+\begin{pmatrix}
+-r_{pp}/r_{ss} & -r_{ps}/r_{ss} \\
+\hphantom{-}r_{sp}/r_{ss} & 1 
+\end{pmatrix} \\
+=
+\begin{pmatrix}
+\tan(\psi_{pp})\ e^{\displaystyle -i\Delta_{pp}} & 
+\tan(\psi_{ps})\ e^{\displaystyle -i\Delta_{ps}} \\
+\tan(\psi_{sp})\ e^{\displaystyle -i\Delta_{sp}} &
+1
+\end{pmatrix}.
+\end{multline*}
+The minus sign in front of $\Delta$ is chosen due to the $\exp(-i\omega t)$ phase convention.
+The ellipsometry angles are chosen with $\psi\in[0,\pi/2]$ and $\Delta\in\ ]-\pi,\pi]$.
+If the sample is isotropic in the $(x,y)$ direction, the off-diagonal coefficients $sp$ and $ps$ vanish and only two parameters are needed to describe the reflection.
+We have
+$$
+T_{ri} =
+\begin{pmatrix}
+r_{pp} & 0\\
+0 & r_{ss}
+\end{pmatrix}
+\quad\mathrm{and}\quad
+T_{ti} =
+\begin{pmatrix}
+t_{pp} & 0\\
+0 & t_{ss}
+\end{pmatrix}
+$$
+and define the ellipsometry parameters $\psi$ and $\Delta$ with 
+$$
+-r_{pp}/r_{ss} = \tan(\psi)\ e^{\displaystyle -i\Delta}.
+$$
+
+\section{Installation}
+
+Berreman4x4 is offered as a Python module named \verb/Berreman4x4.py/.
+It can simply be copied to the working directory and imported in a Python script with
+\begin{verbatim}
+import Berreman4x4
+\end{verbatim}
+Another possibility is to store Python modules in a special directory pointed by the \verb/PYTHONPATH/ environment variable.
+For example, my \verb/.bashrc/ script contains
+\begin{verbatim}
+export PYTHONPATH="/home/castany/.python"
+\end{verbatim}
+and the \verb/.python/ directory contains symbolic links to the Python modules I use. 
+%
+Berreman4x4 depends on the standard scientific Python modules NumPy and SciPy.
+Application examples may also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
+
+Documentation and commented examples are bundled with the program.
+The source code contains more information, incorporated as docstrings.
+They can be conveniently displayed when working with a shell like IPython \cite{IPython}.
+The code was validated against results presentend in reference~\onlinecite{Fujiwara}.
+Other situations where compared to exact results.
+Examples range from very simple to more complex situations: reflexion on glass, interferences in a glass plate, reflexion on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
+
+\section{TODO}
+
+General:
+\begin{itemize}
+\item Check Berreman's equations again. Which are the assumptions?
+\item Define ellipsometry parameters
+\end{itemize}
+%
+Source code:
+\begin{itemize}
+\item Homogeneous layer: exact solution with Cayley-Hamilton or Lagrange-Sylvester
+\end{itemize}
+
+

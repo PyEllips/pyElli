@@ -1,0 +1,3 @@
+PDF drawings are generated from IPE by: 
+$ ipetoipe -pdf file.ipe
+
