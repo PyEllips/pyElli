@@ -1084,7 +1084,7 @@ def extractEllipsoParam(Jr):
 # Below is an old chunk of code that is not connected to the current working
 # code. I leave it here because an idea may be picked from it.
 
-class TwistedLayer:
+class _TwistedLayer:
     """Twisted layer (like a cholesteric liquid crystal)."""
 
     """Faire un produit modulo la période, période**n"""
