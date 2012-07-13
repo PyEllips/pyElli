@@ -1,27 +1,15 @@
 # Encoding: utf-8
 
 # Copyright (C) 2012 Olivier Castany
-# This program is free software
+# This program is free software (see LICENCE file)
 
 """Berreman4x4: module implementing Berreman's 4x4 matrix method.
 
 See file "documentation.pdf"
-
-TODO :
-- mettre tous les paramètres du calcul dans une classe et la passer comme
-   paramètre aux fonctions ?
-- ou autrement, on peut appeler les fonctions avec argument unpacking
-- ajouter un miroir modèle (T,R,A) ?
-- fields, modes 
-- préciser que les éléments doivent être des _listes ou arrays_ de _dim 1_
-
-Author: O. Castany
 """
-
 
 import numpy
 import scipy.linalg
-from numpy import newaxis
 
 #########################################################
 # Constants...
@@ -1093,7 +1081,8 @@ def extractEllipsoParam(Jr):
 
 ###############################################################################
 ###############################################################################
-# To revise
+# Below is an old chunk of code that is not connected to the current working
+# code. I leave it here because an idea may be picked from it.
 
 class TwistedLayer:
     """Twisted layer (like a cholesteric liquid crystal)."""
@@ -1353,9 +1342,5 @@ class TwistedLayer:
             P = (PP[...,:,:,newaxis] * LP[...,newaxis,:,:]).sum(axis=-2)
             P = (RP[...,:,:,newaxis] * P[...,newaxis,:,:]).sum(axis=-2)
             return P
-
-class BraggLayer:
-    """Repeated pair of layers."""
-        
 
   
