@@ -3,6 +3,8 @@ Berreman4x4
 
 Python implementation of Berreman's 4x4 matrix method.
 
+http://Berreman4x4.github.com
+
 See [documentation](http://github.com/downloads/Berreman4x4/Berreman4x4/documentation.pdf) for more information.
 
 -- 
