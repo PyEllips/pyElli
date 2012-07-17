@@ -608,9 +608,9 @@ class HomogeneousLayer(Layer):
         
         'hs_method', 'hs_order': see setMethod()
         """
-        self.setThickness(h)
         self.setMaterial(material)
         self.setMethod(hs_method, hs_order)
+        self.setThickness(h)
 
     def setThickness(self, h):
         """Defines the thickness of this homogeneous layer."""
@@ -668,25 +668,25 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
     
     Must be made of an isotropic material.
 
-    Provodes function QWP_thickness(lbda) returning the thickness of a
-    Quarter Wave Plate at wavelength 'lbda'
+    Provides function get_QWP_thickness(lbda) returning the thickness of a
+    Quarter Wave Plate at wavelength 'lbda'.
+
+    Can be created with parameter h = ("QWP", 1e-6), see method setThickness().
     """
 
-    def __init__(self, material=None, h=1e-6, hs_method="eig", hs_order=2):
-        """Creates a homogeneous isotropic layer with thickness 'h'.
+    def setThickness(self, h):
+        """Defines the thickness of this homogeneous isotropic layer.
         
-        If h is a tuple ('QWP', lbda), the thickness 'h' is calculated for a 
+        If h is a tuple ('QWP', lbda), the thickness 'h' is calculated for a
         quarter-wave plate at wavelength 'lbda'.
         """
-        self.setMaterial(material)
-        self.setMethod(hs_method, hs_order)
         if isinstance(h, tuple):
             (name, lbda) = h
             if name == "QWP":
                 h = self.get_QWP_thickness(lbda)
             else:
                 raise ValueError("Thickness not correctly defined.")
-        self.setThickness(h)
+        self.h = h
 
     def get_QWP_thickness(self, lbda=1e-6):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
