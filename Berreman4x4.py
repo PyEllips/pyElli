@@ -672,17 +672,20 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
     Quarter Wave Plate at wavelength 'lbda'
     """
 
-    def __init__(self, material=None, h=1e-6, lbda=1e-6, 
-                       hs_method="eig", hs_order=2):
+    def __init__(self, material=None, h=1e-6, hs_method="eig", hs_order=2):
         """Creates a homogeneous isotropic layer with thickness 'h'.
         
-        If h = 'QWP', the thickness for a quarter-wave plate at wavelength 
-        'lbda' is used.
+        If h is a tuple ('QWP', lbda), the thickness 'h' is calculated for a 
+        quarter-wave plate at wavelength 'lbda'.
         """
         self.setMaterial(material)
         self.setMethod(hs_method, hs_order)
-        if h == "QWP":
-            h = self.get_QWP_thickness(lbda)
+        if isinstance(h, tuple):
+            (name, lbda) = h
+            if name == "QWP":
+                h = self.get_QWP_thickness(lbda)
+            else:
+                raise ValueError("Thickness not correctly defined.")
         self.setThickness(h)
 
     def get_QWP_thickness(self, lbda=1e-6):
