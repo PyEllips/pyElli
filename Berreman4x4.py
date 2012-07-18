@@ -584,18 +584,21 @@ class Layer:
       'inv': boolean, if True, the propagator is from back to front.
     """
 
+    def getPropagationMatrix(self, Kx, k0, inv):
+        """Returns propagation matrix P for this layer."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+class MaterialLayer(Layer):
+    """A layer made of one material (abstract class)."""
+
     material = None     # Material making the layer
 
     def setMaterial(self, material):
         """Defines the material for this layer. """
         self.material = material
+   
 
-    def getPropagationMatrix(self, Kx, k0, inv):
-        """Returns propagation matrix P for this layer."""
-        raise NotImplementedError("Should be implemented in derived classes")
-
-    
-class HomogeneousLayer(Layer):
+class HomogeneousLayer(MaterialLayer):
     """Homogeneous layer of dielectric material."""
 
     h = None                # Thickness of the layer
@@ -697,7 +700,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
 #########################################################
 # Inhomogeneous layers...
 
-class InhomogeneousLayer(Layer):
+class InhomogeneousLayer(MaterialLayer):
     """Inhomogeneous layer.
     
     Must be fabricated with an InhomogemeousMaterial object.
@@ -841,7 +844,7 @@ class InhomogeneousLayer(Layer):
 #########################################################
 # Repeated layers...
 
-class RepeatedLayers:
+class RepeatedLayers(Layer):
     """Repetition of a structure."""
 
     n = None        # Number of repetitions
