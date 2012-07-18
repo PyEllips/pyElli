@@ -1,3 +1,9 @@
 PDF drawings are generated from IPE by: 
 $ ipetoipe -pdf file.ipe
 
+UML diagram was generated with AutoDia at first and then rearranged and
+corrected manually.
+Generation: autodia -i Berreman4x4.py -l python -o UML.dia
+The file can be exported automatically with: dia -t pdf UML.dia
+The reulsting PDF is then cropped with PDFCrop.
+

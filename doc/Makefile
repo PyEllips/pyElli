@@ -1,13 +1,11 @@
 filename=documentation
 
-pdf:
-	pdflatex $(filename)
-	bibtex $(filename)
+all: tex bib
 	pdflatex $(filename)
 	pdflatex $(filename)
 tex:
+	cd fig && make
 	pdflatex $(filename)
-
 bib:
 	bibtex $(filename)
 
