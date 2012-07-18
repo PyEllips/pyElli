@@ -356,22 +356,39 @@ export PYTHONPATH="/home/castany/.python"
 \end{verbatim}
 and the \verb/.python/ directory contains symbolic links to the Python modules I use. 
 %
-Berreman4x4 depends on the standard scientific Python modules NumPy and SciPy.
-Application examples may also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
+Berreman4x4 depends on standard scientific Python modules NumPy and SciPy.
+Application examples also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
 
-Documentation and commented examples are bundled with the program.
-The source code contains more information, incorporated as docstrings.
+\section{Documentation and examples}
+
+\begin{figure*}
+\includegraphics[width=\textwidth, page=1]{fig/UML-crop}
+\caption{\label{fig:class1}Class diagram of Berreman4x4: structure, materials and module functions. }
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth, page=2]{fig/UML-crop}
+\caption{\label{fig:class2}Class diagram of Berreman4x4: layers and half-spaces.}
+\end{figure*}
+
+The source code contains detailed information on the classes and functions, incorporated as docstrings.
 They can be conveniently displayed when working with a shell like IPython \cite{IPython}.
-The code was validated against results presentend in reference~\onlinecite{Fujiwara}.
-Other situations where compared to exact results.
-Examples range from very simple to more complex situations: reflexion on glass, interferences in a glass plate, reflexion on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
+
+Commented examples are bundled with the program.
+They range from simple situations to more complex structures: reflexion on an interface, interferences in a thin layer, reflexion on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
+Whenever possible, result from Berreman4x4 is compared with exact analytical result, and show excellent match.
+The code is also validated against results presentend in reference~\onlinecite{Fujiwara}.
+
+The class diagram of Berreman4x4 is presented on figures~\ref{fig:class1} and \ref{fig:class2}.
+The \texttt{Structure} is built from a list of \texttt{Layer} objects, between front and back \texttt{HalfSpace} objects.
+\texttt{Material} objects are created for defining \texttt{MaterialLayer} objects.
+\texttt{InhomogeneousLayer} objects require \texttt{InhomogeneousMaterial} objects.
 
 \section{TODO}
 
 General:
 \begin{itemize}
 \item Check Berreman's equations again. Which are the assumptions?
-\item Define ellipsometry parameters
 \end{itemize}
 %
 Source code:
