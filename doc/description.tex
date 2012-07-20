@@ -359,16 +359,16 @@ and the \verb/.python/ directory contains symbolic links to the Python modules I
 Berreman4x4 depends on standard scientific Python modules NumPy and SciPy.
 Application examples also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
 
-\section{Documentation and examples}
+\section{Code documentation and examples}
 
 \begin{figure*}
 \includegraphics[width=\textwidth, page=1]{fig/UML-crop}
-\caption{\label{fig:class1}Class diagram of Berreman4x4: structure, materials and module functions. }
+\caption{\label{fig:class1}Class diagram of Berreman4x4: structure, materials, and module functions. }
 \end{figure*}
 
 \begin{figure*}
 \includegraphics[width=\textwidth, page=2]{fig/UML-crop}
-\caption{\label{fig:class2}Class diagram of Berreman4x4: layers and half-spaces.}
+\caption{\label{fig:class2}Class diagram of Berreman4x4: layers, inhomogeneous materials, and half-spaces.}
 \end{figure*}
 
 The source code contains detailed information on the classes and functions, incorporated as docstrings.
@@ -379,10 +379,12 @@ They range from simple situations to more complex structures: reflexion on an in
 Whenever possible, result from Berreman4x4 is compared with exact analytical result, and show excellent match.
 The code is also validated against results presentend in reference~\onlinecite{Fujiwara}.
 
-The class diagram of Berreman4x4 is presented on figures~\ref{fig:class1} and \ref{fig:class2}.
-The \texttt{Structure} is built from a list of \texttt{Layer} objects, between front and back \texttt{HalfSpace} objects.
+The UML class diagram of Berreman4x4 is presented on figures~\ref{fig:class1} and \ref{fig:class2}.
+A \texttt{Structure} is built from a list of \texttt{Layer} objects, between one front and one back \texttt{HalfSpace} objects.
 \texttt{Material} objects are created for defining \texttt{MaterialLayer} objects.
-\texttt{InhomogeneousLayer} objects require \texttt{InhomogeneousMaterial} objects.
+Several classes of non-dispersive materials are provided, but dispersive materials may also be created, as exemplified by class \texttt{IsotropicDispersive}.
+Additionnal classes of materials can be created by deriving classes \texttt{Material} and \texttt{DispersionLaw}.
+Layers with a continuous spatial variation of the permittivity tensor are described with an \texttt{InhomogeneousMaterial} and form an \texttt{InhomogeneousLayer} object.
 
 \section{TODO}
 
