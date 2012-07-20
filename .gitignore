@@ -12,4 +12,5 @@
 *.lot
 *.out
 *.pdf
+*.synctex.gz
 
