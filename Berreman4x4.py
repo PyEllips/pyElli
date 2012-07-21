@@ -312,10 +312,26 @@ class TwistedMaterial(InhomogeneousMaterial):
         exact result with eigenvector decomposition. On the other hand, if
         k0·h is small, a linear or Taylor approximation may suffice.
         """
-        self.d = d
-        self.material = material
-        self.angle = angle
+        self.setThickness(d)
+        self.setMaterial(material)
+        self.setAngle(angle)
+        self.setDivision(div)
+
+    def setDivision(self, div):
+        """Defines the number of slices in this TwistedMaterial."""
         self.div = div
+    
+    def setAngle(self, angle):
+        """Defines the total twist angle of this TwistedMaterial."""
+        self.angle = angle
+    
+    def setMaterial(self, material):
+        """Defines the material making this TwistedMaterial."""
+        self.material = material
+
+    def setThickness(self, d):
+        """Defines the thickness of this TwistedMaterial."""
+        self.d = d
 
     def getTensor(self, z, lbda=None):
         """Returns permittivity tensor matrix for position 'z'."""
@@ -402,7 +418,7 @@ def hs_propagator_Pade(Delta, h, k0, q=7):
     
     The diagonal Padé approximant of any order 'q' is symplectic, i.e. 
     P_hs_Pade(h)·P_hs_Pade(-h) = 1. 
-    Such property may be suitable for use with Lu's method.
+    Such property may be suitable for use with Z. Lu's method.
     """
     P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta, q)
     return numpy.matrix(P_hs_Pade)
@@ -707,7 +723,6 @@ class InhomogeneousLayer(MaterialLayer):
     """
 
     material = None     # InhomogemeousMaterial object
-    z = None            # Position of the slices (array)
 
     # Method used to decompose the inhomogeneous layer into homogeneous slabs:
     getSlicePropagator = None
@@ -726,10 +741,9 @@ class InhomogeneousLayer(MaterialLayer):
         'evaluation', 'hs_method' and order 'q', see setMethod().
         """
         self.setMaterial(material)
-        self.z = material.getSlices()
         self.setMethod(evaluation, hs_method, q)
 
-    def setMethod(self, evaluation, hs_method, q):
+    def setMethod(self, evaluation, hs_method, q=2):
         """Defines the calculation method.
 
         The propagator for the inhomogeneous layer is decomposed and evaluated
@@ -784,10 +798,9 @@ class InhomogeneousLayer(MaterialLayer):
 
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P."""
+        z = self.material.getSlices()
         if inv:
-            z = self.z[::-1]
-        else:
-            z = self.z
+            z = z[::-1]
         P_tot = numpy.matrix(numpy.identity(4))
         for i in range(len(z)-1):
             P = self.getSlicePropagator(z[i+1], z[i], Kx, k0)
@@ -811,7 +824,7 @@ class InhomogeneousLayer(MaterialLayer):
 
     # Coefficients from Z. Lu's article for the sympletic method
     s = 2.**(1./3)
-    b1 = 1/(2-s)
+    b1 = 1./(2-s)
     b2 = -s/(2-s)
     t1 = 1./(2*(2-s))
     t2 = 1./2
@@ -827,9 +840,9 @@ class InhomogeneousLayer(MaterialLayer):
         z1 + t2 h = z2 - t2 h.
         """
         h = z2 - z1
-        epsilon1 = self.material.getTensor(z1+self.t1*h)
-        epsilon2 = self.material.getTensor(z1+self.t2*h)
-        epsilon3 = self.material.getTensor(z1+self.t3*h)
+        epsilon1 = self.material.getTensor(z1+self.t1*h, 2*pi/k0)
+        epsilon2 = self.material.getTensor(z1+self.t2*h, 2*pi/k0)
+        epsilon3 = self.material.getTensor(z1+self.t3*h, 2*pi/k0)
         Delta1 = buildDeltaMatrix(Kx, epsilon1)
         Delta2 = buildDeltaMatrix(Kx, epsilon2)
         Delta3 = buildDeltaMatrix(Kx, epsilon3)

@@ -51,24 +51,35 @@ s = Berreman4x4.Structure(front, [IL], back)
 # Normal incidence: 
 Kx = 0.0
 
-# Calculation
+# Calculation parameters
 lbda_min, lbda_max = 200e-9, 1   # (m)
 k0_list = numpy.linspace(2*pi/lbda_max, 2*pi/lbda_min)
-data = [s.getJones(Kx,k0) for k0 in k0_list]
-data = numpy.array(data)
 
-t_pp = Berreman4x4.extractCoefficient(data, 't_pp')
-
-# Plotting
+# Plot setup
 fig = pyplot.figure()
 ax = fig.add_subplot("111")
-ax.plot(k0_list, abs(t_pp)**2, 'o', label="Berreman4x4")
 
-# Verification with Gooch-Tarry law:
+# Plot Gooch-Tarry law for reference
 u = 2*d*Dn*k0_list/(2*pi)
-T_GT = sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
-ax.plot(k0_list, T_GT, label="Gooch-Tarry")
+T = sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
+ax.plot(k0_list, T, label="Gooch-Tarry")
 
+# Calulation with Berreman4x4
+def plotTransmission(label):
+    """Plots power transmission vs. wavenumber."""
+    data = [s.getJones(Kx,k0) for k0 in k0_list]
+    data = numpy.array(data)
+    t_pp = Berreman4x4.extractCoefficient(data, 't_pp')
+    T = abs(t_pp)**2    # valid if back and front media are identical
+    ax.plot(k0_list, T, 'x', label=label)
+
+# Two different numbers of divisions in the TwistedMaterial ar plotted
+TN.setDivision(7)
+plotTransmission("Berreman4x4, 7 div")
+TN.setDivision(18) 
+plotTransmission("Berreman4x4, 18 div")
+
+# Titles
 ax.set_title(u"Transmission of a 90° twisted nematic liquid crystal")
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission, $T$")
