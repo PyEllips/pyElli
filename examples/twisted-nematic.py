@@ -62,7 +62,7 @@ ax = fig.add_subplot("111")
 # Plot Gooch-Tarry law for reference
 u = 2*d*Dn*k0_list/(2*pi)
 T = sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
-ax.plot(k0_list, T, label="Gooch-Tarry")
+ax.plot(k0_list, T, label="Gooch-Tarry law")
 
 # Calulation with Berreman4x4
 def plotTransmission(label):
