@@ -80,9 +80,10 @@ TN.setDivision(18)
 plotTransmission("Berreman4x4, 18 div")
 
 # Titles
-ax.set_title(u"Transmission of a 90° twisted nematic liquid crystal")
+ax.set_title(u"90° Twisted Nematic Liquid Crystal, " +
+             u"d = {:.2f} µm".format(d*1e6))
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
-ax.set_ylabel(r"Power transmission, $T$")
+ax.set_ylabel(r"Power transmission $T$")
 ax.legend()
 pyplot.show()
 
