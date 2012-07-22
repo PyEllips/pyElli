@@ -78,7 +78,6 @@ T_pp = correction * t2_pp
 
 ############################################################################
 # Plotting
-
 fig = pyplot.figure(figsize=(12., 6.))
 pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
@@ -89,7 +88,7 @@ legend1 = ("R_ss","R_pp","t2_ss","t2_pp","T_ss","T_pp")
 
 d = numpy.vstack((R_th_ss,R_th_pp,t2_th_ss,t2_th_pp,T_th_ss,T_th_pp)).T
 lines2 = ax.plot(Kx_list, d, 'o')
-legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp", "T_th_ss","T_th_pp")
+legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
 
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
