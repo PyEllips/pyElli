@@ -4,7 +4,7 @@
 # Berreman4x4 example
 # Author: O. Castany
 
-# The simplest example: a homogeneous glass layer in air
+# The simplest example: reflection on air/glass interface
 
 print("\n*** Air / glass interface ***\n")
 
