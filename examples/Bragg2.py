@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # encoding: utf-8
-
 # Berreman4x4 example
 # Author: O. Castany, C. Molinaro
 
@@ -10,9 +9,12 @@ import numpy, Berreman4x4
 import scipy.linalg
 import matplotlib.pyplot as pyplot
 from Berreman4x4 import c, pi
+from numpy import newaxis
 
 print("\n*** SiO2/TiO2 Bragg mirror ***\n")
 
+############################################################################
+# Structure definition
 
 # Front and back materials
 n_g = 1.5
@@ -35,7 +37,6 @@ SiO2 = Berreman4x4.IsotropicNonDispersiveMaterial(n_SiO2)
 TiO2 = Berreman4x4.IsotropicNonDispersiveMaterial(n_TiO2)
 
 # Layers
-
 L_SiO2 = Berreman4x4.HomogeneousIsotropicLayer(SiO2, ("QWP", lbda0))
 L_TiO2 = Berreman4x4.HomogeneousIsotropicLayer(TiO2, ("QWP", lbda0))
 
@@ -45,70 +46,114 @@ print("Thickness of the TiO2 QWP: {:.1f} nm".format(L_TiO2.h*1e9))
 # Repeated layers: n periods
 L = Berreman4x4.RepeatedLayers([L_TiO2, L_SiO2], 4,0,0)
 
-#Theory polarisation s
-n = numpy.complex128(numpy.ones(2*L.n+2))
-n[::2] = n_SiO2
-n[1::2] = n_TiO2
-n[0] = n[-1] = n_g
-
-d = numpy.ones(2*L.n+2)
-d[::2] = L_SiO2.h
-d[1::2] = L_TiO2.h
-
-def sinPhi(p):
-    res = numpy.sin(Phi_0)*n[0]/n[p]
-    return res
-
-def kz(p):
-    res = 2*numpy.pi/lbda_list*numpy.sqrt(n[p]**2-(n[p]*sinPhi(p))**2)
-    return res
-
-def r_int(p):
-    res = (kz(p)-kz(p+1))/(kz(p)+kz(p+1))#(-numpy.diff(kz(p)))/(kz(p)[:-1]+kz(p)[1:])
-    return res
-
-def U(k):
-    p = k+1
-    if (p == 2*L.n + 1):
-        res = r_int(2*L.n)
-    else :
-        res = (r_int(p-1)+U(p)*numpy.exp(2j*kz(p)*d[p]))/(1+r_int(p-1)*U(p)*numpy.exp(2j*kz(p)*d[p]))
-    return res
+# Number of interfaces
+N = 2 * L.n + 1
 
 # Structure
 s = Berreman4x4.Structure(front, [L], back)
 
-# Power coefficient reflexion
+############################################################################
+# Analytical calculation
+n = numpy.ones(N+1, dtype=complex)
+n[::2] = n_SiO2
+n[1::2] = n_TiO2
+n[0] = n[-1] = n_g
+
+d = numpy.ones(N+1)
+d[::2] = L_SiO2.h
+d[1::2] = L_TiO2.h
 
 (lbda1, lbda2) = (1.1e-6, 2.5e-6)
 lbda_list = numpy.linspace(lbda1, lbda2, 200)
-#Phi_0 = 0
+
+
+def ReflectionCoeff(incidence_angle=0., polarisation='s'):
+    """Returns reflection coefficient 
+
+    U(k) depends on incidence angle and polarisation 's' or 'p'.
+    """
+    Kx = n[0]*numpy.sin(incidence_angle)    
+    sinPhi = Kx/n
+    kz = 2*pi/lbda_list * numpy.sqrt(n**2-(Kx)**2)[:,newaxis]
+
+    # Reflexion coefficient r_{k,k+1} for a single interface 
+        # polarisation s:
+        # r_ab(p) = r_{p,p+1} = (kz(p)-kz(p+1))/(kz(p)+kz(p+1))
+        # polarisation p:
+        # r_ab(p) = r_{p,p+1} = (kz(p)*n[p+1]**2-kz(p+1)*n[p]**2)/(kz(p)*n[p]**2+kz(p+1)*n[p+1]**2)
+    if (polarisation == 's'):
+        r_ab = (-numpy.diff(kz,axis=0)) / (kz[:-1] + kz[1:])
+    else:
+        r_ab = (kz[:-1]*(n[1:][:,newaxis])**2 - kz[1:]*(n[:-1][:,newaxis])**2)/ (kz[:-1]*(n[1:][:,newaxis])**2 + kz[1:]*(n[:-1][:,newaxis])**2)
+    
+
+    def U(k):
+        """Returns reflection coefficient U(k) = r_{k, {k+1,...,N}}
+
+        used recursively
+        """
+        p = k+1
+        if (p == N):
+            res = r_ab[N-1]
+        else :
+            res =   (r_ab[p-1] + U(p)*numpy.exp(2j*kz[p]*d[p]))  \
+              / (1 + r_ab[p-1] * U(p)*numpy.exp(2j*kz[p]*d[p]))
+        return res
+
+    res_g = U(0)
+    return res_g
+
+# Power coefficient reflexion
+#Phi_0 = 0 polarisation s
 Phi_0 = 0
-Kx = n[0]*numpy.sin(Phi_0)
+R_th_ss_0 = (numpy.abs(ReflectionCoeff(Phi_0,'s')))**2
+
+#Phi_0 = pi/4 polarisations s and p
+Phi_0 = pi/4
+R_th_ss = (numpy.abs(ReflectionCoeff(Phi_0,'s')))**2
+R_th_pp = (numpy.abs(ReflectionCoeff(Phi_0,'p')))**2
+
+############################################################################
+# Calculation with Berreman4x4
+#Phi_0 = 0 polarisation s
+Phi_0 = 0
+Kx = front.get_Kx_from_Phi(Phi_0)
 data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
 data = numpy.array(data)
-r = Berreman4x4.extractCoefficient(data, 'r_ss')
-R_ss_0 = numpy.abs(r)**2
-R_th_ss_0 = (numpy.abs(U(0)))**2
+r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
+R_ss_0 = numpy.abs(r_ss)**2
 
-#Phi_0 = pi/4
-Phi_0 = numpy.pi/4
-Kx = n[0]*numpy.sin(Phi_0)
+#Phi_0 = pi/4 polarisation s an p
+Phi_0 = pi/4
+Kx = front.get_Kx_from_Phi(Phi_0)
 data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
 data = numpy.array(data)
-r = Berreman4x4.extractCoefficient(data, 'r_ss')
-R_ss = numpy.abs(r)**2
-R_th_ss = (numpy.abs(U(0)))**2
+r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
+r_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
+R_ss = numpy.abs(r_ss)**2
+R_pp = numpy.abs(r_pp)**2
 
-# Graphics
-fig = pyplot.figure()
-ax = fig.add_subplot("111")
-lines = ax.plot(lbda_list, R_ss_0, lbda_list, R_ss,
-lbda_list, R_th_ss_0, 'bo',lbda_list, R_th_ss, 'go')
-ax.legend(lines, ("R_ss_0","R_ss","R_th_ss_0","R_th_ss"))
-ax.xaxis.major.formatter.set_powerlimits((-3,3))
-ax.set_xlabel(r"Wavelength $\lambda$ (m)")
-ax.set_ylabel(r"$R$, $T$")
+############################################################################
+# Plotting
+fig = pyplot.figure(figsize=(12., 6.))
+pyplot.rcParams['axes.color_cycle'] = ['b','g','r']
+ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
+
+d = numpy.vstack((R_ss_0,R_ss,R_pp)).T
+lines1 = ax.plot(lbda_list,d)
+legend1 = ("R_ss (0$^\circ$)","R_ss (45$^\circ$)","R_pp (45$^\circ$)")
+
+d = numpy.vstack((R_th_ss_0,R_th_ss,R_th_pp)).T
+lines2 = ax.plot(lbda_list,d,'x')
+legend2 =                                                           ("R_th_ss (0$^\circ$)","R_th_ss (45$^\circ$)","R_th_pp (45$^\circ$)")
+
+ax.legend(lines1 + lines2, legend1 + legend2, 
+          loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
+
 ax.set_title(r"SiO$_2$/TiO$_2$ Bragg mirror ("+str(L.n)+" periods)")
+ax.set_xlabel(r"Wavelength $\lambda$ (m)")
+ax.set_ylabel(r"$R$")
+fmt = ax.xaxis.get_major_formatter()
+fmt.set_powerlimits((-3,3))
 pyplot.show()
 
