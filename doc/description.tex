@@ -210,7 +210,7 @@ L_b =
 \end{pmatrix}
 $$
 
-\section{Matrix assembling and result}
+\section{Matrix assembling}
 
 The global propagation matrix and the two transition matrices are assembled in order to relate the coefficients of the waves in the two half-spaces.
 We obtain the total transfer matrix $T$ with
@@ -268,7 +268,9 @@ c_3\\ c_1
 c_3\\ c_1
 \end{pmatrix}.
 \end{align*}
-%
+
+\section{Jones matrices}
+
 Reflection of the incident wave can be described by a Jones matrix $T_{ri}$, and if the back half-space is isotropic, a Jones matrix $T_{ti}$ for transmission can also be defined \cite{Jones, Fujiwara},
 \begin{align*}
 \begin{pmatrix}
@@ -301,9 +303,42 @@ E_{ip} \\ E_{is}
 \end{align*}
 These matrices contain all the information on reflexion and transmission of the sample. 
 They are obtained by the relations 
-$$T_{ri} = T_{rt} T_{it}^{-1} 
+$$
+T_{ri} = T_{rt} T_{it}^{-1} 
 \quad\mathrm{and}\quad 
-T_{ti} = T_{it}^{-1}.$$
+T_{ti} = T_{it}^{-1}.
+$$
+%
+Basis for the Jones vectors may be the orthogonal $s$ and $p$ polarization 
+$$
+\mathbf{E}_{ip} = \begin{pmatrix} 1 \\ 0 \end{pmatrix},
+\quad
+\mathbf{E}_{is} = \begin{pmatrix} 0 \\ 1 \end{pmatrix},
+$$
+or the left and right circular polarizations 
+$$
+\mathbf{E}_{iL} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ i \end{pmatrix},
+\quad
+\mathbf{E}_{iR} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -i \end{pmatrix}.
+$$
+The orientation of the circular polarizations is identical for the transmitted wave and reversed for the reflected wave.
+The transformation matrix from the $(s,p)$ basis to the $(L,R)$ basis is 
+$$
+C = \frac{1}{\sqrt{2}} 
+\begin{pmatrix} 
+1 &  1 \\ 
+i & -i \\ 
+\end{pmatrix},
+\quad\mathrm{so\ that}\quad
+\begin{pmatrix} E_{ip} \\ E_{is} \end{pmatrix}
+= C\  
+\begin{pmatrix} E_{iL} \\ E_{iR} \end{pmatrix}
+.
+$$
+The Jones transmission matrix in terms of circular polarizations is then
+$T^c_{ti} = C^{-1}\ T_{ti}\ C$.
+
+\section{Ellipsometry parameters}
 
 Ellipsometry parameters describe the reflection of the sample by the normalized reflection matrix $T_{ri}/r_{ss}$ (see reference~\onlinecite{Fujiwara}, p.~220).
 However, since we use an opposite orientation convention for $E_{rp}$, a change of sign is necessary for matching the convention of ellipsometry and we have the definition
@@ -391,7 +426,7 @@ Layers with a continuous spatial variation of the permittivity tensor are descri
 General:
 \begin{itemize}
 \item Check Berreman's equations again. Which are the assumptions?
-\item Verify efficiency of Z.~Lu's method. It does not seem to be quicker than midpoint method. Strange.
+\item Verify efficiency of Z.~Lu's method. It seems to be worse than the midpoint method for the twisted nematic example. Strange.
 \end{itemize}
 %
 Source code:
