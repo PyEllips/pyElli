@@ -1,5 +1,7 @@
 *.py[co]
 
+*.swp
+
 *.aux
 *.idx
 *.log
