@@ -10,13 +10,12 @@ See file "documentation.pdf"
 
 import numpy
 import scipy.linalg
+from numpy import pi, newaxis
 
 #########################################################
 # Constants...
 
 c = 2.998e8     # speed of light in vacuum
-pi = numpy.pi
-
 
 #########################################################
 # Rotations... 
@@ -1045,26 +1044,50 @@ class Structure:
 #########################################################
 # Data extraction from the Jones matrices...
 
-def extractCoefficient(Jones, coeff_name):
+def extractCoefficient(Jones, pos):
     """Extracts the desired coefficient from the Jones matrix.
     
     'Jones' : pair of (Jr, Jt) reflexion and transmission Jones matrices
               may be an array of shape [...,2,2,2]
     
-    'coeff_name' : 'r_sp', 't_pp',...
+    'pos' : position of the coefficient 'r_sp', 't_pp',...
 
     Returns : desired coefficient value
     """
     J = numpy.array(Jones)
-    if   coeff_name == 'r_ss': coeff = J[...,0,1,1]
-    elif coeff_name == 'r_pp': coeff = J[...,0,0,0]
-    elif coeff_name == 'r_ps': coeff = J[...,0,0,1]
-    elif coeff_name == 'r_sp': coeff = J[...,0,1,0]
-    elif coeff_name == 't_ss': coeff = J[...,1,1,1]
-    elif coeff_name == 't_pp': coeff = J[...,1,0,0]
-    elif coeff_name == 't_ps': coeff = J[...,1,0,1]
-    elif coeff_name == 't_sp': coeff = J[...,1,1,0]
+    if   pos == 'r_ss' or pos == 'r_RR' : coeff = J[...,0,1,1]
+    elif pos == 'r_pp' or pos == 'r_LL' : coeff = J[...,0,0,0]
+    elif pos == 'r_ps' or pos == 'r_LR' : coeff = J[...,0,0,1]
+    elif pos == 'r_sp' or pos == 'r_RL' : coeff = J[...,0,1,0]
+    elif pos == 't_ss' or pos == 't_RR' : coeff = J[...,1,1,1]
+    elif pos == 't_pp' or pos == 't_LL' : coeff = J[...,1,0,0]
+    elif pos == 't_ps' or pos == 't_LR' : coeff = J[...,1,0,1]
+    elif pos == 't_sp' or pos == 't_RL' : coeff = J[...,1,1,0]
     return coeff
+
+# Transformation matrix from the (s,p) basis to the (L,R) basis...
+C = 1 / numpy.sqrt(2) * numpy.matrix([[1, 1], [1j, -1j]])
+D = 1 / numpy.sqrt(2) * numpy.matrix([[1, 1], [-1j, 1j]])
+TM = numpy.array([C,C])
+invC = numpy.matrix(scipy.linalg.inv(C))
+invD = numpy.matrix(scipy.linalg.inv(D))
+invTM = numpy.array([invD, invC])
+
+def circularJones(Jones):
+    """Returns the Jones matrices for circular polarization basis
+    
+    'Jones' : pair of (Jr, Jt) reflexion and transmission Jones matrices
+              may be an array of shape [...,2,2,2]
+   
+    The Jones matrices for circular polarization are Jr^c = D⁻¹ Jr C  and
+    Jt^c = C⁻¹ Jt C.
+
+    Returns : array of the same shape.
+    """
+    J = numpy.array(Jones)
+    P = (J[...,:,:,newaxis] * TM[...,newaxis,:,:]).sum(axis=-2)
+    P = (invTM[...,:,:,newaxis] * P[...,newaxis,:,:]).sum(axis=-2)
+    return P
 
 def extractEllipsoParam(Jr):
     """Return the ellipsomerty parameters.

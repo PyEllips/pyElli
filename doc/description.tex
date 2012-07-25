@@ -210,7 +210,7 @@ L_b =
 \end{pmatrix}
 $$
 
-\section{Matrix assembling}
+\section{Matrix assembling and Jones matrices}
 
 The global propagation matrix and the two transition matrices are assembled in order to relate the coefficients of the waves in the two half-spaces.
 We obtain the total transfer matrix $T$ with
@@ -269,8 +269,6 @@ c_3\\ c_1
 \end{pmatrix}.
 \end{align*}
 
-\section{Jones matrices}
-
 Reflection of the incident wave can be described by a Jones matrix $T_{ri}$, and if the back half-space is isotropic, a Jones matrix $T_{ti}$ for transmission can also be defined \cite{Jones, Fujiwara},
 \begin{align*}
 \begin{pmatrix}
@@ -308,35 +306,59 @@ T_{ri} = T_{rt} T_{it}^{-1}
 \quad\mathrm{and}\quad 
 T_{ti} = T_{it}^{-1}.
 $$
-%
-Basis for the Jones vectors may be the orthogonal $s$ and $p$ polarization 
+
+\section{Circularly polarized light}
+When fields are decomposed over the $s$ and $p$ polarizations, the basis for the Jones vectors is $(\mathbf{E}_{p}, \mathbf{E}_{s})$ with
 $$
-\mathbf{E}_{ip} = \begin{pmatrix} 1 \\ 0 \end{pmatrix},
-\quad
-\mathbf{E}_{is} = \begin{pmatrix} 0 \\ 1 \end{pmatrix},
+\mathbf{E}_{p} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+\quad\mathrm{and}\quad
+\mathbf{E}_{s} = \begin{pmatrix} 0 \\ 1 \end{pmatrix}.
 $$
-or the left and right circular polarizations 
+It is possible to consider other bases, for example the left and right circular polarizations.
+For the incident and transmitted waves the Jones vectors are
 $$
-\mathbf{E}_{iL} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ i \end{pmatrix},
-\quad
-\mathbf{E}_{iR} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -i \end{pmatrix}.
+\mathbf{E}_{iL}, \mathbf{E}_{tL}  = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ i \end{pmatrix}
+\quad\mathrm{and}\quad
+\mathbf{E}_{iR},\mathbf{E}_{tR}  = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -i \end{pmatrix}.
 $$
-The orientation of the circular polarizations is identical for the transmitted wave and reversed for the reflected wave.
-The transformation matrix from the $(s,p)$ basis to the $(L,R)$ basis is 
+For the reflected wave, we have
+$$
+\mathbf{E}_{rL} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -i \end{pmatrix}
+\quad\mathrm{and}\quad
+\mathbf{E}_{rR} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ i \end{pmatrix}.
+$$
+The transformation matrix from the $(s,p)$ basis to the $(L,R)$ basis will be called $C$ in the case of incident and reflected waves, and $D$ for the reflected wave. 
+We have
 $$
 C = \frac{1}{\sqrt{2}} 
 \begin{pmatrix} 
 1 &  1 \\ 
 i & -i \\ 
-\end{pmatrix},
-\quad\mathrm{so\ that}\quad
+\end{pmatrix}
+\quad\mathrm{and}\quad
+D = \frac{1}{\sqrt{2}} 
+\begin{pmatrix} 
+1 &  1 \\ 
+-i & i \\ 
+\end{pmatrix}.
+$$
+The relations between the Jones vectors in the two bases are 
+\begin{eqnarray*}
 \begin{pmatrix} E_{ip} \\ E_{is} \end{pmatrix}
 = C\  
 \begin{pmatrix} E_{iL} \\ E_{iR} \end{pmatrix}
-.
-$$
-The Jones transmission matrix in terms of circular polarizations is then
-$T^c_{ti} = C^{-1}\ T_{ti}\ C$.
+& , &
+\begin{pmatrix} E_{tp} \\ E_{is} \end{pmatrix}
+= C\  
+\begin{pmatrix} E_{tL} \\ E_{iR} \end{pmatrix},\\
+\mathrm{and} & &
+\begin{pmatrix} E_{rp} \\ E_{is} \end{pmatrix}
+= D\  
+\begin{pmatrix} E_{rL} \\ E_{iR} \end{pmatrix}.
+\end{eqnarray*}
+As a result, the Jones matrices for circularly polarized light are
+$T^c_{ti} = C^{-1}\ T_{ti}\ C$ and
+$T^c_{ri} = D^{-1}\ T_{ri}\ C$.
 
 \section{Ellipsometry parameters}
 
