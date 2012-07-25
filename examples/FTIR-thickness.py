@@ -37,25 +37,23 @@ s = Berreman4x4.Structure(front, [layer], back)
 # Wavelength and wavenumber:
 lbda = 1e-6
 k0 = 2*pi/lbda
-#Phi_i = pi/2 * 0.6   # Incidence angle higher than the limit angle
+Phi_i = pi/2 * 0.6   # Incidence angle higher than the limit angle
 
-# Layer thickness
-h = lbda*0.347
-layer.setThickness(h)
-
-# Variation of incidence angle
-Phi_list = numpy.linspace(0, pi/2*0.999)
-Kx_list = front.get_Kx_from_Phi(Phi_list)
+# Variation of transmitted power with air thickness
+h_list = numpy.linspace(0, 1.0e-6)
 
 ############################################################################
 # Analytical calculation
+
+Kx = n_f*numpy.sin(Phi_i) # Reduced wavenumber
+
 # Incidence angle
-Phi_b = numpy.arcsin(((Kx_list)/n_b).astype(complex))
-Phi_n = numpy.arcsin((Kx_list/n).astype(complex))
+Phi_b = numpy.arcsin((Kx)/n_b)
+Phi_n = numpy.arcsin((complex(Kx/n)))
 
 # Wave vector:
-k_f = n_f*k0*numpy.cos((numpy.arcsin((Kx_list/n_f).astype(complex))))
-k_n = k0*numpy.sqrt((-((Kx_list)**2 - n**2)).astype(complex))
+k_f = n_f*k0*numpy.cos(Phi_i)
+k_n = k0*numpy.sqrt(complex(-((Kx)**2 - n**2)))
 k_b = n_b*k0*numpy.cos(Phi_b)
 
 # Amplitude coefficient polarisation s:
@@ -67,19 +65,19 @@ t_bn = 1+r_bn
 # Amplitude coefficient polarisation p:
 r_nfp = (k_f*n**2-k_n*n_f**2)/(k_n*n_f**2+k_f*n**2)
 r_bnp = (k_n*n_b**2-k_b*n**2)/(k_n*n_b**2+k_b*n**2)
-t_nfp = numpy.cos((numpy.arcsin((Kx_list/n_f).astype(complex))))*(1-r_nfp)/numpy.cos(Phi_n)
+t_nfp = numpy.cos(Phi_i)*(1-r_nfp)/numpy.cos(Phi_n)
 t_bnp = numpy.cos(Phi_n)*(1-r_bnp)/numpy.cos(Phi_b)
 
 # Power coefficients:
-R_th_ss = (numpy.abs((r_nf+r_bn*numpy.exp(2j*k_n*h))/(1+r_bn*r_nf*numpy.exp(2j*k_n*h))))**2
+R_th_ss = (numpy.abs((r_nf+r_bn*numpy.exp(2j*k_n*h_list))/(1+r_bn*r_nf*numpy.exp(2j*k_n*h_list))))**2
 
-t2_th_ss = (numpy.abs((t_bn*t_nf*numpy.exp(1j*k_n*h))/(1+r_bn*r_nf*numpy.exp(2j*k_n*h))))**2
+t2_th_ss = (numpy.abs((t_bn*t_nf*numpy.exp(1j*k_n*h_list))/(1+r_bn*r_nf*numpy.exp(2j*k_n*h_list))))**2
 
-R_th_pp = (numpy.abs((r_nfp+r_bnp*numpy.exp(2j*k_n*h))/(1+r_bnp*r_nfp*numpy.exp(2j*k_n*h))))**2
+R_th_pp = (numpy.abs((r_nfp+r_bnp*numpy.exp(2j*k_n*h_list))/(1+r_bnp*r_nfp*numpy.exp(2j*k_n*h_list))))**2
 
-t2_th_pp= (numpy.abs((t_bnp*t_nfp*numpy.exp(1j*k_n*h))/(1+r_bnp*r_nfp*numpy.exp(2j*k_n*h))))**2
+t2_th_pp= (numpy.abs((t_bnp*t_nfp*numpy.exp(1j*k_n*h_list))/(1+r_bnp*r_nfp*numpy.exp(2j*k_n*h_list))))**2
 
-correction = numpy.real(n_b*numpy.cos(Phi_b)/(n_f*numpy.cos(numpy.arcsin((Kx_list/n_f).astype(complex)))))
+correction = numpy.real(n_b*numpy.cos(Phi_b)/(n_f*numpy.cos(Phi_i)))
 # This is a correction term used in R +T*correction = 1
 
 T_th_ss = t2_th_ss*correction
@@ -87,12 +85,16 @@ T_th_pp = t2_th_pp*correction
 
 ####################################################################
 # Calculation with Berreman4x4
-#Reduced wave number
+
+Kx = front.get_Kx_from_Phi(Phi_i, k0)   # Reduced wavenumber
+
 l = []
-for Kx in Kx_list:
+for h in h_list:
+    layer.setThickness(h)
     l.append(s.getJones(Kx,k0))
 data = numpy.array(l)
 
+# Extraction of the transmission and reflexion coefficients
 data = (numpy.abs(data))**2
 R_pp  = Berreman4x4.extractCoefficient(data, 'r_pp')
 R_ss  = Berreman4x4.extractCoefficient(data, 'r_ss')
@@ -108,19 +110,22 @@ pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = numpy.vstack((R_ss,R_pp,t2_ss,t2_pp,T_ss,T_pp)).T
-lines1 = ax.plot(Kx_list,d)
+lines1 = ax.plot(h_list,d)
 legend1 = ("R_ss","R_pp","t2_ss","t2_pp","T_ss","T_pp")
 
 d = numpy.vstack((R_th_ss,R_th_pp,t2_th_ss,t2_th_pp,T_th_ss,T_th_pp)).T
-lines2 = ax.plot(Kx_list,d, 'x')
+lines2 = ax.plot(h_list,d, 'x')
 legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
 
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 
-ax.set_title("Frustrated Total Internal Reflexion: Glass1 / Air / Glass2 with layer thickness {:.3g} m".format(h))
-ax.set_xlabel(r"Reduced wave number, $Kx$")
+ax.set_title("FTIR: Glass1 / Air / Glass2 " +
+             "at incidence $\Phi_i$ = {:.3f}".format(Phi_i))
+ax.set_xlabel(r"Air layer thickness, $h$ (m)")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$, $T$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))
 pyplot.show()
+
+
