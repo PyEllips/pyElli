@@ -25,7 +25,7 @@ LC = LC.rotated(R)
 # Cholesteric pitch:
 p = 0.65e-6
 # One half turn of a right-handed helix:
-TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=40)
+TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=35)
 
 # Inhomogeneous layer, repeated layer, and structure
 IL = Berreman4x4.InhomogeneousLayer(TN)
@@ -40,7 +40,7 @@ Kx = 0.0
 # Calculation parameters
 lbda_min, lbda_max = 0.8e-6, 1.2e-6   # (m)
 lbda_B = p * n_med
-lbda_list = numpy.linspace(lbda_min, lbda_max, 100)
+lbda_list = numpy.linspace(lbda_min, lbda_max, 50)
 k0_list = 2*pi/lbda_list
 
 ############################################################################
@@ -53,14 +53,15 @@ lbda_B1, lbda_B2 = p*no, p*ne
 J = numpy.array([s.getJones(Kx,k0) for k0 in k0_list])
 power = abs(J)**2
 T_pp = Berreman4x4.extractCoefficient(power, 't_pp')
-R_pp = Berreman4x4.extractCoefficient(power, 'r_pp')
+T_ps = Berreman4x4.extractCoefficient(power, 't_ps')
 T_sp = Berreman4x4.extractCoefficient(power, 't_sp')
+R_pp = Berreman4x4.extractCoefficient(power, 'r_pp')
 R_sp = Berreman4x4.extractCoefficient(power, 'r_sp')
 # Note: the expression for T is valid if back and front media are identical
 
-# Reflection and transmission coefficients for unpolarized light:
-total_power = power.sum(axis=-1).sum(axis=-1) / 2
-(R_np, T_np) = numpy.transpose(total_power)
+# Reflection and transmission coefficients for incident unpolarized light:
+T_pn, T_sn = numpy.rollaxis(0.5 * power[...,1,:,:].sum(axis=-1), -1)
+T_nn = T_sn + T_pn
 
 # Eigenvectors of the transmission matrix in the middle of the stop-band
 i = numpy.argmin(abs(lbda_list-lbda_B))     # middle of the stop band
