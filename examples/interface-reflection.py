@@ -12,6 +12,9 @@ from Berreman4x4 import c, pi
 import matplotlib.pyplot as pyplot
 import sys
 
+############################################################################
+# Program parameters
+
 if len(sys.argv) > 2:
     (n1, n2) = map(float, sys.argv[1:3])
 else:
