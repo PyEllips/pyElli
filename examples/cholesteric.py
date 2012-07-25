@@ -58,6 +58,31 @@ T_sp = Berreman4x4.extractCoefficient(power, 't_sp')
 R_sp = Berreman4x4.extractCoefficient(power, 'r_sp')
 # Note: the expression for T is valid if back and front media are identical
 
+# Reflection and transmission coefficients for unpolarized light:
+total_power = power.sum(axis=-1).sum(axis=-1) / 2
+(R_np, T_np) = numpy.transpose(total_power)
+
+# Eigenvectors of the transmission matrix in the middle of the stop-band
+i = numpy.argmin(abs(lbda_list-lbda_B))     # middle of the stop band
+T = J[i,1,:,:]                              # transmission matrix
+eigenvalues, eigenvectors = numpy.linalg.eig(T)
+numpy.set_printoptions(precision=3)
+print("\nTransmission in the middle of the stop-band...\n")
+print("Eigenvalues of the Jones transmission matrix:")
+print(eigenvalues)
+print("Corresponding power transmission:")
+print(abs(eigenvalues)**2)
+print("Corresponding eigenvectors:")
+print(eigenvectors)
+# Note: the transformation matrix to the eigenvector basis is
+# B = numpy.matrix(eigenvectors), and the matrix B⁻¹ T B is diagonal.
+print("Normalization to the 'p' componant:")
+print(eigenvectors/eigenvectors[0,:])
+print("Ratio 's'/'p':")
+print(abs(eigenvectors[1,:]/eigenvectors[0,:]))
+print("Ellipticity angle (°) (+90°: L, -90°: R)")
+print(180/pi*numpy.angle(eigenvectors[1,:]/eigenvectors[0,:]))
+
 # Jones matrices for the circular wave basis
 Jc = Berreman4x4.circularJones(J)
 power = abs(Jc)**2
