@@ -118,7 +118,7 @@ legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 
-ax.set_title("FTIR: Glass1 / Air ({:.3g} m) / Glass2".format(h))
+ax.set_title("FTIR: Glass1 / Air ($h$ = {:.3g} m) / Glass2".format(h))
 ax.set_xlabel(r"Reduced wave number, $Kx$")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$, $T$")
 pyplot.show()
