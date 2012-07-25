@@ -1044,26 +1044,46 @@ class Structure:
 #########################################################
 # Data extraction from the Jones matrices...
 
+def _getPolarIndex(char):
+    """Returns array index value for polarization 'char'
+
+    'char' : 'p', 'L' -> 0
+             's', 'R' -> 1
+    """
+    if   char == 'p' or char == 'L':
+        return 0
+    elif char == 's' or char == 'R':
+        return 1
+    else:
+        raise ValueError("Polarization name not recognized.")
+
+def _getOutputWaveIndex(char):
+    """Returns array index value for output wave 'char'
+
+    'char' : 'r' -> 0
+             't' -> 1
+    """
+    if   char == 'r':
+        return 0
+    elif char == 't':
+        return 1
+    else:
+        raise ValueError("Coefficient name should start with 'r' or 't'.")
+
 def extractCoefficient(Jones, pos):
     """Extracts the desired coefficient from the Jones matrix.
     
     'Jones' : pair of (Jr, Jt) reflexion and transmission Jones matrices
               may be an array of shape [...,2,2,2]
     
-    'pos' : position of the coefficient 'r_sp', 't_pp',...
+    'pos' : position of the coefficient 'r_sp', 't_pp', 'r_LR', ...
 
     Returns : desired coefficient value
     """
     J = numpy.array(Jones)
-    if   pos == 'r_ss' or pos == 'r_RR' : coeff = J[...,0,1,1]
-    elif pos == 'r_pp' or pos == 'r_LL' : coeff = J[...,0,0,0]
-    elif pos == 'r_ps' or pos == 'r_LR' : coeff = J[...,0,0,1]
-    elif pos == 'r_sp' or pos == 'r_RL' : coeff = J[...,0,1,0]
-    elif pos == 't_ss' or pos == 't_RR' : coeff = J[...,1,1,1]
-    elif pos == 't_pp' or pos == 't_LL' : coeff = J[...,1,0,0]
-    elif pos == 't_ps' or pos == 't_LR' : coeff = J[...,1,0,1]
-    elif pos == 't_sp' or pos == 't_RL' : coeff = J[...,1,1,0]
-    return coeff
+    i0 = _getOutputWaveIndex(pos[0])
+    (i1, i2) = (_getPolarIndex(pos[2]), _getPolarIndex(pos[3]))
+    return J[...,i0,i1,i2]
 
 # Transformation matrix from the (s,p) basis to the (L,R) basis...
 C = 1 / numpy.sqrt(2) * numpy.matrix([[1, 1], [1j, -1j]])
