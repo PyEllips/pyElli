@@ -23,7 +23,7 @@ LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)
 R = Berreman4x4.rotation_v_theta([0,1,0], pi/2)
 LC = LC.rotated(R)
 p = 0.65e-6      # cholesteric pitch
-TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=pi, div=40)
+TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=40)
 
 # Inhomogeneous layer, repeated layer, and structure
 IL = Berreman4x4.InhomogeneousLayer(TN)
