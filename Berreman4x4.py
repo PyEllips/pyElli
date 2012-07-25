@@ -1082,7 +1082,8 @@ def extractCoefficient(Jones, pos):
     """
     J = numpy.array(Jones)
     i0 = _getOutputWaveIndex(pos[0])
-    (i1, i2) = (_getPolarIndex(pos[2]), _getPolarIndex(pos[3]))
+    i1 = _getPolarIndex(pos[2])
+    i2 = _getPolarIndex(pos[3])
     return J[...,i0,i1,i2]
 
 # Transformation matrix from the (s,p) basis to the (L,R) basis...
