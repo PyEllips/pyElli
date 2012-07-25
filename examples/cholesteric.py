@@ -77,6 +77,7 @@ R_LL = Berreman4x4.extractCoefficient(power, 'r_LL')
 fig = pyplot.figure()
 ax = fig.add_subplot("111")
 
+# Draw rectangle for λ ∈ [p·no, p·ne], and T ∈ [0, R_th]
 rectangle = pyplot.Rectangle((lbda_B1,0), lbda_B2-lbda_B1, R_th, color='cyan')
 ax.add_patch(rectangle)
 
@@ -93,7 +94,8 @@ ax.plot(lbda_list, R_RR, label='R_RR')
 ax.plot(lbda_list, T_RR, label='T_RR')
 ax.legend(loc='center right', bbox_to_anchor=(1.00, 0.50))
 
-ax.set_title(u"Cholesteric Liquid Crystal, {:.1f} helix pitches".format(N/2.))
+ax.set_title("Right-handed Cholesteric Liquid Crystal, " +
+             "{:.1f} helix pitches".format(N/2.))
 ax.set_xlabel(r"Wavelength $\lambda_0$ (m)")
 ax.set_ylabel(r"Power transmission $T$ and reflexion $R$")
 fmt = ax.xaxis.get_major_formatter()
