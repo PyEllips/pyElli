@@ -37,9 +37,9 @@ s = Berreman4x4.Structure(front, [layer], back)
 # Wavelength and wavenumber:
 lbda = 1e-6
 k0 = 2*pi/lbda
-Phi_i = pi/2 * 0.6   # Incidence angle higher than the limit angle
+Phi_i = pi/2 * 0.6   # Incidence angle (higher than the limit angle)
 
-# Variation of transmitted power with air thickness
+# Air thickness variation range
 h_list = numpy.linspace(0, 1.0e-6)
 
 ############################################################################
@@ -53,7 +53,7 @@ Phi_n = numpy.arcsin((complex(Kx/n)))
 
 # Wave vector:
 k_f = n_f*k0*numpy.cos(Phi_i)
-k_n = k0*numpy.sqrt(complex(-((Kx)**2 - n**2)))
+k_n = k0*numpy.sqrt(complex(n**2 - Kx**2))
 k_b = n_b*k0*numpy.cos(Phi_b)
 
 # Amplitude coefficient polarisation s:
@@ -120,8 +120,8 @@ legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 
-ax.set_title("FTIR: Glass1 / Air / Glass2 " +
-             "at incidence $\Phi_i$ = {:.3f}".format(Phi_i))
+ax.set_title("FTIR: Glass1 / Air (h) / Glass2, for incidence angle " +
+             "$\Phi_i$ = {:.0f}$^\circ$".format(Phi_i*180/pi))
 ax.set_xlabel(r"Air layer thickness, $h$ (m)")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$, $T$")
 fmt = ax.xaxis.get_major_formatter()
