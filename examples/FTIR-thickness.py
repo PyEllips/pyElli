@@ -95,7 +95,7 @@ for h in h_list:
 data = numpy.array(l)
 
 # Extraction of the transmission and reflexion coefficients
-data = (numpy.abs(data))**2
+data = abs(data)**2
 R_pp  = Berreman4x4.extractCoefficient(data, 'r_pp')
 R_ss  = Berreman4x4.extractCoefficient(data, 'r_ss')
 t2_pp = Berreman4x4.extractCoefficient(data, 't_pp')
@@ -110,12 +110,12 @@ pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = numpy.vstack((R_ss,R_pp,t2_ss,t2_pp,T_ss,T_pp)).T
-lines1 = ax.plot(h_list,d)
 legend1 = ("R_ss","R_pp","t2_ss","t2_pp","T_ss","T_pp")
+lines1 = ax.plot(h_list,d)
 
 d = numpy.vstack((R_th_ss,R_th_pp,t2_th_ss,t2_th_pp,T_th_ss,T_th_pp)).T
-lines2 = ax.plot(h_list,d, 'x')
 legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
+lines2 = ax.plot(h_list,d, 'x')
 
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)

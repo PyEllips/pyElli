@@ -37,7 +37,6 @@ s = Berreman4x4.Structure(front, [layer], back)
 # Wavelength and wavenumber:
 lbda = 1e-6
 k0 = 2*pi/lbda
-#Phi_i = pi/2 * 0.6   # Incidence angle higher than the limit angle
 
 # Layer thickness
 h = lbda*0.347
@@ -45,7 +44,7 @@ layer.setThickness(h)
 
 # Variation of incidence angle
 Phi_list = numpy.linspace(0, pi/2*0.999)
-Kx_list = front.get_Kx_from_Phi(Phi_list)
+Kx = Kx_list = front.get_Kx_from_Phi(Phi_list)
 
 ############################################################################
 # Analytical calculation
@@ -58,13 +57,13 @@ k_f = n_f*k0*numpy.cos((numpy.arcsin((Kx_list/n_f).astype(complex))))
 k_n = k0*numpy.sqrt((-((Kx_list)**2 - n**2)).astype(complex))
 k_b = n_b*k0*numpy.cos(Phi_b)
 
-# Amplitude coefficient polarisation s:
+# Amplitude coefficient for 's' polarisation:
 r_nf = (k_f-k_n)/(k_n+k_f)
 r_bn = (k_n-k_b)/(k_n+k_b)
 t_nf = 1+r_nf
 t_bn = 1+r_bn
 
-# Amplitude coefficient polarisation p:
+# Amplitude coefficient for 'p' polarisation:
 r_nfp = (k_f*n**2-k_n*n_f**2)/(k_n*n_f**2+k_f*n**2)
 r_bnp = (k_n*n_b**2-k_b*n**2)/(k_n*n_b**2+k_b*n**2)
 t_nfp = numpy.cos((numpy.arcsin((Kx_list/n_f).astype(complex))))*(1-r_nfp)/numpy.cos(Phi_n)
@@ -87,13 +86,9 @@ T_th_pp = t2_th_pp*correction
 
 ####################################################################
 # Calculation with Berreman4x4
-#Reduced wave number
-l = []
-for Kx in Kx_list:
-    l.append(s.getJones(Kx,k0))
-data = numpy.array(l)
+data = numpy.array([s.getJones(Kx,k0) for Kx in Kx_list])
 
-data = (numpy.abs(data))**2
+data = abs(data)**2
 R_pp  = Berreman4x4.extractCoefficient(data, 'r_pp')
 R_ss  = Berreman4x4.extractCoefficient(data, 'r_ss')
 t2_pp = Berreman4x4.extractCoefficient(data, 't_pp')
@@ -108,12 +103,12 @@ pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = numpy.vstack((R_ss,R_pp,t2_ss,t2_pp,T_ss,T_pp)).T
-lines1 = ax.plot(Kx_list,d)
 legend1 = ("R_ss","R_pp","t2_ss","t2_pp","T_ss","T_pp")
+lines1 = ax.plot(Kx_list,d)
 
 d = numpy.vstack((R_th_ss,R_th_pp,t2_th_ss,t2_th_pp,T_th_ss,T_th_pp)).T
-lines2 = ax.plot(Kx_list,d, 'x')
 legend2 = ("R_th_ss","R_th_pp","t2_th_ss","t2_th_pp","T_th_ss","T_th_pp")
+lines2 = ax.plot(Kx_list,d, 'x')
 
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)

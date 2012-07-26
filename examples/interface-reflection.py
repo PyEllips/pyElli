@@ -15,6 +15,10 @@ import sys
 ############################################################################
 # Program parameters
 
+if len(sys.argv) > 1 and (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
+    print("Usage: interface-reflection.py [-h, --help] [n1 n2]\n")
+    sys.exit()
+
 if len(sys.argv) > 2:
     (n1, n2) = map(float, sys.argv[1:3])
 else:
@@ -52,10 +56,10 @@ r_p = (kz1 * n2**2 - kz2 * n1**2) / (kz1 * n2**2 + kz2 * n1**2)
 t_p = numpy.cos(Phi_i)*(1-r_p)/numpy.cos(Phi_t)
 
 # Reflection and transmission coefficients, polarisation s and p
-R_th_ss = (numpy.abs(r_s))**2
-R_th_pp = (numpy.abs(r_p))**2
-t2_th_ss = (numpy.abs(t_s))**2
-t2_th_pp = (numpy.abs(t_p))**2
+R_th_ss = abs(r_s)**2
+R_th_pp = abs(r_p)**2
+t2_th_ss = abs(t_s)**2
+t2_th_pp = abs(t_p)**2
 # The power transmission coefficient is T = Re(kz2/kz1) × |t|^2
 correction = numpy.real(kz2/kz1)  
 T_th_ss = correction * t2_th_ss
@@ -65,13 +69,11 @@ T_th_pp = correction * t2_th_pp
 ############################################################################
 # Calculation with Berreman4x4
 Kx_list = front.get_Kx_from_Phi(Phi_i, k0)
-l = []
-for Kx in Kx_list:
-    l.append(s.getJones(Kx,k0))
-data = numpy.array(l)
+
+data = numpy.array([s.getJones(Kx,k0) for Kx in Kx_list])
 
 # Extraction of the power coefficients
-data = (numpy.abs(data))**2
+data = abs(data)**2
 R_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 R_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
 t2_ss = Berreman4x4.extractCoefficient(data, 't_ss')

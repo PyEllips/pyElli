@@ -115,19 +115,17 @@ R_th_pp = (numpy.abs(ReflectionCoeff(Phi_0,'p')))**2
 
 ############################################################################
 # Calculation with Berreman4x4
-#Phi_0 = 0 polarisation s
+# Phi_0 = 0, 's' polarization
 Phi_0 = 0
 Kx = front.get_Kx_from_Phi(Phi_0)
-data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
-data = numpy.array(data)
+data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 R_ss_0 = numpy.abs(r_ss)**2
 
-#Phi_0 = pi/4 polarisation s an p
+# Phi_0 = pi/4, 's' and 'p' polarizations
 Phi_0 = pi/4
 Kx = front.get_Kx_from_Phi(Phi_0)
-data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
-data = numpy.array(data)
+data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 r_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
 R_ss = numpy.abs(r_ss)**2
