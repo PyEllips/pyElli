@@ -88,7 +88,7 @@ print("Normalization to the 'p' componant:")
 print(eigenvectors/eigenvectors[0,:])
 print("Ratio 's'/'p':")
 print(abs(eigenvectors[1,:]/eigenvectors[0,:]))
-print("Ellipticity angle (°) (+90°: L, -90°: R)")
+print("Complex angle (°) (+90°: L, -90°: R)")
 print(180/pi*numpy.angle(eigenvectors[1,:]/eigenvectors[0,:]))
 # We observe that the eigenvectors are nearly perfectly polarized circular waves
 
