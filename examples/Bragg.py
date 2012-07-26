@@ -50,22 +50,27 @@ Kx = 0.0
 # Structure
 s = Berreman4x4.Structure(front, [L], back)
 
+# Calculation
 (lbda1, lbda2) = (1.1e-6, 2.5e-6)
 lbda_list = numpy.linspace(lbda1, lbda2, 200)
-data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
-data = numpy.array(data)
+
+data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
 
 r = Berreman4x4.extractCoefficient(data, 'r_ss')
 t = Berreman4x4.extractCoefficient(data, 't_ss')
 
-p = numpy.vstack((numpy.abs(r)**2, numpy.abs(t)**2)).T
-
+# Plotting 
 fig = pyplot.figure()
 ax = fig.add_subplot("111")
-ax.plot(lbda_list, p)
-ax.xaxis.major.formatter.set_powerlimits((-3,3))
+ax.plot(lbda_list, abs(r)**2, label="$R$")
+ax.plot(lbda_list, abs(t)**2, label="$T$")
+
+ax.legend(loc='center right', bbox_to_anchor=(1.00, 0.50))
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")
-ax.set_ylabel(r"$R$, $T$")
+ax.set_ylabel(r"Power reflection $R$ or transmission $T$")
 ax.set_title(r"SiO$_2$/TiO$_2$ Bragg mirror (8.5 periods, with TiO$_2$ ends)")
+
+fmt = ax.xaxis.get_major_formatter()
+fmt.set_powerlimits((-3,3))
 pyplot.show()
 

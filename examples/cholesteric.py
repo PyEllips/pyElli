@@ -8,7 +8,7 @@
 
 import numpy, Berreman4x4
 from numpy import sin, sqrt, abs
-from Berreman4x4 import c, pi, C, D, invC, invD
+from Berreman4x4 import c, pi
 import matplotlib.pyplot as pyplot
 
 # Materials
