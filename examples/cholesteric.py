@@ -29,7 +29,7 @@ TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=35)
 
 # Inhomogeneous layer, repeated layer, and structure
 IL = Berreman4x4.InhomogeneousLayer(TN)
-N = 20      # number half pitch repetitions
+N = 15      # number half pitch repetitions
 h = N * p/2
 L = Berreman4x4.RepeatedLayers([IL], N)
 s = Berreman4x4.Structure(front, [L], back)
@@ -54,16 +54,24 @@ J = numpy.array([s.getJones(Kx,k0) for k0 in k0_list])
 power = abs(J)**2
 T_pp = Berreman4x4.extractCoefficient(power, 't_pp')
 T_ps = Berreman4x4.extractCoefficient(power, 't_ps')
+T_ss = Berreman4x4.extractCoefficient(power, 't_ss')
+T_sp = Berreman4x4.extractCoefficient(power, 't_sp')
 # Note: the expression for T is valid if back and front media are identical
 
-# Reflection and transmission coefficients for incident unpolarized light:
-# T_pn ≡ 0.5 * (T_pp + T_ps)
-# T_sn ≡ 0.5 * (T_sp + T_ss)
-T_pn, T_sn = numpy.rollaxis(0.5 * power[...,1,:,:].sum(axis=-1), -1)
+# Transmission coefficients for incident unpolarized light:
+T_pn = 0.5 * (T_pp + T_ps)
+T_sn = 0.5 * (T_sp + T_ss)
 T_nn = T_sn + T_pn
 
-# Eigenvectors of the transmission matrix in the middle of the stop-band
-i = numpy.argmin(abs(lbda_list-lbda_B))     # middle of the stop band
+# Transmission coefficients for 's' and 'p' polarized light, with 
+# unpolarized measurement.
+T_ns = T_ps + T_ss
+T_np = T_pp + T_sp
+
+###########################################################################
+# Text output: eigenvalues and eigenvectors of the transmission matrix for 
+# a wavelength in the middle of the stop-band.
+i = numpy.argmin(abs(lbda_list-lbda_B))     # index for stop-band center
 T = J[i,1,:,:]                              # transmission matrix
 eigenvalues, eigenvectors = numpy.linalg.eig(T)
 numpy.set_printoptions(precision=3)
@@ -82,20 +90,22 @@ print("Ratio 's'/'p':")
 print(abs(eigenvectors[1,:]/eigenvectors[0,:]))
 print("Ellipticity angle (°) (+90°: L, -90°: R)")
 print(180/pi*numpy.angle(eigenvectors[1,:]/eigenvectors[0,:]))
+# We observe that the eigenvectors are nearly perfectly polarized circular waves
 
+###########################################################################
 # Jones matrices for the circular wave basis
 Jc = Berreman4x4.circularJones(J)
-power = abs(Jc)**2
+power_c = abs(Jc)**2
 
 # Right-circular wave is reflected in the stop-band.
 # R_LR, T_LR close to zero.
-R_RR = Berreman4x4.extractCoefficient(power, 'r_RR')
-T_RR = Berreman4x4.extractCoefficient(power, 't_RR')
+R_RR = Berreman4x4.extractCoefficient(power_c, 'r_RR')
+T_RR = Berreman4x4.extractCoefficient(power_c, 't_RR')
 
 # Left-circular wave is transmitted in the full spectrum.
 # T_RL, R_RL, R_LL close to zero, T_LL close to 1.
-T_LL = Berreman4x4.extractCoefficient(power, 't_LL')
-R_LL = Berreman4x4.extractCoefficient(power, 'r_LL')
+T_LL = Berreman4x4.extractCoefficient(power_c, 't_LL')
+R_LL = Berreman4x4.extractCoefficient(power_c, 'r_LL')
 
 ############################################################################
 # Plotting
@@ -109,13 +119,13 @@ ax.add_patch(rectangle)
 ax.plot(lbda_list, R_RR, '--', label='R_RR')
 ax.plot(lbda_list, T_RR, label='T_RR')
 ax.plot(lbda_list, T_nn, label='T_nn')
-ax.plot(lbda_list, T_pn, label='T_pn')
-ax.plot(lbda_list, T_sn, label='T_sn')
+ax.plot(lbda_list, T_ns, label='T_ns')
+ax.plot(lbda_list, T_np, label='T_np')
 
 ax.legend(loc='center right', bbox_to_anchor=(1.00, 0.50))
 
-ax.set_title("Right-handed Cholesteric Liquid Crystal, " +
-             "{:.1f} helix pitches".format(N/2.))
+ax.set_title("Right-handed Cholesteric Liquid Crystal, aligned along \n" + 
+             "the $x$ direction, with {:.1f} helix pitches.".format(N/2.))
 ax.set_xlabel(r"Wavelength $\lambda_0$ (m)")
 ax.set_ylabel(r"Power transmission $T$ and reflexion $R$")
 fmt = ax.xaxis.get_major_formatter()
