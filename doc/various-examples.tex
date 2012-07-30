@@ -3,25 +3,45 @@
 \chapterdoc{Various examples}
 \chapterauthor{Olivier Castany, Céline Molinaro}
 
-\section{Reflection on an interface}
-This is the  simplest case as shown on figure ~\ref{fig:Reflection-interface}. A wave is reflected and refracted by an interface. This interface is characterized by the  transmission and reflection power coefficient. See source code for further details.
+\section{Reflection at an interface}
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/Reflection-interface}
 \caption{\label{fig:Reflection-interface}Input and output plane waves at the interface.}
 \end{figure}
+This is a simple case as shown on figure ~\ref{fig:Reflection-interface}. An incident wave is reflected and refracted by an interface. There are two mediums with different refractive index $n_1$ and $n_2$. This interface is characterized by the transmission and reflection power coefficient. In \verb/interface-Jones.py/, the Jones matrix for the interface are calculated. In \verb/ interface-reflection.py/, transmission and reflection power coefficients are calculated and drawn for both polarizations $s$ and $p$ vs. wavevector. Theoritical transmission and reflection power coefficients are drawn on the same graphic. See source code for further details.
+
+\section{Glass layer}
+\begin{figure}[!h]
+\includegraphics[width=\columnwidth]{fig/Glass-layer}
+\caption{\label{fig:Glass-layer}Incident, reflected and transmitted waves in a glass layer case.}
+\end{figure}
+This is a simple case as shown on figure ~\ref{fig:Glass-layer}. An incident wave is reflected and transmitted by a layer. Each medium is characterized by its refractive index.
+In \verb/interferences.py/, transmission and reflection power coefficients for $p$ and $s$ polarization are drawn vs. the glass layer thickness. Interferences appear depending on the layer thickness value.
+
 
 
 \section{Bragg Mirror}
-Figure ~\ref{fig:Bragg} represents a Bragg mirror with two layers. Each layers is composed of two thin dielectric layers : SiO$_2$ and TiO$_2$. An incident wave, its reflecteds waves and its transmitted wave are represented. Bragg mirrors are used to produce ultra-high relfectivity. This example is used to draw the global reflection power coefficient for all layers depending on the wave length. See source code for further details.
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/Bragg}
 \caption{\label{fig:Bragg}Bragg Mirror with two layers}
 \end{figure}
+A Bragg mirror with two layers is represented Figure ~\ref{fig:Bragg}. Each layer is composed of two thin dielectric layers: SiO$_2$ and TiO$_2$. An incident wave, its reflected waves and its transmitted wave are represented. Bragg mirrors are used to produce ultra-high relfectivity. In \verb/Bragg.py/, the Bragg mirror has $8,5$ periods. The reflection and transmission power coefficients for a $s$ polarization are drawn vs. the wavelength. In \verb/validation-Bragg.py/, theoritical reflexion coefficients for both polarisation are superimpose to the calculated global reflexion coefficients depending on the wave length. Reflexion coefficients are valued for two different angles (0$^\circ$ and 45$^\circ$). The nombre of layers and the spectra can be modified by the user. See source code for further details.
+
 
 \section{Cholesteric liquid crystal}
-The structure of a cholesteric crystal is helical. That means the director vector is rotated as shown on figure ~\ref{fig:cholesteric}. The pitch is the varitation period of this rotation.
-This example deals with $n$ cholesteric liquid crystal layers. The reflection spectra can be drawn. The theoritical expression comes from "Fundamentals Crystal Devices" from D.Yang and S.Wu. See source code for further details.
 \begin{figure}[!h]
-\includegraphics[width=\columnwidth]{fig/cholesteric}
+\begin{center}
+\includegraphics{fig/cholesteric}
+\end{center}
 \caption{\label{fig:cholesteric}Director vector of a cholesteric liquid crystal where p is the pitch}
 \end{figure}
+The characteristic of a cholesteric liquid crystal is its helical structure. Its director vector is rotated as shown on figure ~\ref{fig:cholesteric}. The pitch represents the period of the rotation variation.
+This example deals with a $n$ layers cholesteric liquid crystal. In \verb/validation-cholesteric.py/, the calculated and theoritical reflection spectra of the $n$ cholesteric layers are drawn. The theoritical expression used to draw a theoritical reflection power coefficient comes from \cite{Yang} and \cite{Chandrasekhar}. See source code for further details. In \verb/cholesteric.py/, transmission (for different polarization : right-circular, $p$, unpolarized...) and reflection spectra are drawn. Eigenvalues and eigenvectors of the transmission matrix for different cases are calculated. See source code for further details. 
+
+\section{Twisted nematic liquid crystal}
+\begin{figure}[!h]
+\includegraphics[width=\columnwidth]{fig/Twisted}
+\caption{\label{fig:Twisted} Twisted nematic crystal}
+\end{figure}
+The twisted crystal is aligned along $x$ and twiwts with  $90^\circ$ between $z=0$ and $z=d$.
+In \verb/twisted-nematic.py/, the power transmission for two different numbers of division in the twisted material and a theoritical are drawn vs. the wave number. See source code for further details. 
