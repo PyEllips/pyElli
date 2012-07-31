@@ -1,7 +1,7 @@
 % Encoding: utf-8
 
 \chapterdoc{Various examples}
-\chapterauthor{Olivier Castany, Céline Molinaro}
+\chapterauthor{Céline Molinaro, Olivier Castany, }
 
 \section{Reflection at an interface}
 \begin{figure}[!h]
@@ -16,7 +16,7 @@ This is a simple case as shown on figure ~\ref{fig:Reflection-interface}. An inc
 \caption{\label{fig:Glass-layer}Incident, reflected and transmitted waves in a glass layer case.}
 \end{figure}
 This is a simple case as shown on figure ~\ref{fig:Glass-layer}. An incident wave is reflected and transmitted by a layer. Each medium is characterized by its refractive index.
-In \verb/interferences.py/, transmission and reflection power coefficients for $p$ and $s$ polarization are drawn vs. the glass layer thickness. Interferences appear depending on the layer thickness value.
+In \verb/Interferences.py/, transmission and reflection power coefficients for $p$ and $s$ polarization are drawn vs. the glass layer thickness. Interferences appear depending on the layer thickness value.
 
 
 
@@ -27,21 +27,22 @@ In \verb/interferences.py/, transmission and reflection power coefficients for $
 \end{figure}
 A Bragg mirror with two layers is represented Figure ~\ref{fig:Bragg}. Each layer is composed of two thin dielectric layers: SiO$_2$ and TiO$_2$. An incident wave, its reflected waves and its transmitted wave are represented. Bragg mirrors are used to produce ultra-high relfectivity. In \verb/Bragg.py/, the Bragg mirror has $8,5$ periods. The reflection and transmission power coefficients for a $s$ polarization are drawn vs. the wavelength. In \verb/validation-Bragg.py/, theoritical reflexion coefficients for both polarisation are superimpose to the calculated global reflexion coefficients depending on the wave length. Reflexion coefficients are valued for two different angles (0$^\circ$ and 45$^\circ$). The nombre of layers and the spectra can be modified by the user. See source code for further details.
 
+\section{Twisted nematic liquid crystal}
+\begin{figure}[!h]
+\begin{center}
+\includegraphics{fig/nematic}
+\caption{\label{fig:nematic} Twisted nematic crystal}
+\end{center}
+\end{figure}
+The twisted crystal is aligned along $x$ and twists with  $90^\circ$ between $z=0$ and $z=d$ as shown on figure ~\ref{fig:nematic}. In \verb/twisted-nematic.py/, the power transmission for two different numbers of division in the twisted material and a theoritical are drawn vs. the wave number. See source code for further details. 
 
 \section{Cholesteric liquid crystal}
 \begin{figure}[!h]
 \begin{center}
 \includegraphics{fig/cholesteric}
 \end{center}
-\caption{\label{fig:cholesteric}Director vector of a cholesteric liquid crystal where p is the pitch}
+\caption{\label{fig:cholesteric}A cholesteric liquid crystal where p is the pitch}
 \end{figure}
-The characteristic of a cholesteric liquid crystal is its helical structure. Its director vector is rotated as shown on figure ~\ref{fig:cholesteric}. The pitch represents the period of the rotation variation.
+The characteristic of a cholesteric liquid crystal as shown on figure ~\ref{fig:cholesteric} is its helical structure. Its director vector is rotated. The pitch represents the period of the rotation variation.
 This example deals with a $n$ layers cholesteric liquid crystal. In \verb/validation-cholesteric.py/, the calculated and theoritical reflection spectra of the $n$ cholesteric layers are drawn. The theoritical expression used to draw a theoritical reflection power coefficient comes from \cite{Yang} and \cite{Chandrasekhar}. See source code for further details. In \verb/cholesteric.py/, transmission (for different polarization : right-circular, $p$, unpolarized...) and reflection spectra are drawn. Eigenvalues and eigenvectors of the transmission matrix for different cases are calculated. See source code for further details. 
 
-\section{Twisted nematic liquid crystal}
-\begin{figure}[!h]
-\includegraphics[width=\columnwidth]{fig/Twisted}
-\caption{\label{fig:Twisted} Twisted nematic crystal}
-\end{figure}
-The twisted crystal is aligned along $x$ and twiwts with  $90^\circ$ between $z=0$ and $z=d$.
-In \verb/twisted-nematic.py/, the power transmission for two different numbers of division in the twisted material and a theoritical are drawn vs. the wave number. See source code for further details. 
