@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120712171839" modified="D:20120716135037"/>
+<info created="D:20120712171839" modified="D:20120731101259"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -236,9 +236,9 @@ h
 96 640 m
 96 736 l
 </path>
-<text matrix="1 0 0 1 171.019 -0.933766" transformations="translations" pos="176 624" stroke="black" type="label" width="4.428" height="4.289" depth="0" valign="baseline">z</text>
+<text matrix="1 0 0 1 261.103 16.0492" transformations="translations" pos="176 624" stroke="black" type="label" width="4.428" height="4.289" depth="0" valign="baseline">z</text>
 <text matrix="1 0 0 1 0.118232 79.3903" transformations="translations" pos="80 736" stroke="black" type="label" width="5.258" height="4.289" depth="0" valign="baseline">x</text>
-<path matrix="2.67164 0 0 9.49672 -160.477 -5437.9" stroke="black" dash="dash dotted" arrow="normal/normal">
+<path matrix="3.5 0 0 9.49672 -239.999 -5437.9" stroke="black" dash="dash dotted" arrow="normal/normal">
 96 640 m
 192 640 l
 </path>
@@ -311,7 +311,7 @@ h
 <text matrix="1 0 0 1 4.37181 38.4754" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.453" height="7.933" depth="2.49" valign="baseline">$\langle \Pi_{x}^- \rangle _t$</text>
 <text matrix="1 0 0 1 4.84865 -9.20042" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.343" height="7.933" depth="2.49" valign="baseline">$\langle \Pi_x^+\rangle _t$</text>
 <text matrix="1 0 0 1 74.5562 -5.91776" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="18.728" height="9.637" depth="2.49" valign="baseline">$\langle \vec{\Pi} \rangle _t$</text>
-<text matrix="0.234924 0.972014 -0.972014 0.234924 993.033 199.211" transformations="translations" pos="352 768" stroke="black" type="label" width="75.91" height="6.926" depth="1.93" valign="baseline">Arbirary medium</text>
+<text matrix="0.234924 0.972014 -0.972014 0.234924 1000.16 261.059" transformations="translations" pos="352 768" stroke="black" type="label" width="75.91" height="6.926" depth="1.93" valign="baseline">Arbirary medium</text>
 <path stroke="black" dash="dashed">
 112 768 m
 192.638 711.826
@@ -324,6 +324,54 @@ h
 138.667 771.383 176.521 750.786 192.001 745.596 c
 207.586 740.37 245.334 739.199 258.667 737.599 c
 272 736 272 736 272 736 c
+</path>
+<path stroke="black">
+368 656 m
+384 672 l
+</path>
+<path stroke="black">
+368 688 m
+384 704 l
+</path>
+<path stroke="black">
+368 720 m
+384 736 l
+</path>
+<path stroke="black">
+368 752 m
+384 768 l
+</path>
+<path stroke="black">
+344 752 m
+360 768 l
+</path>
+<path stroke="black">
+392 752 m
+408 768 l
+</path>
+<path stroke="black">
+344 720 m
+360 736 l
+</path>
+<path stroke="black">
+344 688 m
+360 704 l
+</path>
+<path stroke="black">
+344 656 m
+360 672 l
+</path>
+<path stroke="black">
+392 656 m
+408 672 l
+</path>
+<path stroke="black">
+392 688 m
+408 704 l
+</path>
+<path stroke="black">
+392 720 m
+408 736 l
 </path>
 </page>
 </ipe>

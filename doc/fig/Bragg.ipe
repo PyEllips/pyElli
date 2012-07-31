@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120725164527" modified="D:20120726111842"/>
+<info created="D:20120725164527" modified="D:20120731102704"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -232,42 +232,42 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 -48 0" stroke="black" pen="heavier">
+<path layer="alpha" matrix="1 0 0 0.8 -48 144" stroke="black" pen="heavier">
 336 640 m
 336 800 l
 </path>
-<path matrix="1 0 0 1.00459 -32 -2.93491" stroke="black" pen="heavier">
+<path matrix="1 0 0 0.804131 -32 141.358" stroke="black" pen="heavier">
 288 640 m
 288 800 l
 </path>
-<path matrix="1 0 0 1 -16 0" stroke="black" pen="heavier">
+<path matrix="1 0 0 0.8 -16 144" stroke="black" pen="heavier">
 240 640 m
 240 800 l
 </path>
-<path stroke="black" pen="heavier">
+<path matrix="1 0 0 0.8 0 144" stroke="black" pen="heavier">
 192 640 m
 192 800 l
 </path>
-<path matrix="0.75 0 0 1 64 0" stroke="black" dash="dash dotted" arrow="normal/normal">
+<path matrix="0.666667 0 0 1 85.3333 0" stroke="black" dash="dash dotted" arrow="normal/normal">
 64 720 m
 448 720 l
 </path>
-<path stroke="black" dash="dash dotted" arrow="normal/normal">
+<path matrix="1 0 0 0.5 0 392" stroke="black" dash="dash dotted" arrow="normal/normal">
 192 784 m
 192 816 l
 </path>
-<text matrix="1 0 0 1 -93.4341 -16.7212" transformations="translations" pos="496 736" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
-<text matrix="1 0 0 1 32 0" transformations="translations" pos="160 816" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
-<path stroke="black" pen="heavier">
+<text matrix="1 0 0 1 -117.103 -25.3694" transformations="translations" pos="496 736" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<text matrix="1 0 0 1 32 -16" transformations="translations" pos="160 816" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<path matrix="1 0 0 0.8 0 144" stroke="black" pen="heavier">
 320 640 m
 320 800 l
 </path>
-<text matrix="1 0 0 1 87.9835 -13.7023" transformations="translations" pos="54.369 812.459" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
-<text matrix="1 0 0 1 -72.1176 -2.8847" transformations="translations" pos="408.215 802.459" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
-<text matrix="1 0 0 1 -42.1911 37.0199" transformations="translations" pos="255.138 578.613" stroke="black" type="label" width="24.242" height="6.815" depth="1.93" valign="baseline">Layer</text>
-<text matrix="1 0 0 1 156.002 38.3104" transformations="translations" pos="74.369 601.69" stroke="black" type="label" width="20.52" height="6.812" depth="1.49" valign="baseline">SiO$_2$</text>
-<text matrix="1 0 0 1 118.475 -56.305" transformations="translations" pos="78.2152 696.305" stroke="black" type="label" width="22.181" height="6.812" depth="1.49" valign="baseline">TiO$_2$</text>
-<path stroke="black">
+<text matrix="1 0 0 1 87.9835 -29.7023" transformations="translations" pos="54.369 812.459" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
+<text matrix="1 0 0 1 -72.1176 -18.8847" transformations="translations" pos="408.215 802.459" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
+<text matrix="1 0 0 -0.107427 -41.7149 695.092" transformations="translations" pos="255.138 578.613" stroke="black" type="label" width="24.242" height="6.815" depth="1.93" valign="baseline">Layer</text>
+<text matrix="1 0 0 -1.34866 156.002 1467.47" transformations="translations" pos="74.369 601.69" stroke="black" type="label" width="20.52" height="6.812" depth="1.49" valign="baseline">SiO$_2$</text>
+<text matrix="1 0 0 -1.3488 118.475 1595.17" transformations="translations" pos="78.2152 696.305" stroke="black" type="label" width="22.181" height="6.812" depth="1.49" valign="baseline">TiO$_2$</text>
+<path matrix="1 0 0 1 0 16" stroke="black">
 192 640 m
 192.045 631.758
 223.985 636.661
@@ -277,31 +277,31 @@ h
 256 640
 256 640 s
 </path>
-<path stroke="black">
+<path matrix="0.916667 0 0 0.916667 26.6667 60" stroke="black">
 320 720 m
 128 672 l
 </path>
-<path stroke="black">
+<path matrix="0.75 0 0 0.75 48 172" stroke="black">
 192 688 m
 128 704 l
 </path>
-<path stroke="black">
+<path matrix="0.875 0 0 0.875 32 88" stroke="black">
 256 704 m
 128 736 l
 </path>
-<path stroke="black">
+<path matrix="0.916667 0 0 0.916667 26.6667 60" stroke="black">
 320 720 m
 128 768 l
 </path>
-<path stroke="black">
+<path matrix="0.833333 0 0 0.833333 37.3333 116" stroke="black">
 128 720 m
 224 696 l
 </path>
-<path stroke="black">
+<path matrix="0.9 0 0 0.9 28.8 71.2" stroke="black">
 288 712 m
 128 752 l
 </path>
-<path stroke="black">
+<path matrix="0.75 0 0 0.75 80 180" stroke="black">
 320 720 m
 384 736 l
 </path>
@@ -350,7 +350,7 @@ h
 160 696 l
 </path>
 <text matrix="1 0 0 1 125.928 -122.6" transformations="translations" pos="30.5123 789.11" stroke="black" type="label" width="3.432" height="6.571" depth="0" valign="baseline">$i$</text>
-<path matrix="1 0 0 1 63.6717 0" stroke="black">
+<path matrix="1 0 0 1 63.6717 16" stroke="black">
 192 640 m
 192.045 631.758
 223.985 636.661
@@ -360,10 +360,10 @@ h
 256 640
 256 640 s
 </path>
-<text matrix="1 0 0 1 20.8342 38.3325" transformations="translations" pos="255.138 578.613" stroke="black" type="label" width="24.242" height="6.815" depth="1.93" valign="baseline">Layer</text>
-<text matrix="1 0 0 1 183.051 -56.305" transformations="translations" pos="78.2152 696.305" stroke="black" type="label" width="22.181" height="6.812" depth="1.49" valign="baseline">TiO$_2$</text>
-<text matrix="1 0 0 1 218.978 38.31" transformations="translations" pos="74.369 601.69" stroke="black" type="label" width="20.52" height="6.812" depth="1.49" valign="baseline">SiO$_2$</text>
+<text matrix="1 0 0 -0.0151962 21.5987 642.318" transformations="translations" pos="255.138 578.613" stroke="black" type="label" width="24.242" height="6.815" depth="1.93" valign="baseline">Layer</text>
+<text matrix="1 0 0 -1.3488 183.051 1595.17" transformations="translations" pos="78.2152 696.305" stroke="black" type="label" width="22.181" height="6.812" depth="1.49" valign="baseline">TiO$_2$</text>
+<text matrix="1 0 0 -1.3488 218.978 1467.56" transformations="translations" pos="74.369 601.69" stroke="black" type="label" width="20.52" height="6.812" depth="1.49" valign="baseline">SiO$_2$</text>
 <text matrix="1 0 0 1 -113.831 -28.8836" transformations="translations" pos="473.397 765.787" stroke="black" type="label" width="3.598" height="6.128" depth="0" valign="baseline">$t$</text>
-<text matrix="1 0 0 1 73.8121 -36.1679" transformations="translations" pos="37.9058 773.907" stroke="black" type="label" width="4.771" height="4.289" depth="0" valign="baseline">$r$</text>
+<text matrix="1 0 0 1 95.2959 -37.4424" transformations="translations" pos="37.9058 773.907" stroke="black" type="label" width="4.771" height="4.289" depth="0" valign="baseline">$r$</text>
 </page>
 </ipe>
