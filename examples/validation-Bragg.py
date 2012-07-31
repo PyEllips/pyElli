@@ -9,7 +9,7 @@ import numpy, Berreman4x4
 import scipy.linalg
 import matplotlib.pyplot as pyplot
 from Berreman4x4 import c, pi
-from numpy import newaxis
+from numpy import newaxis, exp, sin
 
 print("\n*** SiO2/TiO2 Bragg mirror ***\n")
 
@@ -58,6 +58,7 @@ n = numpy.ones(N+1, dtype=complex)
 n[::2] = n_SiO2
 n[1::2] = n_TiO2
 n[0] = n[-1] = n_g
+n.shape = (-1,1)
 
 d = numpy.ones(N+1)
 d[::2] = L_SiO2.h
@@ -72,19 +73,21 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
 
     U(k) depends on incidence angle and polarisation 's' or 'p'.
     """
-    Kx = n[0]*numpy.sin(incidence_angle)    
+    Kx = n[0]*sin(incidence_angle)    
     sinPhi = Kx/n
-    kz = 2*pi/lbda_list * numpy.sqrt(n**2-(Kx)**2)[:,newaxis]
+    kz = 2*pi/lbda_list * numpy.sqrt(n**2-(Kx)**2)
 
     # Reflexion coefficient r_{k,k+1} for a single interface 
-        # polarisation s:
-        # r_ab(p) = r_{p,p+1} = (kz(p)-kz(p+1))/(kz(p)+kz(p+1))
-        # polarisation p:
-        # r_ab(p) = r_{p,p+1} = (kz(p)*n[p+1]**2-kz(p+1)*n[p]**2)/(kz(p)*n[p]**2+kz(p+1)*n[p+1]**2)
+    #    polarisation s:
+    #    r_ab(p) = r_{p,p+1} = (kz(p)-kz(p+1))/(kz(p)+kz(p+1))
+    #    polarisation p:
+    #    r_ab(p) = r_{p,p+1} = (kz(p)*n[p+1]**2-kz(p+1)*n[p]**2) \ 
+    #                          /(kz(p)*n[p]**2+kz(p+1)*n[p+1]**2)
     if (polarisation == 's'):
         r_ab = (-numpy.diff(kz,axis=0)) / (kz[:-1] + kz[1:])
     else:
-        r_ab = (kz[:-1]*(n[1:][:,newaxis])**2 - kz[1:]*(n[:-1][:,newaxis])**2)/ (kz[:-1]*(n[1:][:,newaxis])**2 + kz[1:]*(n[:-1][:,newaxis])**2)
+        r_ab =(kz[:-1]*(n[1:])**2 - kz[1:]*(n[:-1])**2) \
+              / (kz[:-1]*(n[1:])**2 + kz[1:]*(n[:-1])**2)
     
 
     def U(k):
@@ -96,8 +99,8 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
         if (p == N):
             res = r_ab[N-1]
         else :
-            res =   (r_ab[p-1] + U(p)*numpy.exp(2j*kz[p]*d[p]))  \
-              / (1 + r_ab[p-1] * U(p)*numpy.exp(2j*kz[p]*d[p]))
+            res =   (r_ab[p-1] + U(p)*exp(2j*kz[p]*d[p]))  \
+              / (1 + r_ab[p-1] * U(p)*exp(2j*kz[p]*d[p]))
         return res
 
     res_g = U(0)
@@ -106,32 +109,30 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
 # Power coefficient reflexion
 #Phi_0 = 0 polarisation s
 Phi_0 = 0
-R_th_ss_0 = (numpy.abs(ReflectionCoeff(Phi_0,'s')))**2
+R_th_ss_0 = (abs(ReflectionCoeff(Phi_0,'s')))**2
 
 #Phi_0 = pi/4 polarisations s and p
 Phi_0 = pi/4
-R_th_ss = (numpy.abs(ReflectionCoeff(Phi_0,'s')))**2
-R_th_pp = (numpy.abs(ReflectionCoeff(Phi_0,'p')))**2
+R_th_ss = (abs(ReflectionCoeff(Phi_0,'s')))**2
+R_th_pp = (abs(ReflectionCoeff(Phi_0,'p')))**2
 
 ############################################################################
 # Calculation with Berreman4x4
-#Phi_0 = 0 polarisation s
+# Phi_0 = 0, 's' polarization
 Phi_0 = 0
 Kx = front.get_Kx_from_Phi(Phi_0)
-data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
-data = numpy.array(data)
+data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
-R_ss_0 = numpy.abs(r_ss)**2
+R_ss_0 = abs(r_ss)**2
 
-#Phi_0 = pi/4 polarisation s an p
+# Phi_0 = pi/4, 's' and 'p' polarizations
 Phi_0 = pi/4
 Kx = front.get_Kx_from_Phi(Phi_0)
-data = [s.getJones(Kx,2*pi/lbda) for lbda in lbda_list]
-data = numpy.array(data)
+data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 r_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
-R_ss = numpy.abs(r_ss)**2
-R_pp = numpy.abs(r_pp)**2
+R_ss = abs(r_ss)**2
+R_pp = abs(r_pp)**2
 
 ############################################################################
 # Plotting
@@ -145,7 +146,8 @@ legend1 = ("R_ss (0$^\circ$)","R_ss (45$^\circ$)","R_pp (45$^\circ$)")
 
 d = numpy.vstack((R_th_ss_0,R_th_ss,R_th_pp)).T
 lines2 = ax.plot(lbda_list,d,'x')
-legend2 =                                                           ("R_th_ss (0$^\circ$)","R_th_ss (45$^\circ$)","R_th_pp (45$^\circ$)")
+legend2 = ("R_th_ss (0$^\circ$)","R_th_ss (45$^\circ$)",
+           "R_th_pp (45$^\circ$)")
 
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)

@@ -4,7 +4,7 @@
 # Berreman4x4 example
 # Author: O. Castany
 
-# The simplest example: reflection on air/glass interface
+# The simplest example: reflection on an air/glass interface
 
 print("\n*** Air / glass interface ***")
 
@@ -25,7 +25,8 @@ s = Berreman4x4.Structure(front, [], back)
 # Incidence angle (Kx = n sin(Φ):
 Kx = 0.0
 
-print("\nWhen the basis is the linear polarizations ('p','s')...")
+print("")
+print("When the basis is the linear polarizations ('p','s')...")
 J = s.getJones(Kx, k0=1e6)
 (Jr, Jt) = J
 print("Jones matrix for reflection:")
@@ -37,7 +38,8 @@ print(Jt)
         [ 0. , -0.2]]),           [ 0. ,  0.8]]))
 """
 
-print("\nWhen the basis is the circular polarizations ('L','R')...")
+print("")
+print("When the basis is the circular polarizations ('L','R')...")
 Jc = Berreman4x4.circularJones(J)
 (Jcr,Jct) = Jc
 print("Jones matrix for reflection:")

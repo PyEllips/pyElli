@@ -7,7 +7,7 @@
 # Example of a 90° twisted nematic liquid crystal
 
 import numpy, Berreman4x4
-from numpy import sin, sqrt, abs
+from numpy import sin, sqrt
 from Berreman4x4 import c, pi
 import matplotlib.pyplot as pyplot
 
@@ -43,7 +43,6 @@ TN = Berreman4x4.TwistedMaterial(LC, d)
 
 # Inhomogeneous layer
 IL = Berreman4x4.InhomogeneousLayer(TN)
-# IL.setMethod("symplectic","Padé",3)
 
 # Structure
 s = Berreman4x4.Structure(front, [IL], back)
@@ -52,23 +51,22 @@ s = Berreman4x4.Structure(front, [IL], back)
 Kx = 0.0
 
 # Calculation parameters
-lbda_min, lbda_max = 200e-9, 1   # (m)
+(lbda_min, lbda_max) = (200e-9, 1)   # (m)
 k0_list = numpy.linspace(2*pi/lbda_max, 2*pi/lbda_min)
 
 # Plot setup
 fig = pyplot.figure()
 ax = fig.add_subplot("111")
 
-# Plot Gooch-Tarry law for reference
+# Plot Gooch-Tarry law, for comparison
 u = 2*d*Dn*k0_list/(2*pi)
 T = sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
 ax.plot(k0_list, T, label="Gooch-Tarry law")
 
-# Calulation with Berreman4x4
+# Calulation with Berreman4x4 and plotting
 def plotTransmission(label):
     """Plots power transmission vs. wavenumber."""
-    data = [s.getJones(Kx,k0) for k0 in k0_list]
-    data = numpy.array(data)
+    data = numpy.array([s.getJones(Kx,k0) for k0 in k0_list])
     t_pp = Berreman4x4.extractCoefficient(data, 't_pp')
     T = abs(t_pp)**2    # valid if back and front media are identical
     ax.plot(k0_list, T, 'x', label=label)
@@ -80,7 +78,7 @@ TN.setDivision(18)
 plotTransmission("Berreman4x4, 18 div")
 
 # Titles
-ax.set_title(u"90° Twisted Nematic Liquid Crystal, " +
+ax.set_title(u"90° Twisted Nematic Liquid Crystal, " + 
              u"d = {:.2f} µm".format(d*1e6))
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission $T$")
