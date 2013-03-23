@@ -12,7 +12,7 @@ This programming language was chosen for ease of use, readability of the source 
 A drawback is slow speed, because the language is interpreted%
 \footnote{%
 High speed calculations are possible with NumPy and SciPy if array operations are vectorized.
-However the structure of Berreman4x4 does not easily lead to a vectorization with enough generality.}.
+However the structure of Berreman4x4 is difficult to vectorize with enough generality.}.
 
 Calculations are based on articles from D.~Berreman \cite{Berreman} (1972) and M.~Schubert \cite{Schubert} (1996).
 Application to ellipsometry is based on the book from H.~Fujiwara \cite{Fujiwara} (2007).
@@ -29,7 +29,7 @@ The $s$ polarization is a wave with electric field perpendicular (\emph{senkrech
 The $p$ polarization is a wave with electric field parallel to the plane of incidence.
 A plane wave $i$ is incident from the front half-space with incidence angle $\phi_i$ and reflected into a plane wave $r$ with the same angle.
 Angles are oriented by the $y$ direction.
-In the general case, the back half-space is anisotropic and two transmitted plane waves $t$ are induced, with the same $k_x$ but different angles $\phi_t$.
+In the general case, the back half-space is anisotropic and two transmitted plane waves $t$ are induced, with the same $k_x$, but different angles $\phi_t$.
 The electric vector is not necessarily perpendicular to $\vec k$ and $s$ and $p$ waves can not be considered.
 
 \begin{figure}
@@ -39,10 +39,10 @@ The electric vector is not necessarily perpendicular to $\vec k$ and $s$ and $p$
 
 \section{Conventions and units}
 
-Formulas are mostly based on M.~Schubert's article \cite{Schubert}, with one difference being the orientation of the $p$ polarization after reflection.
+Formulas are mostly based on M.~Schubert's article \cite{Schubert}, with one difference being the orientation of the incident $p$ polarization.
 M.~Schubert takes the convention used in ellipsometry, where the base electric vectors point towards the sample in the front and exit half spaces.
 In our work, we used a different convention, in which the base electric vectors point towards the $x$ direction in both half-spaces.
-With our convention, the base electric vectors for the incident, reflected and transmitted waves are in the same direction in the case of normal reflection.
+With this convention, the base electric vectors for the incident, reflected and transmitted waves are all in the same direction in the case of reflection with normal incidence.
 
 Gaussian units are used in the detail of the calculation.
 This makes it easier to compare our results with past literature, which uses Gaussian units for the most part.
@@ -64,7 +64,7 @@ H_\mathrm{S.I.} = \frac{H}{\sqrt{4\pi\mu_0}},
 $$
 where $\varepsilon_0$ and $\mu_0$ are the usual S.I. values.
 We will consider non-magnetic materials, i.e. $\mu = 1$.
-
+%
 The convention for time-varying complex fields is taken as $\exp(-i\omega t)$, and Maxwell's equations read
 $$
 \nabla\times E = k_0 H
@@ -77,7 +77,7 @@ with $k_0=\omega/c$.
 
 In the stratified sample, Maxwell's equations lead to a propagation equation for the transverse components $(E_x,E_y,H_x,H_y)$.
 The demonstration can be found in reference~\onlinecite{Berreman} and leads to%
-\footnote{Equation~(3) in Berreman's article should read $\mathbf{C=MG}$.}
+\footnote{Note that equation~(3) in Berreman's article is wrong and should read $\mathbf{C=MG}$.}
 %
 \begin{equation}\label{eq:propagation}
 \frac{\partial \Psi}{\partial z} = i k_0 \Delta(z) \Psi(z),
@@ -399,21 +399,21 @@ $$
 -r_{pp}/r_{ss} = \tan(\psi)\ e^{\displaystyle -i\Delta}.
 $$
 
-\section{Installation}
+\section{Installation and use}
 
-Berreman4x4 is offered as a Python module named \verb/Berreman4x4.py/.
-It can simply be copied to the working directory and imported in a Python script with
+Berreman4x4 is offered as a Python module named \verb/Berreman4x4.py/, which can be imported and used in any Python script with the command 
 \begin{verbatim}
 import Berreman4x4
 \end{verbatim}
-Another possibility is to store Python modules in a special directory pointed by the \verb/PYTHONPATH/ environment variable.
+The module file should either be present in the working directory, or be accessible in the module path.
+A convenient organization is to store Python modules in a special directory pointed by the \verb/PYTHONPATH/ environment variable.
 For example, my \verb/.bashrc/ script contains
 \begin{verbatim}
 export PYTHONPATH="/home/castany/.python"
 \end{verbatim}
-and the \verb/.python/ directory contains symbolic links to the Python modules I use. 
-%
-Berreman4x4 depends on standard scientific Python modules NumPy and SciPy.
+and the \verb/.python/ directory contains symbolic links to the different Python modules I use. 
+
+Berreman4x4 depends on the standard Python modules NumPy and SciPy.
 Application examples also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
 
 \section{Code documentation and examples}
@@ -431,7 +431,7 @@ Application examples also use module matplotlib for plotting \cite{NumPy, SciPy,
 The source code contains detailed information on the classes and functions, incorporated as docstrings.
 They can be conveniently displayed when working with a shell like IPython \cite{IPython}.
 
-Commented examples are bundled with the program.
+Commented examples are bundled with the program and can be run directly from the command line.
 They range from simple situations to more complex structures: reflexion on an interface, interferences in a thin layer, reflexion on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
 Whenever possible, result from Berreman4x4 is compared with exact analytical result, and show excellent match.
 The code is also validated against results presentend in reference~\onlinecite{Fujiwara}.
@@ -439,7 +439,7 @@ The code is also validated against results presentend in reference~\onlinecite{F
 The UML class diagram of Berreman4x4 is presented on figures~\ref{fig:class1} and \ref{fig:class2}.
 A \texttt{Structure} is built from a list of \texttt{Layer} objects, between one front and one back \texttt{HalfSpace} objects.
 \texttt{Material} objects are created for defining \texttt{MaterialLayer} objects.
-Several classes of non-dispersive materials are provided, but dispersive materials may also be created, as exemplified by class \texttt{IsotropicDispersive}.
+Several classes of non-dispersive materials are provided, but dispersive materials may also be created, like the class \texttt{IsotropicDispersive}.
 Additionnal classes of materials can be created by deriving classes \texttt{Material} and \texttt{DispersionLaw}.
 Layers with a continuous spatial variation of the permittivity tensor are described with an \texttt{InhomogeneousMaterial} and form an \texttt{InhomogeneousLayer} object.
 
@@ -453,7 +453,7 @@ General:
 %
 Source code:
 \begin{itemize}
-\item Homogeneous layer: exact solution with Cayley-Hamilton or Lagrange-Sylvester
+\item Homogeneous layer: implement exact solution with Cayley-Hamilton or Lagrange-Sylvester
 \end{itemize}
 
 

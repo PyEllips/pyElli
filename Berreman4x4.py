@@ -449,7 +449,7 @@ def hs_propagator_eig(Delta, h, k0, q=None):
 class HalfSpace:
     """Homogeneous half-space with arbitrary permittivity.
     
-    Method that a HalfSpace must provide:
+    A HalfSpace must provide this method:
     * getTransitionMatrix(k0, Kx) : return transition matrix
     
     """
@@ -1145,7 +1145,7 @@ def extractEllipsoParam(Jr):
 ###############################################################################
 ###############################################################################
 # Below is an old chunk of code that is not connected to the current working
-# code. I leave it here because an idea may be picked from it.
+# code. I leave it here in case an idea could be reused.
 
 class _TwistedLayer:
     """Twisted layer (like a cholesteric liquid crystal)."""
