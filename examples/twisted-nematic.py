@@ -15,7 +15,7 @@ import matplotlib.pyplot as pyplot
 Consider the following situation:
 - twisted liquid crystal with 90° twist between z=0 and z=d
 - liquid crystal aligned along x at z=0.
-- output polarizer aligned parallel to x
+- input and output polarizers aligned parallel to x
 
 Gooch-Tarry law gives: T_pp = sin²(pi/2·√(1+u²)) / (1+u²),
 with u = 2dΔn/λ. 
@@ -71,7 +71,7 @@ def plotTransmission(label):
     T = abs(t_pp)**2    # valid if back and front media are identical
     ax.plot(k0_list, T, 'x', label=label)
 
-# Two different numbers of divisions in the TwistedMaterial ar plotted
+# Two plots are mad, with different numbers of divisions in the TwistedMaterial
 TN.setDivision(7)
 plotTransmission("Berreman4x4, 7 div")
 TN.setDivision(18) 

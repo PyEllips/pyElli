@@ -6,7 +6,7 @@
 
 # The simplest example: reflection on an air/glass interface
 
-print("\n*** Air / glass interface ***")
+print("*** Air / glass interface ***\n")
 
 import numpy, Berreman4x4
 from Berreman4x4 import c, pi
@@ -25,33 +25,33 @@ s = Berreman4x4.Structure(front, [], back)
 # Incidence angle (Kx = n sin(Φ):
 Kx = 0.0
 
-print("")
 print("When the basis is the linear polarizations ('p','s')...")
 J = s.getJones(Kx, k0=1e6)
 (Jr, Jt) = J
-print("Jones matrix for reflection:")
+print("Jones matrix for reflection (Jr):")
 print(Jr)
-print("Jones matrix for transmission:")
+print("Jones matrix for transmission (Jt):")
 print(Jt)
 """
 (matrix([[-0.2,  0. ],     matrix([[ 0.8,  0. ],
         [ 0. , -0.2]]),           [ 0. ,  0.8]]))
 """
 
-print("")
-print("When the basis is the circular polarizations ('L','R')...")
+print("\nWhen the basis is the circular polarizations ('L','R')...")
 Jc = Berreman4x4.circularJones(J)
 (Jcr,Jct) = Jc
-print("Jones matrix for reflection:")
+print("Jones matrix for reflection (Jcr):")
 print(Jcr)
-print("Jones matrix for transmission:")
+print("Jones matrix for transmission (Jct):")
 print(Jct)
 """
 array([[ 0.0+0.j, -0.2+0.j],      array([[ 0.8+0.j,  0.0+0.j],
        [-0.2+0.j,  0.0+0.j]])            [ 0.0+0.j,  0.8+0.j]])
-In a reflexion, the handedness of an elliptic polarization is reversed,
-so the matrix 'Jcr' is anti-diagonal.
 """
+print(
+"""
+In a reflexion, the handedness of an elliptic polarization is reversed, 
+so the matrix 'Jcr' is anti-diagonal.
+""")
 
-print("")
 

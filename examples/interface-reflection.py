@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 # Berreman4x4 example
-# Author: O. Castany, C. Molinaro
+# Authors: O. Castany, C. Molinaro
 
 # Interface between two materials n1/n2. Calculations of the transmission and 
 # reflexion coefficients with varying incidence angle.
@@ -40,7 +40,7 @@ back = Berreman4x4.IsotropicHalfSpace(medium2)
 # Structure
 s = Berreman4x4.Structure(front, [], back)
 
-# Paraeters for the calculation
+# Parameters for the calculation
 lbda = 1e-6
 k0 = 2*pi/lbda
 Phi_i = numpy.linspace(0, pi/2*0.9999)  # varying incidence angle

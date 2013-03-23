@@ -3,7 +3,7 @@
 # Berreman4x4 example
 # Author: O. Castany, C. Molinaro
 
-# Example of an SiO2/TiO2 Bragg mirror
+# Validation for a TiO2/SiO2 Bragg mirror
 
 import numpy, Berreman4x4
 import scipy.linalg
@@ -11,15 +11,18 @@ import matplotlib.pyplot as pyplot
 from Berreman4x4 import c, pi
 from numpy import newaxis, exp, sin
 
-print("\n*** SiO2/TiO2 Bragg mirror ***\n")
+print("\n*** TiO2/SiO2 Bragg mirror ***\n")
 
 ############################################################################
 # Structure definition
 
 # Front and back materials
+n_a = 1.0
 n_g = 1.5
+air = Berreman4x4.IsotropicNonDispersiveMaterial(n_a)
 glass = Berreman4x4.IsotropicNonDispersiveMaterial(n_g)
-front = back = Berreman4x4.IsotropicHalfSpace(glass)
+front = Berreman4x4.IsotropicHalfSpace(air)
+back = Berreman4x4.IsotropicHalfSpace(glass)
 
 # Materials for a SiO2/TiO2 Bragg mirror
 lbda0 = 1.550e-6
@@ -44,7 +47,7 @@ print("Thickness of the SiO2 QWP: {:.1f} nm".format(L_SiO2.h*1e9))
 print("Thickness of the TiO2 QWP: {:.1f} nm".format(L_TiO2.h*1e9))
 
 # Repeated layers: n periods
-L = Berreman4x4.RepeatedLayers([L_TiO2, L_SiO2], 4,0,0)
+L = Berreman4x4.RepeatedLayers([L_TiO2, L_SiO2], 4, 0, 0)
 
 # Number of interfaces
 N = 2 * L.n + 1
@@ -55,24 +58,23 @@ s = Berreman4x4.Structure(front, [L], back)
 ############################################################################
 # Analytical calculation
 n = numpy.ones(N+1, dtype=complex)
-n[::2] = n_SiO2
+n[0] = n_a
 n[1::2] = n_TiO2
-n[0] = n[-1] = n_g
+n[2::2] = n_SiO2
+n[-1] = n_g
+
 n.shape = (-1,1)
 
 d = numpy.ones(N+1)
-d[::2] = L_SiO2.h
-d[1::2] = L_TiO2.h
+d[1::2] = L_TiO2.h  # d[0] is not used
+d[2::2] = L_SiO2.h
 
 (lbda1, lbda2) = (1.1e-6, 2.5e-6)
 lbda_list = numpy.linspace(lbda1, lbda2, 200)
 
 
 def ReflectionCoeff(incidence_angle=0., polarisation='s'):
-    """Returns reflection coefficient 
-
-    U(k) depends on incidence angle and polarisation 's' or 'p'.
-    """
+    """Returns the reflection coefficient in amplitude"""
     Kx = n[0]*sin(incidence_angle)    
     sinPhi = Kx/n
     kz = 2*pi/lbda_list * numpy.sqrt(n**2-(Kx)**2)
@@ -144,7 +146,7 @@ legend2 = ("R_th_ss (0$^\circ$)","R_th_ss (45$^\circ$)",
 ax.legend(lines1 + lines2, legend1 + legend2, 
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 
-ax.set_title(r"SiO$_2$/TiO$_2$ Bragg mirror ("+str(L.n)+" periods)")
+ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x" + str(L.n) + "/Glass")
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")
 ax.set_ylabel(r"$R$")
 fmt = ax.xaxis.get_major_formatter()

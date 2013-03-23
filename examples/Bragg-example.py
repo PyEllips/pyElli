@@ -4,7 +4,7 @@
 # Berreman4x4 example
 # Author: O. Castany
 
-# Example of an SiO2/TiO2 Bragg mirror
+# Example of a TiO2/SiO2 Bragg mirror with 8.5 periods
 
 import numpy, Berreman4x4
 import scipy.linalg
@@ -14,8 +14,10 @@ from Berreman4x4 import c, pi
 print("\n*** SiO2/TiO2 Bragg mirror ***\n")
 
 # Front and back materials
+air = Berreman4x4.IsotropicNonDispersiveMaterial(1.0)
 glass = Berreman4x4.IsotropicNonDispersiveMaterial(1.5)
-front = back = Berreman4x4.IsotropicHalfSpace(glass)
+front = Berreman4x4.IsotropicHalfSpace(air)
+back = Berreman4x4.IsotropicHalfSpace(glass)
 
 # Materials for a SiO2/TiO2 Bragg mirror
 lbda0 = 1.550e-6
@@ -40,9 +42,9 @@ print("Thickness of the SiO2 QWP: {:.1f} nm".format(L_SiO2.h*1e9))
 print("Thickness of the TiO2 QWP: {:.1f} nm".format(L_TiO2.h*1e9))
 
 # Repeated layers: 8.5 periods
-L = Berreman4x4.RepeatedLayers([L_TiO2, L_SiO2], 8,0,1)
+L = Berreman4x4.RepeatedLayers([L_TiO2, L_SiO2], 8, 0, 1)
 
-# reduces the number of printed figures in numbers:
+# To reduce the number of printed characters in the numbers:
 # numpy.set_printoptions(suppress=True, precision=3)
 Kx = 0.0
 
@@ -64,10 +66,10 @@ ax = fig.add_subplot("111")
 ax.plot(lbda_list, abs(r)**2, label="$R$")
 ax.plot(lbda_list, abs(t)**2, label="$T$")
 
-ax.legend(loc='center right', bbox_to_anchor=(1.00, 0.50))
+ax.legend(loc='upper right')
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")
 ax.set_ylabel(r"Power reflection $R$ or transmission $T$")
-ax.set_title(r"SiO$_2$/TiO$_2$ Bragg mirror (8.5 periods, with TiO$_2$ ends)")
+ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x8/TiO$_2$/Glass")
 
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))

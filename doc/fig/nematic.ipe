@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120731111601" modified="D:20120731112953"/>
+<ipe version="70005" creator="Ipe 7.1.2">
+<info created="D:20120731111601" modified="D:20130324002432"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -232,30 +232,61 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black">
+<path layer="alpha" matrix="0 -1.2 1.42857 0 -140.275 524.8" stroke="black">
 192.37 255.504
 256 256
 224 266.919 u
 </path>
-<path stroke="black">
+<path matrix="0 -1.2 1.42857 0 -140.275 524.8" stroke="black">
 224 313.005
 233.667 304
 215.812 304 u
 </path>
-<path stroke="black">
+<path matrix="0 -1.2 1.42857 0 -140.275 524.8" stroke="black">
 240 288
 208 288
 224 297.291 u
 </path>
-<path stroke="black">
+<path matrix="0 -1.2 1.42857 0 -140.275 524.8" stroke="black">
 248.552 272
 199.705 272
 224 281.509 u
 </path>
-<path stroke="black" arrow="normal/normal" rarrow="normal/normal">
+<path matrix="0 -1.2 1.42857 0 -141.714 524.8" stroke="black" arrow="normal/normal" rarrow="normal/normal">
 256 256 m
 256 310.003 l
 </path>
-<text matrix="1 0 0 1 -8.90491 -5.57974" transformations="translations" pos="272 288" stroke="black" type="label" width="5.185" height="6.918" depth="0" valign="baseline">$d$</text>
+<text matrix="0 -1.2 1.42857 0 -149.685 535.486" transformations="translations" pos="272 288" stroke="black" type="label" width="5.185" height="6.918" depth="0" valign="baseline">$d$</text>
+<path matrix="1.42857 0 0 1.2 -96 -51.2" stroke="black">
+224 280 m
+224 232 l
+</path>
+<path stroke="black">
+304 288 m
+304 227.2 l
+</path>
+<path matrix="1.42857 0 0 1.2 -96 -51.2" stroke="black" dash="dash dotted" arrow="normal/normal">
+192 256 m
+320 256 l
+</path>
+<path matrix="1.42857 0 0 1.2 -141.714 -636.8" stroke="black" dash="dash dotted" arrow="normal/normal">
+256 768 m
+256 784 l
+</path>
+<text matrix="1.42857 0 0 1.2 -158.022 -648.906" transformations="translations" pos="262.171 794.885" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<text matrix="1.42857 0 0 1.2 129.591 -686.394" transformations="translations" pos="162.086 785.328" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<text matrix="1.42857 0 0 1.2 -90.2857 -38.4" transformations="translations" pos="192 272" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
+<text matrix="1.42857 0 0 1.2 45.7143 -38.4" transformations="translations" pos="192 272" stroke="black" type="label" width="23.426" height="6.918" depth="0" valign="baseline">Glass</text>
+<text matrix="1.42857 0 0 1.2 -86.8571 -38.4" transformations="translations" pos="240 272" stroke="black" type="label" width="13.422" height="6.808" depth="0" valign="baseline">LC</text>
+<path stroke="black" arrow="normal/normal">
+208 240 m
+208 272 l
+</path>
+<path stroke="black" arrow="normal/normal">
+320 240 m
+320 272 l
+</path>
+<text transformations="translations" pos="200 272" stroke="black" type="label" width="6.78" height="6.808" depth="0" valign="baseline">P</text>
+<text matrix="1 0 0 1 10.2426 0" transformations="translations" pos="312 272" stroke="black" type="label" width="7.472" height="6.808" depth="0" valign="baseline">A</text>
 </page>
 </ipe>
