@@ -1,13 +1,13 @@
 % Encoding: utf-8
 
-\chapterdoc{Validation example from H.~Fujiwara's book}
+\chapterdoc{Validation examples taken from Fujiwara's book}
 \chapterauthor{Olivier Castany}
 
-We reproduce the situation presented by H.~Fujiwara in his book \emph{Spectroscopic Ellipsometry} \cite{Fujiwara}, section~6.4.2, p.~241--243 and section~6.4.1, p.~237--239.
+We reproduce the situation presented by Fujiwara in his book \emph{Spectroscopic Ellipsometry} \cite{Fujiwara}, section~6.4.2, p.~241--243 and section~6.4.1, p.~237--239.
 He presents detailed calculations and intermediate steps that are useful for testing our code.
 
 
-\section{Detailed calculations of section 6.4.2}
+\section{Example of section 6.4.2}
 
 The situation is depicted on figure~\ref{fig:situation642}.
 A uniaxial film is formed on a silicon substrate.
@@ -19,10 +19,10 @@ Angle $\theta_E$ is the seconde Euler angle, inducing a rotation of the axis of 
 
 \begin{figure}[b]
 \includegraphics[width=\columnwidth]{fig/structure-Fujiwara-642}
-\caption{\label{fig:situation642}Geometry of the situation treated by H.~Fujiwara in his book, section~6.4.2.}
+\caption{\label{fig:situation642}Geometry of the situation treated by Fujiwara in his book, section~6.4.2.}
 \end{figure}
 
-In \verb/validation-Fujiwara-642.py/, we reproduce Fujiwara's results with our code and obtain the same values, expect from a few place where a sign is reversed.
+In \verb/validation-Fujiwara-642.py/, we reproduce Fujiwara's results with our code and obtain the same values, except for a few places where a sign is reversed.
 The reason is that Fujiwara uses the convention of ellipsometry for orienting $E_{rp}$, which is the opposite of our convention.
 We also reproduce figure~6.19, p.~242, when the orientation of the anisotropic film is varied.
 
@@ -31,11 +31,11 @@ We also reproduce figure~6.19, p.~242, when the orientation of the anisotropic f
 \mbox{}
 \vspace{7cm}
 
-\section{Detailed calculations of section 6.4.1}
+\section{Example of section 6.4.1}
 
 \begin{figure}[b]
 \includegraphics[width=\columnwidth]{fig/structure-Fujiwara-641}
-\caption{\label{fig:situation641}Geometry of the situation treated by H.~Fujiwara in his book, section~6.4.1.}
+\caption{\label{fig:situation641}Geometry of the situation treated by Fujiwara in his book, section~6.4.1.}
 \end{figure}
 
 In \verb/validation-Fujiwara-641.py/, light is reflected in the air by an anisotropic substrate as depicted on figure~\ref{fig:situation641}.

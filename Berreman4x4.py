@@ -154,6 +154,7 @@ class NonDispersiveMaterial(Material):
 
         Notes (sloppy... should be clarified) : 
         * Definition of electromagnetic energy requires that Re(E) > 0
+          [reference ???]
         * Im(E) > 0 for an absorbing medium
         * Im(E) < 0 for an amplifying medium
         """

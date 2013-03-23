@@ -14,9 +14,9 @@ A drawback is slow speed, because the language is interpreted%
 High speed calculations are possible with NumPy and SciPy if array operations are vectorized.
 However the structure of Berreman4x4 is difficult to vectorize with enough generality.}.
 
-Calculations are based on articles from D.~Berreman \cite{Berreman} (1972) and M.~Schubert \cite{Schubert} (1996).
-Application to ellipsometry is based on the book from H.~Fujiwara \cite{Fujiwara} (2007).
-General references for optics in anisotropic media are found in the books from M.~Born and E.~Wolf \cite{BornWolf} and J.~Jackson \cite{Jackson}.
+Calculations are based on articles from Berreman \cite{Berreman} (1972) and Schubert \cite{Schubert} (1996).
+Application to ellipsometry is based Fujiwara's book \cite{Fujiwara} (2007).
+General references for optics in anisotropic media are found in the books of Born and Wolf \cite{BornWolf} and Jackson \cite{Jackson}.
 
 \section{Presentation}
 
@@ -39,8 +39,9 @@ The electric vector is not necessarily perpendicular to $\vec k$ and $s$ and $p$
 
 \section{Conventions and units}
 
-Formulas are mostly based on M.~Schubert's article \cite{Schubert}, with one difference being the orientation of the incident $p$ polarization.
-M.~Schubert takes the convention used in ellipsometry, where the base electric vectors point towards the sample in the front and exit half spaces.
+Formulas are mostly based on Schubert's article \cite{Schubert}, with one difference being the orientation of the incident $p$ polarization.
+Schubert takes the convention used in ellipsometry, where the base electric vectors for $p$ polarization point towards the sample in the front and exit half spaces%
+\footnote{In Fujiwara's book, reference \onlinecite{Fujiwara}, p. 223, the base electric vectors for $p$ polarization point towards the $-z$ direction, which leads to the same definition as Schubert's.}.
 In our work, we used a different convention, in which the base electric vectors point towards the $x$ direction in both half-spaces.
 With this convention, the base electric vectors for the incident, reflected and transmitted waves are all in the same direction in the case of reflection with normal incidence.
 
@@ -54,7 +55,7 @@ $$
 \quad \mathrm{and} \quad
 \nabla\times H = \frac{1}{c} \frac{\partial D}{\partial t}.
 $$
-We consider linear materials with the constitutive relations
+We consider linear materials with tensorial constitutive relations
 $D = \varepsilon E$ and $B = \mu H$.
 In Gaussian units, $\varepsilon_0=\mu_0=1$ and the relation to S.I. units is
 $$
@@ -63,7 +64,6 @@ E_\mathrm{S.I.} = \frac{E}{\sqrt{4\pi\varepsilon_0}}
 H_\mathrm{S.I.} = \frac{H}{\sqrt{4\pi\mu_0}},
 $$
 where $\varepsilon_0$ and $\mu_0$ are the usual S.I. values.
-We will consider non-magnetic materials, i.e. $\mu = 1$.
 %
 The convention for time-varying complex fields is taken as $\exp(-i\omega t)$, and Maxwell's equations read
 $$
@@ -72,6 +72,9 @@ $$
 \nabla\times H = -k_0 \varepsilon E,
 $$
 with $k_0=\omega/c$.
+We consider non-magnetic materials, i.e. $\mu = 1$.
+The permittivity $\varepsilon$ may be complex. 
+For example, isotropic materials with $\Im(\varepsilon)>0$ are lossy.
 
 \section{Propagation inside the sample}
 
@@ -138,7 +141,7 @@ The total propagator $P(z_N,z_0)$ for $N$ slices between $z_0$ and $z_N$ is appr
 $$P_a(z_N,z_0) = P_{hs}(z_N, z_{N-1})\times \cdots  \times P_{hs}(z_1,z_0).$$
 The order of the error is
 $$P(z_N,z_0)-P_a(z_N,z_0) = O(1/N^2)$$
-and  Z.~Lu demonstrated \cite{2007_Lu} that this does not depend whether the thin slab propagator $P_{hs}$ is the exact propagator or an approximation, possibly to first order.
+and  Z.~Lu demonstrated \cite{2007_Lu} that this does not depend on whether the thin slab propagator $P_{hs}$ is the exact propagator or an approximation, possibly to first order.
 Consequently, the simplest solution to equation~\ref{eq:propagation} is to take the first order expansion
 $$
 \Psi(z_2) \simeq 
@@ -362,19 +365,19 @@ $T^c_{ri} = D^{-1}\ T_{ri}\ C$.
 
 \section{Ellipsometry parameters}
 
-Ellipsometry parameters describe the reflection of the sample by the normalized reflection matrix $T_{ri}/r_{ss}$ (see reference~\onlinecite{Fujiwara}, p.~220).
-However, since we use an opposite orientation convention for $E_{rp}$, a change of sign is necessary for matching the convention of ellipsometry and we have the definition
+Ellipsometry parameters describe the reflection of the sample by the normalized reflection matrix $T_{ri}/r_{ss}$, as presented in Fujiwara's book, reference \onlinecite{Fujiwara}, p.~220.
+However, since we use an opposite orientation convention for $E_{rp}$, a change of sign is necessary for matching the convention of ellipsometry and we define
 \begin{multline*}
-\begin{pmatrix}
--r_{pp}/r_{ss} & -r_{ps}/r_{ss} \\
-\hphantom{-}r_{sp}/r_{ss} & 1 
-\end{pmatrix} \\
-=
 \begin{pmatrix}
 \tan(\psi_{pp})\ e^{\displaystyle -i\Delta_{pp}} & 
 \tan(\psi_{ps})\ e^{\displaystyle -i\Delta_{ps}} \\
 \tan(\psi_{sp})\ e^{\displaystyle -i\Delta_{sp}} &
 1
+\end{pmatrix}\\
+=
+\begin{pmatrix}
+-r_{pp}/r_{ss} & -r_{ps}/r_{ss} \\
+\hphantom{-}r_{sp}/r_{ss} & 1 
 \end{pmatrix}.
 \end{multline*}
 The minus sign in front of $\Delta$ is chosen due to the $\exp(-i\omega t)$ phase convention.
@@ -396,7 +399,7 @@ t_{pp} & 0\\
 $$
 and we define the ellipsometry parameters $\psi$ and $\Delta$ with 
 $$
--r_{pp}/r_{ss} = \tan(\psi)\ e^{\displaystyle -i\Delta}.
+\tan(\psi)\ e^{\displaystyle -i\Delta} = -r_{pp}/r_{ss}.
 $$
 
 \section{Installation and use}
