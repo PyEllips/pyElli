@@ -89,11 +89,11 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
         r_ab =(kz[:-1]*(n[1:])**2 - kz[1:]*(n[:-1])**2) \
               / (kz[:-1]*(n[1:])**2 + kz[1:]*(n[:-1])**2)
     
-
+    # Local function definition for recursive calculation
     def U(k):
         """Returns reflection coefficient U(k) = r_{k, {k+1,...,N}}
 
-        used recursively
+        Used recursively.
         """
         p = k+1
         if (p == N):
@@ -103,8 +103,7 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
               / (1 + r_ab[p-1] * U(p)*exp(2j*kz[p]*d[p]))
         return res
 
-    res_g = U(0)
-    return res_g
+    return U(0)
 
 # Power reflexion coefficient for different incidence angles and polarisations
 R_th_ss_0 = (abs(ReflectionCoeff(0, 's')))**2       # Phi_i = 0 
