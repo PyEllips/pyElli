@@ -33,7 +33,6 @@ SiO2 = Berreman4x4.IsotropicNonDispersiveMaterial(n_SiO2)
 TiO2 = Berreman4x4.IsotropicNonDispersiveMaterial(n_TiO2)
 
 # Layers
-
 L_SiO2 = Berreman4x4.HomogeneousIsotropicLayer(SiO2, ("QWP", lbda0))
 L_TiO2 = Berreman4x4.HomogeneousIsotropicLayer(TiO2, ("QWP", lbda0))
 

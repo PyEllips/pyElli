@@ -85,7 +85,7 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
     #                          /(kz(p)*n[p]**2+kz(p+1)*n[p+1]**2)
     if (polarisation == 's'):
         r_ab = (-numpy.diff(kz,axis=0)) / (kz[:-1] + kz[1:])
-    else:
+    elif (polarisation == 'p'):
         r_ab =(kz[:-1]*(n[1:])**2 - kz[1:]*(n[:-1])**2) \
               / (kz[:-1]*(n[1:])**2 + kz[1:]*(n[:-1])**2)
     
@@ -106,29 +106,22 @@ def ReflectionCoeff(incidence_angle=0., polarisation='s'):
     res_g = U(0)
     return res_g
 
-# Power coefficient reflexion
-#Phi_0 = 0 polarisation s
-Phi_0 = 0
-R_th_ss_0 = (abs(ReflectionCoeff(Phi_0,'s')))**2
-
-#Phi_0 = pi/4 polarisations s and p
-Phi_0 = pi/4
-R_th_ss = (abs(ReflectionCoeff(Phi_0,'s')))**2
-R_th_pp = (abs(ReflectionCoeff(Phi_0,'p')))**2
+# Power reflexion coefficient for different incidence angles and polarisations
+R_th_ss_0 = (abs(ReflectionCoeff(0, 's')))**2       # Phi_i = 0 
+R_th_ss = (abs(ReflectionCoeff(pi/4, 's')))**2      # Phi_i = pi/4
+R_th_pp = (abs(ReflectionCoeff(pi/4, 'p')))**2
 
 ############################################################################
 # Calculation with Berreman4x4
-# Phi_0 = 0, 's' polarization
-Phi_0 = 0
-Kx = front.get_Kx_from_Phi(Phi_0)
-data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
+# Incidence angle Phi_i = 0, 's' polarization
+Kx = front.get_Kx_from_Phi(0)
+data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 R_ss_0 = abs(r_ss)**2
 
-# Phi_0 = pi/4, 's' and 'p' polarizations
-Phi_0 = pi/4
-Kx = front.get_Kx_from_Phi(Phi_0)
-data = numpy.array([s.getJones(Kx,2*pi/lbda) for lbda in lbda_list])
+# Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
+Kx = front.get_Kx_from_Phi(pi/4)
+data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
 r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
 r_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
 R_ss = abs(r_ss)**2
