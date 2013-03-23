@@ -698,6 +698,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
         If h is a tuple ('QWP', lbda), the thickness 'h' is calculated for a
         quarter-wave plate at wavelength 'lbda'.
         """
+        # Special case when a quarter-wave plate is requested
         if isinstance(h, tuple):
             (name, lbda) = h
             if name == "QWP":
