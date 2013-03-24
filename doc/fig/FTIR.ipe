@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120704170140" modified="D:20120710155318"/>
+<ipe version="70005" creator="Ipe 7.1.2">
+<info created="D:20120704170140" modified="D:20130324214230"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -232,11 +232,11 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="-11.6472 0 0 0.742524 2431.27 179.183" stroke="black" pen="fat">
-192.258 767.192 m
-192.258 534.416 l
+<path layer="alpha" stroke="black" pen="fat">
+192.003 748.841 m
+192 592 l
 </path>
-<path matrix="0.843324 0 0 2.948 2.50188 -1275.66" stroke="black" dash="dash dotted" arrow="normal/normal">
+<path matrix="0.843324 0 0 2.948 6.71684 -1274.86" stroke="black" dash="dash dotted" arrow="normal/normal">
 48.9529 654.974 m
 486.45 654.974 l
 </path>
@@ -244,89 +244,125 @@ h
 192.259 747.039 m
 192.259 799.726 l
 </path>
-<path stroke="black">
+<path matrix="1 0 0 1 -0.346 1.185" stroke="black">
 192.346 654.815 m
 64.633 581.08 l
 </path>
-<path stroke="black">
+<path matrix="1 0 0 1 -0.16 0.981" stroke="black">
 192.16 655.019 m
 65.0868 728.385 l
 </path>
-<path matrix="116.128 0 0 0.759693 -29477.91 168.748" stroke="black" pen="fat">
-256.045 767.917 m
-256.045 534.616 l
+<path stroke="black" pen="fat">
+256.084 752.129 m
+256 592 l
 </path>
-<path stroke="black">
+<path matrix="1 0 0 1 -0.628 0.651" stroke="black">
 256.628 655.349 m
 384.022 708.117 l
 </path>
-<use name="mark/disk(sx)" pos="107.256 703.772" size="normal" stroke="black"/>
-<use matrix="1 0 0 1 -0.188599 0" name="mark/disk(sx)" pos="106.459 605.015" size="small" stroke="black"/>
-<use matrix="1 0 0 1 18.7653 7.68941" name="mark/disk(sx)" pos="352.822 695.277" size="small" stroke="black"/>
-<text transformations="translations" pos="198.742 777.188" stroke="black" type="label" valign="baseline">x</text>
-<text matrix="1 0 0 1 -65.0888 2.731" transformations="translations" pos="466.835 639.728" stroke="black" type="label" valign="baseline">z</text>
-<path stroke="black" arrow="normal/normal">
-132.601 655.061 m
-59.5593 0 0 59.5593 192.16 655.019 140.928 624.645 a
-</path>
-<path stroke="black" arrow="normal/normal">
-326.046 654.606 m
-69.4223 0 0 69.4223 256.628 655.349 320.995 681.356 a
-</path>
-<path matrix="0.996084 -0.0884075 0.0884075 0.996084 -139.158 99.1898" stroke="black">
+<text transformations="translations" pos="198.742 777.188" stroke="black" type="label" width="5.258" height="4.289" depth="0" valign="baseline">x</text>
+<text matrix="1 0 0 1 -66.835 8.272" transformations="translations" pos="466.835 639.728" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<path matrix="0.996084 -0.0884075 0.0884075 0.996084 -153.903 108.706" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<path matrix="0.996084 -0.0884075 0.0884075 0.996084 -140.144 0.432824" stroke="black">
+<path matrix="0.996084 -0.0884075 0.0884075 0.996084 -140.49 1.61782" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<path matrix="0.996084 -0.0884075 0.0884075 0.996084 125.173 98.3842" stroke="black">
+<path matrix="0.996084 -0.0884075 0.0884075 0.996084 124.545 99.0352" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<text matrix="1 0 0 1 -3.28794 -5.70526" transformations="translations" pos="119.232 642.308" stroke="black" type="label" valign="baseline" size="Large">$\phi_i$</text>
-<text matrix="1 0 0 1 212.097 23.8808" transformations="translations" pos="119.232 642.308" stroke="black" type="label" valign="baseline" size="Large">$\phi_t$</text>
-<path matrix="1.2986 0.0101447 -0.0100541 1.28701 -25.6026 -174.806" stroke="black" arrow="normal/normal">
+<text matrix="1 0 0 1 14.4363 -0.268439" transformations="translations" pos="119.232 642.308" stroke="black" type="label" width="12.244" height="9.962" depth="2.79" valign="baseline" size="Large">$\phi_i$</text>
+<text matrix="1 0 0 1 185.682 19.9204" transformations="translations" pos="119.232 642.308" stroke="black" type="label" width="12.409" height="9.962" depth="2.79" valign="baseline" size="Large">$\phi_t$</text>
+<path matrix="1.2986 0.0101447 -0.0100541 1.28701 -7.02659 -162.605" stroke="black" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<path matrix="-0.011976 1.29858 -1.28699 -0.0118691 886.3 474.161" stroke="black" arrow="normal/normal">
+<path matrix="-0.011976 1.29858 -1.28699 -0.0118691 885.954 475.346" stroke="black" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<path matrix="-0.0270057 0.721524 -2.06022 -0.0289592 1397.49 621.335" stroke="black" arrow="normal/normal">
+<path matrix="-0.0270057 0.721524 -2.06022 -0.0289592 1397.33 622.316" stroke="black" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<path matrix="1.16311 0.577618 -0.572463 1.15273 330.001 -55.0293" stroke="black" arrow="normal/normal">
+<path matrix="1.16311 0.577618 -0.572463 1.15273 315.256 -45.5134" stroke="black" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<path matrix="1.29671 -0.136868 0.143584 1.2141 99.8769 -36.5431" stroke="black" pen="0.4" arrow="normal/normal">
+<path matrix="1.29671 -0.136868 0.143584 1.2141 75.0982 -45.869" stroke="black" pen="0.4" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<path matrix="0.218908 1.28006 -1.26863 0.216954 1115.87 435.674" stroke="black" arrow="normal/normal">
+<path matrix="0.218908 1.28006 -1.26863 0.216954 1115.24 436.325" stroke="black" arrow="normal/normal">
 106.27 605.015 m
 122.301 614.365 l
 </path>
-<text matrix="1 0 0 1 -4.0965 -19.5721" transformations="translations" pos="336.703 713.089" stroke="black" type="label" valign="baseline">t</text>
-<text matrix="1 0 0 1 3.18616 -4.0965" transformations="translations" pos="124.14 609.766" stroke="black" type="label" valign="baseline">i</text>
-<text matrix="1 0 0 1 61.9026 -39.5995" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" valign="baseline">s</text>
-<text matrix="1 0 0 1 27.7651 1.3655" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" valign="baseline">p</text>
-<text matrix="1 0 0 1 58.2613 60.0815" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" valign="baseline">s</text>
-<text matrix="1 0 0 1 325.444 55.075" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" valign="baseline">s</text>
-<text matrix="1 0 0 1 50.0683 105.144" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" valign="baseline">p</text>
-<text matrix="1 0 0 1 309.969 103.778" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" valign="baseline">p</text>
-<text matrix="1 0 0 1 -3.18616 -10.4688" transformations="translations" pos="136.885 705.351" stroke="black" type="label" valign="baseline">r</text>
-<text matrix="1 0 0 1 21.1197 32.5899" transformations="translations" pos="100.927 552.415" stroke="black" type="label" valign="baseline">Front space $n_f$</text>
-<text matrix="1 0 0 1 -17.5239 37.8698" transformations="translations" pos="286.179 546.953" stroke="black" type="label" valign="baseline">Back space $n_b$</text>
-<text matrix="1 0 0 1 -3.18616 -22.3031" transformations="translations" pos="197.877 666.662" stroke="black" type="label" valign="baseline">z=0</text>
-<text matrix="1 0 0 1 -6.37233 0.455166" transformations="translations" pos="263.876 645.724" stroke="black" type="label" valign="baseline">z=$z_b$</text>
-<text matrix="1 0 0 1 12.7447 57.8061" transformations="translations" pos="71.9548 546.413" stroke="black" type="label" valign="baseline">$E_{i
+<text matrix="1 0 0 1 -20.4487 -26.0494" transformations="translations" pos="336.703 713.089" stroke="black" type="label" width="3.598" height="6.128" depth="0" valign="baseline">$t$</text>
+<text matrix="1 0 0 1 17.1192 4.45832" transformations="translations" pos="124.14 609.766" stroke="black" type="label" width="3.432" height="6.571" depth="0" valign="baseline">$i$</text>
+<text matrix="1 0 0 1 61.5566 -38.4145" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" width="4.67" height="4.289" depth="0" valign="baseline">$s$</text>
+<text matrix="1 0 0 1 43.08 5.31418" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" width="5.012" height="4.297" depth="1.93" valign="baseline">$p$</text>
+<text matrix="1 0 0 1 46.3507 68.1801" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" width="4.67" height="4.289" depth="0" valign="baseline">$s$</text>
+<text matrix="1 0 0 1 335.718 64.9928" transformations="translations" pos="43.1205 632.979" stroke="black" type="label" width="4.67" height="4.289" depth="0" valign="baseline">$s$</text>
+<text matrix="1 0 0 1 48.7004 104.531" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" width="5.012" height="4.297" depth="1.93" valign="baseline">$p$</text>
+<text matrix="1 0 0 1 311.249 100.886" transformations="translations" pos="59.0513 619.324" stroke="black" type="label" width="5.012" height="4.297" depth="1.93" valign="baseline">$p$</text>
+<text matrix="1 0 0 1 -3.34616 -9.4878" transformations="translations" pos="136.885 705.351" stroke="black" type="label" width="4.771" height="4.289" depth="0" valign="baseline">$r$</text>
+<text matrix="1 0 0 1 3.073 199.585" transformations="translations" pos="100.927 552.415" stroke="black" type="label" width="69.96" height="6.926" depth="1.93" valign="baseline">Front half-space</text>
+<text matrix="1 0 0 1 -6.179 205.047" transformations="translations" pos="286.179 546.953" stroke="black" type="label" width="67.718" height="6.926" depth="1.93" valign="baseline">Back half-space</text>
+<text matrix="1 0 0 1 -13.877 -82.662" transformations="translations" pos="197.877 666.662" stroke="black" type="label" width="23.336" height="6.42" depth="0" valign="baseline">$z=0$</text>
+<text matrix="1 0 0 1 -15.876 -61.724" transformations="translations" pos="263.876 645.724" stroke="black" type="label" width="26.989" height="4.294" depth="1.49" valign="baseline">$z=z_b$</text>
+<text matrix="1 0 0 1 12.3987 58.9911" transformations="translations" pos="71.9548 546.413" stroke="black" type="label" width="10.671" height="6.812" depth="1.49" valign="baseline">$E_{i
 }$</text>
-<text matrix="1 0 0 1 4.55166 -8.64816" transformations="translations" pos="83.3539 707.629" stroke="black" type="label" valign="baseline">$E_{r}$</text>
-<text matrix="1 0 0 1 -21.848 19.5721" transformations="translations" pos="229.462 602.031" stroke="black" type="label" valign="baseline">$E_{ni}$</text>
-<text matrix="1 0 0 1 -15.9308 -16.8411" transformations="translations" pos="216.262 706.264" stroke="black" type="label" valign="baseline">$E_{nr}$</text>
-<text matrix="1 0 0 1 52.3441 -39.5995" transformations="translations" pos="295.916 744.498" stroke="black" type="label" valign="baseline">$E_{t}$</text>
-<text matrix="1 0 0 1 -0.455166 -4.55166" transformations="translations" pos="219.904 588.376" stroke="black" type="label" valign="baseline">n</text>
+<text matrix="1 0 0 1 -1.33548 22.1268" transformations="translations" pos="83.3539 707.629" stroke="black" type="label" width="11.766" height="6.812" depth="1.49" valign="baseline">$E_{r}$</text>
+<text matrix="1 0 0 1 3.99446 74.6509" transformations="translations" pos="229.462 602.031" stroke="black" type="label" width="15.596" height="6.812" depth="1.49" valign="baseline">$E_{ni}$</text>
+<text matrix="1 0 0 1 -16.3914 -29.4472" transformations="translations" pos="216.262 706.264" stroke="black" type="label" width="16.691" height="6.812" depth="1.49" valign="baseline">$E_{nr}$</text>
+<text matrix="1 0 0 1 51.9887 -37.3132" transformations="translations" pos="295.916 744.498" stroke="black" type="label" width="10.862" height="6.812" depth="1.49" valign="baseline">$E_{t}$</text>
+<text matrix="1 0 0 1 11.2003 1.40223" transformations="translations" pos="148.8 726.598" stroke="black" type="label" width="11.145" height="4.29" depth="2.85" valign="baseline">$n_f$</text>
+<text matrix="1 0 0 1 0.549483 0.849751" transformations="translations" pos="271.451 727.15" stroke="black" type="label" width="9.982" height="4.294" depth="1.49" valign="baseline">$n_b$</text>
+<text matrix="1 0 0 1 8.90255 -2.46514" transformations="translations" pos="215.097 730.465" stroke="black" type="label" width="5.98" height="4.289" depth="0" valign="baseline">$n$</text>
+<path stroke="black" arrow="normal/normal" rarrow="normal/normal">
+192 752 m
+256.084 752.129 l
+</path>
+<text transformations="translations" pos="223.335 757.273" stroke="black" type="label" width="5.185" height="6.918" depth="0" valign="baseline">$d$</text>
+<use matrix="1 0 0 1 -0.346 1.185" name="mark/disk(sx)" pos="106.317 604.932" size="normal" stroke="black"/>
+<use matrix="1 0 0 1 -0.628 0.651" name="mark/disk(sx)" pos="371.593 702.966" size="normal" stroke="black"/>
+<use matrix="1 0 0 1 -14.7451 9.51587" name="mark/disk(sx)" pos="107.256 703.773" size="normal" stroke="black"/>
+<path stroke="black" arrow="normal/normal">
+152 656 m
+40 0 0 40 192 656 157.359 636 a
+</path>
+<path stroke="black" arrow="normal/normal">
+296 656 m
+40 0 0 40 256 656 292.955 671.307 a
+</path>
+<path matrix="1 0 0 1 0 0.481996" stroke="black">
+157.506 734.238 m
+157.506 724.426 l
+173.042 724.426 l
+173.042 734.238 l
+h
+</path>
+<path matrix="1 0 0 1 62.1416 0.4822" stroke="black">
+157.506 734.238 m
+157.506 724.426 l
+173.042 724.426 l
+173.042 734.238 l
+h
+</path>
+<path matrix="1 0 0 1 111.342 0.4822" stroke="black">
+157.506 734.238 m
+157.506 724.426 l
+173.042 724.426 l
+173.042 734.238 l
+h
+</path>
+<path matrix="1 0 0 1 0 -32" stroke="black" arrow="normal/normal">
+208 672 m
+240 704 l
+</path>
+<path stroke="black" rarrow="normal/normal">
+208 672 m
+240 640 l
+</path>
 </page>
 </ipe>

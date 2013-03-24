@@ -43,7 +43,7 @@ s = Berreman4x4.Structure(front, [], back)
 # Parameters for the calculation
 lbda = 1e-6
 k0 = 2*pi/lbda
-Phi_i = numpy.linspace(0, pi/2*0.9999)  # varying incidence angle
+Phi_i = numpy.linspace(0, pi/2*0.9999)  # range for the incidence angles
 
 ############################################################################
 # Analytical calculation

@@ -1016,7 +1016,7 @@ class Structure:
     def getJones(self,Kx,k0=1e6):
         """Returns the Jones matrices.
         
-        Returns : array([T_ri, T_ti])
+        Returns : tuple (T_ri, T_ti)
 
         T_ri is the Jones matrix in reflexion : [[r_pp, r_ps],
                                                  [r_sp, r_ss]]
@@ -1030,6 +1030,10 @@ class Structure:
         ...
 
         Note: If all materials are isotropic, r_ps = r_sp = t_sp = t_ps = 0
+
+        See also: 
+        * extractCoefficient() to extract the desired coefficients.
+        * circularJones() for circular polarization basis
         """
         T = self.getStructureMatrix(Kx,k0)
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
@@ -1078,7 +1082,7 @@ def extractCoefficient(Jones, pos):
     'Jones' : pair of (Jr, Jt) reflexion and transmission Jones matrices
               may be an array of shape [...,2,2,2]
     
-    'pos' : position of the coefficient 'r_sp', 't_pp', 'r_LR', ...
+    'pos' : name of the desired coefficient 'r_sp', 't_pp', 'r_LR', ...
 
     Returns : desired coefficient value
     """
@@ -1366,7 +1370,7 @@ class _TwistedLayer:
             PCP = CP[-1]                    # shape : (Kx,k0,4,4)
             # Number of guaranteed full pitches :
             fp = N//M - 1
-            # Matrix power for the succession of full pitches :
+            # Matrix exponent for the succession of full pitches :
             # Name PP : P for "pitches", P for "propagation matrix"
             left_idx = PCP.shape[:-2]
             pp = [ numpy.linalg.matrix_power(PCP[i],fp)

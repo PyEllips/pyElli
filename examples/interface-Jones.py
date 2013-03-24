@@ -4,7 +4,7 @@
 # Berreman4x4 example
 # Author: O. Castany
 
-# The simplest example: reflection on an air/glass interface
+# Simple example: reflection on an air/glass interface, at normal indicence.
 
 print("*** Air / glass interface ***\n")
 
