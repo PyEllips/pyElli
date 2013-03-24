@@ -22,13 +22,13 @@ front = back = Berreman4x4.IsotropicHalfSpace(glass)
 (no, ne) = (1.5, 1.7)
 Dn = ne-no
 n_med = (ne + no)/2
-LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)
-R = Berreman4x4.rotation_v_theta([0,1,0], pi/2)
-LC = LC.rotated(R)
+LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)  # ne along z
+R = Berreman4x4.rotation_v_theta([0,1,0], pi/2)         # rotation round y
+LC = LC.rotated(R)              # apply rotation from z to x
 # Cholesteric pitch:
 p = 0.65e-6
 # One half turn of a right-handed helix:
-TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=35)
+TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=25)
 
 # Inhomogeneous layer, repeated layer, and structure
 IL = Berreman4x4.InhomogeneousLayer(TN)
@@ -46,7 +46,7 @@ lbda = numpy.linspace(lbda_min, lbda_max, 100)
 k0 = 2*pi/lbda
 
 ############################################################################
-# Analytical calculation for the reflection power coefficient
+# Analytical calculation for the power reflection coefficient
 q = 2*pi/p
 alpha = q/k0
 epsilon = (no**2+ne**2)/2

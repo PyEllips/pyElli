@@ -302,7 +302,7 @@ E_{ip} \\ E_{is}
 E_{ip} \\ E_{is}
 \end{pmatrix}_{z_f}
 \end{align*}
-These matrices contain all the information on reflexion and transmission of the sample. 
+These matrices contain all the information on reflection and transmission of the sample. 
 They are obtained by the relations 
 $$
 T_{ri} = T_{rt} T_{it}^{-1} 
@@ -435,15 +435,15 @@ The source code contains detailed information on the classes and functions, inco
 They can be conveniently displayed when working with a shell like IPython \cite{IPython}.
 
 Commented examples are bundled with the program and can be run directly from the command line.
-They range from simple situations to more complex structures: reflexion on an interface, interferences in a thin layer, reflexion on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
+They range from simple situations to more complex structures: reflection on an interface, interferences in a thin layer, reflection on a Bragg mirror, 90$^\circ$ twisted nematic liquid crystal.
 Whenever possible, result from Berreman4x4 is compared with exact analytical result, and show excellent match.
-The code is also validated against results presentend in reference~\onlinecite{Fujiwara}.
+The code is also validated against results presented in reference~\onlinecite{Fujiwara}.
 
 The UML class diagram of Berreman4x4 is presented on figures~\ref{fig:class1} and \ref{fig:class2}.
 A \texttt{Structure} is built from a list of \texttt{Layer} objects, between one front and one back \texttt{HalfSpace} objects.
 \texttt{Material} objects are created for defining \texttt{MaterialLayer} objects.
 Several classes of non-dispersive materials are provided, but dispersive materials may also be created, like the class \texttt{IsotropicDispersive}.
-Additionnal classes of materials can be created by deriving classes \texttt{Material} and \texttt{DispersionLaw}.
+Additional classes of materials can be created by deriving classes \texttt{Material} and \texttt{DispersionLaw}.
 Layers with a continuous spatial variation of the permittivity tensor are described with an \texttt{InhomogeneousMaterial} and form an \texttt{InhomogeneousLayer} object.
 
 \section{TODO}

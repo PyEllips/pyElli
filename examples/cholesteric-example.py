@@ -19,9 +19,9 @@ front = back = Berreman4x4.IsotropicHalfSpace(glass)
 (no, ne) = (1.5, 1.7)
 Dn = ne-no
 n_med = (ne + no)/2
-LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)
-R = Berreman4x4.rotation_v_theta([0,1,0], pi/2)
-LC = LC.rotated(R)
+LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)  # ne along z
+R = Berreman4x4.rotation_v_theta([0,1,0], pi/2) # rotation of pi/2 along y
+LC = LC.rotated(R)                              # apply rotation from z to x
 # Cholesteric pitch:
 p = 0.65e-6
 # One half turn of a right-handed helix:

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120726164116" modified="D:20120726165954"/>
+<ipe version="70005" creator="Ipe 7.1.2">
+<info created="D:20120726164116" modified="D:20130324190415"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -232,45 +232,89 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="1 0 0 1 1.08081 -126.081" stroke="black">
+<path layer="alpha" matrix="0 -1 1 0 -475.805 798.919" stroke="black">
 191.821 702.171
 256.876 702.171
 224.349 713.999 u
 </path>
-<path matrix="1 0 0 1 -0.625613 -38.496" stroke="black">
+<path matrix="0 -1 1 0 -388.22 800.626" stroke="black">
 191.821 702.171
 256.876 702.171
 224.349 713.999 u
 </path>
-<path matrix="1 0 0 1 -57.4279 -49.8008" stroke="black">
+<path matrix="0 -1 1 0 -399.525 857.428" stroke="black">
 301.881 654.778
 260.605 640.87
 289.319 639.973 u
 </path>
-<path matrix="1 0 0 1 -189.333 -83.8986" stroke="black">
+<path matrix="0 -1 1 0 -433.623 989.333" stroke="black">
 427.056 703.682
 399.24 689.774
 421.224 687.979 u
 </path>
-<path matrix="1 0 0 1 -132.802 -69.093" stroke="black">
+<path matrix="0 -1 1 0 -418.817 932.802" stroke="black">
 352.579 701.887
 352.579 683.492
 366.488 693.811 u
 </path>
-<path matrix="1 0 0 1 -149.402 -32.3032" stroke="black">
+<path matrix="0 -1 1 0 -382.027 949.402" stroke="black">
 350.336 688.876
 394.753 677.211
 373.666 692.465 u
 </path>
-<path matrix="1 0 0 1 -86.1419 -32.3032" stroke="black">
+<path matrix="0 -1 1 0 -382.027 886.142" stroke="black">
 299.638 671.379
 326.557 666.443
 302.33 681.249 u
 </path>
-<path stroke="black" arrow="normal/normal" rarrow="normal/normal">
-256 576 m
-256 672 l
+<path matrix="1 0 0 1 0 56" stroke="black" arrow="normal/normal" rarrow="normal/normal">
+230.13 544 m
+316.612 544 l
 </path>
-<text matrix="1 0 0 1 21.0868 -16.6003" transformations="translations" pos="256 640" stroke="black" type="label" width="6.498" height="7.453" depth="3.43" valign="baseline">$\frac{p}{2}$</text>
+<text matrix="0 -1 1 0 -368.505 866.263" transformations="translations" pos="256 640" stroke="black" type="label" width="6.498" height="7.453" depth="3.43" valign="baseline">$\frac{p}{2}$</text>
+<path stroke="black" dash="dash dotted" arrow="normal/normal">
+376 576 m
+448 576 l
+</path>
+<path matrix="1.42857 0 0 1.2 -141.714 -316.8" stroke="black" dash="dash dotted" arrow="normal/normal">
+256 768 m
+256 784 l
+</path>
+<text matrix="1.42857 0 0 1.2 -158.022 -328.906" transformations="translations" pos="262.171 794.885" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<text matrix="1.42857 0 0 1.2 216.449 -366.394" transformations="translations" pos="162.086 785.328" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<path matrix="1.42857 0 0 1.2 -95.9997 272" stroke="black">
+224 280 m
+224 232 l
+</path>
+<path matrix="0 -1 1 0 -296.455 800.626" stroke="black">
+191.821 702.171
+256.876 702.171
+224.349 713.999 u
+</path>
+<path matrix="0 -1 1 0 -290.262 949.402" stroke="black">
+350.336 688.876
+394.753 677.211
+373.666 692.465 u
+</path>
+<path matrix="0 -1 1 0 -290.262 886.142" stroke="black">
+299.638 671.379
+326.557 666.443
+302.33 681.249 u
+</path>
+<path matrix="1.42857 0 0 1.2 96.0003 272" stroke="black">
+224 280 m
+224 232 l
+</path>
+<use name="mark/disk(sx)" pos="336 576" size="normal" stroke="black"/>
+<use name="mark/disk(sx)" pos="352 576" size="normal" stroke="black"/>
+<use name="mark/disk(sx)" pos="368 576" size="normal" stroke="black"/>
+<path stroke="black" dash="dash dotted">
+208 576 m
+328 576 l
+</path>
+<text matrix="1 0 0 1 -0.617238 -9.29587" transformations="translations" pos="424.617 601.296" stroke="black" type="label" width="26.747" height="6.918" depth="0" valign="baseline">Glass
+</text>
+<text matrix="1 0 0 1 -232.617 -9.296" transformations="translations" pos="424.617 601.296" stroke="black" type="label" width="26.747" height="6.918" depth="0" valign="baseline">Glass
+</text>
 </page>
 </ipe>
