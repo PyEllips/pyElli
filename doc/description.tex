@@ -404,20 +404,22 @@ $$
 
 \section{Installation and use}
 
-Berreman4x4 is offered as a Python module named \verb/Berreman4x4.py/, which can be imported and used in any Python script with the command 
+Berreman4x4 is offered as a Python module named \verb/Berreman4x4.py/, which can be imported and used in Python scripts with the command 
 \begin{verbatim}
 import Berreman4x4
 \end{verbatim}
-The module file should either be present in the working directory, or be accessible in the module path.
+The module file should either be present in the working directory or be accessible in the module path.
 A convenient organization is to store Python modules in a special directory pointed by the \verb/PYTHONPATH/ environment variable.
 For example, my \verb/.bashrc/ script contains
 \begin{verbatim}
 export PYTHONPATH="/home/castany/.python"
 \end{verbatim}
 and the \verb/.python/ directory contains symbolic links to the different Python modules I use. 
-
+%
 Berreman4x4 depends on the standard Python modules NumPy and SciPy.
 Application examples also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
+%
+General workflow is the following: (1) the structure is built, (2) Jones matrices are calculated, (3) the desired coefficients are extracted and plotted.
 
 \section{Code documentation and examples}
 
@@ -456,8 +458,8 @@ General:
 %
 Source code:
 \begin{itemize}
-\item Homogeneous layer: implement exact solution with Cayley-Hamilton or Lagrange-Sylvester
-\item Provide fields inside the structure
+\item Homogeneous layer: implement exact solution with Cayley-Hamilton or Lagrange-Sylvester.
+\item Calculation of the fields inside the structure.
 \end{itemize}
 
 
