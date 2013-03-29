@@ -1,0 +1,422 @@
+% Encoding: utf-8
+
+\chapterdoc{Example of the frustrated total internal reflection}
+\chapterauthor{Olivier Castany, Céline Molinaro}
+
+The theoretical approach is presented are the resulting analytical expressions are used to validate Berreman4x4.
+
+\section{Presentation}
+
+We consider three isotropic materials and an incoming plane wave $i$ is the ($xz$) plane, as presented on figure~\ref{fig:FTIR}.
+Total internal reflection occurs at the first interface if the incidence angle $\phi_i$ is larger than the critical angle $\phi_{ic}$, where $\sin(\phi_{ic}) = n/n_f$, and an evanescent wave is present in the second material.
+If the third material is close enough, a plane wave is transmitted from the evanescent wave.
+This phenomenon is the frustrated total internal reflection. 
+Due to the ($xz$) mirror symmetry, it is possible to separate $s$ and $p$ modes.
+
+\begin{figure}[!h]
+\includegraphics[width=\columnwidth]{fig/FrustratedTIR}
+\caption{\label{fig:FTIR}Frustrated total internal reflection with input and output plane waves. }
+\end{figure}
+
+\section{Considerations about the Poynting vector}
+This section contains a description of three general cases whose can be applied to our system. In each description, we are interested in the Poynting vector, which is defined by:
+$$\langle \vec{\Pi} \rangle _t = \begin{pmatrix}
+\langle \Pi _x \rangle _t\\
+\langle \Pi _z \rangle _t
+\end{pmatrix}
+=\frac{\Re(\vec{E}\times \vec{H}^*)}{2} $$
+In the case of a polarisation s, we get $\vec{H}$ from $\vec{E}$ from using a Maxwell equation
+$\vec{\nabla}\vec{E} = -\mu_0 \frac{\partial\vec{H}}{\partial t}$.\\
+In the case of a polarisation p, we get $\vec{E}$ from $\vec{H}$ from using a Maxwell equation $\vec{\nabla}\vec{H}=\epsilon_0\frac{\partial\vec{H}}{\partial t}$.\\
+
+
+Calculations have been done for polarisations s and p. We get the same interpretation of the results for the Poynting vector for both polarisations.
+
+\subsection{Plane wave}
+In this case, we consider one wave in its medium (like the wave in the back space for the frustrated total internal reflection).\\
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{fig/Plane_wave_real_complex}
+\caption{\label{fig:Plane_wave_real_complex}Plane  wave representation when $k_z$ is real (a) and when $k_z$ is an imaginary number (b)}
+\end{figure}
+
+On the figure ~\ref{fig:Plane_wave_real_complex}, the wave vectors are represented. For $(a)$ the Poynting vector is parallel to the wave vector. For $(b)$ the Poynting vector is parallel to the real part of the wave vector.\\
+\subsubsection{Polarisation s}
+The electric field is $\vec{E}=E_0e^{-i\omega t+i(k_zz+k_xx)}\vec{y}$ where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.
+The magnetic field is\\
+$$
+\vec{H}^*=\frac{E_0^*}{\omega \mu _0}(-k_z^*e^{i\omega t-i(k_z^*z+k_xx)}\vec{x}+k_xe^{+i\omega t-i(k_z^*z+k_xx)}\vec{z}) 
+$$ with $k_z=k_z'+ik_z''$.\\
+The Poynting vector is:
+\begin{equation}
+\langle \vec{\Pi} \rangle _t=\displaystyle\frac{\displaystyle\mid E_0\mid ^2e^{-2k_z''z}}{\displaystyle2\omega \mu _0}
+\begin{pmatrix}
+k_x\\
+k_z'
+\end{pmatrix}
+\end{equation}
+
+\subsubsection{Polarisation p}
+The magnetic field is:\\
+$$\vec{H}=H_0e^{-i\omega t+i(k_zz+k_xx)}\vec{y}$$\\
+The electric field is:\\
+$$\vec{E}=\frac{H_0}{\omega\epsilon_0}(k_ze^{-i\omega t+i(k_zz+k_xx)}\vec{x}-k_xe^{-i\omega t+i(k_zz+k_xx)}\vec{z})$$\\
+The Poynting vector is:
+\begin{equation}
+\langle \vec{\Pi} \rangle _t=\displaystyle\frac{\displaystyle\mid H_0\mid ^2e^{-2k_z''z}}{\displaystyle2\omega \epsilon _0}
+\begin{pmatrix}
+k_x\\
+k_z'
+\end{pmatrix}
+\end{equation}
+\subsubsection{Physical interpretation}
+In both cases of polarisation, if $k_z\in \mathbb{R}$, the Poynting vecteur is oriented to the wave vector and its power is constant. If $k_z\in i\mathbb{R}$, the Poynting vector is oriented to $\vec{k}_x$ and its power decreases exponentialy along $z$.\\
+
+
+\subsection{Plane wave reflected by an arbitrary medium}
+In this case there are two waves, the incident and the reflected.
+\subsubsection{Polarisation s}
+$\vec{E}^+$ is the incident wave and $\vec{E}^-$ is the refracted wave. The electric field is
+\begin{equation*}
+\vec{E}=\vec{E}^++\vec{E}^-
+\end{equation*}
+The relation between these two components is
+\begin{equation*}
+E^-_0=r_sE^+_0
+\end{equation*}
+where $r_s=\Re(r_s)+i\Im(r_s)$ is the amplitude coefficient reflection.\\
+The electric field is given by $$\vec{E}=E^+_0(e^{-i\omega t+i(k_xx+k_zz)}+r_se^{-i\omega t+i(k_xx-k_zz)})\vec{y}$$
+where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.\\
+The magnetic field is\\
+\begin{align*}
+\vec{H}^*=\frac{E^{+*}_0}{\omega \mu _0}(&k_z^*(-e^{i\omega t-i(k_xx+k_z^*z)}+r_s^*e^{i\omega t+i(k_zz-k_xx)})\vec{x}\\
+&+k_x(e^{i\omega t-i(k_xx+k_z^*z)}+r_s^*e^{i\omega t+i(k_zz-k_xx)})\vec{z}
+\end{align*}\\
+The Poynting vector is:\\
+\begin{align*}
+\langle \vec{\Pi} \rangle _t= \displaystyle\frac{\displaystyle \mid E^+_0\mid ^2}{\displaystyle 2\omega \mu _0}\Big\{&
+e^{-2k_z''z}
+\begin{pmatrix}
+k_x\\
+k_z'
+\end{pmatrix}
++\mid r_s\mid ^2e^{2k_z''z}
+\begin{pmatrix}
+k_x\\
+-k_z'
+\end{pmatrix}\\
+&+2
+\begin{pmatrix}
+k_x\Re(r_s)\cos(2k_z'z)\\
+k_z''\Im(r_s)\sin(2k_z'z)
+\end{pmatrix}
+\Big\}
+\end{align*}
+
+\subsubsection{Polarisation p}
+$\vec{H}^+$ is the incident wave and $\vec{H}^-$ is the refracted wave. The magnetic field is
+\begin{equation*}
+\vec{H}=\vec{H}^++\vec{H}^-
+\end{equation*}
+The relation between these two components is
+\begin{equation*}
+H^-_0=r_pH^+_0
+\end{equation*}
+where $r_p=\Re(r_p)+i\Im(r_p)$ is the amplitude coefficient reflection.\\
+The electric field is given by $$\vec{H}=H^+_0(e^{-i\omega t+i(k_xx+k_zz)}+r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{y}$$
+where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.\\
+The electric field is\\
+\begin{align*}
+\vec{E}=\frac{H^{+}_0}{\omega \epsilon _0}(&k_z^*(e^{-i\omega t+i(k_xx+k_zz)}-r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{x}\\
+&-k_x(e^{-i\omega t+i(k_xx+k_zz)}+r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{z}
+\end{align*}
+The Poynting vector is:\\
+\begin{align*}
+\langle \vec{\Pi} \rangle _t= \displaystyle\frac{\displaystyle \mid H_0\mid ^2}{\displaystyle 2\omega \epsilon _0}\Big\{&
+e^{-2k_z''z}
+\begin{pmatrix}
+k_x\\
+k_z'
+\end{pmatrix}
++\mid r_p\mid ^2e^{2k_z''z}
+\begin{pmatrix}
+k_x\\
+-k_z'
+\end{pmatrix}\\
+&+2
+\begin{pmatrix}
+k_x\Re(r_p)\cos(2k_z'z)\\
+k_z''\Im(r_p)\sin(2k_z'z)
+\end{pmatrix}
+\Big\}
+\end{align*}
+\subsubsection{Physical interpretation}
+In both cases of polarisation, if $k_z\in \mathbb{R}$, the Poynting vector is constant along $z$. There are interferences along $x$ given by $k_x\cos(\theta _{r'}-2k_z'z)$.
+If $k_z\in i\mathbb{R}$, there are interferences along both $x$ and $z$ directions given by $k_x\Re(r_{s,p})\cos(2k_z'z)$ and $k_z''\Im(r_{s,p})\sin(2k_z'z)$ respectively. Along $z$ there is only an interference term.
+\begin{figure}[!h]
+\includegraphics[width=\columnwidth]{fig/Wave_evanescent_poynting}
+\caption{\label{fig:Wave_evanescent_poynting}Poynting vector for evanescents wave 
+ and for their superimpose}
+\end{figure}
+This case is represented on figure ~\ref{fig:Wave_evanescent_poynting}. Each wave has a Poynting vector along $x$. When they are superimpose, interferences occurs on $z$, so the Poynting vector has a component along $z$ too. The Poynting vector addition is not linear.
+
+\subsection{Plane wave reflected by a diopter}
+An incident wave and its reflective plane are in a first medium $1$. The waves can be plane or evanescent. In the medium $2$ there is a refracted or transmitted plane wave.  
+\subsubsection{Polarisation s}
+The amplitude coefficient reflection for the electric field is known:
+$$r_s = \frac{k_{z1}-k_{z2}}{k_{z1}+k_{z2}} \ \ \text{and} \ \ t_s=1+r_s$$
+The calculations are done in the most general case so $k_{z1}\in \mathbb{C}$ and $k_{z2}\in \mathbb{C}$.\\
+$k_{z1}=k_{z1}'+ik_{z1}''$ and $k_{z2}=k_{z2}'+ik_{z2}''$
+\begin{equation*}
+r_s=\frac{\mid k_{z1}\mid ^2-\mid k_{z2}\mid ^2+i2\Im(k_{z1}k_{z2}^*)}{\mid k_{z1}+k_{z2}\mid^2}
+\end{equation*}
+The interesting part of $r_s$ is its imaginary part:\\
+\begin{equation*}
+\Im(r_s) = \frac{2(k_{z2}'k_{z1}''-k_{z1}'k_{z2}'')}{\mid k_{z1}+k_{z2}\mid^2}
+\end{equation*}
+\subsubsection{Polarisation p}
+The amplitude coefficient reflection for the magnetic field is known:
+$$
+r_p=\frac{\epsilon_2k_{z1}-\epsilon_1k_{z2}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
+ \ \ \text{and} \ \ t_p = \frac{\cos(\Phi_1)(1-r_p)}{\cos(\Phi_2)}$$
+with $\epsilon_i=n_i^2$
+The interesting part of $r_p$ is its imaginary part:\\
+\begin{equation*}
+\Im(r_p) = \frac{2\epsilon_1\epsilon_2(k_{z2}'k_{z1}''-k_{z1}'k_{z2}'')}{\mid k_{z1}+k_{z2}\mid^2}
+\end{equation*}
+This part is used to know the sign of the third term in the Poynting vector expression.
+\subsubsection{Physical interpretation}
+The waves can be plane $k_{z}\in \mathbb{R}$ or evanescent $k_{z}\in i\mathbb{R}$.
+
+
+\section{Application to the frustrated internal total reflection}
+
+\subsection{Electric fields and wave vectors}
+To study the frustrated total internal reflection, calculations are done in the case where the angle of incidence is larger than the critical angle :
+$\Phi_i > \Phi_{ic}$
+Five waves are studied. Each wave has the same wave vector $k_x$.
+\begin{center}
+$k_x=n_fk_0\sin(\Phi_i)$ and $k_x=n_bk_0\sin(\Phi_t)$\\
+\end{center}
+
+The first two are in the front medium where the wave vector along $z$, $k_{fz}\in \mathbb{R}$.
+\begin{itemize}
+\item  Incident wave  $\vec{E}_i(x,z)=\vec{E}_i(z)e^{-i\omega t+i(k_{fz}z+k_xx)}$
+\item Reflected wave  $\vec{E}_r(x,z)=\vec{E}_r(z)e^{-i\omega t+i(-k_{fz}z+k_xx)}$\\
+where $k_{fz}=n_fk_0\cos(\Phi _i)$.
+\end{itemize}
+Two others are in the air where $k_{nz}\in i\mathbb{R}$. One is the transmitted wave from the front medium and the other is the reflected wave.
+\begin{itemize}
+\item Incident wave 
+$\vec{E}_{ni}(x,z)=\vec{E}_ni(z)e^{-i\omega t+i(k_{nz}z+k_xx)}$
+\item Reflected wave 
+$\vec{E}_{nr}(x,z)=\vec{E}_nr(z)e^{-i\omega t+i(-k_{nz}z+k_xx)}$\\
+where $k_{nz}=ik_0\sqrt{n_f^2\sin^2(\Phi _i)-n^2}$.
+\end{itemize}
+The last wave is in the back medium where $k_{b}\in \mathbb{R}$.
+\begin{itemize}
+\item Transmitted wave
+$\vec{E}_t(x,z)=\vec{E}_t(z)e^{-i\omega t+i(k_{bz}z+k_xx)}$\\
+where $k_{bz}=n_bk_0\cos(\Phi _t)$.
+\end{itemize}
+In this medium the plane wave has an angle \\
+$$
+\Phi_t=\arcsin (\frac{n_{fz}\sin(\Phi_i)}{n_b})
+$$
+
+\subsection{Continuity equations} 
+The electric waves follow the $y$ axe.\\
+Continuity equations $z=0$
+\begin{equation}
+\left\lbrace
+\begin{array}{ccc}\label{eq:continuity0}
+E_{ni}&=r_{fn}E_{nr}+t_{nf}E_i\\
+E_r&=r_{nf}E_{i}+t_{fn}E_{nr}
+\end{array}\right.
+\end{equation}
+Continuity equations $z=z_b$
+\begin{equation}
+\left\lbrace
+\begin{array}{ccc}\label{eq:continuityd}
+E_t=t_{bn}E_{ni}\\
+E_{nr}=r_{bn}E_{ni}
+\end{array}\right.
+\end{equation}
+$E_{ni}$ and $E_{nr}$ can be written at $z=0$ or $z=z_b$. The relations between them are
+\begin{equation}
+\left\lbrace
+\begin{array}{ccc}\label{eq:0tod}
+E_{ni}(0)=E_{ni}(d)e^{-ik_{nz}d}\\
+E_{nr}(0)=E_{nr}(d)e^{ik_{nz}d}
+\end{array}\right.
+\end{equation}
+
+With the equations~\eqref{eq:continuity0},~\eqref{eq:continuityd} and~\eqref{eq:0tod}, we got\\
+\begin{equation}
+E_{ni}(0)=\frac{t_{nf}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
+\end{equation}
+
+\begin{equation}
+E_{nr}(0)=\frac{t_{nf}t_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
+\end{equation}
+
+\begin{equation}\label{eq:reflectivewave}
+E_{r}(0)=\frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
+\end{equation}
+
+\begin{equation}\label{eq:transmittedwave}
+E_{t}(z_b)=\frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
+\end{equation}
+According to equation~\eqref{eq:reflectivewave}, the amplitude coefficient reflection for the interface is\\
+$$
+r=\frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
+$$
+The reflection coefficient is given by
+\begin{equation*}
+R=\mid r\mid^2
+\end{equation*}
+According to equation~\eqref{eq:transmittedwave}, the amplitude coefficient transmission for the interface is\\
+$$
+t=\frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
+$$
+The transmission coefficient is given by
+\begin{equation*}
+T=\frac{n_b\cos\Phi _t}{n_f\cos\Phi _i}\mid t\mid^2
+\end{equation*}
+The conservation of energy $R+T=1$ is respected in the cases of polarisation p and polarisation s.
+
+
+\subsection{Front medium}
+In this medium, there are two waves, the incident and the reflected. The total electric field is:
+$\vec{E}_f = \vec{E}_i+\vec{E}_r$\\
+On the $y$ axe:
+\begin{eqnarray*}
+E_f = E_i(0)\ 
+\big\{&  e^{-i\omega t+i(k_{fz}z+k_xx)} + \cdots  \\
+ &+ r_{tot} \ e^{-i\omega t+i(-k_{fz}z+k_xx)} \big\}
+\end{eqnarray*}
+with 
+\begin{eqnarray*}
+r_{tot} & = & \frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}\\
+& = & \Re(r_{tot})+i\Im(r_{tot})
+\end{eqnarray*}
+%The conugate magnetic field is:\\
+%\begin{eqnarray*}
+%\vec{H}^*=\frac{E_i(0)^*}{\omega \mu_0}\{&k_{fz}(-e^{i\omega t-i(k_{fz}z+k_xx)}\\
+%+r_{tot}^*e^{i\omega t+i(k_{fz}z-k_xx)})\vec{x}\\
+%+&k_x(e^{i\omega t-i(k_{fz}z+k_xx)}\\
+%+r_{tot}^*e^{i\omega t+i(k_{fz}z-k_xx)})\vec{z}\}
+%\end{eqnarray*}
+The Poynting vector:\\
+\begin{align*}
+\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_i(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{&
+\begin{pmatrix}
+k_x\\
+k_{fz}
+\end{pmatrix}
++\mid r_{tot}\mid^2
+\begin{pmatrix}
+k_x\\
+-k_{fz}
+\end{pmatrix}\\
+&+2
+\begin{pmatrix}
+\Re(r_{tot})\cos(2k_{fz}z\\
+0
+\end{pmatrix} 
+\Big\}
+\end{align*}
+
+\subsection{Air medium}
+In this medium, there are two waves. The total electric field is:
+$\vec{E}_n=\vec{E}_{ni}+\vec{E}_{nr}$\\
+On the $y$ axe:\\
+\begin{eqnarray*}
+E_n = E_{ni}(0)\ 
+\big\{&  e^{-i\omega t+i(k_{nz}z+k_xx)} + \cdots  \\
+ &+ r_n \ e^{-i\omega t+i(-k_{nz}z+k_xx)} \big\}
+\end{eqnarray*}
+with:
+\begin{eqnarray*}
+r_n & = & r_{bn}e^{i2k_{nz}d}\\
+& = & \Re(r_n)+i\Im(r_n)
+\end{eqnarray*}
+
+%The conjugate magnetic fiels has been calculated in the most general case, with $k_{nz}\in \mathbb{C}$:\\
+%\begin{eqnarray*}
+%\vec{H}^*=\frac{E_{ni}(0)^*}{\omega \mu_0}\{
+%&k_{nz}^*\big(-e^{i\omega t-i(k_{nz}^*z+k_xx)}\\
+%+r_n^*e^{i\omega t+i(k_{nz}^*z-k_xx)}\big)\vec{x}\\
+%+&k_x\big(e^{i\omega t-i(k_{nz}^*z+k_xx)}\\
+%+e^{i\omega t+i(k_{nz}^*z-k_xx)}\big)\vec{z}\}
+%\end{eqnarray*}
+%We write:\\
+%$$
+%k_{nz}=k_{nz}'+ik_{nz}''
+%$$
+%The Poynting vector is:\\
+%$
+%\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_{ni}(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{
+%e^{-2k_{nz}''z}
+%\begin{pmatrix}
+%k_x\\
+%k_{nz}'
+%\end{pmatrix}\\
+%+\mid r_n\mid ^2e^{2k_{nz}''z}
+%\begin{pmatrix}
+%k_x\\
+%-k_{nz}'
+%\end{pmatrix}\\
+%+2\mid r_n\mid
+%\begin{pmatrix}
+%k_x\cos(\theta _n-2k_{nz}'z)\\
+%k_{nz}''\sin(\theta _n -2k_{nz}'z)
+%\end{pmatrix}
+%\Big\}
+%$\\
+In the case of the frustrated total internal reflexion, the wave in the air medium is an evanescent wave, $k_{nz} \in i\mathbb{R}$. The Poynting vector is:\\
+$
+\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_{ni}(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{
+e^{2k_{nz}z}
+\begin{pmatrix}
+k_x\\
+0
+\end{pmatrix}
++\mid r_n\mid ^2e^{-2k_{nz}z}
+\begin{pmatrix}
+k_x\\
+0
+\end{pmatrix}\\
++2
+\begin{pmatrix}
+k_x\Re(r_n)\\
+ik_{nz}^*\Im(r_n)
+\end{pmatrix}
+\Big\}
+$\\
+The third term is an interference terms. Along $z$ we get:\\
+$$
+ik_{nz}^*\sin(\theta _n) =\frac{ k_0^3n_b\cos(\Phi _t)(n_f^2\sin ^2(\Phi _i)-n^2)e^{ik_{nz}d}}{\mid k_{nz}+k_{fz}\mid ^2}
+$$
+This expression is positive so the interference term is oriented to the positive $z$.
+\subsection{Back medium}
+In this medium, there is one wave, the transmitted wave.With equation~\eqref{eq:transmittedwave}, on the $y$ axe:\\
+\begin{equation*}
+E_t = E_i(0)te^{-i\omega t+i(k_bz+k_xx)}
+\end{equation*}
+with:
+$$
+t = \frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
+$$
+%The conjugate magnetic field is:\\
+%\begin{eqnarray*}
+%\vec{H}^*= \frac{E_i(0)^*}{\omega \mu_0}\Big\{-k_t^*be^{i\omega t-i(k_bz+k_xx)}\vec{x}\\
+%+k_xt^*e^{i\omega t-i(k_bz+k_xx)}\vec{z}\Big\}
+%\end{eqnarray*}
+The Poynting vector is:\\
+$$
+\langle \vec{\Pi} \rangle _t = \frac{\mid E_i(0)\mid ^2\mid t\mid ^2}{2\omega \mu_0}
+\begin{pmatrix}
+k_x\\
+k_b
+\end{pmatrix}
+$$
