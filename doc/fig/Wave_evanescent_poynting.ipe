@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120712171839" modified="D:20120731101259"/>
+<ipe version="70005" creator="Ipe 7.1.2">
+<info created="D:20120712171839" modified="D:20130331233435"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -232,15 +232,15 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" matrix="-17.2293 0 0 1.82405 1750.01 -527.391" stroke="black" dash="dash dotted" arrow="normal/normal">
-96 640 m
-96 736 l
+<path layer="alpha" matrix="1 0 0 1 -32 0" stroke="black" dash="dash dotted" arrow="normal/normal">
+96 632 m
+95.9972 815.11 l
 </path>
-<text matrix="1 0 0 1 261.103 16.0492" transformations="translations" pos="176 624" stroke="black" type="label" width="4.428" height="4.289" depth="0" valign="baseline">z</text>
-<text matrix="1 0 0 1 0.118232 79.3903" transformations="translations" pos="80 736" stroke="black" type="label" width="5.258" height="4.289" depth="0" valign="baseline">x</text>
-<path matrix="3.5 0 0 9.49672 -239.999 -5437.9" stroke="black" dash="dash dotted" arrow="normal/normal">
-96 640 m
-192 640 l
+<text matrix="1 0 0 1 200 8" transformations="translations" pos="176 624" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<text matrix="1 0 0 1 -32 72" transformations="translations" pos="80 736" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<path stroke="black" dash="dash dotted" arrow="normal/normal">
+56 640 m
+384 640 l
 </path>
 <path matrix="1 0 0 1.66667 64 -426.667" stroke="black" pen="1">
 256 640 m
@@ -270,9 +270,9 @@ h
 272 656 m
 272 672 l
 </path>
-<path matrix="1 0 0 1.2 0 -134.4" stroke="black" arrow="normal/normal">
+<path stroke="black" arrow="normal/normal">
 112 672 m
-112 752 l
+112 800 l
 </path>
 <path stroke="black" arrow="normal/normal">
 272 672 m
@@ -280,23 +280,23 @@ h
 </path>
 <path stroke="black" arrow="normal/normal">
 192 672 m
-192 720 l
+192 736 l
 </path>
-<path matrix="1.43683 0 0 1.0171 -48.9255 3.14381" stroke="black" arrow="normal/normal">
-112 752 m
-112 768 l
+<path stroke="black" arrow="normal/normal">
+112 656 m
+112 808 l
 </path>
 <path stroke="black" arrow="normal/normal">
 272 704 m
 272 736 l
 </path>
-<path matrix="2.76289 0 0 0.799883 -559.505 156.882" stroke="black" arrow="normal/normal">
-272 704 m
-272 736 l
+<path stroke="black" arrow="normal/normal">
+192.001 720 m
+192 752 l
 </path>
 <path stroke="black" pen="fat" arrow="normal/normal">
 112 656 m
-144 784 l
+144 808 l
 </path>
 <path stroke="black" pen="fat" arrow="normal/normal">
 272 656 m
@@ -304,74 +304,60 @@ h
 </path>
 <path stroke="black" pen="fat" arrow="normal/normal">
 192 656 m
-224.127 745.004 l
+224 752 l
 </path>
-<text matrix="1 0 0 1 4.84865 -71.4253" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="34.497" height="7.473" depth="2.49" valign="baseline">$\langle \Pi_{xint} \rangle _t$</text>
-<text matrix="1 0 0 1 53.2544 -128.994" transformations="translations" pos="57.9679 773.579" stroke="black" type="label" width="34.072" height="7.473" depth="2.49" valign="baseline">$\langle \Pi_{zint} \rangle _t$</text>
-<text matrix="1 0 0 1 4.37181 38.4754" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.453" height="7.933" depth="2.49" valign="baseline">$\langle \Pi_{x}^- \rangle _t$</text>
-<text matrix="1 0 0 1 4.84865 -9.20042" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.343" height="7.933" depth="2.49" valign="baseline">$\langle \Pi_x^+\rangle _t$</text>
-<text matrix="1 0 0 1 74.5562 -5.91776" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="18.728" height="9.637" depth="2.49" valign="baseline">$\langle \vec{\Pi} \rangle _t$</text>
-<text matrix="0.234924 0.972014 -0.972014 0.234924 1000.16 261.059" transformations="translations" pos="352 768" stroke="black" type="label" width="75.91" height="6.926" depth="1.93" valign="baseline">Arbirary medium</text>
-<path stroke="black" dash="dashed">
-112 768 m
-192.638 711.826
-272 704
-272 704 s
+<text matrix="1 0 0 1 43.0735 -68.159" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="36.864" height="7.472" depth="2.85" halign="right" valign="baseline">$\langle \Pi_{x,int} \rangle _t$</text>
+<text matrix="1 0 0 1 53.2544 -128.994" transformations="translations" pos="57.9679 773.579" stroke="black" type="label" width="36.438" height="7.472" depth="2.85" valign="baseline">$\langle \Pi_{z,int} \rangle _t$</text>
+<text matrix="1 0 0 1 43.0735 67.841" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.453" height="7.933" depth="2.49" halign="right" valign="baseline">$\langle \Pi_{x}^- \rangle _t$</text>
+<text matrix="1 0 0 1 43.0735 -4.159" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="25.343" height="7.933" depth="2.49" halign="right" valign="baseline">$\langle \Pi_x^+\rangle _t$</text>
+<text matrix="1 0 0 1 91.0735 67.841" transformations="translations" pos="60.9265 732.159" stroke="black" type="label" width="18.728" height="9.637" depth="2.49" valign="baseline">$\langle \vec{\Pi} \rangle_t$</text>
+<text matrix="0.234924 0.972014 -0.972014 0.234924 992.16 261.059" transformations="translations" pos="352 768" stroke="black" type="label" width="37.941" height="6.918" depth="0" valign="baseline">Interface</text>
+<path stroke="black" dash="dotted" pen="fat">
+112 800 m
+112 800 112 800 112 800 c
+112 800 136 760 192 736 c
+192 736 224 720 272 704 c
+272 704 272 704 272 704 c
+272 704 272 704 272 704 c
 </path>
-<path stroke="black" dash="dashed">
-111.999 784.277 m
-111.999 784.277 111.999 784.277 125.333 777.83 c
-138.667 771.383 176.521 750.786 192.001 745.596 c
-207.586 740.37 245.334 739.199 258.667 737.599 c
+<path stroke="black" dash="dotted" pen="fat">
+112 808 m
+112 808 112 808 112 808 c
+112 808 144 776 192 752 c
+192 752 216 744 272 736 c
 272 736 272 736 272 736 c
 </path>
-<path stroke="black">
-368 656 m
-384 672 l
-</path>
-<path stroke="black">
-368 688 m
-384 704 l
-</path>
-<path stroke="black">
-368 720 m
-384 736 l
-</path>
-<path stroke="black">
-368 752 m
-384 768 l
-</path>
-<path stroke="black">
+<path matrix="1 0 0 1 -8 0" stroke="black">
 344 752 m
 360 768 l
 </path>
-<path stroke="black">
-392 752 m
-408 768 l
-</path>
-<path stroke="black">
+<path matrix="1 0 0 1 -8 0" stroke="black">
 344 720 m
 360 736 l
 </path>
-<path stroke="black">
+<path matrix="1 0 0 1 -8 0" stroke="black">
 344 688 m
 360 704 l
 </path>
-<path stroke="black">
+<path matrix="1 0 0 1 -8 0" stroke="black">
 344 656 m
 360 672 l
 </path>
-<path stroke="black">
-392 656 m
-408 672 l
+<text matrix="1 0 0 1 144 8" transformations="translations" pos="176 624" stroke="black" type="label" width="23.336" height="6.42" depth="0" halign="center" valign="baseline">$z=0$</text>
+<path stroke="black" dash="dash dotted">
+112 808 m
+144 808 l
+144 656 l
 </path>
-<path stroke="black">
-392 688 m
-408 704 l
+<path stroke="black" dash="dash dotted">
+192 752 m
+224 752 l
+224 656 l
 </path>
-<path stroke="black">
-392 720 m
-408 736 l
+<path stroke="black" dash="dash dotted">
+272 736 m
+304 736 l
+304 656 l
 </path>
 </page>
 </ipe>

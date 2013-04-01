@@ -67,9 +67,9 @@ where $\varepsilon_0$ and $\mu_0$ are the usual S.I. values.
 %
 The convention for time-varying complex fields is taken as $\exp(-i\omega t)$, and Maxwell's equations read
 $$
-\nabla\times E = k_0 H
+\nabla\times E = i k_0 H
 \quad \mathrm{and} \quad
-\nabla\times H = -k_0 \varepsilon E,
+\nabla\times H = -i k_0 \varepsilon E,
 $$
 with $k_0=\omega/c$.
 We consider non-magnetic materials, i.e. $\mu = 1$.
@@ -414,12 +414,15 @@ For example, my \verb/.bashrc/ script contains
 \begin{verbatim}
 export PYTHONPATH="/home/castany/.python"
 \end{verbatim}
-and the \verb/.python/ directory contains symbolic links to the different Python modules I use. 
-%
-Berreman4x4 depends on the standard Python modules NumPy and SciPy.
-Application examples also use module matplotlib for plotting \cite{NumPy, SciPy, matplotlib}.
-%
-General workflow is the following: (1) the structure is built, (2) Jones matrices are calculated, (3) the desired coefficients are extracted and plotted.
+and the \verb/.python/ directory contains symbolic links to the different Python modules I use.
+
+Berreman4x4 depends on the standard Python modules NumPy\cite{NumPy} and SciPy\cite{SciPy}.
+Application examples need module matplotlib\cite{matplotlib} for plotting.
+
+General workflow with Berreman4x4 consists of  
+(1) building the structure, 
+(2) calculating Jones matrices, 
+(3) extracting the desired coefficients and plotting.
 
 \section{Code documentation and examples}
 
@@ -453,7 +456,7 @@ Layers with a continuous spatial variation of the permittivity tensor are descri
 General:
 \begin{itemize}
 \item Check Berreman's equations again. Which are the assumptions?
-\item Verify efficiency of Z.~Lu's method. It seems to be worse than the midpoint method for the twisted nematic example. Strange.
+\item Verify efficiency of Lu's method. It seems to be worse than the midpoint method for the twisted nematic example. Strange.
 \end{itemize}
 %
 Source code:

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.2">
-<info created="D:20120704170140" modified="D:20130324214230"/>
+<info created="D:20120704170140" modified="D:20130330173623"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -313,12 +313,12 @@ h
 <text matrix="1 0 0 1 12.3987 58.9911" transformations="translations" pos="71.9548 546.413" stroke="black" type="label" width="10.671" height="6.812" depth="1.49" valign="baseline">$E_{i
 }$</text>
 <text matrix="1 0 0 1 -1.33548 22.1268" transformations="translations" pos="83.3539 707.629" stroke="black" type="label" width="11.766" height="6.812" depth="1.49" valign="baseline">$E_{r}$</text>
-<text matrix="1 0 0 1 3.99446 74.6509" transformations="translations" pos="229.462 602.031" stroke="black" type="label" width="15.596" height="6.812" depth="1.49" valign="baseline">$E_{ni}$</text>
-<text matrix="1 0 0 1 -16.3914 -29.4472" transformations="translations" pos="216.262 706.264" stroke="black" type="label" width="16.691" height="6.812" depth="1.49" valign="baseline">$E_{nr}$</text>
+<text matrix="1 0 0 1 3.99446 74.6509" transformations="translations" pos="229.462 602.031" stroke="black" type="label" width="14.431" height="6.812" depth="1.49" valign="baseline">$E_{si}$</text>
+<text matrix="1 0 0 1 -16.3914 -29.4472" transformations="translations" pos="216.262 706.264" stroke="black" type="label" width="15.526" height="6.812" depth="1.49" valign="baseline">$E_{sr}$</text>
 <text matrix="1 0 0 1 51.9887 -37.3132" transformations="translations" pos="295.916 744.498" stroke="black" type="label" width="10.862" height="6.812" depth="1.49" valign="baseline">$E_{t}$</text>
 <text matrix="1 0 0 1 11.2003 1.40223" transformations="translations" pos="148.8 726.598" stroke="black" type="label" width="11.145" height="4.29" depth="2.85" valign="baseline">$n_f$</text>
 <text matrix="1 0 0 1 0.549483 0.849751" transformations="translations" pos="271.451 727.15" stroke="black" type="label" width="9.982" height="4.294" depth="1.49" valign="baseline">$n_b$</text>
-<text matrix="1 0 0 1 8.90255 -2.46514" transformations="translations" pos="215.097 730.465" stroke="black" type="label" width="5.98" height="4.289" depth="0" valign="baseline">$n$</text>
+<text matrix="1 0 0 1 0.90255 -2.46514" transformations="translations" pos="215.097 730.465" stroke="black" type="label" width="10.238" height="4.294" depth="1.49" valign="baseline">$n_s$</text>
 <path stroke="black" arrow="normal/normal" rarrow="normal/normal">
 192 752 m
 256.084 752.129 l
@@ -342,7 +342,7 @@ h
 173.042 734.238 l
 h
 </path>
-<path matrix="1 0 0 1 62.1416 0.4822" stroke="black">
+<path matrix="1 0 0 1 55.1475 0.4822" stroke="black">
 157.506 734.238 m
 157.506 724.426 l
 173.042 724.426 l

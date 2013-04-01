@@ -34,7 +34,7 @@ The refractive indices can be given from the command line and total internal ref
 
 \section{Bragg Mirror}
 We consider TiO$_2$/SiO$_2$ Bragg mirrors as presented on figure~\ref{fig:Bragg}.
-In \verb/validation-Bragg.py/, the reflection coefficient $R$ is calculated with Berreman4x4 and compared to the analytical result, for different incidence angles and polarizations. 
+In \verb/validation-Bragg.py/, the reflection coefficient $R$ is calculated with Berreman4x4 and compared to the analytical result\cite{Wikipedia_Fresnel}, for different incidence angles and polarizations. 
 The results are identical.
 In \verb/Bragg-example.py/, the reflection and transmission coefficients $R$ and $T$ are calculated for a Bragg mirror with $8.5$ periods at normal incidence.
 \begin{figure}[!h]
@@ -69,7 +69,7 @@ In \verb/validation-cholesteric.py/, the reflection spectrum of a right-handed c
 Agreement is good and the little differences may be due to the fact that the analytic expression does not take into account the reflection at the glass boundaries.
 In Berreman4x4, the half-pitch of the twisted material was divided into 35 parts, which is more than enough for an accurate result.
 
-In \verb/cholesteric-example.py/, transmission and reflection of a cholesteric structure is simulated with right handed circularly polarized light.
+In \verb/cholesteric-example.py/, transmission and reflection of a cholesteric structure is simulated for right handed circularly polarized light.
 Transmission of unpolarized light is also simulated, and analyzed with different polarizers.
 Eigenvalues and eigenvectors of the transmission matrix for different cases are calculated.
 

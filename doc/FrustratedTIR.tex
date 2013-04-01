@@ -3,192 +3,379 @@
 \chapterdoc{Example of the frustrated total internal reflection}
 \chapterauthor{Olivier Castany, Céline Molinaro}
 
-The theoretical approach is presented are the resulting analytical expressions are used to validate Berreman4x4.
+Frustrated total internal reflection is used as a validation example. 
+Analytical and numerical results are compared.
 
 \section{Presentation}
 
-We consider three isotropic materials and an incoming plane wave $i$ is the ($xz$) plane, as presented on figure~\ref{fig:FTIR}.
-Total internal reflection occurs at the first interface if the incidence angle $\phi_i$ is larger than the critical angle $\phi_{ic}$, where $\sin(\phi_{ic}) = n/n_f$, and an evanescent wave is present in the second material.
-If the third material is close enough, a plane wave is transmitted from the evanescent wave.
-This phenomenon is the frustrated total internal reflection. 
-Due to the ($xz$) mirror symmetry, it is possible to separate $s$ and $p$ modes.
+We consider the situation on figure~\ref{fig:FTIR}, where two half-spaces with indices $n_f$ and $n_b$ are separated by a medium of index $n_s$ and thickness $d$.
+The three media are assumed to be lossless.
+The incoming plane wave defines vector $k_x$ throughout the structure.
+The reduced wave vector is $K_x=n_f \sin(\phi_i)$.
+The scalar Helmholtz equation holds separatley inside the three media, 
+$(\Delta+k_0^2 \varepsilon)\{E,H\}=0$,
+and implies that there are at most two waves in each medium, with wave vector $\pm k_z$, given by $k_z^2 = k_0^2 n^2 - k_x^2$.
 
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/FrustratedTIR}
 \caption{\label{fig:FTIR}Frustrated total internal reflection with input and output plane waves. }
 \end{figure}
 
-\section{Considerations about the Poynting vector}
-This section contains a description of three general cases whose can be applied to our system. In each description, we are interested in the Poynting vector, which is defined by:
-$$\langle \vec{\Pi} \rangle _t = \begin{pmatrix}
-\langle \Pi _x \rangle _t\\
-\langle \Pi _z \rangle _t
-\end{pmatrix}
-=\frac{\Re(\vec{E}\times \vec{H}^*)}{2} $$
-In the case of a polarisation s, we get $\vec{H}$ from $\vec{E}$ from using a Maxwell equation
-$\vec{\nabla}\vec{E} = -\mu_0 \frac{\partial\vec{H}}{\partial t}$.\\
-In the case of a polarisation p, we get $\vec{E}$ from $\vec{H}$ from using a Maxwell equation $\vec{\nabla}\vec{H}=\epsilon_0\frac{\partial\vec{H}}{\partial t}$.\\
+We consider the separation medium.
+Since $k_x$ is real, $k_z$ is either purely real or purely complex.
+The first case happens for incidence angles $\phi_i$ smaller than the critical angle $\phi_{ic}$, given by $\sin(\phi_{ic}) = n_s/n_f$.
+In this case, two plane waves are superimposed.
+The second case corresponds to the total internal reflexion in the front half-space medium. 
+There is only an evanescent wave in the separation medium.
+However, if the third material is close enough, a plane wave is transmitted from the evanescent wave.
+This phenomenon is the frustrated total internal reflexion.
+In this case, there are two evanescent waves superimposed in the separation medium.
 
+Due to the ($xz$) mirror symmetry, $s$ and $p$ modes can be considered separately. 
+For $s$ polarization, we have
+$$
+\vec E = E(x,z)\ \vec y
+\quad\mathrm{and}\quad
+\vec H = \frac{1}{i k_0} 
+\begin{pmatrix}
+-\partial_z E \\
+\phantom{-} 0 \\
+\phantom{-} \partial_x E
+\end{pmatrix}.
+$$
+For $p$ polarization, we have
+$$
+\vec H = H(x,z)\ \vec y
+\quad\mathrm{and}\quad
+\vec E = \frac{i}{k_0 \varepsilon} 
+\begin{pmatrix}
+-\partial_z H \\
+\phantom{-} 0 \\
+\phantom{-} \partial_x H
+\end{pmatrix}.
+$$
 
-Calculations have been done for polarisations s and p. We get the same interpretation of the results for the Poynting vector for both polarisations.
+In the next sections, we will study the anatomy of the waves in detail. 
+For that purpose, the Poynting vector gives useful physical insight.
+In Gaussian units, the time average of the Poynting vector is
+$$\langle \vec{\Pi} \rangle_t  =  
+\frac{c}{8\pi} \Re\left(\vec{E}\times \vec{H}^*\right).$$
 
-\subsection{Plane wave}
-In this case, we consider one wave in its medium (like the wave in the back space for the frustrated total internal reflection).\\
+\section{Anatomy of a single wave}
+
+If we consider an $s$-polarized wave defined by 
+$$
+\vec E = E(x,y)\ \vec y
+\quad\mathrm{with}\quad
+E(x,y) = E_0\ e^{-i\omega t + i(k_x x + k_z z)},$$
+we deduce
+$\quad
+\vec H = E(x,y)
+\begin{pmatrix}
+- K_z\\
+\phantom{-} 0\\
+\phantom{-} K_x
+\end{pmatrix},
+$
+$$
+\vec H^* = E_0^*\ e^{i\omega t - i(k_x x + k_z^* z)}
+\begin{pmatrix}
+- K_z^*\\
+\phantom{-} 0\\
+\phantom{-} K_x
+\end{pmatrix},
+$$
+$$
+\mathrm{and}\quad
+\langle \vec{\Pi} \rangle_t  = \frac{c}{8\pi} 
+|E_0|^2 e^{-2 k_z'' z}
+\begin{pmatrix}
+K_x\\
+0\\
+K_z'
+\end{pmatrix}.
+$$
+If we consider a $p$-polarized wave defined by 
+$$
+\vec H = H(x,y)\ \vec y
+\quad\mathrm{with}\quad
+H(x,y) = H_0\ e^{-i\omega t + i(k_x x + k_z z)},$$
+we deduce
+$\quad
+\vec E = \displaystyle \frac{H(x,y)}{\varepsilon}
+\begin{pmatrix}
+\phantom{-} K_z\\
+\phantom{-} 0\\
+- K_x
+\end{pmatrix},
+$
+\begin{equation*}
+\vec H^* = H_0^*\ e^{i\omega t - i(k_x x + k_z^* z)}\ \vec y,
+\end{equation*}
+$$
+\mathrm{and}\quad
+\langle \vec{\Pi} \rangle_t  = \frac{c}{8\pi} 
+\frac{|H_0|^2}{\varepsilon} e^{-2 k_z'' z}
+\begin{pmatrix}
+K_x\\
+0\\
+K_z'
+\end{pmatrix}.
+$$
+
+In these expressions, we defined $k_z = k_z' + i k_z''$.
+We observe that the Poynting vector is parallel to the real part of the wave vector.
+If $k_z$ is real, the wave amplitude is constant along $z$.
+If $k_z$ is purely complex, there is no energy flow in the $z$ direction, and the wave decays exponentially in the $z$ direction.
+Figure~\ref{fig:Plane_wave_real_complex} represents the two cases.
+
 \begin{figure}[h!]
 \includegraphics[width=\columnwidth]{fig/Plane_wave_real_complex}
-\caption{\label{fig:Plane_wave_real_complex}Plane  wave representation when $k_z$ is real (a) and when $k_z$ is an imaginary number (b)}
+\caption{\label{fig:Plane_wave_real_complex}Real part of the wave vector. The thickness of the line indicates the intensity of the wave.}
 \end{figure}
 
-On the figure ~\ref{fig:Plane_wave_real_complex}, the wave vectors are represented. For $(a)$ the Poynting vector is parallel to the wave vector. For $(b)$ the Poynting vector is parallel to the real part of the wave vector.\\
-\subsubsection{Polarisation s}
-The electric field is $\vec{E}=E_0e^{-i\omega t+i(k_zz+k_xx)}\vec{y}$ where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.
-The magnetic field is\\
+
+\section{Reflection on an interface, fields and Poynting vector}
+
+We consider an incident wave partially reflected at $z=0$ by a structure that does not change the type $s$ or $p$ of the polarization.
+The waves may either be plane waves or evanescent waves.
+The incident wave is named with a ``$+$'' subscript and the reflected wave with a ``$-$'' subscript.
+The complex reflection coefficients for each mode are called $r_s$ and $r_p$.
+%
+The total field is $\vec E = \vec E^+ + \vec E^-$
+and for the $s$ polarisation, we consider
 $$
-\vec{H}^*=\frac{E_0^*}{\omega \mu _0}(-k_z^*e^{i\omega t-i(k_z^*z+k_xx)}\vec{x}+k_xe^{+i\omega t-i(k_z^*z+k_xx)}\vec{z}) 
-$$ with $k_z=k_z'+ik_z''$.\\
-The Poynting vector is:
-\begin{equation}
-\langle \vec{\Pi} \rangle _t=\displaystyle\frac{\displaystyle\mid E_0\mid ^2e^{-2k_z''z}}{\displaystyle2\omega \mu _0}
+\left\{
+\begin{array}{l}
+\vec E^+ = E^+\ \vec y \\
+\vec E^- = E^-\ \vec y
+\end{array}
+\right.
+\quad\mathrm{with}\quad
+\left\{
+\begin{array}{l}
+E^+ = E_0^+ e^{-i\omega t + i(k_x x + k_z z)}  \\
+E^- = E_0^- e^{-i\omega t + i(k_x x - k_z z)}.
+\end{array}
+\right.
+$$
+The amplitudes of the incident and reflected waves are connected by $E_0^- = r_s E_0^+$.
+The magnetic excitation is 
+$$
+\vec H = \vec H^+ + \vec H^- = 
+E^+ 
 \begin{pmatrix}
-k_x\\
-k_z'
+- K_z \\
+\phantom{-} 0 \\
+\phantom{-} K_x 
 \end{pmatrix}
-\end{equation}
-
-\subsubsection{Polarisation p}
-The magnetic field is:\\
-$$\vec{H}=H_0e^{-i\omega t+i(k_zz+k_xx)}\vec{y}$$\\
-The electric field is:\\
-$$\vec{E}=\frac{H_0}{\omega\epsilon_0}(k_ze^{-i\omega t+i(k_zz+k_xx)}\vec{x}-k_xe^{-i\omega t+i(k_zz+k_xx)}\vec{z})$$\\
-The Poynting vector is:
-\begin{equation}
-\langle \vec{\Pi} \rangle _t=\displaystyle\frac{\displaystyle\mid H_0\mid ^2e^{-2k_z''z}}{\displaystyle2\omega \epsilon _0}
++
+E^-
 \begin{pmatrix}
-k_x\\
-k_z'
-\end{pmatrix}
-\end{equation}
-\subsubsection{Physical interpretation}
-In both cases of polarisation, if $k_z\in \mathbb{R}$, the Poynting vecteur is oriented to the wave vector and its power is constant. If $k_z\in i\mathbb{R}$, the Poynting vector is oriented to $\vec{k}_x$ and its power decreases exponentialy along $z$.\\
-
-
-\subsection{Plane wave reflected by an arbitrary medium}
-In this case there are two waves, the incident and the reflected.
-\subsubsection{Polarisation s}
-$\vec{E}^+$ is the incident wave and $\vec{E}^-$ is the refracted wave. The electric field is
-\begin{equation*}
-\vec{E}=\vec{E}^++\vec{E}^-
-\end{equation*}
-The relation between these two components is
-\begin{equation*}
-E^-_0=r_sE^+_0
-\end{equation*}
-where $r_s=\Re(r_s)+i\Im(r_s)$ is the amplitude coefficient reflection.\\
-The electric field is given by $$\vec{E}=E^+_0(e^{-i\omega t+i(k_xx+k_zz)}+r_se^{-i\omega t+i(k_xx-k_zz)})\vec{y}$$
-where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.\\
-The magnetic field is\\
+K_z \\
+0 \\
+K_x 
+\end{pmatrix}.
+$$
+The Poynting vector is
 \begin{align*}
-\vec{H}^*=\frac{E^{+*}_0}{\omega \mu _0}(&k_z^*(-e^{i\omega t-i(k_xx+k_z^*z)}+r_s^*e^{i\omega t+i(k_zz-k_xx)})\vec{x}\\
-&+k_x(e^{i\omega t-i(k_xx+k_z^*z)}+r_s^*e^{i\omega t+i(k_zz-k_xx)})\vec{z}
-\end{align*}\\
-The Poynting vector is:\\
-\begin{align*}
-\langle \vec{\Pi} \rangle _t= \displaystyle\frac{\displaystyle \mid E^+_0\mid ^2}{\displaystyle 2\omega \mu _0}\Big\{&
-e^{-2k_z''z}
+\langle \vec{\Pi} \rangle_t = 
+\frac{c}{8\pi} |E_0^+|^2 \left\{
+e^{-2 k_z'' z} 
 \begin{pmatrix}
-k_x\\
-k_z'
+K_x \\
+0 \\
+K_z'
 \end{pmatrix}
-+\mid r_s\mid ^2e^{2k_z''z}
++ 
+|r_s|^2
+e^{2 k_z'' z}
 \begin{pmatrix}
-k_x\\
--k_z'
-\end{pmatrix}\\
-&+2
-\begin{pmatrix}
-k_x\Re(r_s)\cos(2k_z'z)\\
-k_z''\Im(r_s)\sin(2k_z'z)
+\phantom{-} K_x \\
+\phantom{-} 0 \\
+-K_z'
 \end{pmatrix}
-\Big\}
++ \right.\\
+\left. +
+2\ |r_s|\ 
+\begin{pmatrix}
+K_x \cos(\theta_{s} - 2 k_z' z)\\
+0 \\
+K_z'' \sin(\theta_{s} - 2 k_z' z)
+\end{pmatrix}
+\right\},
 \end{align*}
+where we defined $r_s = |r_s|\ e^{i\theta_{s}}$.
+The first and second terms correspond to the incident and reflected waves.
+The third term arises from the interference of the two waves.
+If $K_z$ is real, the expression in curly braces becomes
+$$
+\begin{pmatrix}
+K_x \\
+0 \\
+K_z
+\end{pmatrix}
++ 
+|r_s|^2
+\begin{pmatrix}
+\phantom{-} K_x \\
+\phantom{-} 0 \\
+- K_z
+\end{pmatrix}
++ 2\ |r_s|\ 
+\begin{pmatrix}
+K_x \cos(\theta_{s} - 2 k_z z)\\
+0 \\
+0 \\
+\end{pmatrix}.
+$$
+If $K_z$ is purely complex, it becomes
+$$
+e^{-2 k_z'' z} 
+\begin{pmatrix}
+K_x \\
+0 \\
+0
+\end{pmatrix}
++ 
+|r_s|^2
+e^{2 k_z'' z}
+\begin{pmatrix}
+K_x \\
+0 \\
+0
+\end{pmatrix}
++ 2\ 
+\begin{pmatrix}
+K_x r_s'\\
+0 \\
+K_z'' r_s''
+\end{pmatrix},
+$$
+which exhibits an energy flow in the $z$ direction, proportionnal to $K_z'' r_s''$.
 
-\subsubsection{Polarisation p}
-$\vec{H}^+$ is the incident wave and $\vec{H}^-$ is the refracted wave. The magnetic field is
-\begin{equation*}
-\vec{H}=\vec{H}^++\vec{H}^-
-\end{equation*}
-The relation between these two components is
-\begin{equation*}
-H^-_0=r_pH^+_0
-\end{equation*}
-where $r_p=\Re(r_p)+i\Im(r_p)$ is the amplitude coefficient reflection.\\
-The electric field is given by $$\vec{H}=H^+_0(e^{-i\omega t+i(k_xx+k_zz)}+r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{y}$$
-where $k_x\in \mathbb{R}$ and $k_z\in \mathbb{C}$.\\
-The electric field is\\
-\begin{align*}
-\vec{E}=\frac{H^{+}_0}{\omega \epsilon _0}(&k_z^*(e^{-i\omega t+i(k_xx+k_zz)}-r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{x}\\
-&-k_x(e^{-i\omega t+i(k_xx+k_zz)}+r_pe^{-i\omega t+i(k_xx-k_zz)})\vec{z}
-\end{align*}
-The Poynting vector is:\\
-\begin{align*}
-\langle \vec{\Pi} \rangle _t= \displaystyle\frac{\displaystyle \mid H_0\mid ^2}{\displaystyle 2\omega \epsilon _0}\Big\{&
-e^{-2k_z''z}
+For $p$ polarisation, we consider 
+$$
+\left\{
+\begin{array}{l}
+\vec H^+ = H^+\ \vec y \\
+\vec H^- = H^-\ \vec y
+\end{array}
+\right.
+\quad\mathrm{with}\quad
+\left\{
+\begin{array}{l}
+H^+ = H_0^+ e^{-i\omega t + i(k_x x + k_z z)}  \\
+H^- = H_0^- e^{-i\omega t + i(k_x x - k_z z)}.
+\end{array}
+\right.
+$$
+The amplitudes of the incident and reflected waves are connected by $H_0^- = r_p H_0^+$.
+The electric field is
+$$
+\vec E = \vec E^+ + \vec E^- = 
+\frac{H^+}{\varepsilon}
 \begin{pmatrix}
-k_x\\
-k_z'
+\phantom{-} K_z \\
+\phantom{-} 0 \\
+- K_x 
 \end{pmatrix}
-+\mid r_p\mid ^2e^{2k_z''z}
++
+\frac{H^-}{\varepsilon}
 \begin{pmatrix}
-k_x\\
--k_z'
-\end{pmatrix}\\
-&+2
+- K_z \\
+\phantom{-} 0 \\
+- K_x 
+\end{pmatrix}.
+$$
+The Poynting vector is the same expression as for the $s$ polarization, when $r_s$ is replaced by $r_p = |r_p|\ e^{i\theta_{p}}$ and $|E_0^+|^2$ is replaced by $|H_0^+|^2/\varepsilon$,
+\begin{align*}
+\langle \vec{\Pi} \rangle_t = 
+\frac{c}{8\pi} \frac{|H_0^+|^2}{\varepsilon} \left\{
+e^{-2 k_z'' z} 
 \begin{pmatrix}
-k_x\Re(r_p)\cos(2k_z'z)\\
-k_z''\Im(r_p)\sin(2k_z'z)
+K_x \\
+0 \\
+K_z'
 \end{pmatrix}
-\Big\}
++ 
+|r_p|^2
+e^{2 k_z'' z}
+\begin{pmatrix}
+\phantom{-} K_x \\
+\phantom{-} 0 \\
+-K_z'
+\end{pmatrix}
++ \right.\\
+\left. +
+2\ |r_p|\ 
+\begin{pmatrix}
+K_x \cos(\theta_{p} - 2 k_z' z)\\
+0 \\
+K_z'' \sin(\theta_{p} - 2 k_z' z)
+\end{pmatrix}
+\right\}.
 \end{align*}
-\subsubsection{Physical interpretation}
-In both cases of polarisation, if $k_z\in \mathbb{R}$, the Poynting vector is constant along $z$. There are interferences along $x$ given by $k_x\cos(\theta _{r'}-2k_z'z)$.
-If $k_z\in i\mathbb{R}$, there are interferences along both $x$ and $z$ directions given by $k_x\Re(r_{s,p})\cos(2k_z'z)$ and $k_z''\Im(r_{s,p})\sin(2k_z'z)$ respectively. Along $z$ there is only an interference term.
+The analysis is identical to the $s$ polarization. 
+If $K_z$ is purely complex, there is an energy flow in the $z$ direction, proportionnal to $K_z'' r_p''$ (see figure~\ref{fig:Wave_evanescent_poynting}).
+
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/Wave_evanescent_poynting}
-\caption{\label{fig:Wave_evanescent_poynting}Poynting vector for evanescents wave 
- and for their superimpose}
+\caption{\label{fig:Wave_evanescent_poynting}Poynting vector in the case of evanescents waves ($k_z$ purely complex).}
 \end{figure}
-This case is represented on figure ~\ref{fig:Wave_evanescent_poynting}. Each wave has a Poynting vector along $x$. When they are superimpose, interferences occurs on $z$, so the Poynting vector has a component along $z$ too. The Poynting vector addition is not linear.
 
-\subsection{Plane wave reflected by a diopter}
-An incident wave and its reflective plane are in a first medium $1$. The waves can be plane or evanescent. In the medium $2$ there is a refracted or transmitted plane wave.  
-\subsubsection{Polarisation s}
-The amplitude coefficient reflection for the electric field is known:
-$$r_s = \frac{k_{z1}-k_{z2}}{k_{z1}+k_{z2}} \ \ \text{and} \ \ t_s=1+r_s$$
-The calculations are done in the most general case so $k_{z1}\in \mathbb{C}$ and $k_{z2}\in \mathbb{C}$.\\
-$k_{z1}=k_{z1}'+ik_{z1}''$ and $k_{z2}=k_{z2}'+ik_{z2}''$
-\begin{equation*}
-r_s=\frac{\mid k_{z1}\mid ^2-\mid k_{z2}\mid ^2+i2\Im(k_{z1}k_{z2}^*)}{\mid k_{z1}+k_{z2}\mid^2}
-\end{equation*}
-The interesting part of $r_s$ is its imaginary part:\\
-\begin{equation*}
-\Im(r_s) = \frac{2(k_{z2}'k_{z1}''-k_{z1}'k_{z2}'')}{\mid k_{z1}+k_{z2}\mid^2}
-\end{equation*}
-\subsubsection{Polarisation p}
-The amplitude coefficient reflection for the magnetic field is known:
+\section{Expression of the reflexion coefficients for an interface between two media}
+
+We consider the reflexion on the interface between the separation medium and the back half-space.
+For comparison with well known formulas, we will name these media ``1'' and ``2'' respectively.
+The reflection and transmission coefficients for the $s$ polarization are\cite{Wikipedia_Fresnel}
+$$
+r_s = \frac{k_{z1}-k_{z2}}{k_{z1}+k_{z2}} 
+\quad\textrm{and}\quad
+t_s = 1 + r_s = \frac{2\ k_{z1}}{k_{z1}+k_{z2}}.
+$$
+The expressions are valid for complex wave vectors and we deduce
+$$
+r_s' = \frac{|k_{z1}|^2 - |k_{z2}|^2}{|k_{z1} + k_{z2}|^2}
+\quad\textrm{and}\quad
+r_s'' = \frac{2 (k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|k_{z1} + k_{z2}|^2}
+$$
+In the case of an evanescent wave in the separation medium and a plane wave in the back half-space, we have $k_{z1} = i k_{z1}''$ and $k_{z2} = k_{z2}'$, which implies
+$$
+r_s' = \frac{k_{z1}''^2 - k_{z2}^2}{k_{z1}''^2 + k_{z2}^2}
+\quad\textrm{and}\quad
+r_s'' = \frac{2 k_{z1}'' k_{z2}}{k_{z1}''^2 + k_{z2}^2}.
+$$
+The last expression show that $r_s''>0$, the energy flow is directed to the right, as expected intuitively.
+
+For the $p$ polarization, we have\cite{Wikipedia_Fresnel}
 $$
 r_p=\frac{\epsilon_2k_{z1}-\epsilon_1k_{z2}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
- \ \ \text{and} \ \ t_p = \frac{\cos(\Phi_1)(1-r_p)}{\cos(\Phi_2)}$$
-with $\epsilon_i=n_i^2$
-The interesting part of $r_p$ is its imaginary part:\\
-\begin{equation*}
-\Im(r_p) = \frac{2\epsilon_1\epsilon_2(k_{z2}'k_{z1}''-k_{z1}'k_{z2}'')}{\mid k_{z1}+k_{z2}\mid^2}
-\end{equation*}
-This part is used to know the sign of the third term in the Poynting vector expression.
-\subsubsection{Physical interpretation}
-The waves can be plane $k_{z}\in \mathbb{R}$ or evanescent $k_{z}\in i\mathbb{R}$.
+\quad\textrm{and}\quad
+t_p = \frac{2\epsilon_2 k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}},
+$$
+\begin{flalign*}
+\textrm{from which we deduce } 
+r_p' = \frac{\epsilon_2 |k_{z1}|^2 - \epsilon_1 |k_{z2}|^2}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2} && \\
+\textrm{and}\quad
+r_p'' = \frac{2 \epsilon_1\epsilon_2(k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}. &&
+\end{flalign*}
+In the case of an evanescent wave in the separation medium and a plane wave in the back half-space, we have 
+$$
+r_p' = \frac{\epsilon_2 k_{z1}''^2 - \epsilon_1 k_{z2}^2}{\epsilon_2 k_{z1}''^2 + \epsilon_1 k_{z2}^2}
+\quad\textrm{and}\quad
+r_p'' =  \frac{2 \epsilon_1\epsilon_2 k_{z1}'' k_{z2}'}{\epsilon_2 k_{z1}''^2 + \epsilon_1 k_{z2}^2}
+.
+$$
+The last expression show that $r_p''>0$, the energy flow is directed to the right, as expected intuitively.
 
 
-\section{Application to the frustrated internal total reflection}
+
+\section{Frustrated internal total reflection}
+
+For $s$ polarization, we consider the waves $E_i$ and $E_r$ in the incident medium, $E^+$ and $E^-$ in the separation medium, and $E_t$ in the back half-space.
+Continuity of the field at $z=0$ implies
+
 
 \subsection{Electric fields and wave vectors}
 To study the frustrated total internal reflection, calculations are done in the case where the angle of incidence is larger than the critical angle :

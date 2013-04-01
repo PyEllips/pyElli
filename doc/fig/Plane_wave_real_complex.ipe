@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.1">
-<info created="D:20120709160409" modified="D:20120710164945"/>
+<ipe version="70005" creator="Ipe 7.1.2">
+<info created="D:20120709160409" modified="D:20130331230027"/>
+<preamble>\usepackage{amssymb}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +203,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -240,9 +241,9 @@ h
 64.1958 704.014 m
 192.901 703.954 l
 </path>
-<text matrix="1 0 0 1 5.83252 -9.33204" transformations="translations" pos="47.9805 810.062" stroke="black" type="label" width="5.258" height="4.289" depth="0" valign="baseline">x</text>
-<text matrix="1 0 0 1 -1.1665 9.91529" transformations="translations" pos="193.864 685.865" stroke="black" type="label" width="4.428" height="4.289" depth="0" valign="baseline">z</text>
-<text matrix="1 0 0 1 12.6699 11.207" transformations="translations" pos="67.3301 676.793" stroke="black" type="label" width="55.245" height="7.473" depth="2.49" valign="baseline">(a) $k_z$ is real</text>
+<text matrix="1 0 0 1 5.83252 -9.33204" transformations="translations" pos="47.9805 810.062" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<text matrix="1 0 0 1 -1.1665 9.91529" transformations="translations" pos="193.864 685.865" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<text matrix="1 0 0 1 12.6699 11.207" transformations="translations" pos="67.3301 676.793" stroke="black" type="label" width="45.228" height="7.473" depth="2.49" valign="baseline">(a) $k_z$ real</text>
 <path stroke="black" dash="dash dotted" pen="heavier" arrow="normal/normal">
 256.304 703.623 m
 256.304 800.443 l
@@ -251,9 +252,9 @@ h
 256.304 703.623 m
 383.453 703.623 l
 </path>
-<text matrix="1 0 0 1 4.08277 -1.74976" transformations="translations" pos="242.306 802.193" stroke="black" type="label" width="5.258" height="4.289" depth="0" valign="baseline">x</text>
-<text matrix="1 0 0 1 4.66602 2.33301" transformations="translations" pos="379.37 692.541" stroke="black" type="label" width="4.428" height="4.289" depth="0" valign="baseline">z</text>
-<text matrix="1 0 0 1 -23.382 19.372" transformations="translations" pos="295.382 668.628" stroke="black" type="label" width="75.42" height="7.473" depth="2.49" valign="baseline">(b) $k_z$ is complex</text>
+<text matrix="1 0 0 1 4.08277 -1.74976" transformations="translations" pos="242.306 802.193" stroke="black" type="label" width="5.694" height="4.289" depth="0" valign="baseline">$x$</text>
+<text matrix="1 0 0 1 4.66602 2.33301" transformations="translations" pos="379.37 692.541" stroke="black" type="label" width="5.071" height="4.289" depth="0" valign="baseline">$z$</text>
+<text matrix="1 0 0 1 -23.382 19.372" transformations="translations" pos="295.382 668.628" stroke="black" type="label" width="96.148" height="7.473" depth="2.49" valign="baseline">(b) $k_z$ purely complex</text>
 <path matrix="0.876609 -0.449854 0.455449 0.887512 -332.162 121.395" stroke="black" pen="fat" arrow="normal/normal">
 79.5784 718.788 m
 79.5784 782.945 l
@@ -270,19 +271,19 @@ h
 176.398 719.954 m
 176.398 782.945 l
 </path>
-<path matrix="1 0 0 1.01602 0 -10.894" stroke="black" pen="4" arrow="normal/normal">
+<path matrix="1 0 0 1.01602 0 -10.894" stroke="black" pen="ultrafat" arrow="normal/normal">
 272.052 719.371 m
 272.052 782.362 l
 </path>
-<path matrix="1 0 0 1.01602 0 -10.894" stroke="black" pen="2" arrow="normal/normal">
+<path matrix="1 0 0 1.01602 0 -10.894" stroke="black" pen="fat" arrow="normal/normal">
 304.13 719.371 m
 304.13 782.362 l
 </path>
-<path matrix="1 0 0 1.0024 0 -1.22618" stroke="black" arrow="normal/normal">
+<path matrix="1 0 0 1.0024 0 -1.22618" stroke="black" pen="heavier" arrow="normal/normal">
 336.472 719.502 m
 336.472 783.349 l
 </path>
-<path matrix="1 0 0 1.0024 0 -0.880355" stroke="black" dash="dashed" arrow="normal/normal">
+<path matrix="1 0 0 1.0024 0 -0.880355" stroke="black" arrow="normal/normal">
 368.568 719.157 m
 368.568 783.004 l
 </path>
