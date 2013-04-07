@@ -158,7 +158,7 @@ In this version, the propagator for a thin slab is simply the product of three h
 
 \section{Transition to half-spaces}
 
-For isotropic half-spaces, the relation between the waves and the vector $\Psi$ at the boundary is given by the transition matrices $L_f$ and $L_b$,
+For isotropic half-spaces, the relation between the wave coefficients and the vector $\Psi$ at the boundary is given by the transition matrices $L_f$ and $L_b$ with
 $$
 \Psi(0) = L_f 
 \begin{pmatrix}
@@ -176,8 +176,11 @@ E_{tp}\\
 0
 \end{pmatrix}_{z=z_b}
 $$
-The ordering of the components is $(s^+,s^-,p^+,p^-)$, where the superscript indicates the traveling direction of the wave along the $z$ axis.
-If the angle of the wave traveling in the $z$ direction is $\phi$ and the refractive index of the half-space is $n$, we have
+The ordering of the components is $(s^+,s^-,p^+,p^-)$, where the superscripts indicate the traveling direction along the $z$ axis.
+The direction of each wave is characterized by a reduced wave vector $\vec K = (K_x,0,K_z)$ satisfying the Helmholtz relation $\vec K^2 = n^2 = \varepsilon$.
+An angle $\phi$ determines $\vec K = n\ (\cos(\phi), 0, \sin(\phi))$ and may be a complex number when the material is lossy or when an evanescent wave occurs. 
+It is unique with $\phi'\in\ ]-\pi,\pi]$ and $\phi''\in\mathbb{R}$.
+Considering the angle $\phi$ for the wave traveling in the $z$ direction, we have $\phi'\in\ [-\pi/2,\pi/2]$ and 
 $$
 L = 
 \begin{pmatrix}
@@ -457,6 +460,7 @@ General:
 \begin{itemize}
 \item Check Berreman's equations again. Which are the assumptions?
 \item Verify efficiency of Lu's method. It seems to be worse than the midpoint method for the twisted nematic example. Strange.
+\item Check code if back half-space is lossy or total internal reflection occurs. Complex $\phi$?
 \end{itemize}
 %
 Source code:

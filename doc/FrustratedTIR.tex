@@ -11,10 +11,11 @@ Analytical and numerical results are compared.
 We consider the situation on figure~\ref{fig:FTIR}, where two half-spaces with indices $n_f$ and $n_b$ are separated by a medium of index $n_s$ and thickness $d$.
 The three media are assumed to be lossless.
 The incoming plane wave defines vector $k_x$ throughout the structure.
-The reduced wave vector is $K_x=n_f \sin(\phi_i)$.
-The scalar Helmholtz equation holds separatley inside the three media, 
-$(\Delta+k_0^2 \varepsilon)\{E,H\}=0$,
-and implies that there are at most two waves in each medium, with wave vector $\pm k_z$, given by $k_z^2 = k_0^2 n^2 - k_x^2$.
+The reduced wave vector is $K_x=k_x/k_0=n_f \sin(\phi_i)$.
+The scalar Helmholtz equation 
+$(\Delta+k_0^2 \varepsilon)\{E,H\}=0$, 
+holds separatley inside the three media, and implies that there are at most two waves in each medium, with wave vector $\pm k_z$, given by 
+$k_z^2 = k_0^2 n^2 - k_x^2$.
 
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/FrustratedTIR}
@@ -24,12 +25,11 @@ and implies that there are at most two waves in each medium, with wave vector $\
 We consider the separation medium.
 Since $k_x$ is real, $k_z$ is either purely real or purely complex.
 The first case happens for incidence angles $\phi_i$ smaller than the critical angle $\phi_{ic}$, given by $\sin(\phi_{ic}) = n_s/n_f$.
-In this case, two plane waves are superimposed.
-The second case corresponds to the total internal reflexion in the front half-space medium. 
-There is only an evanescent wave in the separation medium.
-However, if the third material is close enough, a plane wave is transmitted from the evanescent wave.
+In this case, two plane waves are present, with $\pm k_z$ wavenumber.
+The second case corresponds to the total internal reflexion in the front half-space medium and these is an evanescent wave in the separation medium.
+If the third material is close enough, a plane wave is transmitted from the evanescent wave.
 This phenomenon is the frustrated total internal reflexion.
-In this case, there are two evanescent waves superimposed in the separation medium.
+In this situation, two evanescent waves are present in the medium, with $\pm k_z''$ exponential evolution.
 
 Due to the ($xz$) mirror symmetry, $s$ and $p$ modes can be considered separately. 
 For $s$ polarization, we have
@@ -53,6 +53,14 @@ $$
 \phantom{-} 0 \\
 \phantom{-} \partial_x H
 \end{pmatrix}.
+$$
+This duality implies that expressions for $p$ polarization relate naturally to $H$. 
+However, transmission and reflection coefficients are always defined with respect to $E$,
+$$
+t=\frac{E_t}{E_i}
+\quad\textrm{and}\quad
+r=\frac{E_r}{E_i}
+\textrm{, for both $s$ and $p$ polarizations.}
 $$
 
 In the next sections, we will study the anatomy of the waves in detail. 
@@ -100,15 +108,17 @@ $$
 \vec H = H(x,y)\ \vec y
 \quad\mathrm{with}\quad
 H(x,y) = H_0\ e^{-i\omega t + i(k_x x + k_z z)},$$
-we deduce
-$\quad
+\begin{flalign}
+\textrm{we deduce}
+\quad
 \vec E = \displaystyle \frac{H(x,y)}{\varepsilon}
 \begin{pmatrix}
 \phantom{-} K_z\\
 \phantom{-} 0\\
 - K_x
-\end{pmatrix},
-$
+\end{pmatrix},&&
+\label{eq:p-wave-single}
+\end{flalign}
 \begin{equation*}
 \vec H^* = H_0^*\ e^{i\omega t - i(k_x x + k_z^* z)}\ \vec y,
 \end{equation*}
@@ -125,8 +135,8 @@ $$
 
 In these expressions, we defined $k_z = k_z' + i k_z''$.
 We observe that the Poynting vector is parallel to the real part of the wave vector.
-If $k_z$ is real, the wave amplitude is constant along $z$.
-If $k_z$ is purely complex, there is no energy flow in the $z$ direction, and the wave decays exponentially in the $z$ direction.
+If $k_z$ is real ($k_z''=0$), the wave amplitude is constant along $z$.
+If $k_z$ is purely complex ($k_z'=0$), there is no energy flow in the $z$ direction, and the wave decays exponentially in the $z$ direction.
 Figure~\ref{fig:Plane_wave_real_complex} represents the two cases.
 
 \begin{figure}[h!]
@@ -135,15 +145,15 @@ Figure~\ref{fig:Plane_wave_real_complex} represents the two cases.
 \end{figure}
 
 
-\section{Reflection on an interface, fields and Poynting vector}
+\section{Reflection on an interface: fields and Poynting vector}
 
-We consider an incident wave partially reflected at $z=0$ by a structure that does not change the type $s$ or $p$ of the polarization.
-The waves may either be plane waves or evanescent waves.
-The incident wave is named with a ``$+$'' subscript and the reflected wave with a ``$-$'' subscript.
-The complex reflection coefficients for each mode are called $r_s$ and $r_p$.
+We consider an incident wave partially reflected at $z=0$ by a structure that does not affect the parity of the wave ($s$ or $p$ polarization).
+The complex reflection coefficients are called $r_s$ and $r_p$.
+The waves may either be plane or evanescent waves.
+The incident and reflected waves are named with ``$+$'' and ``$-$'' subscripts.
+The total field is $\vec E = \vec E^+ + \vec E^-$.
 %
-The total field is $\vec E = \vec E^+ + \vec E^-$
-and for the $s$ polarisation, we consider
+For the $s$ polarisation, we consider
 $$
 \left\{
 \begin{array}{l}
@@ -159,7 +169,6 @@ E^- = E_0^- e^{-i\omega t + i(k_x x - k_z z)}.
 \end{array}
 \right.
 $$
-The amplitudes of the incident and reflected waves are connected by $E_0^- = r_s E_0^+$.
 The magnetic excitation is 
 $$
 \vec H = \vec H^+ + \vec H^- = 
@@ -177,7 +186,7 @@ K_z \\
 K_x 
 \end{pmatrix}.
 $$
-The Poynting vector is
+The amplitudes of the incident and reflected waves are connected by $r_s = E_0^- / E_0^+$ and the Poynting vector is
 \begin{align*}
 \langle \vec{\Pi} \rangle_t = 
 \frac{c}{8\pi} |E_0^+|^2 \left\{
@@ -203,7 +212,7 @@ K_x \cos(\theta_{s} - 2 k_z' z)\\
 0 \\
 K_z'' \sin(\theta_{s} - 2 k_z' z)
 \end{pmatrix}
-\right\},
+\right\}
 \end{align*}
 where we defined $r_s = |r_s|\ e^{i\theta_{s}}$.
 The first and second terms correspond to the incident and reflected waves.
@@ -270,9 +279,8 @@ H^- = H_0^- e^{-i\omega t + i(k_x x - k_z z)}.
 \end{array}
 \right.
 $$
-The amplitudes of the incident and reflected waves are connected by $H_0^- = r_p H_0^+$.
 The electric field is
-$$
+\begin{equation}
 \vec E = \vec E^+ + \vec E^- = 
 \frac{H^+}{\varepsilon}
 \begin{pmatrix}
@@ -287,8 +295,10 @@ $$
 \phantom{-} 0 \\
 - K_x 
 \end{pmatrix}.
-$$
-The Poynting vector is the same expression as for the $s$ polarization, when $r_s$ is replaced by $r_p = |r_p|\ e^{i\theta_{p}}$ and $|E_0^+|^2$ is replaced by $|H_0^+|^2/\varepsilon$,
+\label{eq:p-wave-superposition}
+\end{equation}
+The amplitudes of the incident and reflected waves are connected by $r_p = E_p^- / E_p^+ = H_0^- / H_0^+$.
+The Poynting vector has the same expression as for the $s$ polarization, with $r_s$ replaced by $r_p = |r_p|\ e^{i\theta_{p}}$ and $|E_0^+|^2$ replaced by $|H_0^+|^2/\varepsilon$,
 \begin{align*}
 \langle \vec{\Pi} \rangle_t = 
 \frac{c}{8\pi} \frac{|H_0^+|^2}{\varepsilon} \left\{
@@ -316,18 +326,17 @@ K_z'' \sin(\theta_{p} - 2 k_z' z)
 \end{pmatrix}
 \right\}.
 \end{align*}
-The analysis is identical to the $s$ polarization. 
-If $K_z$ is purely complex, there is an energy flow in the $z$ direction, proportionnal to $K_z'' r_p''$ (see figure~\ref{fig:Wave_evanescent_poynting}).
+If $K_z$ is purely complex, there is an energy flow in the $z$ direction, proportionnal to $K_z'' r_p''$.
+Figure~\ref{fig:Wave_evanescent_poynting} represents the variation of the Poynting vector along $z$, in the case of evanescent waves.
 
 \begin{figure}[!h]
 \includegraphics[width=\columnwidth]{fig/Wave_evanescent_poynting}
-\caption{\label{fig:Wave_evanescent_poynting}Poynting vector in the case of evanescents waves ($k_z$ purely complex).}
+\caption{\label{fig:Wave_evanescent_poynting}Poynting vector in the case of evanescents waves ($k_z$ purely complex, $r''>0$).}
 \end{figure}
 
 \section{Expression of the reflexion coefficients for an interface between two media}
 
-We consider the reflexion on the interface between the separation medium and the back half-space.
-For comparison with well known formulas, we will name these media ``1'' and ``2'' respectively.
+We consider the reflexion on an interface between two media ``1'' and ``2''.
 The reflection and transmission coefficients for the $s$ polarization are\cite{Wikipedia_Fresnel}
 $$
 r_s = \frac{k_{z1}-k_{z2}}{k_{z1}+k_{z2}} 
@@ -338,132 +347,126 @@ The expressions are valid for complex wave vectors and we deduce
 $$
 r_s' = \frac{|k_{z1}|^2 - |k_{z2}|^2}{|k_{z1} + k_{z2}|^2}
 \quad\textrm{and}\quad
-r_s'' = \frac{2 (k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|k_{z1} + k_{z2}|^2}
+r_s'' = \frac{2 (k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|k_{z1} + k_{z2}|^2}.
 $$
-In the case of an evanescent wave in the separation medium and a plane wave in the back half-space, we have $k_{z1} = i k_{z1}''$ and $k_{z2} = k_{z2}'$, which implies
+In the case of an evanescent wave in the separation medium we have $k_{z1} = i k_{z1}''$ so that
 $$
-r_s' = \frac{k_{z1}''^2 - k_{z2}^2}{k_{z1}''^2 + k_{z2}^2}
+r_s' = \frac{k_{z1}''^2 - |k_{z2}|^2}{|ik_{z1}'' + k_{z2}|^2}
 \quad\textrm{and}\quad
-r_s'' = \frac{2 k_{z1}'' k_{z2}}{k_{z1}''^2 + k_{z2}^2}.
+r_s'' = \frac{2 k_{z1}'' k_{z2}'}{|ik_{z1}'' + k_{z2}|^2}
+\ .
 $$
-The last expression show that $r_s''>0$, the energy flow is directed to the right, as expected intuitively.
+The last expression shows that $r_s'' \ge 0$, which implies that the energy flow is directed to the right, as expected.
 
-For the $p$ polarization, we have\cite{Wikipedia_Fresnel}
+For the $p$ polarization, the coefficients for the magnetic field 
+$r^H_p = H^-_{1p} / H^+_{1p}$ and $t^H_p = H^+_{2p} / H^+_{1p}$ are
 $$
-r_p=\frac{\epsilon_2k_{z1}-\epsilon_1k_{z2}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
+r^H_p=\frac{\epsilon_2k_{z1}-\epsilon_1k_{z2}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
 \quad\textrm{and}\quad
-t_p = \frac{2\epsilon_2 k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}},
-$$
-\begin{flalign*}
-\textrm{from which we deduce } 
-r_p' = \frac{\epsilon_2 |k_{z1}|^2 - \epsilon_1 |k_{z2}|^2}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2} && \\
-\textrm{and}\quad
-r_p'' = \frac{2 \epsilon_1\epsilon_2(k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}. &&
-\end{flalign*}
-In the case of an evanescent wave in the separation medium and a plane wave in the back half-space, we have 
-$$
-r_p' = \frac{\epsilon_2 k_{z1}''^2 - \epsilon_1 k_{z2}^2}{\epsilon_2 k_{z1}''^2 + \epsilon_1 k_{z2}^2}
-\quad\textrm{and}\quad
-r_p'' =  \frac{2 \epsilon_1\epsilon_2 k_{z1}'' k_{z2}'}{\epsilon_2 k_{z1}''^2 + \epsilon_1 k_{z2}^2}
+t^H_p = 1+r^H_p = \frac{2\epsilon_2 k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
 .
 $$
-The last expression show that $r_p''>0$, the energy flow is directed to the right, as expected intuitively.
-
-
-
-\section{Frustrated internal total reflection}
-
-For $s$ polarization, we consider the waves $E_i$ and $E_r$ in the incident medium, $E^+$ and $E^-$ in the separation medium, and $E_t$ in the back half-space.
-Continuity of the field at $z=0$ implies
-
-
-\subsection{Electric fields and wave vectors}
-To study the frustrated total internal reflection, calculations are done in the case where the angle of incidence is larger than the critical angle :
-$\Phi_i > \Phi_{ic}$
-Five waves are studied. Each wave has the same wave vector $k_x$.
-\begin{center}
-$k_x=n_fk_0\sin(\Phi_i)$ and $k_x=n_bk_0\sin(\Phi_t)$\\
-\end{center}
-
-The first two are in the front medium where the wave vector along $z$, $k_{fz}\in \mathbb{R}$.
-\begin{itemize}
-\item  Incident wave  $\vec{E}_i(x,z)=\vec{E}_i(z)e^{-i\omega t+i(k_{fz}z+k_xx)}$
-\item Reflected wave  $\vec{E}_r(x,z)=\vec{E}_r(z)e^{-i\omega t+i(-k_{fz}z+k_xx)}$\\
-where $k_{fz}=n_fk_0\cos(\Phi _i)$.
-\end{itemize}
-Two others are in the air where $k_{nz}\in i\mathbb{R}$. One is the transmitted wave from the front medium and the other is the reflected wave.
-\begin{itemize}
-\item Incident wave 
-$\vec{E}_{ni}(x,z)=\vec{E}_ni(z)e^{-i\omega t+i(k_{nz}z+k_xx)}$
-\item Reflected wave 
-$\vec{E}_{nr}(x,z)=\vec{E}_nr(z)e^{-i\omega t+i(-k_{nz}z+k_xx)}$\\
-where $k_{nz}=ik_0\sqrt{n_f^2\sin^2(\Phi _i)-n^2}$.
-\end{itemize}
-The last wave is in the back medium where $k_{b}\in \mathbb{R}$.
-\begin{itemize}
-\item Transmitted wave
-$\vec{E}_t(x,z)=\vec{E}_t(z)e^{-i\omega t+i(k_{bz}z+k_xx)}$\\
-where $k_{bz}=n_bk_0\cos(\Phi _t)$.
-\end{itemize}
-In this medium the plane wave has an angle \\
+In terms of electric field, we consider the direction of the vectors in equations~\ref{eq:p-wave-single} and \ref{eq:p-wave-superposition} and we obtain $r_p=-r^H_p$ and $t_p = n_1/n_2 \times t^H_p$, leading to \cite{Wikipedia_Fresnel}
 $$
-\Phi_t=\arcsin (\frac{n_{fz}\sin(\Phi_i)}{n_b})
+r_p=
+\frac{\epsilon_1k_{z2} - \epsilon_2k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
+\quad\textrm{and}\quad 
+t_p = 
+\frac{2 n_1 n_2 k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}.
+$$
+We deduce
+$ \displaystyle
+r_p' = \frac{|\epsilon_1 k_{z2}|^2 - |\epsilon_2 k_{z1}|^2}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}$ 
+and
+$$
+r_p'' = \frac{2 \epsilon_1\epsilon_2(k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}.
+$$
+In the case of an evanescent wave in the separation medium, we have $k_{z1} = i k_{z1}''$, so that
+$$
+r_p' = \frac{|\epsilon_1 k_{z2}|^2 - \epsilon_2^2 k_{z1}''^2}{|\epsilon_2 i k_{z1}'' + \epsilon_1 k_{z2}|^2}
+\quad\textrm{and}\quad
+r_p'' =  \frac{2 \epsilon_1\epsilon_2 k_{z1}'' k_{z2}'}{|\epsilon_2 i k_{z1}'' + \epsilon_1 k_{z2}|^2}
+.
+$$
+The last expression shows that $r_p''\ge 0$, which implies that the energy flow is directed to the right, as expected.
+
+In terms of power flow along the $z$ direction, for both $s$ and $p$ polarizations, we have
+$$
+R = \frac{\langle \Pi_{z1}^- \rangle_t}{\langle \Pi_{z1}^+ \rangle_t}
+= |r|^2
+\quad\textrm{and}\quad
+T = \frac{\langle \Pi_{z2}^+ \rangle_t}{\langle \Pi_{z1}^+ \rangle_t} 
+= \frac{k_{z2}'}{k_{z1}'} \times |t|^2,
+$$
+with $R+T=1$ in our case because there is no loss.
+
+Also, if we consider the reverse direction, we have the following relations for both $s$ and $p$ polarizations,
+$$ 
+r_{12} = - r_{21} 
+\quad\textrm{and}\quad
+t_{12} t_{21} + r_{12}^2 = 1.
 $$
 
-\subsection{Continuity equations} 
-The electric waves follow the $y$ axe.\\
-Continuity equations $z=0$
-\begin{equation}
-\left\lbrace
-\begin{array}{ccc}\label{eq:continuity0}
-E_{ni}&=r_{fn}E_{nr}+t_{nf}E_i\\
-E_r&=r_{nf}E_{i}+t_{fn}E_{nr}
-\end{array}\right.
-\end{equation}
-Continuity equations $z=z_b$
-\begin{equation}
-\left\lbrace
-\begin{array}{ccc}\label{eq:continuityd}
-E_t=t_{bn}E_{ni}\\
-E_{nr}=r_{bn}E_{ni}
-\end{array}\right.
-\end{equation}
-$E_{ni}$ and $E_{nr}$ can be written at $z=0$ or $z=z_b$. The relations between them are
-\begin{equation}
-\left\lbrace
-\begin{array}{ccc}\label{eq:0tod}
-E_{ni}(0)=E_{ni}(d)e^{-ik_{nz}d}\\
-E_{nr}(0)=E_{nr}(d)e^{ik_{nz}d}
-\end{array}\right.
-\end{equation}
 
-With the equations~\eqref{eq:continuity0},~\eqref{eq:continuityd} and~\eqref{eq:0tod}, we got\\
-\begin{equation}
-E_{ni}(0)=\frac{t_{nf}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
-\end{equation}
+\section{Application to the frustrated total internal reflection}
 
-\begin{equation}
-E_{nr}(0)=\frac{t_{nf}t_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
-\end{equation}
-
-\begin{equation}\label{eq:reflectivewave}
-E_{r}(0)=\frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
-\end{equation}
-
-\begin{equation}\label{eq:transmittedwave}
-E_{t}(z_b)=\frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}E_i(0)
-\end{equation}
-According to equation~\eqref{eq:reflectivewave}, the amplitude coefficient reflection for the interface is\\
-$$
-r=\frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
-$$
-The reflection coefficient is given by
+For the $s$ polarization, we consider waves $E_i$ and $E_r$ in the incident medium, $E^+$ and $E^-$ in the separation medium, and $E_t$ in the back half-space.
+The electric fields is along the $y$ axis everywhere.
+At the $z=0$ interface, we have
 \begin{equation*}
-R=\mid r\mid^2
+\left\{
+\begin{array}{lllll}\label{eq:continuity0}
+E^+(0)  & = & r_{fs}\ E^-(0)  & + & t_{sf}\ E_i(0)    \\
+E_r(0)  & = & r_{sf}\ E_i(0)  & + & t_{fs}\ E^-(0)
+\end{array}\right.
 \end{equation*}
-According to equation~\eqref{eq:transmittedwave}, the amplitude coefficient transmission for the interface is\\
+and at the $z=d$ interface, we have
+\begin{equation*}
+\left\{
+\begin{array}{lll}\label{eq:continuityd}
+E_t(d)  & = & t_{bs}\ E^+(d)  \\
+E^-(d)  & = & r_{bs}\ E^+(d).
+\end{array}\right.
+\end{equation*}
+Propagation between the planes $z=0$ and $z=d$ implies
+\begin{equation*}
+\left\{
+\begin{array}{lll}\label{eq:0tod}
+E^+(d) & = E^+(0)\ e^{ik_z d}\\
+E^-(0) & = E^-(d)\ e^{ik_z d} \ ,
+\end{array}\right.
+\end{equation*}
+where $k_z$ is the wavenumber $k_{sz}$ in the separation medium.
+Useful relations between the coefficients for the $s$ polarization are 
+$$ 
+r_{sf} = - r_{fs} 
+\quad\textrm{and}\quad
+t_{sf} t_{fs} - r_{sf} r_{fs} = 1. 
 $$
-t=\frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
+From these equations, we get
+\begin{equation*}
+E^+(0) / E_i(0) =\frac{t_{sf}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}
+E^-(0) / E_i(0) =\frac{r_{bs} t_{sf} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}\label{eq:reflectivewave}
+r_{ss} = E_r(0) / E_i(0) =
+\frac{r_{sf} + r_{bs} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}\label{eq:transmittedwave}
+t_{ss} = E_t(d) / E_i(0) =
+\frac{t_{sf} t_{bs} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+The power reflection and transmission coefficients are
+$$
+R = |r_{ss}|^2
+\quad\textrm{and}\quad
+T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t} 
+= \frac{k_{zb}'}{k_{zf}'} \times |t_{ss}|^2
 $$
 The transmission coefficient is given by
 \begin{equation*}
@@ -472,138 +475,70 @@ T=\frac{n_b\cos\Phi _t}{n_f\cos\Phi _i}\mid t\mid^2
 The conservation of energy $R+T=1$ is respected in the cases of polarisation p and polarisation s.
 
 
-\subsection{Front medium}
-In this medium, there are two waves, the incident and the reflected. The total electric field is:
-$\vec{E}_f = \vec{E}_i+\vec{E}_r$\\
-On the $y$ axe:
-\begin{eqnarray*}
-E_f = E_i(0)\ 
-\big\{&  e^{-i\omega t+i(k_{fz}z+k_xx)} + \cdots  \\
- &+ r_{tot} \ e^{-i\omega t+i(-k_{fz}z+k_xx)} \big\}
-\end{eqnarray*}
-with 
-\begin{eqnarray*}
-r_{tot} & = & \frac{r_{fn}+r_{bn}e^{i2k_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}\\
-& = & \Re(r_{tot})+i\Im(r_{tot})
-\end{eqnarray*}
-%The conugate magnetic field is:\\
-%\begin{eqnarray*}
-%\vec{H}^*=\frac{E_i(0)^*}{\omega \mu_0}\{&k_{fz}(-e^{i\omega t-i(k_{fz}z+k_xx)}\\
-%+r_{tot}^*e^{i\omega t+i(k_{fz}z-k_xx)})\vec{x}\\
-%+&k_x(e^{i\omega t-i(k_{fz}z+k_xx)}\\
-%+r_{tot}^*e^{i\omega t+i(k_{fz}z-k_xx)})\vec{z}\}
-%\end{eqnarray*}
-The Poynting vector:\\
-\begin{align*}
-\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_i(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{&
-\begin{pmatrix}
-k_x\\
-k_{fz}
-\end{pmatrix}
-+\mid r_{tot}\mid^2
-\begin{pmatrix}
-k_x\\
--k_{fz}
-\end{pmatrix}\\
-&+2
-\begin{pmatrix}
-\Re(r_{tot})\cos(2k_{fz}z\\
-0
-\end{pmatrix} 
-\Big\}
-\end{align*}
 
-\subsection{Air medium}
-In this medium, there are two waves. The total electric field is:
-$\vec{E}_n=\vec{E}_{ni}+\vec{E}_{nr}$\\
-On the $y$ axe:\\
-\begin{eqnarray*}
-E_n = E_{ni}(0)\ 
-\big\{&  e^{-i\omega t+i(k_{nz}z+k_xx)} + \cdots  \\
- &+ r_n \ e^{-i\omega t+i(-k_{nz}z+k_xx)} \big\}
-\end{eqnarray*}
-with:
-\begin{eqnarray*}
-r_n & = & r_{bn}e^{i2k_{nz}d}\\
-& = & \Re(r_n)+i\Im(r_n)
-\end{eqnarray*}
 
-%The conjugate magnetic fiels has been calculated in the most general case, with $k_{nz}\in \mathbb{C}$:\\
-%\begin{eqnarray*}
-%\vec{H}^*=\frac{E_{ni}(0)^*}{\omega \mu_0}\{
-%&k_{nz}^*\big(-e^{i\omega t-i(k_{nz}^*z+k_xx)}\\
-%+r_n^*e^{i\omega t+i(k_{nz}^*z-k_xx)}\big)\vec{x}\\
-%+&k_x\big(e^{i\omega t-i(k_{nz}^*z+k_xx)}\\
-%+e^{i\omega t+i(k_{nz}^*z-k_xx)}\big)\vec{z}\}
-%\end{eqnarray*}
-%We write:\\
-%$$
-%k_{nz}=k_{nz}'+ik_{nz}''
-%$$
-%The Poynting vector is:\\
-%$
-%\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_{ni}(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{
-%e^{-2k_{nz}''z}
-%\begin{pmatrix}
-%k_x\\
-%k_{nz}'
-%\end{pmatrix}\\
-%+\mid r_n\mid ^2e^{2k_{nz}''z}
-%\begin{pmatrix}
-%k_x\\
-%-k_{nz}'
-%\end{pmatrix}\\
-%+2\mid r_n\mid
-%\begin{pmatrix}
-%k_x\cos(\theta _n-2k_{nz}'z)\\
-%k_{nz}''\sin(\theta _n -2k_{nz}'z)
-%\end{pmatrix}
-%\Big\}
-%$\\
-In the case of the frustrated total internal reflexion, the wave in the air medium is an evanescent wave, $k_{nz} \in i\mathbb{R}$. The Poynting vector is:\\
-$
-\langle \vec{\Pi} \rangle _t =\displaystyle\frac{\displaystyle\mid E_{ni}(0)\mid ^2}{\displaystyle2\omega \mu_0}\Big\{
-e^{2k_{nz}z}
-\begin{pmatrix}
-k_x\\
-0
-\end{pmatrix}
-+\mid r_n\mid ^2e^{-2k_{nz}z}
-\begin{pmatrix}
-k_x\\
-0
-\end{pmatrix}\\
-+2
-\begin{pmatrix}
-k_x\Re(r_n)\\
-ik_{nz}^*\Im(r_n)
-\end{pmatrix}
-\Big\}
-$\\
-The third term is an interference terms. Along $z$ we get:\\
-$$
-ik_{nz}^*\sin(\theta _n) =\frac{ k_0^3n_b\cos(\Phi _t)(n_f^2\sin ^2(\Phi _i)-n^2)e^{ik_{nz}d}}{\mid k_{nz}+k_{fz}\mid ^2}
-$$
-This expression is positive so the interference term is oriented to the positive $z$.
-\subsection{Back medium}
-In this medium, there is one wave, the transmitted wave.With equation~\eqref{eq:transmittedwave}, on the $y$ axe:\\
+For the $p$ polarization, we consider waves $H_i$ and $H_r$ in the incident medium, $H^+$ and $H^-$ in the separation medium, and $H_t$ in the back half-space.
+The magnetic fields is along the $y$ axis everywhere.
+At the $z=0$ interface, we have
 \begin{equation*}
-E_t = E_i(0)te^{-i\omega t+i(k_bz+k_xx)}
+\left\{
+\begin{array}{lllll}\label{eq:continuity0}
+E^+(0)  & = & r_{fs}\ E^-(0)  & + & t_{sf}\ E_i(0)    \\
+E_r(0)  & = & r_{sf}\ E_i(0)  & + & t_{fs}\ E^-(0)
+\end{array}\right.
 \end{equation*}
-with:
+and at the $z=d$ interface, we have
+\begin{equation*}
+\left\{
+\begin{array}{lll}\label{eq:continuityd}
+E_t(d)  & = & t_{bs}\ E^+(d)  \\
+E^-(d)  & = & r_{bs}\ E^+(d).
+\end{array}\right.
+\end{equation*}
+Propagation between the planes $z=0$ and $z=d$ implies
+\begin{equation*}
+\left\{
+\begin{array}{lll}\label{eq:0tod}
+E^+(d) & = E^+(0)\ e^{ik_z d}\\
+E^-(0) & = E^-(d)\ e^{ik_z d} \ ,
+\end{array}\right.
+\end{equation*}
+where $k_z$ is the wavenumber $k_{sz}$ in the separation medium.
+Useful relations between the coefficients for the $s$ polarization are 
+$$ 
+r_{sf} = - r_{fs} 
+\quad\textrm{and}\quad
+t_{sf} t_{fs} - r_{sf} r_{fs} = 1. 
 $$
-t = \frac{t_{nf}t_{bn}e^{ik_{nz}d}}{1+r_{nf}r_{bn}e^{i2k_{nz}d}}
+From these equations, we get
+\begin{equation*}
+E^+(0) / E_i(0) =\frac{t_{sf}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}
+E^-(0) / E_i(0) =\frac{r_{bs} t_{sf} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}\label{eq:reflectivewave}
+r_{ss} = E_r(0) / E_i(0) =
+\frac{r_{sf} + r_{bs} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+
+\begin{equation*}\label{eq:transmittedwave}
+t_{ss} = E_t(d) / E_i(0) =
+\frac{t_{sf} t_{bs} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
+\end{equation*}
+The power reflection and transmission coefficients are
 $$
-%The conjugate magnetic field is:\\
-%\begin{eqnarray*}
-%\vec{H}^*= \frac{E_i(0)^*}{\omega \mu_0}\Big\{-k_t^*be^{i\omega t-i(k_bz+k_xx)}\vec{x}\\
-%+k_xt^*e^{i\omega t-i(k_bz+k_xx)}\vec{z}\Big\}
-%\end{eqnarray*}
-The Poynting vector is:\\
+R = |r_{ss}|^2
+\quad\textrm{and}\quad
+T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t} 
+= \frac{k_{zb}'}{k_{zf}'} \times |t_{ss}|^2
 $$
-\langle \vec{\Pi} \rangle _t = \frac{\mid E_i(0)\mid ^2\mid t\mid ^2}{2\omega \mu_0}
-\begin{pmatrix}
-k_x\\
-k_b
-\end{pmatrix}
-$$
+The transmission coefficient is given by
+\begin{equation*}
+T=\frac{n_b\cos\Phi _t}{n_f\cos\Phi _i}\mid t\mid^2
+\end{equation*}
+The conservation of energy $R+T=1$ is respected in the cases of polarisation p and polarisation s.
+
+
