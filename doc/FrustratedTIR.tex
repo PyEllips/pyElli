@@ -93,7 +93,7 @@ $$
 \phantom{-} K_x
 \end{pmatrix},
 $$
-$$
+\begin{equation}\label{eq:Poynting-s}
 \mathrm{and}\quad
 \langle \vec{\Pi} \rangle_t  = \frac{c}{8\pi} 
 |E_0|^2 e^{-2 k_z'' z}
@@ -102,7 +102,7 @@ K_x\\
 0\\
 K_z'
 \end{pmatrix}.
-$$
+\end{equation}
 If we consider a $p$-polarized wave defined by 
 $$
 \vec H = H(x,y)\ \vec y
@@ -122,7 +122,7 @@ H(x,y) = H_0\ e^{-i\omega t + i(k_x x + k_z z)},$$
 \begin{equation*}
 \vec H^* = H_0^*\ e^{i\omega t - i(k_x x + k_z^* z)}\ \vec y,
 \end{equation*}
-$$
+\begin{equation}\label{eq:Poynting-p}
 \mathrm{and}\quad
 \langle \vec{\Pi} \rangle_t  = \frac{c}{8\pi} 
 \frac{|H_0|^2}{\varepsilon} e^{-2 k_z'' z}
@@ -131,7 +131,7 @@ K_x\\
 0\\
 K_z'
 \end{pmatrix}.
-$$
+\end{equation}
 
 In these expressions, we defined $k_z = k_z' + i k_z''$.
 We observe that the Poynting vector is parallel to the real part of the wave vector.
@@ -358,15 +358,15 @@ r_s'' = \frac{2 k_{z1}'' k_{z2}'}{|ik_{z1}'' + k_{z2}|^2}
 $$
 The last expression shows that $r_s'' \ge 0$, which implies that the energy flow is directed to the right, as expected.
 
-For the $p$ polarization, the coefficients for the magnetic field 
-$r^H_p = H^-_{1p} / H^+_{1p}$ and $t^H_p = H^+_{2p} / H^+_{1p}$ are
+For $p$ polarization, the coefficients for the magnetic field are
+$r^H_p = H^-_{1p} / H^+_{1p}$ and $t^H_p = H^+_{2p} / H^+_{1p}$ with
 $$
 r^H_p=\frac{\epsilon_2k_{z1}-\epsilon_1k_{z2}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
 \quad\textrm{and}\quad
 t^H_p = 1+r^H_p = \frac{2\epsilon_2 k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
 .
 $$
-In terms of electric field, we consider the direction of the vectors in equations~\ref{eq:p-wave-single} and \ref{eq:p-wave-superposition} and we obtain $r_p=-r^H_p$ and $t_p = n_1/n_2 \times t^H_p$, leading to \cite{Wikipedia_Fresnel}
+The direction and value of the electric field is deduced from equations~\ref{eq:p-wave-single} and \ref{eq:p-wave-superposition}, which leads to $r_p=-r^H_p$ and $t_p = n_1/n_2 \times t^H_p$ and implies \cite{Wikipedia_Fresnel}
 $$
 r_p=
 \frac{\epsilon_1k_{z2} - \epsilon_2k_{z1}}{\epsilon_2k_{z1}+\epsilon_1k_{z2}}
@@ -381,7 +381,7 @@ and
 $$
 r_p'' = \frac{2 \epsilon_1\epsilon_2(k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}.
 $$
-In the case of an evanescent wave in the separation medium, we have $k_{z1} = i k_{z1}''$, so that
+In the case of an evanescent wave in the separation medium we have $k_{z1} = i k_{z1}''$, so that
 $$
 r_p' = \frac{|\epsilon_1 k_{z2}|^2 - \epsilon_2^2 k_{z1}''^2}{|\epsilon_2 i k_{z1}'' + \epsilon_1 k_{z2}|^2}
 \quad\textrm{and}\quad
@@ -390,7 +390,8 @@ r_p'' =  \frac{2 \epsilon_1\epsilon_2 k_{z1}'' k_{z2}'}{|\epsilon_2 i k_{z1}'' +
 $$
 The last expression shows that $r_p''\ge 0$, which implies that the energy flow is directed to the right, as expected.
 
-In terms of power flow along the $z$ direction, for both $s$ and $p$ polarizations, we have
+The power flow along the $z$ direction is deduced from equations~\ref{eq:Poynting-s} and \ref{eq:Poynting-p}.
+For both polarizations, we have
 $$
 R = \frac{\langle \Pi_{z1}^- \rangle_t}{\langle \Pi_{z1}^+ \rangle_t}
 = |r|^2
@@ -398,9 +399,12 @@ R = \frac{\langle \Pi_{z1}^- \rangle_t}{\langle \Pi_{z1}^+ \rangle_t}
 T = \frac{\langle \Pi_{z2}^+ \rangle_t}{\langle \Pi_{z1}^+ \rangle_t} 
 = \frac{k_{z2}'}{k_{z1}'} \times |t|^2,
 $$
-with $R+T=1$ in our case because there is no loss.
-
-Also, if we consider the reverse direction, we have the following relations for both $s$ and $p$ polarizations,
+$$\textrm{with}\quad
+R+T=1
+$$
+The last relation happens because there is no loss.
+%
+Also, if we consider the coefficients for the opposite directions, we have the following relations for both polarizations,
 $$ 
 r_{12} = - r_{21} 
 \quad\textrm{and}\quad
@@ -410,8 +414,8 @@ $$
 
 \section{Application to the frustrated total internal reflection}
 
-For the $s$ polarization, we consider waves $E_i$ and $E_r$ in the incident medium, $E^+$ and $E^-$ in the separation medium, and $E_t$ in the back half-space.
-The electric fields is along the $y$ axis everywhere.
+We consider waves $E_i$ and $E_r$ in the incident medium, $E^+$ and $E^-$ in the separation medium, and $E_t$ in the back half-space.
+The relations at the interfaces can be written in the same fashion for both polarizations. 
 At the $z=0$ interface, we have
 \begin{equation*}
 \left\{
@@ -428,7 +432,7 @@ E_t(d)  & = & t_{bs}\ E^+(d)  \\
 E^-(d)  & = & r_{bs}\ E^+(d).
 \end{array}\right.
 \end{equation*}
-Propagation between the planes $z=0$ and $z=d$ implies
+Propagation between planes $z=0$ and $z=d$ implies
 \begin{equation*}
 \left\{
 \begin{array}{lll}\label{eq:0tod}
@@ -436,109 +440,32 @@ E^+(d) & = E^+(0)\ e^{ik_z d}\\
 E^-(0) & = E^-(d)\ e^{ik_z d} \ ,
 \end{array}\right.
 \end{equation*}
-where $k_z$ is the wavenumber $k_{sz}$ in the separation medium.
-Useful relations between the coefficients for the $s$ polarization are 
-$$ 
-r_{sf} = - r_{fs} 
-\quad\textrm{and}\quad
-t_{sf} t_{fs} - r_{sf} r_{fs} = 1. 
-$$
-From these equations, we get
+where $k_z$ is the wavenumber in the separation medium.
+From these equations, we get%
+\footnote{We used the expression $t_{fs} t_{sf} - r_{fs} r_{sf} = 1$ for simplifying the expression of $r$.}
 \begin{equation*}
 E^+(0) / E_i(0) =\frac{t_{sf}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
-
+%
 \begin{equation*}
 E^-(0) / E_i(0) =\frac{r_{bs} t_{sf} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
-
+%
 \begin{equation*}\label{eq:reflectivewave}
-r_{ss} = E_r(0) / E_i(0) =
+r = E_r(0) / E_i(0) =
 \frac{r_{sf} + r_{bs} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
-
+%
 \begin{equation*}\label{eq:transmittedwave}
-t_{ss} = E_t(d) / E_i(0) =
-\frac{t_{sf} t_{bs} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
+t = E_t(d) / E_i(0) =
+\frac{t_{bs} t_{sf} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
-The power reflection and transmission coefficients are
+The power reflection coefficient is $R = |r|^2$ and the power transmission coefficient is
 $$
-R = |r_{ss}|^2
-\quad\textrm{and}\quad
 T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t} 
-= \frac{k_{zb}'}{k_{zf}'} \times |t_{ss}|^2
+= \frac{k_{zb}'}{k_{zf}'} \ |t|^2 = 
+\frac{n_b\cos(\Phi _t)}{n_f\cos(\Phi _i)}\ |t|^2.
 $$
-The transmission coefficient is given by
-\begin{equation*}
-T=\frac{n_b\cos\Phi _t}{n_f\cos\Phi _i}\mid t\mid^2
-\end{equation*}
-The conservation of energy $R+T=1$ is respected in the cases of polarisation p and polarisation s.
-
-
-
-
-For the $p$ polarization, we consider waves $H_i$ and $H_r$ in the incident medium, $H^+$ and $H^-$ in the separation medium, and $H_t$ in the back half-space.
-The magnetic fields is along the $y$ axis everywhere.
-At the $z=0$ interface, we have
-\begin{equation*}
-\left\{
-\begin{array}{lllll}\label{eq:continuity0}
-E^+(0)  & = & r_{fs}\ E^-(0)  & + & t_{sf}\ E_i(0)    \\
-E_r(0)  & = & r_{sf}\ E_i(0)  & + & t_{fs}\ E^-(0)
-\end{array}\right.
-\end{equation*}
-and at the $z=d$ interface, we have
-\begin{equation*}
-\left\{
-\begin{array}{lll}\label{eq:continuityd}
-E_t(d)  & = & t_{bs}\ E^+(d)  \\
-E^-(d)  & = & r_{bs}\ E^+(d).
-\end{array}\right.
-\end{equation*}
-Propagation between the planes $z=0$ and $z=d$ implies
-\begin{equation*}
-\left\{
-\begin{array}{lll}\label{eq:0tod}
-E^+(d) & = E^+(0)\ e^{ik_z d}\\
-E^-(0) & = E^-(d)\ e^{ik_z d} \ ,
-\end{array}\right.
-\end{equation*}
-where $k_z$ is the wavenumber $k_{sz}$ in the separation medium.
-Useful relations between the coefficients for the $s$ polarization are 
-$$ 
-r_{sf} = - r_{fs} 
-\quad\textrm{and}\quad
-t_{sf} t_{fs} - r_{sf} r_{fs} = 1. 
-$$
-From these equations, we get
-\begin{equation*}
-E^+(0) / E_i(0) =\frac{t_{sf}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
-\end{equation*}
-
-\begin{equation*}
-E^-(0) / E_i(0) =\frac{r_{bs} t_{sf} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
-\end{equation*}
-
-\begin{equation*}\label{eq:reflectivewave}
-r_{ss} = E_r(0) / E_i(0) =
-\frac{r_{sf} + r_{bs} e^{i2k_z d}}{1-r_{fs}r_{bs}e^{i2k_z d}}
-\end{equation*}
-
-\begin{equation*}\label{eq:transmittedwave}
-t_{ss} = E_t(d) / E_i(0) =
-\frac{t_{sf} t_{bs} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
-\end{equation*}
-The power reflection and transmission coefficients are
-$$
-R = |r_{ss}|^2
-\quad\textrm{and}\quad
-T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t} 
-= \frac{k_{zb}'}{k_{zf}'} \times |t_{ss}|^2
-$$
-The transmission coefficient is given by
-\begin{equation*}
-T=\frac{n_b\cos\Phi _t}{n_f\cos\Phi _i}\mid t\mid^2
-\end{equation*}
-The conservation of energy $R+T=1$ is respected in the cases of polarisation p and polarisation s.
-
+The expression with the cosine holds when there is a plane wave in the back half-space, otherwise the transmission is zero.
+Since energy is conserved in our situation, we should have $R+T=1$.
 
