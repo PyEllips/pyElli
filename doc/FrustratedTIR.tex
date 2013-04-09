@@ -398,9 +398,10 @@ R = \frac{\langle \Pi_{z1}^- \rangle_t}{\langle \Pi_{z1}^+ \rangle_t}
 T = \frac{\langle \Pi_{z2}^+ \rangle_t}{\langle \Pi_{z1}^+ \rangle_t} 
 = \frac{k_{z2}'}{k_{z1}'} \times |t|^2.
 $$
-We verify that $R+T=1$, as expected for lossless materials.
+We verify that $R+T=1$ for both polarizations when the materials are lossless%
+\footnote{The demonstration uses the fact that $k_{z1}$ is real, and that $k_{z2}$ is either real or purely complex. The two cases are considered separately and lead to the result.}.
 %
-Also, if we consider the coefficients for the opposite directions, we show that for both polarizations we have
+Also, if we consider the coefficients for the reverse directions, we show that for both polarizations we have
 $r_{12} = - r_{21}$
 and
 $t_{12} t_{21} + r_{12}^2 = 1$
@@ -437,7 +438,7 @@ E^-(0) & = E^-(d)\ e^{ik_z d} \ ,
 \end{equation*}
 where $k_z$ is the wavenumber in the separation medium.
 From these equations, we get%
-\footnote{We used the expression $t_{fs} t_{sf} - r_{fs} r_{sf} = 1$ for simplifying the expression of $r$.}
+\footnote{We used the relation $t_{fs} t_{sf} - r_{fs} r_{sf} = 1$ for simplifying the expression of the coefficient $r$.}
 \begin{equation*}
 E^+(0) / E_i(0) =\frac{t_{sf}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
@@ -455,12 +456,22 @@ r = E_r(0) / E_i(0) =
 t = E_t(d) / E_i(0) =
 \frac{t_{bs} t_{sf} e^{ik_z d}}{1 - r_{fs}r_{bs}e^{i2k_z d}}
 \end{equation*}
-The power reflection coefficient is $R = |r|^2$ and the power transmission coefficient is
+The power reflection and transmission coefficient are
 $$
+R = |r|^2 
+\quad\textrm{and}\quad
 T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t} 
-= \frac{k_{zb}'}{k_{zf}'} \ |t|^2 = 
-\frac{n_b\cos(\Phi _t)}{n_f\cos(\Phi _i)}\ |t|^2.
+= \frac{k_{zb}'}{k_{zf}'} \ |t|^2
+% = \frac{n_b\cos(\Phi _t)}{n_f\cos(\Phi _i)}\ |t|^2
+.
 $$
-The expression with the cosine holds when there is a plane wave in the back half-space, otherwise the transmission is zero.
-Since energy is conserved in our situation, we should have $R+T=1$.
+With lossless materials, we should have $R+T=1$.
+It can indeed be demonstrated from the expressions of $r$ and $t$. 
+The demonstration uses the relations 
+$|r_{bs}|^2 + k_{zb}'/k_{zs}' |t_{bs}|^2=1$
+and 
+$|r_{sf}|^2 + k_{zs}'/k_{zf}' |t_{sf}|^2=1$
+to show that
+$k_{zb}'/k_{zf}' |t_{bs}t_{sf}|^2 = (1-|r_{bs}|^2)(1-r_{sf}|^2)$.
+
 
