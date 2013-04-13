@@ -60,47 +60,47 @@ kz_s = k0*sqrt((-(Kx**2 - n_s**2)).astype(complex))
 kz_b = n_b*k0*cos(Phi_b)
 
 # Amplitude coefficient for 's' polarisation:
-r_nfs = (kz_f-kz_s)/(kz_s+kz_f)
-r_bns = (kz_s-kz_b)/(kz_s+kz_b)
-t_nfs = 1+r_nfs
-t_bns = 1+r_bns
+r_sf_s = (kz_f-kz_s)/(kz_s+kz_f)
+r_bs_s = (kz_s-kz_b)/(kz_s+kz_b)
+t_sf_s = 1+r_sf_s
+t_bs_s = 1+r_bs_s
 
 # Amplitude coefficient for 'p' polarisation:
-r_nfp = (kz_f*n_s**2-kz_s*n_f**2)/(kz_s*n_f**2+kz_f*n_s**2)
-r_bnp = (kz_s*n_b**2-kz_b*n_s**2)/(kz_s*n_b**2+kz_b*n_s**2)
-t_nfp = cos((Phi_list.astype(complex)))*(1-r_nfp)/cos(Phi_s)
-t_bnp = cos(Phi_s)*(1-r_bnp)/cos(Phi_b)
+r_sf_p = (kz_f*n_s**2-kz_s*n_f**2)/(kz_s*n_f**2+kz_f*n_s**2)
+r_bs_p = (kz_s*n_b**2-kz_b*n_s**2)/(kz_s*n_b**2+kz_b*n_s**2)
+t_sf_p = cos((Phi_list.astype(complex)))*(1-r_sf_p)/cos(Phi_s)
+t_bs_p = cos(Phi_s)*(1-r_bs_p)/cos(Phi_b)
 
 # Power coefficients:
-R_th_ss = (abs((r_nfs+r_bns*exp(2j*kz_s*d)) \
-          /(1+r_bns*r_nfs*exp(2j*kz_s*d))))**2
+R_th_s = (abs((r_sf_s+r_bs_s*exp(2j*kz_s*d)) \
+              /(1+r_bs_s*r_sf_s*exp(2j*kz_s*d))))**2
 
-t2_th_ss = (abs((t_bns*t_nfs*exp(1j*kz_s*d)) \
-          /(1+r_bns*r_nfs*exp(2j*kz_s*d))))**2
+t2_th_s = (abs((t_bs_s*t_sf_s*exp(1j*kz_s*d)) \
+          /(1+r_bs_s*r_sf_s*exp(2j*kz_s*d))))**2
 
-R_th_pp = (abs((r_nfp+r_bnp*exp(2j*kz_s*d)) \
-          /(1+r_bnp*r_nfp*exp(2j*kz_s*d))))**2
+R_th_p = (abs((r_sf_p+r_bs_p*exp(2j*kz_s*d)) \
+          /(1+r_bs_p*r_sf_p*exp(2j*kz_s*d))))**2
 
-t2_th_pp= (abs((t_bnp*t_nfp*exp(1j*kz_s*d)) \
-          /(1+r_bnp*r_nfp*exp(2j*kz_s*d))))**2
+t2_th_p= (abs((t_bs_p*t_sf_p*exp(1j*kz_s*d)) \
+          /(1+r_bs_p*r_sf_p*exp(2j*kz_s*d))))**2
 
 correction = real(n_b*cos(Phi_b)/(n_f*cos(Phi_list.astype(complex))))
 # This is a correction term used in R +T*correction = 1
 
-T_th_ss = t2_th_ss*correction
-T_th_pp = t2_th_pp*correction
+T_th_s = t2_th_s*correction
+T_th_p = t2_th_p*correction
 
 ############################################################################
 # Calculation with Berreman4x4
 data = numpy.array([s.getJones(kx,k0) for kx in Kx])
 
 data = abs(data)**2
-R_pp  = Berreman4x4.extractCoefficient(data, 'r_pp')
-R_ss  = Berreman4x4.extractCoefficient(data, 'r_ss')
-t2_pp = Berreman4x4.extractCoefficient(data, 't_pp')
-t2_ss = Berreman4x4.extractCoefficient(data, 't_ss')
-T_ss = t2_ss*correction
-T_pp = t2_pp*correction
+R_p  = Berreman4x4.extractCoefficient(data, 'r_pp')
+R_s  = Berreman4x4.extractCoefficient(data, 'r_ss')
+t2_p = Berreman4x4.extractCoefficient(data, 't_pp')
+t2_s = Berreman4x4.extractCoefficient(data, 't_ss')
+T_s = t2_s*correction
+T_p = t2_p*correction
 
 ############################################################################
 # Plotting
@@ -108,14 +108,14 @@ fig = pyplot.figure(figsize=(12., 6.))
 pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
-y = numpy.vstack((R_ss,R_pp,t2_ss,t2_pp,T_ss,T_pp)).T
-legend1 = ("R_ss","R_pp","t2_ss","t2_pp","T_ss","T_pp")
+y = numpy.vstack((R_s,R_p,t2_s,t2_p,T_s,T_p)).T
+legend1 = ("R_s","R_p","t2_s","t2_p","T_s","T_p")
 lines1 = ax.plot(Kx, y)
 
-y_th = numpy.vstack((R_th_ss, R_th_pp, t2_th_ss, t2_th_pp,
-                  T_th_ss, T_th_pp)).T
-legend2 = ("R_th_ss", "R_th_pp", "t2_th_ss", "t2_th_pp",
-           "T_th_ss", "T_th_pp")
+y_th = numpy.vstack((R_th_s, R_th_p, t2_th_s, t2_th_p,
+                  T_th_s, T_th_p)).T
+legend2 = ("R_th_s", "R_th_p", "t2_th_s", "t2_th_p",
+           "T_th_s", "T_th_p")
 lines2 = ax.plot(Kx, y_th, 'x')
 
 ax.legend(lines1 + lines2, legend1 + legend2, 

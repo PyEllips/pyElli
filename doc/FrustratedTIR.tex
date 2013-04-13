@@ -349,7 +349,7 @@ r_s' = \frac{|k_{z1}|^2 - |k_{z2}|^2}{|k_{z1} + k_{z2}|^2}
 \quad\textrm{and}\quad
 r_s'' = \frac{2 (k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|k_{z1} + k_{z2}|^2}.
 $$
-In the case of an evanescent wave in the separation medium we have $k_{z1} = i k_{z1}''$ so that
+In the case of an evanescent wave in region~1, the wave number is $k_{z1} = i k_{z1}''$ and we deduce
 $$
 r_s' = \frac{k_{z1}''^2 - |k_{z2}|^2}{|ik_{z1}'' + k_{z2}|^2}
 \quad\textrm{and}\quad
@@ -381,7 +381,7 @@ and
 $$
 r_p'' = \frac{2 \epsilon_1\epsilon_2(k_{z1}'' k_{z2}' - k_{z1}' k_{z2}'')}{|\epsilon_2 k_{z1} + \epsilon_1 k_{z2}|^2}.
 $$
-In the case of an evanescent wave in the separation medium we have $k_{z1} = i k_{z1}''$, so that
+In the case of an evanescent wave in region~1, the wave number is $k_{z1} = i k_{z1}''$ and we deduce
 $$
 r_p' = \frac{|\epsilon_1 k_{z2}|^2 - \epsilon_2^2 k_{z1}''^2}{|\epsilon_2 i k_{z1}'' + \epsilon_1 k_{z2}|^2}
 \quad\textrm{and}\quad
@@ -399,10 +399,11 @@ T = \frac{\langle \Pi_{z2}^+ \rangle_t}{\langle \Pi_{z1}^+ \rangle_t}
 = \frac{k_{z2}'}{k_{z1}'} \times |t|^2.
 $$
 We verify that $R+T=1$ for both polarizations when the materials are lossless%
-\footnote{The demonstration uses the fact that $k_{z1}$ is real, and that $k_{z2}$ is either real or purely complex. The two cases are considered separately and lead to the result.}.
+\footnote{The relation only has a meaning when $k_{z1}$ is real. The demonstration uses the fact that $k_{z2}$ is either real or purely complex. The two cases are considered separately and both verify $R+T=1$.}.
 %
 Also, if we consider the coefficients for the reverse directions, we show that for both polarizations we have
-$r_{12} = - r_{21}$
+$r_{12} = - r_{21}$,
+$t_{12}/k_2 = t_{21}/k_1$
 and
 $t_{12} t_{21} + r_{12}^2 = 1$
 .
@@ -465,13 +466,17 @@ T = \frac{\langle \Pi_{zt} \rangle_t}{\langle \Pi_{zi} \rangle_t}
 % = \frac{n_b\cos(\Phi _t)}{n_f\cos(\Phi _i)}\ |t|^2
 .
 $$
-With lossless materials, we should have $R+T=1$.
-It can indeed be demonstrated from the expressions of $r$ and $t$. 
-The demonstration uses the relations 
-$|r_{bs}|^2 + k_{zb}'/k_{zs}' |t_{bs}|^2=1$
-and 
-$|r_{sf}|^2 + k_{zs}'/k_{zf}' |t_{sf}|^2=1$
-to show that
-$k_{zb}'/k_{zf}' |t_{bs}t_{sf}|^2 = (1-|r_{bs}|^2)(1-r_{sf}|^2)$.
-
+We verify that $R+T=1$ when the materials are lossless.
+To demonstrate this, different cases are separated, depending on the type of wave in the regions.
+In the case when there are plane waves in both half-spaces, we show that 
+$
+k_{zb}'/k_{zf}'\ |t_{bs}t_{sf}|^2 \exp(-2 k_z'' d)
+= |t_{sf} t_{fs} t_{bs} t_{sb}| \exp(-2 k_z'' d)
+$.
+When there is also a plane wave in the separation region, the reflection coefficients are real, and the term simplifies to 
+$(1-r_{fs}^2)(1-r_{bs}^2)$.
+When there is an evanescent wave in the separation medium, the reflection coefficients are complex with unitary modulus, and the term simplifies to 
+$4\ r_{bs}'' r_{fs}'' \exp(-2 k_z'' d)$.
+In both cases, putting this term in the expansion of $R+T$ leads to the result
+$R+T=1$.
 
