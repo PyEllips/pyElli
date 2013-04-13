@@ -544,6 +544,18 @@ class IsotropicHalfSpace(HalfSpace):
         Kx = n * numpy.sin(Phi)
         return Kx
 
+    def get_Kz_from_Kx(self, Kx, k0=1e6):
+        """Returns the value of Kz in the half-space, function of Kx
+        
+        'Kx' : Reduced wavenumber,      Kx = kx/k0 = n sin(Φ)
+        'k0' : wavenumber in vacuum,    kx = n k0 sin(Φ)
+
+        Returns : reduced wave number Kz
+        """
+        n = self.material.getRefractiveIndex(2*pi/k0)
+        Kz2 = n**2 - Kx**2
+        return numpy.sqrt(complex(Kz2))
+
     def get_Phi_from_Kx(self, Kx, k0=1e6):
         """Returns the value of angle Phi according to the value of Kx.
         
@@ -1046,6 +1058,19 @@ class Structure:
         # Then we have T_ri = T_rt * T_ti
         T_ri = numpy.dot(T_rt, T_ti)
         return (T_ri, T_ti)
+
+    def getPowerTransmissionCorrection(self, Kx, k0=1e6):
+        """Returns correction coefficient for power transmission
+
+        The power transmission coefficient is the ratio of the 'z' components
+        of the Poynting vector:       T = P_t_z / P_i_z
+        For isotropic media, we have: T = kb'/kf' |t_bf|^2
+        The correction coefficient is kb'/kf' 
+        """
+        Kzf = self.frontHalfSpace.get_Kz_from_Kx(Kx, k0)
+        Kzb = self.backHalfSpace.get_Kz_from_Kx(Kx, k0)
+        return Kzb.real / Kzf.real
+
 
 #########################################################
 # Data extraction from the Jones matrices...
