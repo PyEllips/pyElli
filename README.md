@@ -4,9 +4,10 @@ Berreman4x4
 Python implementation of Berreman's 4x4 matrix method.
 
 This is the git repository for the source code of Berreman4x4.
-See [documentation](http://github.com/downloads/Berreman4x4/Berreman4x4/documentation.pdf) for more information.
 
-The front web page is http://Berreman4x4.github.com (GitHub Organization web page).
+The front web page is http://Berreman4x4.github.com (GitHub Organization web page). 
+
+See [documentation](http://sourceforge.net/projects/berreman4x4/files/documentation.pdf) for more information.
 
 -- 
 Copyright (C) 2012-2013 Olivier Castany
