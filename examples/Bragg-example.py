@@ -16,6 +16,7 @@ print("\n*** SiO2/TiO2 Bragg mirror ***\n")
 # Front and back materials
 air = Berreman4x4.IsotropicNonDispersiveMaterial(1.0)
 glass = Berreman4x4.IsotropicNonDispersiveMaterial(1.5)
+
 front = Berreman4x4.IsotropicHalfSpace(air)
 back = Berreman4x4.IsotropicHalfSpace(glass)
 
@@ -58,13 +59,15 @@ lbda_list = numpy.linspace(lbda1, lbda2, 200)
 data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
 
 r = Berreman4x4.extractCoefficient(data, 'r_ss')
+R = abs(r)**2
 t = Berreman4x4.extractCoefficient(data, 't_ss')
+T = s.getPowerTransmissionCorrection(Kx) * abs(t)**2
 
 # Plotting 
 fig = pyplot.figure()
 ax = fig.add_subplot("111")
-ax.plot(lbda_list, abs(r)**2, label="$R$")
-ax.plot(lbda_list, abs(t)**2, label="$T$")
+ax.plot(lbda_list, R, label="$R$")
+ax.plot(lbda_list, T, label="$T$")
 
 ax.legend(loc='upper right')
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")

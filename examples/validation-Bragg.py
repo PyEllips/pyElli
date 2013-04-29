@@ -21,6 +21,7 @@ n_a = 1.0
 n_g = 1.5
 air = Berreman4x4.IsotropicNonDispersiveMaterial(n_a)
 glass = Berreman4x4.IsotropicNonDispersiveMaterial(n_g)
+
 front = Berreman4x4.IsotropicHalfSpace(air)
 back = Berreman4x4.IsotropicHalfSpace(glass)
 
