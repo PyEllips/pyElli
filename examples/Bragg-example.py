@@ -69,7 +69,7 @@ ax = fig.add_subplot("111")
 ax.plot(lbda_list, R, label="$R$")
 ax.plot(lbda_list, T, label="$T$")
 
-ax.legend(loc='upper right')
+ax.legend(loc='center right')
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")
 ax.set_ylabel(r"Power reflection $R$ or transmission $T$")
 ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x8/TiO$_2$/Glass")

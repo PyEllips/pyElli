@@ -8,7 +8,7 @@
 
 import numpy, Berreman4x4
 from numpy import sin, sqrt, abs, exp
-from Berreman4x4 import c, pi, C, D, invC, invD
+from Berreman4x4 import c, pi, e_y, C, D, invC, invD
 import matplotlib.pyplot as pyplot
 
 ############################################################################
@@ -23,7 +23,7 @@ front = back = Berreman4x4.IsotropicHalfSpace(glass)
 Dn = ne-no
 n_med = (ne + no)/2
 LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)  # ne along z
-R = Berreman4x4.rotation_v_theta([0,1,0], pi/2)         # rotation round y
+R = Berreman4x4.rotation_v_theta(e_y, pi/2)         # rotation round y
 LC = LC.rotated(R)              # apply rotation from z to x
 # Cholesteric pitch:
 p = 0.65e-6

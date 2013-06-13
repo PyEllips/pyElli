@@ -11,11 +11,15 @@ See file "documentation.pdf"
 import numpy
 import scipy.linalg
 from numpy import pi, newaxis
+from matplotlib import pyplot
 
 #########################################################
 # Constants...
 
 c = 2.998e8     # speed of light in vacuum
+e_x = numpy.array([1,0,0]).reshape((3,1))
+e_y = numpy.array([0,1,0]).reshape((3,1))
+e_z = numpy.array([0,0,1]).reshape((3,1))
 
 #########################################################
 # Rotations... 
@@ -101,6 +105,9 @@ class DispersionLaw:
     Method that should be implemented in derived classes:
     * getValue(lbda) : returns refractive index for wavelength 'lbda'
     """
+    def __init__(self):
+        """Creates a new dispersion law -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
 
     def getValue(self, lbda):
         """Returns refractive index for wavelength 'lbda'."""
@@ -137,11 +144,13 @@ class Material:
     Method that should be implemented in derived classes:
     * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
+    def __init__(self):
+        """Creates a new material -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        raise NotImplementedError("Should be implemented in derived classes")
-    
+        raise NotImplementedError("Should be implemented in derived classes") 
 
 class NonDispersiveMaterial(Material):
 
@@ -185,6 +194,9 @@ class IsotropicMaterial(Material):
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda' 
     * getTensor(lbda) : required from class Material
     """
+    def __init__(self):
+        """Creates a new isotropic material  -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
 
     def getRefractiveIndex(self, lbda):
         """Returns refractive index for wavelength 'lbda'."""
@@ -271,6 +283,9 @@ class InhomogeneousMaterial:
     * getTensor(z, lbda) : permittivity tensor at position z
     * getSlices() : returns z_i, position of the slices
     """
+    def __init__(self):
+        """Creates a new inhomogeneous material -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
 
     def getTensor(self, z, lbda):
         """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
@@ -281,7 +296,10 @@ class InhomogeneousMaterial:
         raise NotImplementedError("Should be implemented in derived classes")
 
     def getSlices(self):
-        """Returns z slicing."""
+        """Returns z slicing (including z0 and zmax).
+        
+        Origin of 'z' is not important, only relative positions matter.
+        """
         raise NotImplementedError("Should be implemented in derived classes")
 
 
@@ -342,7 +360,8 @@ class TwistedMaterial(InhomogeneousMaterial):
     def getSlices(self):
         """Returns z slicing.
         
-        Returns : array of 'z' positions [z0, z1,... , zmax]
+        Returns : array of 'z' positions [z0, z1,... , zmax], 
+                  with z0 = 0 and zmax = z{d+1}
         
         Notes:
         * The number of divisions is 'div' (see constructor)
@@ -612,14 +631,31 @@ class Layer:
       'inv': boolean, if True, the propagator is from back to front.
     """
 
+    def __init__(self):
+        """Creates a new layer -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
+
+    def getPermittivityProfile(self, lbda):
+        """Returns permittivity tensor profile."""
+        raise NotImplementedError("Should be implemented in derived classes")
+
     def getPropagationMatrix(self, Kx, k0, inv):
         """Returns propagation matrix P for this layer."""
         raise NotImplementedError("Should be implemented in derived classes")
 
+
 class MaterialLayer(Layer):
-    """A layer made of one material (abstract class)."""
+    """A layer made of one material (abstract class).
+    
+    The material may be a Material or an InhomogeneousMaterial object.
+    The first is a homogeneous material, the second is inhomogeneous.
+    """
 
     material = None     # Material making the layer
+    
+    def __init__(self):
+        """Creates a new material layer -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
 
     def setMaterial(self, material):
         """Defines the material for this layer. """
@@ -669,6 +705,13 @@ class HomogeneousLayer(MaterialLayer):
             raise NotImplementedError("Method " + hs_method + 
                         " not available for propagator calculation")
         self.hs_order = hs_order
+
+    def getPermittivityProfile(self, lbda=1e-6):
+        """Returns permittivity tensor profile.
+        
+        Returns a list containing one tuple: [(h, epsilon)]
+        """
+        return [(self.h, self.material.getTensor(lbda))]
 
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P 
@@ -809,6 +852,18 @@ class InhomogeneousLayer(MaterialLayer):
                             " not available for symplectic evaluation")
         self.hs_order = q
 
+    def getPermittivityProfile(self, lbda=1e-6):
+        """Returns permittivity tensor profile.
+        
+        Tensor is evaluated in the middle of each slice.
+        Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
+        """
+        z = self.material.getSlices()
+        h = numpy.diff(z)
+        zmid = (z[:-1] + z[1:]) / 2.
+        tensor = [self.material.getTensor(z, lbda) for z in zmid]
+        return zip(h, tensor)
+
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P."""
         z = self.material.getSlices()
@@ -909,6 +964,18 @@ class RepeatedLayers(Layer):
         """
         self.layers = layers
 
+    def getPermittivityProfile(self, lbda=1e-6):
+        """Returns permittivity tensor profile.
+        
+        Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
+        """
+        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        if self.before > 0:
+            before = layers[-self.before:] 
+        else:
+            before = []
+        return before + self.n * layers + layers[:self.after]
+
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P for the repeated layers."""
         P_list = [L.getPropagationMatrix(Kx,k0,inv) for L in self.layers]
@@ -984,6 +1051,13 @@ class Structure:
         """
         self.layers = layers
 
+    def getPermittivityProfile(self, lbda=1e-6):
+        """Returns permittivity tensor profile."""
+        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        front = (float('inf'), self.frontHalfSpace.material.getTensor(lbda))
+        back = (float('inf'), self.backHalfSpace.material.getTensor(lbda)) 
+        return sum([[front], layers, [back]], [])
+
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Gives the propagation matrix of the structure.
 
@@ -1006,11 +1080,23 @@ class Structure:
             P = L.getPropagationMatrix(Kx,k0,inv)
             P_tot = P * P_tot
         return P_tot
-   
+
+
+    def getIndexProfile(self, lbda=1e-6, v=e_x):
+        """Returns refractive index profile.
+        
+        'v' : unit vector, direction of evaluation
+        """
+        profile = self.getPermittivityProfile(lbda)
+        (h, epsilon) = zip(*profile)
+        n = [ numpy.sqrt((v.T * eps * v)[0,0]) for eps in epsilon ]
+        return zip(h,n)
+
 
     def drawStructure(self):
-        """Draws the structure."""
-        pass
+        """Draw the structure."""
+        profile = self.getIndexProfile(lbda)
+        (h, n) = zip(*profile)
 
 
     def getStructureMatrix(self, Kx, k0=1e6):
