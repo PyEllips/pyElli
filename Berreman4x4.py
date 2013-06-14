@@ -11,7 +11,7 @@ See file "documentation.pdf"
 import numpy
 import scipy.linalg
 from numpy import pi, newaxis
-from matplotlib import pyplot
+import matplotlib
 
 #########################################################
 # Constants...
@@ -1093,10 +1093,28 @@ class Structure:
         return zip(h,n)
 
 
-    def drawStructure(self):
+    def drawStructure(self, lbda=1e-6, margin=0.10):
         """Draw the structure."""
         profile = self.getIndexProfile(lbda)
-        (h, n) = zip(*profile)
+        (h,n) = zip(*profile)
+        n = numpy.array(n).reshape((1,-1))
+        z_layers = numpy.hstack((0, numpy.cumsum(h[1:-1])))
+        z_max = z_layers[-1]
+        z_margin = margin * z_max
+        z = numpy.hstack((-z_margin, z_layers, z_max + z_margin))
+        X = z * numpy.ones((2,1))
+        Y = numpy.array([0,1]).reshape((2,1)) * numpy.ones_like(z)
+
+        fig = matplotlib.pyplot.figure(figsize=(8,3))
+        ax = fig.add_subplot("111")
+        fig.subplots_adjust(left=0.05, bottom=0.15)
+        ax.set_yticks([])
+        ax.set_xlabel("z (m)")
+        ax.ticklabel_format(style='scientific', axis='x', scilimits=(0,0))
+        ax.set_xlim(z.min(), z.max())
+        stack = ax.pcolormesh(X,Y,n, cmap=matplotlib.cm.gray_r)
+        fig.colorbar(stack, orientation='vertical', anchor=(1.2,0.5), 
+                     fraction=0.05)
 
 
     def getStructureMatrix(self, Kx, k0=1e6):
