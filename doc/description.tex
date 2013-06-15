@@ -461,14 +461,14 @@ General:
 \item Check Berreman's equations again. Which are the assumptions?
 \item Verify efficiency of Lu's method. It seems to be worse than the midpoint method for the twisted nematic example. Strange.
 \item Check code if back half-space is lossy or total internal reflection occurs. Complex $\phi$?
-\item Draw the layer structure (succession of rectangles).
-\item Provide elementary plots $R,T=f(\lambda)$ for a structure.
+\item Provide function for displaying elementary plots $R,T=f(\lambda)$ for a structure.
 \end{itemize}
 %
 Source code:
 \begin{itemize}
 \item Homogeneous layer: implement exact solution with Cayley-Hamilton or Lagrange-Sylvester.
 \item Calculation of the fields inside the structure (not just $t$ and $r$).
+\item Class \texttt{MaterialLayer} may be a bad idea, because classes \texttt{Material} and \texttt{InhomogeneousMaterial} are not brothers.
 \end{itemize}
 
 
