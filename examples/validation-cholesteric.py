@@ -87,5 +87,7 @@ ax.set_xlabel(r"Wavelength $\lambda_0$ (m)")
 ax.set_ylabel(r"Power reflexion $R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))
+
+s.drawStructure()
 pyplot.show()
 

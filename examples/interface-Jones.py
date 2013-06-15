@@ -54,4 +54,7 @@ In a reflexion, the handedness of an elliptic polarization is reversed,
 so the matrix 'Jcr' is anti-diagonal.
 """)
 
+stack = s.drawStructure()
+Berreman4x4.matplotlib.pyplot.show()        # show drawing
+
 

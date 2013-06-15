@@ -11,13 +11,13 @@ See file "documentation.pdf"
 import numpy
 import scipy.linalg
 from numpy import pi, newaxis
-import matplotlib
+import matplotlib, matplotlib.pyplot
 
 #########################################################
 # Constants...
 
 c = 2.998e8     # speed of light in vacuum
-e_x = numpy.array([1,0,0]).reshape((3,1))
+e_x = numpy.array([1,0,0]).reshape((3,1))   # base vectors
 e_y = numpy.array([0,1,0]).reshape((3,1))
 e_z = numpy.array([0,0,1]).reshape((3,1))
 
@@ -1093,17 +1093,21 @@ class Structure:
         return zip(h,n)
 
 
-    def drawStructure(self, lbda=1e-6, margin=0.10):
+    def drawStructure(self, lbda=1e-6, margin=0.15):
         """Draw the structure."""
         profile = self.getIndexProfile(lbda)
         (h,n) = zip(*profile)
-        n = numpy.array(n).reshape((1,-1))
-        z_layers = numpy.hstack((0, numpy.cumsum(h[1:-1])))
+        z_layers = numpy.hstack((0., numpy.cumsum(h[1:-1])))
         z_max = z_layers[-1]
-        z_margin = margin * z_max
+        if z_max <> 0.:
+            z_margin = margin * z_max
+        else:
+            z_margin = 1e-6
         z = numpy.hstack((-z_margin, z_layers, z_max + z_margin))
+        # Prepare arrays for pcolormesh()
         X = z * numpy.ones((2,1))
         Y = numpy.array([0,1]).reshape((2,1)) * numpy.ones_like(z)
+        n = numpy.array(n).reshape((1,-1)).real
 
         fig = matplotlib.pyplot.figure(figsize=(8,3))
         ax = fig.add_subplot("111")
@@ -1113,8 +1117,10 @@ class Structure:
         ax.ticklabel_format(style='scientific', axis='x', scilimits=(0,0))
         ax.set_xlim(z.min(), z.max())
         stack = ax.pcolormesh(X,Y,n, cmap=matplotlib.cm.gray_r)
-        fig.colorbar(stack, orientation='vertical', anchor=(1.2,0.5), 
-                     fraction=0.05)
+        colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2,0.5), 
+                              fraction=0.05)
+        colbar.ax.set_xlabel("n", position=(3,0))
+        return fig
 
 
     def getStructureMatrix(self, Kx, k0=1e6):

@@ -83,5 +83,7 @@ ax.set_title(u"90° Twisted Nematic Liquid Crystal, " +
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission $T$")
 ax.legend()
+
+s.drawStructure()
 pyplot.show()
 

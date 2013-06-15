@@ -76,5 +76,7 @@ ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x8/TiO$_2$/Glass")
 
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))
+
+stack = s.drawStructure()
 pyplot.show()
 

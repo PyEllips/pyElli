@@ -152,5 +152,7 @@ ax.set_xlabel(r"Wavelength $\lambda$ (m)")
 ax.set_ylabel(r"$R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))
+
+s.drawStructure()
 pyplot.show()
 

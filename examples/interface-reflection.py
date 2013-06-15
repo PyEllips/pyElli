@@ -101,5 +101,7 @@ ax.legend(lines1 + lines2, legend1 + legend2,
 ax.set_title("Interface n$_1$={:} / n$_2$={:}".format(n1,n2))
 ax.set_xlabel(r"Reduced wave vector $Kx$ ")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$,$T$, $|t|^2$")
+
+s.drawStructure()
 pyplot.show()
 
