@@ -14,9 +14,9 @@ A drawback is slow speed, because the language is interpreted%
 High speed calculations are possible with NumPy and SciPy if array operations are vectorized.
 However the structure of Berreman4x4 is difficult to vectorize with enough generality.}.
 
-Calculations are based on articles from Berreman \cite{Berreman} (1972) and Schubert \cite{Schubert} (1996).
-Application to ellipsometry is based Fujiwara's book \cite{Fujiwara} (2007).
-General references for optics in anisotropic media are found in the books of Born and Wolf \cite{BornWolf} and Jackson \cite{Jackson}.
+Calculations are based on articles from Berreman \cite{Berreman} and Schubert \cite{Schubert}.
+Application to ellipsometry is based on Fujiwara's book \cite{Fujiwara}.
+General references for optics in anisotropic media are found from Born and Wolf \cite{BornWolf}, and Jackson \cite{Jackson}.
 
 \section{Presentation}
 
@@ -80,7 +80,7 @@ For example, isotropic materials with $\Im(\varepsilon)>0$ are lossy.
 
 In the stratified sample, Maxwell's equations lead to a propagation equation for the transverse components $(E_x,E_y,H_x,H_y)$.
 The demonstration can be found in reference~\onlinecite{Berreman} and leads to%
-\footnote{Note that equation~(3) in Berreman's article is wrong and should read $\mathbf{C=MG}$.}
+\footnote{In Berreman's article, there is a misprint in equation~(3), it should read $\mathbf{C=MG}$.}
 %
 \begin{equation}\label{eq:propagation}
 \frac{\partial \Psi}{\partial z} = i k_0 \Delta(z) \Psi(z),
@@ -469,6 +469,7 @@ Source code:
 \item Homogeneous layer: implement exact solution with Cayley-Hamilton or Lagrange-Sylvester.
 \item Calculation of the fields inside the structure (not just $t$ and $r$).
 \item Class \texttt{MaterialLayer} may be a bad idea, because classes \texttt{Material} and \texttt{InhomogeneousMaterial} are not brothers.
+\item Maintenant que j'ai créé \texttt{getPermittivityProfile()}, c'est peut-être possible de l'utiliser pour simplifier \texttt{getPropagationMatrix()}. Se demander si c'est une bonne idée. Il faudra alors ajouter le choix de direction \texttt{inv} à \texttt{getPermittivityProfile()}.
 \end{itemize}
 
 
