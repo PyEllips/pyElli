@@ -1092,11 +1092,15 @@ class Structure:
         n = [ numpy.sqrt((v.T * eps * v)[0,0]) for eps in epsilon ]
         return zip(h,n)
 
-
-    def drawStructure(self, lbda=1e-6, margin=0.15):
-        """Draw the structure."""
+    def drawStructure(self, method="graph", lbda=1e-6, margin=0.15):
+        """Draw the structure.
+        
+        'method' : 'graph' or 'section'
+        """
+        # Build index profile
         profile = self.getIndexProfile(lbda)
         (h,n) = zip(*profile)
+        n = numpy.array(n)
         z_layers = numpy.hstack((0., numpy.cumsum(h[1:-1])))
         z_max = z_layers[-1]
         if z_max <> 0.:
@@ -1104,11 +1108,39 @@ class Structure:
         else:
             z_margin = 1e-6
         z = numpy.hstack((-z_margin, z_layers, z_max + z_margin))
+        # Call specialized methods
+        if method == "graph":
+            fig = self._drawStructureGraph(z,n)
+        elif method == "section":
+            fig = self._drawStructureSection(z,n)
+        else:
+            fig = None
+        return fig
+
+    def _drawStructureGraph(self, z, n):
+        """Draw a graph of the refractive index profile """
+        n = numpy.hstack((n, n[-1]))
+        # Draw the graph
+        fig = matplotlib.pyplot.figure(figsize=(8,3))
+        ax = fig.add_subplot("111")
+        fig.subplots_adjust(bottom=0.17)
+        ax.step(z, n, 'black', where='post')
+        ax.spines['top'].set_visible(False)
+        ax.xaxis.set_ticks_position('bottom')
+        ax.set_xlabel("z (m)")
+        ax.set_ylabel("n")
+        ax.ticklabel_format(style='scientific', axis='x', scilimits=(0,0))
+        ax.set_xlim(z.min(), z.max())
+        ax.set_ylim(bottom=1.0)
+        return fig
+
+    def _drawStructureSection(self, z, n):
+        """Draw a cross section of the structure"""
         # Prepare arrays for pcolormesh()
         X = z * numpy.ones((2,1))
         Y = numpy.array([0,1]).reshape((2,1)) * numpy.ones_like(z)
         n = numpy.array(n).reshape((1,-1)).real
-
+        # Draw the cross section
         fig = matplotlib.pyplot.figure(figsize=(8,3))
         ax = fig.add_subplot("111")
         fig.subplots_adjust(left=0.05, bottom=0.15)
