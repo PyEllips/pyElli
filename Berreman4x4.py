@@ -1103,7 +1103,7 @@ class Structure:
         n = numpy.array(n)
         z_layers = numpy.hstack((0., numpy.cumsum(h[1:-1])))
         z_max = z_layers[-1]
-        if z_max <> 0.:
+        if z_max != 0.:
             z_margin = margin * z_max
         else:
             z_margin = 1e-6
