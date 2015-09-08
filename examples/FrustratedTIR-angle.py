@@ -94,11 +94,11 @@ T_th_p = t2_th_p*correction
 # Calculation with Berreman4x4
 data = numpy.array([s.getJones(kx,k0) for kx in Kx])
 
-data = abs(data)**2
-R_p  = Berreman4x4.extractCoefficient(data, 'r_pp')
-R_s  = Berreman4x4.extractCoefficient(data, 'r_ss')
-t2_p = Berreman4x4.extractCoefficient(data, 't_pp')
-t2_s = Berreman4x4.extractCoefficient(data, 't_ss')
+data2 = abs(data)**2
+R_p  = Berreman4x4.extractCoefficient(data2, 'r_pp')
+R_s  = Berreman4x4.extractCoefficient(data2, 'r_ss')
+t2_p = Berreman4x4.extractCoefficient(data2, 't_pp')
+t2_s = Berreman4x4.extractCoefficient(data2, 't_ss')
 T_s = t2_s*correction
 T_p = t2_p*correction
 

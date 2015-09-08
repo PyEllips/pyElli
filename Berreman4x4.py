@@ -569,8 +569,10 @@ class IsotropicHalfSpace(HalfSpace):
         'Kx' : Reduced wavenumber,      Kx = kx/k0 = n sin(Φ)
         'k0' : wavenumber in vacuum,    kx = n k0 sin(Φ)
 
-        Returns : reduced wave number Kz
+        Returns : reduced wave number Kz = kz/k0
         """
+        # Not vectorized. Could be? 
+        # Test type(Kz2)
         n = self.material.getRefractiveIndex(2*pi/k0)
         Kz2 = n**2 - Kx**2
         return numpy.sqrt(complex(Kz2))
@@ -583,6 +585,7 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : angle Phi in radians.
         """
+        # May be vectorized when I have time?
         n = self.material.getRefractiveIndex(2*pi/k0)
         sin_Phi = Kx/n
         if abs(sin_Phi) > 1:
