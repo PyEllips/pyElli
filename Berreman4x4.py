@@ -1,6 +1,6 @@
 # Encoding: utf-8
 
-# Copyright (C) 2012 Olivier Castany
+# Copyright (C) 2012-2016 Olivier Castany
 # This program is free software (see LICENCE file)
 
 """Berreman4x4: module implementing Berreman's 4x4 matrix method.
@@ -865,7 +865,7 @@ class InhomogeneousLayer(MaterialLayer):
         h = numpy.diff(z)
         zmid = (z[:-1] + z[1:]) / 2.
         tensor = [self.material.getTensor(z, lbda) for z in zmid]
-        return zip(h, tensor)
+        return list(zip(h, tensor))
 
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P."""
@@ -1091,9 +1091,9 @@ class Structure:
         'v' : unit vector, direction of evaluation
         """
         profile = self.getPermittivityProfile(lbda)
-        (h, epsilon) = zip(*profile)
+        (h, epsilon) = list(zip(*profile))  # unzip
         n = [ numpy.sqrt((v.T * eps * v)[0,0]) for eps in epsilon ]
-        return zip(h,n)
+        return list(zip(h,n))
 
     def drawStructure(self, method="graph", lbda=1e-6, margin=0.15):
         """Draw the structure.
@@ -1102,7 +1102,7 @@ class Structure:
         """
         # Build index profile
         profile = self.getIndexProfile(lbda)
-        (h,n) = zip(*profile)
+        (h,n) = list(zip(*profile))     # unzip
         n = numpy.array(n)
         z_layers = numpy.hstack((0., numpy.cumsum(h[1:-1])))
         z_max = z_layers[-1]
@@ -1127,7 +1127,7 @@ class Structure:
         fig = matplotlib.pyplot.figure(figsize=(8,3))
         ax = fig.add_subplot("111")
         fig.subplots_adjust(bottom=0.17)
-        ax.step(z, n, 'black', where='post')
+        ax.step(z, n.real, 'black', where='post')
         ax.spines['top'].set_visible(False)
         ax.xaxis.set_ticks_position('bottom')
         ax.set_xlabel("z (m)")

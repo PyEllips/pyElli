@@ -84,7 +84,7 @@ T_pp = correction * t2_pp
 ############################################################################
 # Plotting
 fig = pyplot.figure(figsize=(12., 6.))
-pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
+pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'bgrcbg')
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = numpy.vstack((R_ss,R_pp,t2_ss,t2_pp,T_ss,T_pp)).T

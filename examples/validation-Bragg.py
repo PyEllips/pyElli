@@ -132,7 +132,7 @@ R_pp = abs(r_pp)**2
 ############################################################################
 # Plotting
 fig = pyplot.figure(figsize=(12., 6.))
-pyplot.rcParams['axes.color_cycle'] = ['b','g','r']
+pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'bgr')
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = numpy.vstack((R_ss_0,R_ss,R_pp)).T

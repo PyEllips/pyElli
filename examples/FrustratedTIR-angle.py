@@ -105,7 +105,7 @@ T_p = t2_p*correction
 ############################################################################
 # Plotting
 fig = pyplot.figure(figsize=(12., 6.))
-pyplot.rcParams['axes.color_cycle'] = ['b','g','r','c','b','g']
+pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'bgrcbg')
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 y = numpy.vstack((R_s,R_p,t2_s,t2_p,T_s,T_p)).T

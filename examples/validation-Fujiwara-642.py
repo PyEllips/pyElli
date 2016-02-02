@@ -151,7 +151,7 @@ data = numpy.array(data)
 
 fig = pyplot.figure()
 # Plot curves for the three values of Theta_E
-pyplot.rcParams['axes.color_cycle'] = ['k', 'b', 'g']
+pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
 ax1 = fig.add_subplot("221")
 ax1.plot(Phi_E_deg, data[:,:,0,0].T)
 ax1.set_ylabel(r"$\Psi_{pp}$")
@@ -160,7 +160,7 @@ ax2.plot(Phi_E_deg, data[:,:,0,1].T)
 ax2.set_ylabel(r"$\Delta_{pp}$")
 
 # Plot curves for two values of Theta_E
-pyplot.rcParams['axes.color_cycle'] = ['b', 'g']
+pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'bg')
 ax3 = fig.add_subplot("223")
 ax3.plot(Phi_E_deg, data[1:,:,1,0].T)
 ax3.set_ylabel(r"$\Psi_{ps}$")
