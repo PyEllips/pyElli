@@ -97,20 +97,18 @@ T_th_p = t2_th_p*correction
 
 Kx = front.get_Kx_from_Phi(Phi_i, k0)   # Reduced wavenumber
 
-l = []
-for d_i in d:
-    layer.setThickness(d_i)
-    l.append(s.getJones(Kx,k0))
-data = numpy.array(l)
+data = Berreman4x4.DataList()
+for dd in d:
+    layer.setThickness(dd)
+    data.append(s.evaluate(Kx,k0))
 
 # Extraction of the transmission and reflexion coefficients
-data = abs(data)**2
-R_p  = Berreman4x4.extractCoefficient(data, 'r_pp')
-R_s  = Berreman4x4.extractCoefficient(data, 'r_ss')
-t2_p = Berreman4x4.extractCoefficient(data, 't_pp')
-t2_s = Berreman4x4.extractCoefficient(data, 't_ss')
-T_s = t2_s*correction
-T_p = t2_p*correction
+R_p = data.get('R_pp')
+R_s = data.get('R_ss')
+T_p = data.get('T_pp')
+T_s = data.get('T_ss')
+t2_p = abs(data.get('t_pp'))**2  # Before power correction
+t2_s = abs(data.get('t_ss'))**2
 
 ############################################################################
 # Plotting

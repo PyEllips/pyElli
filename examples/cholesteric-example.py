@@ -21,7 +21,7 @@ Dn = ne-no
 n_med = (ne + no)/2
 LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)  # ne along z
 R = Berreman4x4.rotation_v_theta(e_y, pi/2) # rotation of pi/2 along y
-LC = LC.rotated(R)                              # apply rotation from z to x
+LC = LC.rotated(R)                          # apply rotation from z to x
 # Cholesteric pitch:
 p = 0.65e-6
 # One half turn of a right-handed helix:
@@ -50,13 +50,12 @@ lbda_B1, lbda_B2 = p*no, p*ne
 
 ############################################################################
 # Calculation with Berreman4x4
-J = numpy.array([s.getJones(Kx,k0) for k0 in k0_list])
-power = abs(J)**2
-T_pp = Berreman4x4.extractCoefficient(power, 't_pp')
-T_ps = Berreman4x4.extractCoefficient(power, 't_ps')
-T_ss = Berreman4x4.extractCoefficient(power, 't_ss')
-T_sp = Berreman4x4.extractCoefficient(power, 't_sp')
-# Note: the expression for T is valid if back and front media are identical
+data = Berreman4x4.DataList([s.evaluate(Kx,k0) for k0 in k0_list])
+
+T_pp = data.get('T_pp')
+T_ps = data.get('T_ps')
+T_ss = data.get('T_ss')
+T_sp = data.get('T_sp')
 
 # Transmission coefficients for incident unpolarized light:
 T_pn = 0.5 * (T_pp + T_ps)
@@ -72,7 +71,7 @@ T_np = T_pp + T_sp
 # Text output: eigenvalues and eigenvectors of the transmission matrix for 
 # a wavelength in the middle of the stop-band.
 i = numpy.argmin(abs(lbda_list-lbda_B))     # index for stop-band center
-T = J[i,1,:,:]                              # transmission matrix
+T = data[i].T_ti                            # transmission matrix
 eigenvalues, eigenvectors = numpy.linalg.eig(T)
 numpy.set_printoptions(precision=3)
 print("\nTransmission in the middle of the stop-band...\n")
@@ -94,18 +93,17 @@ print(180/pi*numpy.angle(eigenvectors[1,:]/eigenvectors[0,:]))
 
 ###########################################################################
 # Jones matrices for the circular wave basis
-Jc = Berreman4x4.circularJones(J)
-power_c = abs(Jc)**2
 
 # Right-circular wave is reflected in the stop-band.
 # R_LR, T_LR close to zero.
-R_RR = Berreman4x4.extractCoefficient(power_c, 'r_RR')
-T_RR = Berreman4x4.extractCoefficient(power_c, 't_RR')
+R_RR = data.get('R_RR')
+T_RR = data.get('T_RR')
 
 # Left-circular wave is transmitted in the full spectrum.
 # T_RL, R_RL, R_LL close to zero, T_LL close to 1.
-T_LL = Berreman4x4.extractCoefficient(power_c, 't_LL')
-R_LL = Berreman4x4.extractCoefficient(power_c, 'r_LL')
+T_LL = data.get('T_LL')
+R_LL = data.get('R_LL')
+
 
 ############################################################################
 # Plotting

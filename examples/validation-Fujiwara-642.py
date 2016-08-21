@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # encoding: utf-8
 
 # Berreman4x4 example
@@ -121,13 +121,14 @@ The first line, [r_pp, r_ps], has reversed sign compared to Fujiwara's result,
 due to the different convention for Erp.
 """
 print("\nEllipsometry parameters (p. 243):")
-print(Berreman4x4.extractEllipsoParam(Jr))
+(Psi,Delta) = Berreman4x4.DataList.getEllipsometryParameters(Jr)
+print("Psi\n" + str(Psi))
+print("Delta\n" + str(Delta))
 """
 Ellipsometry parameters: 
-s.getEllipsoParam(Jr) = 
-matrix([[  31.442,  -42.734],       = matrix([[Ψ_pp, Δ_pp], 
-        [  10.564,  -16.412],                 [Ψ_ps, Δ_ps], 
-        [   5.533, -155.024]])                [Ψ_sp, Δ_sp]])
+Psi                         Delta
+[[ 31.4419  10.5641]         [[ -42.734   -16.4123]
+ [  5.5332  45.    ]]         [-155.024     0.    ]]
 """
 
 # We now reproduce figure 6.19:
@@ -137,36 +138,39 @@ Theta_E_list = [0, pi/4, pi/2]
 Phi_E_list = numpy.linspace(0,pi,36*2+1)
 Phi_E_deg = Phi_E_list*180/pi
 
-data = []
+data = Berreman4x4.DataList()
 for Theta_E in Theta_E_list:
     l = []
     for Phi_E in Phi_E_list:
         R = Berreman4x4.rotation_Euler((Phi_E, Theta_E, 0))
         film.setMaterial(filmMaterialRef.rotated(R))
-        Jr = s.getJones(Kx,k0)[0]
-        l.append(Berreman4x4.extractEllipsoParam(Jr))
+        l.append(s.evaluate(Kx,k0))
     data.append(l)
-
-data = numpy.array(data)
 
 fig = pyplot.figure()
 # Plot curves for the three values of Theta_E
 pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
 ax1 = fig.add_subplot("221")
-ax1.plot(Phi_E_deg, data[:,:,0,0].T)
+Psi_pp = data.get('Ψ_pp')
+ax1.plot(Phi_E_deg, Psi_pp.T)
 ax1.set_ylabel(r"$\Psi_{pp}$")
+
 ax2 = fig.add_subplot("222")
-ax2.plot(Phi_E_deg, data[:,:,0,1].T)
+Delta_pp = data.get('Δ_pp')
+ax2.plot(Phi_E_deg, Delta_pp.T)
 ax2.set_ylabel(r"$\Delta_{pp}$")
 
 # Plot curves for two values of Theta_E
 pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'bg')
 ax3 = fig.add_subplot("223")
-ax3.plot(Phi_E_deg, data[1:,:,1,0].T)
+Psi_ps = data.get('Ψ_ps')
+ax3.plot(Phi_E_deg, Psi_ps.T)
 ax3.set_ylabel(r"$\Psi_{ps}$")
 ax3.set_xlabel(r"$\phi_E$")
+
 ax4 = fig.add_subplot("224")
-ax4.plot(Phi_E_deg, data[1:,:,1,1].T)
+Delta_ps = data.get('Δ_ps')
+ax4.plot(Phi_E_deg, Delta_ps.T)
 ax4.set_ylabel(r"$\Delta_{ps}$")
 ax4.set_xlabel(r"$\phi_E$")
 

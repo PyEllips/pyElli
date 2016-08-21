@@ -117,17 +117,14 @@ R_th_pp = (abs(ReflectionCoeff(pi/4, 'p')))**2
 # Calculation with Berreman4x4
 # Incidence angle Phi_i = 0, 's' polarization
 Kx = front.get_Kx_from_Phi(0)
-data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
-r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
-R_ss_0 = abs(r_ss)**2
+data = Berreman4x4.DataList([s.evaluate(Kx, 2*pi/lbda) for lbda in lbda_list])
+R_ss_0 = data.get('R_ss')
 
 # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
 Kx = front.get_Kx_from_Phi(pi/4)
-data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
-r_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
-r_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
-R_ss = abs(r_ss)**2
-R_pp = abs(r_pp)**2
+data = Berreman4x4.DataList([s.evaluate(Kx, 2*pi/lbda) for lbda in lbda_list])
+R_ss = data.get('R_ss')
+R_pp = data.get('R_pp')
 
 ############################################################################
 # Plotting

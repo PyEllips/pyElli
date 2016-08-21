@@ -56,12 +56,10 @@ s = Berreman4x4.Structure(front, [L], back)
 (lbda1, lbda2) = (1.1e-6, 2.5e-6)
 lbda_list = numpy.linspace(lbda1, lbda2, 200)
 
-data = numpy.array([s.getJones(Kx, 2*pi/lbda) for lbda in lbda_list])
+data = Berreman4x4.DataList([s.evaluate(Kx, 2*pi/lbda) for lbda in lbda_list])
 
-r = Berreman4x4.extractCoefficient(data, 'r_ss')
-R = abs(r)**2
-t = Berreman4x4.extractCoefficient(data, 't_ss')
-T = s.getPowerTransmissionCorrection(Kx) * abs(t)**2
+R = data.get('R_ss')
+T = data.get('T_ss')
 
 # Plotting 
 fig = pyplot.figure()

@@ -66,9 +66,8 @@ ax.plot(k0_list, T, label="Gooch-Tarry law")
 # Calulation with Berreman4x4 and plotting
 def plotTransmission(label):
     """Plots power transmission vs. wavenumber."""
-    data = numpy.array([s.getJones(Kx,k0) for k0 in k0_list])
-    t_pp = Berreman4x4.extractCoefficient(data, 't_pp')
-    T = abs(t_pp)**2    # valid if back and front media are identical
+    data = Berreman4x4.DataList([s.evaluate(Kx,k0) for k0 in k0_list])
+    T = data.get('T_pp')
     ax.plot(k0_list, T, 'x', label=label)
 
 # Two plots are mad, with different numbers of divisions in the TwistedMaterial

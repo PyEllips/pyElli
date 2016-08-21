@@ -9,7 +9,7 @@
 print("*** Air / glass interface ***\n")
 
 import numpy, Berreman4x4
-from Berreman4x4 import c, pi
+from Berreman4x4 import c, pi 
 
 # Materials:
 air = Berreman4x4.IsotropicNonDispersiveMaterial(1.0)
@@ -38,11 +38,11 @@ print(Jt)
 """
 
 print("\nWhen the basis is the circular polarizations ('L','R')...")
-Jc = Berreman4x4.circularJones(J)
-(Jcr,Jct) = Jc
 print("Jones matrix for reflection (Jcr):")
+Jcr = Berreman4x4.DataList.getCircularJones(Jr, "reflection")
 print(Jcr)
 print("Jones matrix for transmission (Jct):")
+Jct = Berreman4x4.DataList.getCircularJones(Jt, "transmission")
 print(Jct)
 """
 array([[ 0.0+0.j, -0.2+0.j],      array([[ 0.8+0.j,  0.0+0.j],
@@ -54,7 +54,7 @@ In a reflexion, the handedness of an elliptic polarization is reversed,
 so the matrix 'Jcr' is anti-diagonal.
 """)
 
-stack = s.drawStructure()
+s.drawStructure()
 Berreman4x4.matplotlib.pyplot.show()        # show drawing
 
 

@@ -16,7 +16,7 @@ import sys
 # Program parameters
 
 if len(sys.argv) > 1 and (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
-    print("Usage: interface-reflection.py [-h, --help] [n1 n2]\n")
+    print("Usage: interface-reflection.py [-h, --help] n1 n2\n")
     sys.exit()
 
 if len(sys.argv) > 2:
@@ -70,16 +70,13 @@ T_th_pp = correction * t2_th_pp
 # Calculation with Berreman4x4
 Kx_list = front.get_Kx_from_Phi(Phi_i, k0)
 
-data = numpy.array([s.getJones(Kx,k0) for Kx in Kx_list])
+data = Berreman4x4.DataList([s.evaluate(Kx,k0) for Kx in Kx_list])
 
 # Extraction of the power coefficients
-data = abs(data)**2
-R_ss = Berreman4x4.extractCoefficient(data, 'r_ss')
-R_pp = Berreman4x4.extractCoefficient(data, 'r_pp')
-t2_ss = Berreman4x4.extractCoefficient(data, 't_ss')
-t2_pp = Berreman4x4.extractCoefficient(data, 't_pp')
-T_ss = correction * t2_ss
-T_pp = correction * t2_pp
+for name in ['R_ss', 'R_pp', 't_ss', 't_pp', 't_ss', 't_pp', 'T_ss', 'T_pp']:
+    exec("{0:} = data.get('{0:}')".format(name))
+t2_ss = data.get('t_ss')**2
+t2_pp = data.get('t_pp')**2
 
 ############################################################################
 # Plotting
@@ -103,5 +100,6 @@ ax.set_xlabel(r"Reduced wave vector $Kx$ ")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$,$T$, $|t|^2$")
 
 s.drawStructure()
+print("Lines and circles should be superimposed!")
 pyplot.show()
 

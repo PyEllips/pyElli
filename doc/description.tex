@@ -423,9 +423,10 @@ Berreman4x4 depends on the standard Python modules NumPy\cite{NumPy} and SciPy\c
 Application examples need module matplotlib\cite{matplotlib} for plotting.
 
 General workflow with Berreman4x4 consists of  
-(1) building the structure, 
-(2) calculating Jones matrices, 
-(3) extracting the desired coefficients and plotting.
+(1)~building the structure, 
+(2)~evaluating the structure, typically with \texttt{Structure.evaluate()},
+(3)~storing the different evaluations in a \texttt{DataList},
+(4)~extracting the desired coefficient with \texttt{DataList.get()}, and plotting.
 
 \section{Code documentation and examples}
 

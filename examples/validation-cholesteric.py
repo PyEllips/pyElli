@@ -8,7 +8,7 @@
 
 import numpy, Berreman4x4
 from numpy import sin, sqrt, abs, exp
-from Berreman4x4 import c, pi, e_y, C, D, invC, invD
+from Berreman4x4 import c, pi, e_y
 import matplotlib.pyplot as pyplot
 
 ############################################################################
@@ -62,14 +62,12 @@ R_th = abs((w**2+1)*(1-exp(-2j*k0*n2*h)) \
 
 ############################################################################
 # Calculation with Berreman4x4
-J = numpy.array([s.getJones(Kx,_k0) for _k0 in k0])
+data = Berreman4x4.DataList([s.evaluate(Kx,_k0) for _k0 in k0])
 
 # Jones matrices for the circular wave basis
-Jc = Berreman4x4.circularJones(J)
-power = abs(Jc)**2
 # Right-circular wave is reflected in the stop-band
 # R_LR, T_LR close to zero
-R_RR = Berreman4x4.extractCoefficient(power, 'r_RR')
+R_RR = data.get('R_RR')
 
 ############################################################################
 # Plotting

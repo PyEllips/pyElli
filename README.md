@@ -10,7 +10,7 @@ The front web page is http://Berreman4x4.github.com (GitHub Organization web pag
 See [documentation](http://sourceforge.net/projects/berreman4x4/files/documentation.pdf) for more information.
 
 -- 
-Copyright (C) 2012-2013 Olivier Castany
+Copyright (C) 2012-2016 Olivier Castany
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
