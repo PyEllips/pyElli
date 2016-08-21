@@ -1,0 +1,14 @@
+todo :
+
+* élément "polarizer"
+
+* getTransmission (global sur les deux polars)
+
+---------
+TwistedMaterial : ce n'est pas l'épaisseur du matériau, mais l'épaisseur correspondant à l'angle, donc on pourrait définir le matériau pour une certaine épaisseur, mais l'utiliser pour une autre épaisseur.
+
+Improve creation of TwistedMaterial
+
+---------
+
+
