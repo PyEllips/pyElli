@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 # Berreman4x4 example
-# Author: O. Castany, C. Molinaro
+# Authors: O. Castany, C. Molinaro
 
 # Example of a cholesteric liquid crystal
 
@@ -22,7 +22,7 @@ n_med = (ne + no)/2
 LC = Berreman4x4.UniaxialNonDispersiveMaterial(no, ne)  # ne along z
 R = Berreman4x4.rotation_v_theta(e_y, pi/2) # rotation of pi/2 along y
 LC = LC.rotated(R)                          # apply rotation from z to x
-# Cholesteric pitch:
+# Cholesteric pitch (m):
 p = 0.65e-6
 # One half turn of a right-handed helix:
 TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=35)
@@ -97,7 +97,9 @@ print(180/pi*numpy.angle(eigenvectors[1,:]/eigenvectors[0,:]))
 # Right-circular wave is reflected in the stop-band.
 # R_LR, T_LR close to zero.
 R_RR = data.get('R_RR')
+R_LR = data.get('R_LR')
 T_RR = data.get('T_RR')
+T_LR = data.get('T_LR')
 
 # Left-circular wave is transmitted in the full spectrum.
 # T_RL, R_RL, R_LL close to zero, T_LL close to 1.

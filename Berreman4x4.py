@@ -1296,16 +1296,16 @@ class _MonitorChangers:
     @staticmethod
     def proxy_decorator(method):
         """Return the wrapped 'method'."""
-        def wrapper(self, *args, **kw):
+        def wrapped_method(self, *args, **kw):
             self.changed = True
             return method(self, *args, **kw)
-        wrapper.__name__ = method.__name__
-        return wrapper
+        wrapped_method.__name__ = method.__name__
+        return wrapped_method
 
     @classmethod
     def monitorized(self, cls):
         """Return monitorized class after wrapping 'cls._changer_methods'."""
-        # Create new dictionary and wrap methods
+        # Create new method dictionary and wrap some methods
         new_dict = cls.__dict__.copy()
         for method_name in cls._changer_methods:
             method = getattr(cls, method_name)
@@ -1456,7 +1456,7 @@ class DataList(list):
         * ellipsomtery parameters see getEllipsometryParameters()
         * circular polarization, see getCircularJones()
 
-        Returns : array of result
+        Returns : array of values
         """
         param = name[0]
 
