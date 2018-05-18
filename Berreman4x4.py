@@ -1121,6 +1121,7 @@ class Structure:
         """Draw the structure.
         
         'method' : 'graph' or 'section'
+        Returns : Axes object
         """
         # Build index profile
         profile = self.getIndexProfile(lbda)
@@ -1135,12 +1136,12 @@ class Structure:
         z = numpy.hstack((-z_margin, z_layers, z_max + z_margin))
         # Call specialized methods
         if method == "graph":
-            fig = self._drawStructureGraph(z,n)
+            ax = self._drawStructureGraph(z,n)
         elif method == "section":
-            fig = self._drawStructureSection(z,n)
+            ax = self._drawStructureSection(z,n)
         else:
-            fig = None
-        return fig
+            ax = None
+        return ax
 
     def _drawStructureGraph(self, z, n):
         """Draw a graph of the refractive index profile """
@@ -1157,7 +1158,7 @@ class Structure:
         ax.ticklabel_format(style='scientific', axis='x', scilimits=(0,0))
         ax.set_xlim(z.min(), z.max())
         ax.set_ylim(bottom=1.0)
-        return fig
+        return ax
 
     def _drawStructureSection(self, z, n):
         """Draw a cross section of the structure"""
@@ -1177,7 +1178,7 @@ class Structure:
         colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2,0.5), 
                               fraction=0.05)
         colbar.ax.set_xlabel("n", position=(3,0))
-        return fig
+        return ax
 
 
     def getStructureMatrix(self, Kx, k0=1e6):

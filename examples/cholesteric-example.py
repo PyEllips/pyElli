@@ -129,7 +129,7 @@ ax.set_ylabel(r"Power transmission $T$ and reflexion $R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3,3))
 
-stack = s.drawStructure()
+s.drawStructure()
 pyplot.show()
 
 

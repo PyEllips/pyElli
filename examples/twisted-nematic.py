@@ -70,7 +70,7 @@ def plotTransmission(label):
     T = data.get('T_pp')
     ax.plot(k0_list, T, 'x', label=label)
 
-# Two plots are mad, with different numbers of divisions in the TwistedMaterial
+# Two plots are made, with 7 or 18 divisions in the TwistedMaterial
 TN.setDivision(7)
 plotTransmission("Berreman4x4, 7 div")
 TN.setDivision(18) 
@@ -83,6 +83,7 @@ ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission $T$")
 ax.legend()
 
-s.drawStructure()
+ax = s.drawStructure()
+ax.set_title("Index profile along e_x")
 pyplot.show()
 
