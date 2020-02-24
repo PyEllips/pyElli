@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.2">
-<info created="D:20120629224850" modified="D:20120712214434"/>
+<ipe version="70206" creator="Ipe 7.2.9">
+<info created="D:20120629224850" modified="D:20191205202902"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -279,12 +279,12 @@ h
 <path matrix="1 0 0 1 0 48" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<text matrix="1 0 0 1 0 31.385" transformations="translations" pos="200.771 704.615" stroke="black" type="label" width="7.982" height="6.177" depth="0" valign="baseline" size="Large">$x$</text>
-<text matrix="1 0 0 1 -52.306 48" transformations="translations" pos="452.306 612.308" stroke="black" type="label" width="7.165" height="6.177" depth="0" valign="baseline" size="Large">$z$</text>
-<text matrix="1 0 0 1 0 48" transformations="translations" pos="200.001 615.385" stroke="black" type="label" width="7.364" height="6.176" depth="2.79" valign="baseline" size="Large">$y$</text>
-<text matrix="1 0 0 1 9.59207 55.5875" transformations="translations" pos="113.848 569.232" stroke="black" type="label" width="4.792" height="9.405" depth="0" valign="baseline" size="Large">$i$</text>
-<text matrix="1 0 0 1 24.4329 32.7294" transformations="translations" pos="86.1563 690.769" stroke="black" type="label" width="6.721" height="6.177" depth="0" valign="baseline" size="Large">$r$</text>
-<text matrix="1 0 0 1 -69.6808 7.14502" transformations="translations" pos="421.537 686.923" stroke="black" type="label" width="5.073" height="8.824" depth="0" valign="baseline" size="Large">$t$</text>
+<text matrix="1 0 0 1 0 31.385" transformations="translations" pos="200.771 704.615" stroke="black" type="label" width="7.982" height="6.177" depth="0" valign="baseline" size="Large" style="math">x</text>
+<text matrix="1 0 0 1 -52.306 48" transformations="translations" pos="452.306 612.308" stroke="black" type="label" width="7.165" height="6.177" depth="0" valign="baseline" size="Large" style="math">z</text>
+<text matrix="1 0 0 1 0 48" transformations="translations" pos="200.001 615.385" stroke="black" type="label" width="7.364" height="6.176" depth="2.79" valign="baseline" size="Large" style="math">y</text>
+<text matrix="1 0 0 1 9.59207 55.5875" transformations="translations" pos="113.848 569.232" stroke="black" type="label" width="4.792" height="9.405" depth="0" valign="baseline" size="Large" style="math">i</text>
+<text matrix="1 0 0 1 24.4329 32.7294" transformations="translations" pos="86.1563 690.769" stroke="black" type="label" width="6.721" height="6.177" depth="0" valign="baseline" size="Large" style="math">r</text>
+<text matrix="1 0 0 1 -69.6808 7.14502" transformations="translations" pos="421.537 686.923" stroke="black" type="label" width="5.073" height="8.824" depth="0" valign="baseline" size="Large" style="math">t</text>
 <path matrix="0.874157 0.485643 -0.485643 0.874157 327.203 33.2824" stroke="black" rarrow="normal/normal">
 144 624 m
 48 0 0 -48 192 624 150.04 647.311 a
@@ -293,11 +293,11 @@ h
 144 624 m
 48 0 0 -48 192 624 150.04 647.311 a
 </path>
-<text matrix="1 0 0 1 9.59657 12.552" transformations="translations" pos="119.232 642.308" stroke="black" type="label" width="12.244" height="9.962" depth="2.79" valign="baseline" size="Large">$\phi_i$</text>
+<text matrix="1 0 0 1 9.59657 12.552" transformations="translations" pos="119.232 642.308" stroke="black" type="label" width="12.244" height="9.962" depth="2.79" valign="baseline" size="Large" style="math">\phi_i</text>
 <path matrix="1 0 0 1 -102.333 -8.8514" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<text matrix="1 0 0 1 -26.7604 61.2064" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="14.329" height="9.805" depth="2.15" valign="baseline" size="Large">$E_i$</text>
+<text matrix="1 0 0 1 -26.7604 61.2064" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="14.329" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">E_i</text>
 <path matrix="0.874157 0.485643 -0.485643 0.874157 327.438 88.3231" stroke="black" arrow="normal/normal">
 48 576 m
 48 592 l
@@ -305,7 +305,7 @@ h
 <path matrix="1 0 0 1 -112.036 110.242" stroke="black">
 5.1724 0 0 5.1724 192 624 e
 </path>
-<text matrix="1 0 0 1 -3.534 181.33" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="15.668" height="9.805" depth="2.15" valign="baseline" size="Large">$E_r$</text>
+<text matrix="1 0 0 1 -3.534 181.33" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="15.668" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">E_r</text>
 <path matrix="0.874157 -0.485643 0.485643 0.874157 54.5625 249.715" stroke="black" arrow="normal/normal">
 48 576 m
 48 592 l
@@ -314,9 +314,9 @@ h
 192 624 m
 192 640 l
 </path>
-<text matrix="1 0 0 1 -8.3409 47.3049" transformations="translations" pos="208 640" stroke="black" type="label" width="16.59" height="9.805" depth="2.15" valign="baseline" size="Large">$E_x$</text>
-<text matrix="1 0 0 1 17.7244 46.6099" transformations="translations" pos="68.3859 583.338" stroke="black" type="label" width="7.05" height="6.176" depth="2.79" valign="baseline" size="Large">$p$</text>
-<text matrix="1 0 0 1 7.29828 66.0719" transformations="translations" pos="88.2379 542.107" stroke="black" type="label" width="6.617" height="6.177" depth="0" valign="baseline" size="Large">$s$</text>
+<text matrix="1 0 0 1 -8.3409 47.3049" transformations="translations" pos="208 640" stroke="black" type="label" width="16.59" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">E_x</text>
+<text matrix="1 0 0 1 17.7244 46.6099" transformations="translations" pos="68.3859 583.338" stroke="black" type="label" width="7.05" height="6.176" depth="2.79" valign="baseline" size="Large" style="math">p</text>
+<text matrix="1 0 0 1 7.29828 66.0719" transformations="translations" pos="88.2379 542.107" stroke="black" type="label" width="6.617" height="6.177" depth="0" valign="baseline" size="Large" style="math">s</text>
 <path matrix="1 0 0 1.5 -112 -272" stroke="black" dash="dashed" pen="fat">
 336 672 m
 336 576 l
@@ -329,8 +329,8 @@ h
 336 672 m
 336 576 l
 </path>
-<text matrix="0.421875 0 0 1 267.75 -48" transformations="translations" pos="48 640" stroke="black" type="minipage" width="120.194" height="17.825" depth="12.86" valign="bottom" size="Large">Back half-space, \\
-anisotropic</text>
+<text matrix="0.421875 0 0 1 267.75 -48" transformations="translations" pos="48 640" stroke="black" type="minipage" width="120.194" height="18.222" depth="13.26" valign="bottom" size="Large">Back half-space \\
+(can be anisotropic)</text>
 <text matrix="1 0 0 1 -66.353 -56.984" transformations="translations" pos="114.353 736.984" stroke="black" type="minipage" width="68.231" height="17.746" depth="12.78" valign="bottom" size="Large">Front \\
 half-space</text>
 <text matrix="1 0 0 1 -32 -192" transformations="translations" pos="240 768" stroke="black" type="minipage" width="48" height="8.862" depth="3.89" valign="bottom" size="Large">Sample</text>
@@ -349,7 +349,7 @@ half-space</text>
 48 576 m
 48 592 l
 </path>
-<text matrix="1 0 0 1 288.791 142.711" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="14.494" height="9.805" depth="2.15" valign="baseline" size="Large">$E_t$</text>
+<text matrix="1 0 0 1 288.791 142.711" transformations="translations" pos="93.6272 557.436" stroke="black" type="label" width="14.494" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">E_t</text>
 <path matrix="0.874156 -0.485644 0.485644 0.874156 -241.726 254.039" stroke="black" arrow="normal/normal">
 48 576 m
 48 592 l

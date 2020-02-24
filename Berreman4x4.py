@@ -12,11 +12,14 @@ import numpy
 import scipy.linalg, scipy.interpolate
 from numpy import pi, newaxis
 import matplotlib, matplotlib.pyplot
+import re
 
 #########################################################
 # Constants...
 
 c = 2.998e8     # speed of light in vacuum
+h = 6.626e-34   # Planck constant
+e = 1.602e-19   # electron charge 
 e_x = numpy.array([1,0,0]).reshape((3,1))   # base vectors
 e_y = numpy.array([0,1,0]).reshape((3,1))
 e_z = numpy.array([0,0,1]).reshape((3,1))
@@ -105,55 +108,122 @@ class DispersionLaw:
     Method that should be implemented in derived classes:
     * getValue(lbda) : returns refractive index for wavelength 'lbda'
     """
+
+    n_law = None        # Refractive index function, n_law(lbda)
+                        # (can return a complex value)
+    lbda_range = None   # Wavelength range [λ1, λ2]
+    
+    name = None         # Description (optional)
+
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
     def getValue(self, lbda):
-        """Returns refractive index for wavelength 'lbda'."""
-        raise NotImplementedError("Should be implemented in derived classes")
+        """Returns the refractive index for wavelength 'lbda'."""
+        return self.n_law(lbda)
 
+    def setRange(self, lbda_range=[400e-9, 700e-9]):
+        """Set the range for the dispersion law."""
+        self.lbda_range = lbda_range
 
-class SellmeierLaw(DispersionLaw):
+    def plot(self, lbda_range=None):
+        """Plot the law."""
+        if lbda_range is None:
+            lbda_range = self.lbda_range
+        lbda = numpy.linspace(*lbda_range)
+        n = self.getValue(lbda)
+        fig = matplotlib.pyplot.figure()
+        ax = fig.add_subplot("111")
+        ax.plot(lbda*1e6, n.real, "-",  label="n'")
+        ax.plot(lbda*1e6, n.imag, "--", label="n''")
+        ax.legend()
+        if self.name:
+            ax.set_title("Refractive index " + '"' + self.name + '"')
+        else:
+            ax.set_title("Refractive index")
+        ax.set_xlabel("Wavelength (µm)")
+        ax.set_ylabel("n = n' + j n''")
+
+class DispersionSellmeier(DispersionLaw):
     """Sellmeier dispersion law equation."""
 
-    A, B, lbda0 = None, None, None  # Sellmeier coefficients
-
-    def __init__(self, coeff=(1.0, 1.0, 300e-9)):
+    def __init__(self, *coeffs, lbda_range=None):
         """Creates a Sellmeier dispersion law.
         
-        'coeff' : Sellmeier coefficients (A, B, λ0)
-            A, B : without unit
-            λ0 : resonance wavelength (m)
+        Sellmeier coefficients [B1, λ1], [B2, λ2],...
+          Bi : coefficient for n² contribution
+          λi : resonance wavelength (m)
 
-        n²(λ) = A + B × λ²/(λ²-λ0²)
+        n²(λ) = 1 + Σi Bi × λ²/(λ²-λi²)
+
+        Exemple for fused silica : DispersionSellmeier([0.696, 0.068e-6], 
+                                    [0.407, 0.116e-6], [0.897, 9.896e-6])
         """
-        self.A, self.B, self.lbda0 = coeff
+        self.coeffs = coeffs
+        if lbda_range is not None:
+            self.setRange(lbda_range)
 
-    def getValue(self, lbda):
-        """Returns refractive index value for wavelength 'lbda'."""
-        n2 = self.A + self.B * lbda**2 / (lbda**2 - self.lbda0**2)
-        return numpy.sqrt(n2)
+        def n_law(lbda):
+            n2 = 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2) 
+                         for c in self.coeffs)
+            return numpy.sqrt(n2)
+            
+        self.n_law = n_law
+
 
 class  DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
     
-    n_law = None    # Refractive index law (interpolation)
-    
     def __init__(self, lbda=None, n=None):
         """Create a dispersion law from a refraction index list.
-        
-        'lbda'  : Wavelength (m)
-        'n'     : Refractive index (data of same length)
+       
+        'lbda'  : Wavelength list (m)
+        'n'     : Refractive index values (can be complex)
+                  (n" > 0 for an absorbing material)
         """
-        if lbda is not None:
-            self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
-        
-    def getValue(self, lbda):
-        """Returns refractive index for wavelength 'lbda'."""
-        return self.n_law(lbda)
+        self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
+        self.setRange([min(lbda), max(lbda)])
+       
 
+class  DispersionFile(DispersionLaw):
+    """Dispersion law specified by a file"""
+    
+    def __init__(self, filename):
+        """Create a dispersion law from a data file.
+       
+        'filename' : File containing the data
+        """
+        self.read_table(filename)
+        self.name = filename
         
+    def read_table(self, filename):
+        """Read nk table from 'filename'."""
+        FILE = open(filename)
+        title = FILE.readline().strip()
+        unit_x = FILE.readline().strip()
+        unit_y = FILE.readline().strip().lower()
+        d = numpy.genfromtxt(FILE)
+        FILE.close()
+        
+        if   unit_x == "eV":
+            lbda = h*c / (e * d[:,0])
+        elif unit_x == "nm":
+            lbda = d[:,0] * 1e-9
+        elif (unit_x == "µm") or (unit_x == "um"):
+            lbda = d[:,0] * 1e-6
+        elif unit_x.upper() == "ANGSTROMS":
+            lbda = d[:,0] * 1e-10
+        
+        if unit_y == "nk":
+            n = d[:,1] + 1j * d[:,2]            # n = n' + j n"
+        elif unit_y == "e1e2":
+            epsilon = d[:,1] + 1j * d[:,2]      # ε = ε' + j ε" 
+            n = numpy.sqrt(epsilon)             # for lossy materials,
+                                                # ε" > 0 and n" > 0
+        self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
+        self.setRange([min(lbda), max(lbda)])
+
 #########################################################
 # Materials...
 
@@ -252,7 +322,7 @@ class IsotropicDispersive(IsotropicMaterial):
     def __init__(self, law=None):
         """Creates isotropic material with dispersion law.
         
-        'law' : DispersionLaw object (for example SellmeierLaw)
+        'law' : DispersionLaw object (for example DispersionSellmeier)
         """
         self.law = law
 
@@ -435,12 +505,12 @@ def hs_propagator(Delta, h, k0, method="linear", q=None):
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
         "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition
+        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
     """
     if   method == "linear":    return hs_propagator_lin(Delta, h, k0)
     elif method == "Padé":      return hs_propagator_Pade(Delta, h, k0, q)
     elif method == "Taylor":    return hs_propagator_Taylor(Delta, h, k0, q)
-    elif method == "eig":       return hs_propagator_eig(Delta, h, k0)
+    # elif method == "eig":       return hs_propagator_eig(Delta, h, k0)
 
 def hs_propagator_lin(Delta, h, k0, q=None):
     """Returns propagator with linear approximation.
@@ -452,13 +522,15 @@ def hs_propagator_lin(Delta, h, k0, q=None):
     return numpy.matrix(P_hs_lin)
 
 def hs_propagator_Pade(Delta, h, k0, q=7):
-    """Returns propagator with Padé approximation of order 'q'.
+    """Returns propagator with Padé approximation.
     
-    The diagonal Padé approximant of any order 'q' is symplectic, i.e. 
+    The order "q" is not used anymore by Scipy.
+
+    The diagonal Padé approximant of any order is symplectic, i.e. 
     P_hs_Pade(h)·P_hs_Pade(-h) = 1. 
     Such property may be suitable for use with Z. Lu's method.
     """
-    P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta, q)
+    P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta)
     return numpy.matrix(P_hs_Pade)
 
 def hs_propagator_Taylor(Delta, h, k0, q=5):
@@ -467,19 +539,20 @@ def hs_propagator_Taylor(Delta, h, k0, q=5):
     # 'q+1' to correct SciPy bug 1687
     return numpy.matrix(P_hs_Taylor)
 
-def hs_propagator_eig(Delta, h, k0, q=None):
-    """Returns propagator using eigenvalue decomposition.
- 
-    'q' is swallowed. It is here so as to offer the same protoype as 
-    the other hs_propagator_*() functions.
-
-    The calculation is (see scipy.linalg.expm2() source code):
-        s,vr = eig()    # eigenvalues, eigenvector array
-        vri = inv(vr)   # eigenvector array inversion
-        result = vr * diag(exp(s)) * vri
-    """
-    P_hs = scipy.linalg.expm2(1j * h * k0 * Delta)
-    return numpy.matrix(P_hs)
+# def hs_propagator_eig(Delta, h, k0, q=None):
+#     """Returns propagator using eigenvalue decomposition.
+#  
+#     'q' is swallowed. It is here so as to offer the same protoype as 
+#     the other hs_propagator_*() functions.
+# 
+#     The calculation is (see scipy.linalg.expm2() source code):
+#         s,vr = eig()    # eigenvalues, eigenvector array
+#         vri = inv(vr)   # eigenvector array inversion
+#         result = vr * diag(exp(s)) * vri
+#     Deprecated due to Scipy deprecation of "expm2"
+#     """
+#     P_hs = scipy.linalg.expm2(1j * h * k0 * Delta)
+#     return numpy.matrix(P_hs)
 
 
 #########################################################
@@ -695,7 +768,7 @@ class HomogeneousLayer(MaterialLayer):
     hs_propagator = None    # Function used for the propagator calculation
     hs_order = None         # Approximation order, if useful
 
-    def __init__(self, material=None, h=1e-6, hs_method="eig", hs_order=2):
+    def __init__(self, material=None, h=1e-6, hs_method="Padé", hs_order=2):
         """New homogeneous layer of material 'material', with thickness 'h'
         
         'hs_method', 'hs_order': see setMethod()
@@ -714,7 +787,7 @@ class HomogeneousLayer(MaterialLayer):
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
         "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition
+        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
 
         'hs_order' : order of approximation, if useful
         """
@@ -724,8 +797,8 @@ class HomogeneousLayer(MaterialLayer):
             self.hs_propagator = hs_propagator_Pade
         elif hs_method == "Taylor":  
             self.hs_propagator = hs_propagator_Taylor
-        elif hs_method == "eig":     
-            self.hs_propagator = hs_propagator_eig
+        # elif hs_method == "eig":     
+        #    self.hs_propagator = hs_propagator_eig
         else: 
             raise NotImplementedError("Method " + hs_method + 
                         " not available for propagator calculation")
@@ -837,7 +910,7 @@ class InhomogeneousLayer(MaterialLayer):
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
         "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition
+        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
         
         The midpoint method may use any of these, provided that the 
         approximation is not too bad. For example, the linear approximation 
@@ -861,8 +934,8 @@ class InhomogeneousLayer(MaterialLayer):
                 self.hs_propagator = hs_propagator_Pade
             elif hs_method == "Taylor":  
                 self.hs_propagator = hs_propagator_Taylor
-            elif hs_method == "eig":     
-                self.hs_propagator = hs_propagator_eig
+            # elif hs_method == "eig":     
+            #     self.hs_propagator = hs_propagator_eig
             else: 
                 raise NotImplementedError("Method " + hs_method + 
                             " not available for midpoint evaluation")
@@ -870,8 +943,8 @@ class InhomogeneousLayer(MaterialLayer):
             self.getSlicePropagator = self.getSlicePropagator_sym
             if hs_method == "Padé":    
                 self.hs_propagator = hs_propagator_Pade
-            elif hs_method == "eig":
-                self.hs_propagator = hs_propagator_eig
+            # elif hs_method == "eig":
+            #     self.hs_propagator = hs_propagator_eig
             else:
                 raise NotImplementedError("Method " + hs_method +
                             " not available for symplectic evaluation")
@@ -1110,14 +1183,15 @@ class Structure:
     def getIndexProfile(self, lbda=1e-6, v=e_x):
         """Returns refractive index profile.
         
-        'v' : unit vector, direction of evaluation
+        'v' : Unit vector, direction of evaluation of the refraction index.
+              Default value is v = e_x.
         """
         profile = self.getPermittivityProfile(lbda)
         (h, epsilon) = list(zip(*profile))  # unzip
         n = [ numpy.sqrt((v.T * eps * v)[0,0]) for eps in epsilon ]
         return list(zip(h,n))
 
-    def drawStructure(self, method="graph", lbda=1e-6, margin=0.15):
+    def drawStructure(self, lbda=1e-6, method="graph", margin=0.15):
         """Draw the structure.
         
         'method' : 'graph' or 'section'
@@ -1154,7 +1228,7 @@ class Structure:
         ax.spines['top'].set_visible(False)
         ax.xaxis.set_ticks_position('bottom')
         ax.set_xlabel("z (m)")
-        ax.set_ylabel("n")
+        ax.set_ylabel("n'")
         ax.ticklabel_format(style='scientific', axis='x', scilimits=(0,0))
         ax.set_xlim(z.min(), z.max())
         ax.set_ylim(bottom=1.0)
@@ -1177,7 +1251,7 @@ class Structure:
         stack = ax.pcolormesh(X,Y,n, cmap=matplotlib.cm.gray_r)
         colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2,0.5), 
                               fraction=0.05)
-        colbar.ax.set_xlabel("n", position=(3,0))
+        colbar.ax.set_xlabel("n'", position=(3,0))
         return ax
 
 

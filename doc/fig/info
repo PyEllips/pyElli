@@ -1,9 +1,10 @@
-PDF files are automatically generated thanks to the Makefile. 
+The PDF files are automatically generated thanks to the Makefile. 
+They can be created manually by running `make` in the current folder.
 
-PDF drawings are generated from IPE by: 
+The PDF drawings are generated from IPE by: 
 $ ipetoipe -pdf file.ipe
 
-UML diagram was generated with AutoDia at first
+The UML diagram was generated with AutoDia at first
 $ autodia -i Berreman4x4.py -l python -o UML-auto.dia
 and then manually rearranged and corrected with Dia, leading to file "UML.dia".
 For the Latex build, UML.dia is exported automatically to PDF with: 
