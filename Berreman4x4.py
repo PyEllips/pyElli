@@ -486,7 +486,7 @@ def buildDeltaMatrix(Kx, eps):
 #########################################################
 # Propagator for a homogeneous slab of material...
 
-def hs_propagator(Delta, h, k0, method="linear", q=None):
+def hs_propagator(Delta, h, k0, method="linear"):
     """Returns propagator for homogeneous slab of thickness h.
 
     'Delta' : Delta matrix of the homogeneous material
@@ -504,55 +504,28 @@ def hs_propagator(Delta, h, k0, method="linear", q=None):
     the value of 'method':
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
-        "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
     """
-    if   method == "linear":    return hs_propagator_lin(Delta, h, k0)
-    elif method == "Padé":      return hs_propagator_Pade(Delta, h, k0, q)
-    elif method == "Taylor":    return hs_propagator_Taylor(Delta, h, k0, q)
-    # elif method == "eig":       return hs_propagator_eig(Delta, h, k0)
+    if method == "linear":
+        return hs_propagator_lin(Delta, h, k0)
+    elif method == "Padé":
+        return hs_propagator_Pade(Delta, h, k0)
 
-def hs_propagator_lin(Delta, h, k0, q=None):
-    """Returns propagator with linear approximation.
-    
-    'q' is swallowed. It is here so as to offer the same protoype as 
-    the other hs_propagator_*() functions.
-    """
+
+def hs_propagator_lin(Delta, h, k0):
+    """Returns propagator with linear approximation."""
     P_hs_lin = numpy.identity(4) + 1j * h * k0 * Delta
     return numpy.matrix(P_hs_lin)
 
-def hs_propagator_Pade(Delta, h, k0, q=7):
-    """Returns propagator with Padé approximation.
-    
-    The order "q" is not used anymore by Scipy.
 
-    The diagonal Padé approximant of any order is symplectic, i.e. 
-    P_hs_Pade(h)·P_hs_Pade(-h) = 1. 
+def hs_propagator_Pade(Delta, h, k0):
+    """Returns propagator with Padé approximation.
+
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
     P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta)
     return numpy.matrix(P_hs_Pade)
-
-def hs_propagator_Taylor(Delta, h, k0, q=5):
-    """Returns propagator using Taylor series of order 'q'."""
-    P_hs_Taylor = scipy.linalg.expm3(1j * h * k0 * Delta, q+1)
-    # 'q+1' to correct SciPy bug 1687
-    return numpy.matrix(P_hs_Taylor)
-
-# def hs_propagator_eig(Delta, h, k0, q=None):
-#     """Returns propagator using eigenvalue decomposition.
-#  
-#     'q' is swallowed. It is here so as to offer the same protoype as 
-#     the other hs_propagator_*() functions.
-# 
-#     The calculation is (see scipy.linalg.expm2() source code):
-#         s,vr = eig()    # eigenvalues, eigenvector array
-#         vri = inv(vr)   # eigenvector array inversion
-#         result = vr * diag(exp(s)) * vri
-#     Deprecated due to Scipy deprecation of "expm2"
-#     """
-#     P_hs = scipy.linalg.expm2(1j * h * k0 * Delta)
-#     return numpy.matrix(P_hs)
 
 
 #########################################################
@@ -766,43 +739,33 @@ class HomogeneousLayer(MaterialLayer):
     h = None                # Thickness of the layer
     material = None         # Material object
     hs_propagator = None    # Function used for the propagator calculation
-    hs_order = None         # Approximation order, if useful
 
-    def __init__(self, material=None, h=1e-6, hs_method="Padé", hs_order=2):
+    def __init__(self, material=None, h=1e-6, hs_method="Padé"):
         """New homogeneous layer of material 'material', with thickness 'h'
         
         'hs_method', 'hs_order': see setMethod()
         """
         self.setMaterial(material)
-        self.setMethod(hs_method, hs_order)
+        self.setMethod(hs_method)
         self.setThickness(h)
 
     def setThickness(self, h):
         """Defines the thickness of this homogeneous layer."""
         self.h = h
 
-    def setMethod(self, hs_method, hs_order=2):
+    def setMethod(self, hs_method):
         """Defines how the homogeneous slab propagator is calculated.
         
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
-        "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
-
-        'hs_order' : order of approximation, if useful
         """
         if hs_method == "linear":  
             self.hs_propagator = hs_propagator_lin
         elif hs_method == "Padé":    
             self.hs_propagator = hs_propagator_Pade
-        elif hs_method == "Taylor":  
-            self.hs_propagator = hs_propagator_Taylor
-        # elif hs_method == "eig":     
-        #    self.hs_propagator = hs_propagator_eig
-        else: 
-            raise NotImplementedError("Method " + hs_method + 
-                        " not available for propagator calculation")
-        self.hs_order = hs_order
+        else:
+            raise NotImplementedError("Method " + hs_method +
+                                      " not available for propagator calculation")
 
     def getPermittivityProfile(self, lbda=1e-6):
         """Returns permittivity tensor profile.
@@ -827,7 +790,7 @@ class HomogeneousLayer(MaterialLayer):
             h = -self.h
         else:
             h = self.h
-        return self.hs_propagator(Delta, h, k0, self.hs_order)
+        return self.hs_propagator(Delta, h, k0)
 
     def getDeltaMatrix(self, Kx, k0=1e6):
         """Returns Delta matrix of the homogeneous layer."""
@@ -885,8 +848,7 @@ class InhomogeneousLayer(MaterialLayer):
     # Order for the above method, if useful:
     hs_order = None
 
-    def __init__(self, material=None, evaluation="midpoint", 
-                                      hs_method="Padé", q=2):
+    def __init__(self, material=None, evaluation="midpoint", hs_method="Padé"):
         """Creates an inhomogeneous layer.
         
         'material' : InhomogemeousMaterial object
@@ -895,9 +857,9 @@ class InhomogeneousLayer(MaterialLayer):
         'evaluation', 'hs_method' and order 'q', see setMethod().
         """
         self.setMaterial(material)
-        self.setMethod(evaluation, hs_method, q)
+        self.setMethod(evaluation, hs_method)
 
-    def setMethod(self, evaluation, hs_method, q=2):
+    def setMethod(self, evaluation, hs_method):
         """Defines the calculation method.
 
         The propagator for the inhomogeneous layer is decomposed and evaluated
@@ -909,19 +871,12 @@ class InhomogeneousLayer(MaterialLayer):
         to arguement 'hs_method':
         "linear" -> first order approximation of exp()
         "Padé"   -> Padé approximation of exp()
-        "Taylor" -> Taylor development of exp()
-        "eig"    -> calculation with eigenvalue decomposition (Deprecated)
-        
-        The midpoint method may use any of these, provided that the 
-        approximation is not too bad. For example, the linear approximation 
-        is quick but only works if the argument of the exponential is small.
-        A "Padé" approximation of order 2 may be a good choice.
 
         The symplectic method requires P(h)·P(-h) = Id, which is true for
-        the "Padé" approximation and the exact "eig" method.
-      
-        The error on the propagator for an inhomogeneous thin slice due to the 
-        replacement by a homogeneous slice is O(h^3) in the midpoint method and 
+        the "Padé" approximation.
+
+        The error on the propagator for an inhomogeneous thin slice due to the
+        replacement by a homogeneous slice is O(h^3) in the midpoint method and
         O(h^5) in the symplectic method. A Padé approximant of order q gives an
         approximation of the propagator to order O(h^(2q)). Consequently, q = 3
         should be a good enough for the syplectic method.
@@ -932,23 +887,16 @@ class InhomogeneousLayer(MaterialLayer):
                 self.hs_propagator = hs_propagator_lin
             elif hs_method == "Padé":    
                 self.hs_propagator = hs_propagator_Pade
-            elif hs_method == "Taylor":  
-                self.hs_propagator = hs_propagator_Taylor
-            # elif hs_method == "eig":     
-            #     self.hs_propagator = hs_propagator_eig
-            else: 
-                raise NotImplementedError("Method " + hs_method + 
-                            " not available for midpoint evaluation")
+            else:
+                raise NotImplementedError("Method " + hs_method +
+                                          " not available for midpoint evaluation")
         elif evaluation == "symplectic":
             self.getSlicePropagator = self.getSlicePropagator_sym
             if hs_method == "Padé":    
                 self.hs_propagator = hs_propagator_Pade
-            # elif hs_method == "eig":
-            #     self.hs_propagator = hs_propagator_eig
             else:
                 raise NotImplementedError("Method " + hs_method +
-                            " not available for symplectic evaluation")
-        self.hs_order = q
+                                          " not available for symplectic evaluation")
 
     def getPermittivityProfile(self, lbda=1e-6):
         """Returns permittivity tensor profile.
@@ -1012,10 +960,9 @@ class InhomogeneousLayer(MaterialLayer):
         Delta1 = buildDeltaMatrix(Kx, epsilon1)
         Delta2 = buildDeltaMatrix(Kx, epsilon2)
         Delta3 = buildDeltaMatrix(Kx, epsilon3)
-        q = self.hs_order
-        P1 = self.hs_propagator(Delta1, self.b1*h, k0, q)
-        P2 = self.hs_propagator(Delta2, self.b2*h, k0, q)
-        P3 = self.hs_propagator(Delta3, self.b1*h, k0, q)
+        P1 = self.hs_propagator(Delta1, self.b1*h, k0)
+        P2 = self.hs_propagator(Delta2, self.b2*h, k0)
+        P3 = self.hs_propagator(Delta3, self.b1*h, k0)
         return P1*P2*P3
 
 
