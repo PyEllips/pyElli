@@ -107,72 +107,59 @@ def rotation_v_theta(v, theta):
 class DispersionLaw:
     """Dispersion law (abstract class).
 
-    Method that should be implemented in derived classes:
-    * getValue(lbda) : returns refractive index for wavelength 'lbda'
+    Funktions provided for derived classes:
+    * getDielLambda(lbda) : returns dielectric function for wavelength 'lbda'
+    * getDielEnergy(E) : returns dielectric function for Energy 'E'
+    * getRefrLambda(lbda) : returns refractive index for wavelength 'lbda'
+    * getRefrEnergy(E) : returns refractive index for Energy 'E'
     """
 
-    n_law = None        # Refractive index function, n_law(lbda)
-    # (can return a complex value)
-    lbda_range = None   # Wavelength range [λ1, λ2]
-
-    name = None         # Description (optional)
+    dielectricFunction = None       # Complex dielectric function
+    name = None                     # Description (optional)
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def getValue(self, lbda):
+    def getDielLambda(self, lbda):
+        """Returns the dielectric function for wavelength 'lbda'."""
+        return self.dielectricFunction(lbda)
+
+    def getDielEnergy(self, E):
+        """Returns the dielectric function for Energy 'E'."""
+        return self.dielectricFunction(1240e-9 / E)
+
+    def getRefrLambda(self, lbda):
         """Returns the refractive index for wavelength 'lbda'."""
-        return self.n_law(lbda)
+        return np.sqrt(self.dielectricFunction(lbda))
 
-    def setRange(self, lbda_range=[400e-9, 700e-9]):
-        """Set the range for the dispersion law."""
-        self.lbda_range = lbda_range
-
-    def plot(self, lbda_range=None):
-        """Plot the law."""
-        if lbda_range is None:
-            lbda_range = self.lbda_range
-        lbda = np.linspace(*lbda_range)
-        n = self.getValue(lbda)
-        fig = matplotlib.pyplot.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        ax.plot(lbda*1e6, n.real, "-",  label="n'")
-        ax.plot(lbda*1e6, n.imag, "--", label="n''")
-        ax.legend()
-        if self.name:
-            ax.set_title("Refractive index " + '"' + self.name + '"')
-        else:
-            ax.set_title("Refractive index")
-        ax.set_xlabel("Wavelength (µm)")
-        ax.set_ylabel("n = n' + j n''")
+    def getRefrEnergy(self, E):
+        """Returns the refractive index for Energy 'E'."""
+        return np.sqrt(self.dielectricFunction(1240e-9 / E))
 
 
 class DispersionSellmeier(DispersionLaw):
     """Sellmeier dispersion law equation."""
 
-    def __init__(self, *coeffs, lbda_range=None):
+    def __init__(self, *coeffs):
         """Creates a Sellmeier dispersion law.
 
         Sellmeier coefficients [B1, λ1], [B2, λ2],...
           Bi : coefficient for n² contribution
           λi : resonance wavelength (m)
 
-        n²(λ) = 1 + Σi Bi × λ²/(λ²-λi²)
+        ε(λ) = 1 + Σi Bi × λ²/(λ²-λi²)
 
         Exemple for fused silica : DispersionSellmeier([0.696, 0.068e-6],
                                     [0.407, 0.116e-6], [0.897, 9.896e-6])
         """
         self.coeffs = coeffs
-        if lbda_range is not None:
-            self.setRange(lbda_range)
 
-        def n_law(lbda):
-            n2 = 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2)
-                         for c in self.coeffs)
-            return np.sqrt(n2)
+        def dielectricFunction(lbda):
+            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2) for c in self.coeffs)
 
-        self.n_law = n_law
+        self.dielectricFunction = dielectricFunction
+
 
 
 class DispersionTable(DispersionLaw):
@@ -185,47 +172,8 @@ class DispersionTable(DispersionLaw):
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
-        self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
-        self.setRange([min(lbda), max(lbda)])
+        self.dielectricFunction = scipy.interpolate.interp1d(lbda, n, kind='cubic')
 
-
-class DispersionFile(DispersionLaw):
-    """Dispersion law specified by a file"""
-
-    def __init__(self, filename):
-        """Create a dispersion law from a data file.
-
-        'filename' : File containing the data
-        """
-        self.read_table(filename)
-        self.name = filename
-
-    def read_table(self, filename):
-        """Read nk table from 'filename'."""
-        FILE = open(filename)
-        title = FILE.readline().strip()
-        unit_x = FILE.readline().strip()
-        unit_y = FILE.readline().strip().lower()
-        d = np.genfromtxt(FILE)
-        FILE.close()
-
-        if unit_x == "eV":
-            lbda = h*c / (e * d[:, 0])
-        elif unit_x == "nm":
-            lbda = d[:, 0] * 1e-9
-        elif (unit_x == "µm") or (unit_x == "um"):
-            lbda = d[:, 0] * 1e-6
-        elif unit_x.upper() == "ANGSTROMS":
-            lbda = d[:, 0] * 1e-10
-
-        if unit_y == "nk":
-            n = d[:, 1] + 1j * d[:, 2]            # n = n' + j n"
-        elif unit_y == "e1e2":
-            epsilon = d[:, 1] + 1j * d[:, 2]      # ε = ε' + j ε"
-            n = np.sqrt(epsilon)  #  for lossy materials,
-            # ε" > 0 and n" > 0
-        self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
-        self.setRange([min(lbda), max(lbda)])
 
 #########################################################
 # Materials...
