@@ -136,7 +136,7 @@ class DispersionLaw:
         lbda = np.linspace(*lbda_range)
         n = self.getValue(lbda)
         fig = matplotlib.pyplot.figure()
-        ax = fig.add_subplot("111")
+        ax = fig.add_subplot(1, 1, 1)
         ax.plot(lbda*1e6, n.real, "-",  label="n'")
         ax.plot(lbda*1e6, n.imag, "--", label="n''")
         ax.legend()
@@ -1169,7 +1169,7 @@ class Structure:
         n = np.hstack((n, n[-1]))
         # Draw the graph
         fig = matplotlib.pyplot.figure(figsize=(8, 3))
-        ax = fig.add_subplot("111")
+        ax = fig.add_subplot(1, 1, 1)
         fig.subplots_adjust(bottom=0.17)
         ax.step(z, n.real, 'black', where='post')
         ax.spines['top'].set_visible(False)
@@ -1189,7 +1189,7 @@ class Structure:
         n = np.array(n).reshape((1, -1)).real
         # Draw the cross section
         fig = matplotlib.pyplot.figure(figsize=(8, 3))
-        ax = fig.add_subplot("111")
+        ax = fig.add_subplot(1, 1, 1)
         fig.subplots_adjust(left=0.05, bottom=0.15)
         ax.set_yticks([])
         ax.set_xlabel("z (m)")
