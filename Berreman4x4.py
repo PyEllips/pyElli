@@ -8,12 +8,12 @@
 See file "documentation.pdf"
 """
 
-import numpy
+import numpy as np
 import scipy.linalg
 import scipy.interpolate
-from numpy import pi, newaxis
 import matplotlib
 import matplotlib.pyplot
+from scipy.Constants import pi
 
 #########################################################
 # Constants...
@@ -21,9 +21,9 @@ import matplotlib.pyplot
 c = 2.998e8  #  speed of light in vacuum
 h = 6.626e-34   # Planck constant
 e = 1.602e-19   # electron charge
-e_x = numpy.array([1, 0, 0]).reshape((3, 1))  #  base vectors
-e_y = numpy.array([0, 1, 0]).reshape((3, 1))
-e_z = numpy.array([0, 0, 1]).reshape((3, 1))
+e_x = np.array([1, 0, 0]).reshape((3, 1))  #  base vectors
+e_y = np.array([0, 1, 0]).reshape((3, 1))
+e_z = np.array([0, 0, 1]).reshape((3, 1))
 
 #########################################################
 # Rotations...
@@ -49,15 +49,15 @@ def rotation_Euler(angles):
     Note : The inverse rotation is (-r,-n,-p)
     """
     (p, n, r) = angles
-    c1 = numpy.cos(p)
-    s1 = numpy.sin(p)
-    c2 = numpy.cos(n)
-    s2 = numpy.sin(n)
-    c3 = numpy.cos(r)
-    s3 = numpy.sin(r)
-    return numpy.matrix([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
-                         [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
-                         [s2*s3,           s2*c3,           c2]])
+    c1 = np.cos(p)
+    s1 = np.sin(p)
+    c2 = np.cos(n)
+    s2 = np.sin(n)
+    c3 = np.cos(r)
+    s3 = np.sin(r)
+    return np.matrix([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
+                      [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
+                      [s2*s3,           s2*c3,           c2]])
 
 
 def rotation_V(V):
@@ -77,10 +77,10 @@ def rotation_V(V):
 
     Note : The inverse rotation is -V
     """
-    W = numpy.matrix([[0, -V[2], V[1]],
-                      [V[2], 0, -V[0]],
-                      [-V[1], V[0], 0]])
-    return numpy.matrix(scipy.linalg.expm(W))
+    W = np.matrix([[0, -V[2], V[1]],
+                   [V[2], 0, -V[0]],
+                   [-V[1], V[0], 0]])
+    return np.matrix(scipy.linalg.expm(W))
 
 
 def rotation_v_theta(v, theta):
@@ -94,11 +94,11 @@ def rotation_v_theta(v, theta):
 
     Notes : The inverse rotation is (v,-theta)
     """
-    w = numpy.matrix([[0, -v[2], v[1]],
-                      [v[2], 0, -v[0]],
-                      [-v[1], v[0], 0]])
-    return numpy.identity(3) + w * numpy.sin(theta) \
-                             + w**2 * (1 - numpy.cos(theta))
+    w = np.matrix([[0, -v[2], v[1]],
+                   [v[2], 0, -v[0]],
+                   [-v[1], v[0], 0]])
+    return np.identity(3) + w * np.sin(theta) \
+        + w**2 * (1 - np.cos(theta))
 
 
 #########################################################
@@ -133,7 +133,7 @@ class DispersionLaw:
         """Plot the law."""
         if lbda_range is None:
             lbda_range = self.lbda_range
-        lbda = numpy.linspace(*lbda_range)
+        lbda = np.linspace(*lbda_range)
         n = self.getValue(lbda)
         fig = matplotlib.pyplot.figure()
         ax = fig.add_subplot("111")
@@ -170,7 +170,7 @@ class DispersionSellmeier(DispersionLaw):
         def n_law(lbda):
             n2 = 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2)
                          for c in self.coeffs)
-            return numpy.sqrt(n2)
+            return np.sqrt(n2)
 
         self.n_law = n_law
 
@@ -206,7 +206,7 @@ class DispersionFile(DispersionLaw):
         title = FILE.readline().strip()
         unit_x = FILE.readline().strip()
         unit_y = FILE.readline().strip().lower()
-        d = numpy.genfromtxt(FILE)
+        d = np.genfromtxt(FILE)
         FILE.close()
 
         if unit_x == "eV":
@@ -222,7 +222,7 @@ class DispersionFile(DispersionLaw):
             n = d[:, 1] + 1j * d[:, 2]            # n = n' + j n"
         elif unit_y == "e1e2":
             epsilon = d[:, 1] + 1j * d[:, 2]      # ε = ε' + j ε"
-            n = numpy.sqrt(epsilon)  #  for lossy materials,
+            n = np.sqrt(epsilon)  #  for lossy materials,
             # ε" > 0 and n" > 0
         self.n_law = scipy.interpolate.interp1d(lbda, n, kind='cubic')
         self.setRange([min(lbda), max(lbda)])
@@ -263,8 +263,8 @@ class NonDispersiveMaterial(Material):
         * Im(E) < 0 for an amplifying medium
         """
         if epsilon is None:
-            epsilon = numpy.matrix(numpy.identity(3))
-        self.epsilon = numpy.matrix(epsilon)
+            epsilon = np.matrix(np.identity(3))
+        self.epsilon = np.matrix(epsilon)
 
     def getTensor(self, lbda=None):
         """Returns permittivity tensor matrix for the desired wavelength.
@@ -314,7 +314,7 @@ class IsotropicNonDispersiveMaterial(NonDispersiveMaterial, IsotropicMaterial):
         * Im(n) < 0 for an amplifying medium
         """
         self.n = n
-        self.epsilon = n**2 * numpy.matrix(numpy.identity(3))
+        self.epsilon = n**2 * np.matrix(np.identity(3))
 
     def getRefractiveIndex(self, lbda=None):
         """Returns refractive index."""
@@ -336,7 +336,7 @@ class IsotropicDispersive(IsotropicMaterial):
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
         n = self.law.getValue(lbda)
-        return numpy.matrix(n**2 * numpy.identity(3))
+        return np.matrix(n**2 * np.identity(3))
 
     def getRefractiveIndex(self, lbda):
         """Returns refractive index."""
@@ -352,8 +352,8 @@ class UniaxialNonDispersiveMaterial(NonDispersiveMaterial):
         'no' : ordinary refractive index
         'ne' : extraordinary refractive index (oriented along the z direction)
         """
-        n = numpy.diag([no, no, ne])
-        self.epsilon = numpy.matrix(n**2)
+        n = np.diag([no, no, ne])
+        self.epsilon = np.matrix(n**2)
 
 
 class BiaxialNonDispersiveMaterial(NonDispersiveMaterial):
@@ -364,8 +364,8 @@ class BiaxialNonDispersiveMaterial(NonDispersiveMaterial):
 
         'diag' : xyz refractive indices, tuple (n1,n2,n3)
         """
-        n = numpy.diag(diag)
-        self.epsilon = numpy.matrix(n**2)
+        n = np.diag(diag)
+        self.epsilon = np.matrix(n**2)
 
 
 #########################################################
@@ -463,7 +463,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         * The number of divisions is 'div' (see constructor)
         * Position is relative to this material, not to the whole structure.
         """
-        return numpy.linspace(0, self.d, self.div+1)
+        return np.linspace(0, self.d, self.div+1)
 
 
 #########################################################
@@ -477,7 +477,7 @@ def buildDeltaMatrix(Kx, eps):
 
     Returns : Delta 4x4 matrix, generator of infinitesimal translations
     """
-    return numpy.matrix(
+    return np.matrix(
         [[-Kx * eps[2, 0] / eps[2, 2], -Kx * eps[2, 1] / eps[2, 2],
           0, 1 - Kx**2 / eps[2, 2]],
          [0, 0, -1, 0],
@@ -518,8 +518,8 @@ def hs_propagator(Delta, h, k0, method="linear"):
 
 def hs_propagator_lin(Delta, h, k0):
     """Returns propagator with linear approximation."""
-    P_hs_lin = numpy.identity(4) + 1j * h * k0 * Delta
-    return numpy.matrix(P_hs_lin)
+    P_hs_lin = np.identity(4) + 1j * h * k0 * Delta
+    return np.matrix(P_hs_lin)
 
 
 def hs_propagator_Pade(Delta, h, k0):
@@ -530,7 +530,7 @@ def hs_propagator_Pade(Delta, h, k0):
     Such property may be suitable for use with Z. Lu's method.
     """
     P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta)
-    return numpy.matrix(P_hs_Pade)
+    return np.matrix(P_hs_Pade)
 
 
 #########################################################
@@ -569,20 +569,20 @@ class HalfSpace:
         q, Psi = scipy.linalg.eig(Delta)
 
         # Sort according to z propagation direction, highest Re(q) first
-        i = numpy.argsort(-numpy.real(q))
+        i = np.argsort(-np.real(q))
         q, Psi = q[i], Psi[:, i]  #  Result should be (+,+,-,-)
         # For each direction, sort according to Ey component, highest Ey first
-        i1 = numpy.argsort(-numpy.abs(Psi[1, :2]))
-        i2 = 2 + numpy.argsort(-numpy.abs(Psi[1, 2:]))
-        i = numpy.hstack((i1, i2))  #  Result should be (s+,p+,s-,p-)
+        i1 = np.argsort(-np.abs(Psi[1, :2]))
+        i2 = 2 + np.argsort(-np.abs(Psi[1, 2:]))
+        i = np.hstack((i1, i2))  #  Result should be (s+,p+,s-,p-)
         # Reorder
         i[[1, 2]] = i[[2, 1]]
         q, Psi = q[i], Psi[:, i]  #  Result should be(s+,s-,p+,p-)
 
         # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
-        E = numpy.hstack((Psi[1, :2], Psi[0, 2:]))
-        nE = numpy.abs(E)
-        c = numpy.ones_like(E)
+        E = np.hstack((Psi[1, :2], Psi[0, 2:]))
+        nE = np.abs(E)
+        c = np.ones_like(E)
         i = (nE != 0.0)
         c[i] = E[i]/nE[i]
         Psi = Psi * c
@@ -593,7 +593,7 @@ class HalfSpace:
         if abs(c) == 0:
             c = 1.
         Psi = 2 * Psi / c
-        return numpy.matrix(Psi)
+        return np.matrix(Psi)
 
 
 class IsotropicHalfSpace(HalfSpace):
@@ -632,7 +632,7 @@ class IsotropicHalfSpace(HalfSpace):
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
         n = self.material.getRefractiveIndex(2*pi/k0)
-        Kx = n * numpy.sin(Phi)
+        Kx = n * np.sin(Phi)
         return Kx
 
     def get_Kz_from_Kx(self, Kx, k0=1e6):
@@ -647,7 +647,7 @@ class IsotropicHalfSpace(HalfSpace):
         # Test type(Kz2)
         n = self.material.getRefractiveIndex(2*pi/k0)
         Kz2 = n**2 - Kx**2
-        return numpy.sqrt(complex(Kz2))
+        return np.sqrt(complex(Kz2))
 
     def get_Phi_from_Kx(self, Kx, k0=1e6):
         """Returns the value of angle Phi according to the value of Kx.
@@ -662,7 +662,7 @@ class IsotropicHalfSpace(HalfSpace):
         sin_Phi = Kx/n
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
-        Phi = numpy.arcsin(sin_Phi)
+        Phi = np.arcsin(sin_Phi)
         return Phi
 
     def getTransitionMatrix(self, Kx, k0=1e6, inv=False):
@@ -678,15 +678,15 @@ class IsotropicHalfSpace(HalfSpace):
         sin_Phi = Kx/n
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
-        cos_Phi = numpy.sqrt(1 - sin_Phi**2)
+        cos_Phi = np.sqrt(1 - sin_Phi**2)
         if inv:
-            return 0.5 * numpy.matrix(
+            return 0.5 * np.matrix(
                 [[0, 1, -1/(n*cos_Phi),  0],
                  [0, 1,  1/(n*cos_Phi),  0],
                  [1/cos_Phi, 0,  0,  1/n],
                  [1/cos_Phi, 0,  0, -1/n]])
         else:
-            return numpy.matrix(
+            return np.matrix(
                 [[0, 0, cos_Phi, cos_Phi],
                  [1, 1, 0, 0],
                  [-n*cos_Phi, n*cos_Phi, 0, 0],
@@ -831,7 +831,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
 
     def get_QWP_thickness(self, lbda=1e-6):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
-        nr = numpy.real(self.material.getRefractiveIndex(lbda))
+        nr = np.real(self.material.getRefractiveIndex(lbda))
         return lbda / (4.*nr)
 
 
@@ -857,7 +857,7 @@ class InhomogeneousLayer(MaterialLayer):
         'material' : InhomogemeousMaterial object
 
         The propagation matrix is evaluated depending on parameters
-        'evaluation', 'hs_method' and order 'q', see setMethod().
+        'evaluation', 'hs_method' see setMethod().
         """
         self.setMaterial(material)
         self.setMethod(evaluation, hs_method)
@@ -908,7 +908,7 @@ class InhomogeneousLayer(MaterialLayer):
         Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
         """
         z = self.material.getSlices()
-        h = numpy.diff(z)
+        h = np.diff(z)
         zmid = (z[:-1] + z[1:]) / 2.
         tensor = [self.material.getTensor(z, lbda) for z in zmid]
         return list(zip(h, tensor))
@@ -918,7 +918,7 @@ class InhomogeneousLayer(MaterialLayer):
         z = self.material.getSlices()
         if inv:
             z = z[::-1]
-        P_tot = numpy.matrix(numpy.identity(4))
+        P_tot = np.matrix(np.identity(4))
         for i in range(len(z)-1):
             P = self.getSlicePropagator(z[i+1], z[i], Kx, k0)
             P_tot = P * P_tot
@@ -1026,7 +1026,7 @@ class RepeatedLayers(Layer):
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P for the repeated layers."""
         P_list = [L.getPropagationMatrix(Kx, k0, inv) for L in self.layers]
-        P_period = P_before = numpy.matrix(numpy.identity(4))
+        P_period = P_before = np.matrix(np.identity(4))
         i_after = self.after
         i_before = len(P_list) - self.before
         if inv:
@@ -1120,7 +1120,7 @@ class Structure:
             layers = reversed(self.layers)
         else:
             layers = self.layers
-        P_tot = numpy.matrix(numpy.identity(4))
+        P_tot = np.matrix(np.identity(4))
         # Cumulative products :
         for L in layers:
             P = L.getPropagationMatrix(Kx, k0, inv)
@@ -1135,7 +1135,7 @@ class Structure:
         """
         profile = self.getPermittivityProfile(lbda)
         (h, epsilon) = list(zip(*profile))  # unzip
-        n = [numpy.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
+        n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
     def drawStructure(self, lbda=1e-6, method="graph", margin=0.15):
@@ -1147,14 +1147,14 @@ class Structure:
         # Build index profile
         profile = self.getIndexProfile(lbda)
         (h, n) = list(zip(*profile))     # unzip
-        n = numpy.array(n)
-        z_layers = numpy.hstack((0., numpy.cumsum(h[1:-1])))
+        n = np.array(n)
+        z_layers = np.hstack((0., np.cumsum(h[1:-1])))
         z_max = z_layers[-1]
         if z_max != 0.:
             z_margin = margin * z_max
         else:
             z_margin = 1e-6
-        z = numpy.hstack((-z_margin, z_layers, z_max + z_margin))
+        z = np.hstack((-z_margin, z_layers, z_max + z_margin))
         # Call specialized methods
         if method == "graph":
             ax = self._drawStructureGraph(z, n)
@@ -1166,7 +1166,7 @@ class Structure:
 
     def _drawStructureGraph(self, z, n):
         """Draw a graph of the refractive index profile """
-        n = numpy.hstack((n, n[-1]))
+        n = np.hstack((n, n[-1]))
         # Draw the graph
         fig = matplotlib.pyplot.figure(figsize=(8, 3))
         ax = fig.add_subplot("111")
@@ -1184,9 +1184,9 @@ class Structure:
     def _drawStructureSection(self, z, n):
         """Draw a cross section of the structure"""
         # Prepare arrays for pcolormesh()
-        X = z * numpy.ones((2, 1))
-        Y = numpy.array([0, 1]).reshape((2, 1)) * numpy.ones_like(z)
-        n = numpy.array(n).reshape((1, -1)).real
+        X = z * np.ones((2, 1))
+        Y = np.array([0, 1]).reshape((2, 1)) * np.ones_like(z)
+        n = np.array(n).reshape((1, -1)).real
         # Draw the cross section
         fig = matplotlib.pyplot.figure(figsize=(8, 3))
         ax = fig.add_subplot("111")
@@ -1239,13 +1239,13 @@ class Structure:
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
         T_it = T[2::-2, 2::-2]
         # Calculate the inverse and make sure it is a matrix.
-        T_ti = numpy.matrix(numpy.linalg.inv(T_it))
+        T_ti = np.matrix(np.linalg.inv(T_it))
 
         # Extraction of T_rt out of T. "3::-2" means integers {3,1}.
         T_rt = T[3::-2, 2::-2]
 
         # Then we have T_ri = T_rt * T_ti
-        T_ri = numpy.dot(T_rt, T_ti)
+        T_ri = np.dot(T_rt, T_ti)
         return (T_ri, T_ti)
 
     def getPowerTransmissionCorrection(self, Kx, k0=1e6):
@@ -1345,10 +1345,10 @@ class DataList(list):
     """
 
     # Transformation matrix from the (s,p) basis to the (L,R) basis...
-    C = 1 / numpy.sqrt(2) * numpy.matrix([[1, 1], [1j, -1j]])
-    D = 1 / numpy.sqrt(2) * numpy.matrix([[1, 1], [-1j, 1j]])
-    invC = numpy.linalg.inv(C)
-    invD = numpy.linalg.inv(D)
+    C = 1 / np.sqrt(2) * np.matrix([[1, 1], [1j, -1j]])
+    D = 1 / np.sqrt(2) * np.matrix([[1, 1], [-1j, 1j]])
+    invC = np.linalg.inv(C)
+    invD = np.linalg.inv(D)
 
     # For monitoring changes (used by the decorator)
     _changer_methods = ["__setitem__", "__delitem__", "pop", "append",
@@ -1376,7 +1376,7 @@ class DataList(list):
         keys = self._evaluation_keys
         d = self._extract_list(keys, self)
         for k in keys:
-            setattr(self, k, numpy.array(d[k]))
+            setattr(self, k, np.array(d[k]))
 
         # Rename some data...
         (self.r, self.t) = (self.T_ri, self.T_ti)
@@ -1385,13 +1385,13 @@ class DataList(list):
         self.R = abs(self.T_ri)**2
 
         if self.compute_power_transmission:
-            self.T = abs(self.T_ti)**2 * self.power_corr[:, newaxis, newaxis]
+            self.T = abs(self.T_ti)**2 * self.power_corr[:, np.newaxis, np.newaxis]
 
         if self.compute_circular:
             self.Tc_ri = self.getCircularJones(self.T_ri, "reflection")
             self.Rc = abs(self.Tc_ri)**2
             self.Tc_ti = self.getCircularJones(self.T_ti, "transmission")
-            self.Tc = abs(self.Tc_ti)**2 * self.power_corr[:, newaxis, newaxis]
+            self.Tc = abs(self.Tc_ti)**2 * self.power_corr[:, np.newaxis, np.newaxis]
 
         if self.compute_ellipsometry:
             (self.Psi, self.Delta) = self.getEllipsometryParameters(self.T_ri)
@@ -1432,9 +1432,9 @@ class DataList(list):
         Tc_ri = D⁻¹ T_ri C   and   Tc_ti = C⁻¹ T_ti C
         """
         if direction[0] == 'r':
-            return numpy.einsum('ij,...jk,kl->...il', cls.invD, J, cls.C)
+            return np.einsum('ij,...jk,kl->...il', cls.invD, J, cls.C)
         if direction[0] == 't':
-            return numpy.einsum('ij,...jk,kl->...il', cls.invC, J, cls.C)
+            return np.einsum('ij,...jk,kl->...il', cls.invC, J, cls.C)
 
     @classmethod
     def getEllipsometryParameters(cls, J):
@@ -1454,13 +1454,13 @@ class DataList(list):
         See Fujiwara, (4.4), (4.6), (6.14), (6.15)
         """
         r_ss = J[..., 1, 1]           # Extract 'r_ss' and complement shape for
-        r_ss = numpy.array(r_ss)    # element-wise division (the second line
-        r_ss.shape += (1, 1)  #  works around a Numpy bug)
+        r_ss = np.array(r_ss)    # element-wise division (the second line
+        r_ss.shape += (1, 1)  #  works around a numpy bug)
         S = J / r_ss  #  Normalize matrix
         S[..., 0, :] = -S[..., 0, :]  #  Change to ellipsometry sign convention
 
-        Psi = numpy.arctan(numpy.abs(S))*180/pi
-        Delta = -numpy.angle(S, deg=True)
+        Psi = np.arctan(np.abs(S))*180/pi
+        Delta = -np.angle(S, deg=True)
         return (Psi, Delta)
 
     def get(self, name):
