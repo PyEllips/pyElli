@@ -161,6 +161,48 @@ class DispersionSellmeier(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
+class DispersionLorentzLambda(DispersionLaw):
+    """Lorentz dispersion law equation, with wavelength coefficients."""
+
+    def __init__(self, *coeffs):
+        """Creates a Lorentz dispersion law, with wavelength coefficients.
+
+        Lorentz coefficients [A1, λ1, ζ1], [A2, λ2, ζ2],...
+          Bi : coefficient
+          λi : resonance wavelength (m)
+          ζi :
+
+        ε(λ) = 1 + Σi Ai × λ²/(λ²-λi²+j ζi λ)
+        """
+        self.coeffs = coeffs
+
+        def dielectricFunction(lbda):
+            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j * c[2] * lbda) for c in self.coeffs)
+
+        self.dielectricFunction = dielectricFunction
+
+
+class DispersionLorentzEnergy(DispersionLaw):
+    """Lorentz dispersion law equation, with energy coefficients."""
+
+    def __init__(self, *coeffs):
+        """Creates a Lorentz dispersion law, with energy coefficients.
+
+        Lorentz coefficients [A1, E1, Γ1], [A2, E2, Γ2],...
+          Bi : coefficient
+          Ei : resonance Energy (eV)
+          Γi :
+
+        ε(λ) = 1 + Σi Ai × λ²/(λ²-λi²+j Γi λ)
+        """
+        self.coeffs = coeffs
+
+        def dielectricFunction(lbda):
+            E = 1240e-9 / lbda
+            return 1 + sum(c[0] / (c[1]**2 - E**2 + 1j * c[2] * E) for c in self.coeffs)
+
+        self.dielectricFunction = dielectricFunction
+
 
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
