@@ -13,7 +13,7 @@ import scipy.linalg
 import scipy.interpolate
 import matplotlib
 import matplotlib.pyplot
-from scipy.Constants import pi
+from scipy.constants import pi
 
 #########################################################
 # Constants...
@@ -1400,23 +1400,23 @@ class DataList(list):
         self.changed = False
 
     @classmethod
-    def _extract_list(cls, keys, list):
-        """Recursive extraction of the 'keys' from objects in list 'list'.
+    def _extract_list(cls, keys, li):
+        """Recursive extraction of the 'keys' from objects in li 'list'.
 
-        'l' : List of objects (the list may be nested to any level).
+        'li' : List of objects (the list may be nested to any level).
         'keys' : Sequence of strings naming the object attributes to extract
 
         Returns : Dictionary with the extracted keys, reproducing the structure
                   of the original list.
         """
         d = {k: [] for k in keys}
-        if isinstance(list[0], list):
-            for ll in list:
+        if isinstance(li[0], list):
+            for ll in li:
                 dd = cls._extract_list(keys, ll)
                 for k in keys:
                     d[k].append(dd[k])
         else:
-            for ob in list:
+            for ob in li:
                 for k in keys:
                     d[k].append(getattr(ob, k))
         return d
