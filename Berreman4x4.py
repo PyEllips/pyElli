@@ -98,40 +98,37 @@ def rotation_v_theta(v, theta):
 
 
 #########################################################
+# Energy Wavelength Conversion
+
+def Lambda2E(value):
+    return 1240 / value
+
+
+#########################################################
 # Dispersion laws...
 
 class DispersionLaw:
     """Dispersion law (abstract class).
 
     Funktions provided for derived classes:
-    * getDielLambda(lbda) : returns dielectric function for wavelength 'lbda'
-    * getDielEnergy(E) : returns dielectric function for Energy 'E'
-    * getRefrLambda(lbda) : returns refractive index for wavelength 'lbda'
-    * getRefrEnergy(E) : returns refractive index for Energy 'E'
+    * getDielectric(lbda) : returns dielectric constant for wavelength 'lbda'
+    * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
     dielectricFunction = None       # Complex dielectric function
-    name = None                     # Description (optional)
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def getDielLambda(self, lbda):
-        """Returns the dielectric function for wavelength 'lbda'."""
+    def getDielectric(self, lbda):
+        """Returns the dielectric constant for wavelength 'lbda'."""
         return self.dielectricFunction(lbda)
 
-    def getDielEnergy(self, E):
-        """Returns the dielectric function for Energy 'E'."""
-        return self.dielectricFunction(1240e-9 / E)
-
-    def getRefrLambda(self, lbda):
+    def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda'."""
         return np.sqrt(self.dielectricFunction(lbda))
 
-    def getRefrEnergy(self, E):
-        """Returns the refractive index for Energy 'E'."""
-        return np.sqrt(self.dielectricFunction(1240e-9 / E))
 
 
 class DispersionSellmeier(DispersionLaw):
@@ -142,7 +139,7 @@ class DispersionSellmeier(DispersionLaw):
 
         Sellmeier coefficients [B1, λ1], [B2, λ2],...
           Bi : coefficient for n² contribution
-          λi : resonance wavelength (m)
+          λi : resonance wavelength (nm)
 
         ε(λ) = 1 + Σi Bi × λ²/(λ²-λi²)
 
@@ -166,7 +163,7 @@ class DispersionLorentzLambda(DispersionLaw):
 
         Lorentz coefficients [A1, λ1, ζ1], [A2, λ2, ζ2],...
           Bi : coefficient
-          λi : resonance wavelength (m)
+          λi : resonance wavelength (nm)
           ζi :
 
         ε(λ) = 1 + Σi Ai × λ²/(λ²-λi²+j ζi λ)
@@ -196,7 +193,7 @@ class DispersionLorentzEnergy(DispersionLaw):
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            E = 1240e-9 / lbda
+            E = Lambda2E(lbda)
             return 1 + sum(c[0] / (c[1]**2 - E**2 + 1j * c[2] * E)
                            for c in self.coeffs)
 
@@ -209,7 +206,7 @@ class DispersionTable(DispersionLaw):
     def __init__(self, lbda=None, n=None):
         """Create a dispersion law from a refraction index list.
 
-        'lbda'  : Wavelength list (m)
+        'lbda'  : Wavelength list (nm)
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
