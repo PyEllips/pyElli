@@ -11,16 +11,13 @@ See file "documentation.pdf"
 import numpy as np
 import scipy.linalg
 import scipy.interpolate
+import scipy.constants as sc
 import matplotlib
 import matplotlib.pyplot
-from scipy.constants import pi
 
 #########################################################
 # Constants...
 
-c = 2.998e8  #  speed of light in vacuum
-h = 6.626e-34   # Planck constant
-e = 1.602e-19   # electron charge
 e_x = np.array([1, 0, 0]).reshape((3, 1))  #  base vectors
 e_y = np.array([0, 1, 0]).reshape((3, 1))
 e_z = np.array([0, 0, 1]).reshape((3, 1))
@@ -400,7 +397,7 @@ class TwistedMaterial(InhomogeneousMaterial):
     angle = None  #  Angle of the twist
     div = None          # Number of slices
 
-    def __init__(self, material=None, d=4e-6, angle=pi/2, div=25):
+    def __init__(self, material=None, d=4e-6, angle=sc.pi/2, div=25):
         """Creates a layer with a twisted material.
 
         'material' : material for the twisted layer
@@ -554,7 +551,7 @@ class HalfSpace:
 
         Returns eigenvectors ordered like (s+,s-,p+,p-)
         """
-        epsilon = self.material.getTensor(2*pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
         q, Psi = scipy.linalg.eig(Delta)
 
@@ -621,7 +618,7 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
-        n = self.material.getRefractiveIndex(2*pi/k0)
+        n = self.material.getRefractiveIndex(2*sc.pi/k0)
         Kx = n * np.sin(Phi)
         return Kx
 
@@ -635,7 +632,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         # Not vectorized. Could be?
         # Test type(Kz2)
-        n = self.material.getRefractiveIndex(2*pi/k0)
+        n = self.material.getRefractiveIndex(2*sc.pi/k0)
         Kz2 = n**2 - Kx**2
         return np.sqrt(complex(Kz2))
 
@@ -648,7 +645,7 @@ class IsotropicHalfSpace(HalfSpace):
         Returns : angle Phi in radians.
         """
         # May be vectorized when I have time?
-        n = self.material.getRefractiveIndex(2*pi/k0)
+        n = self.material.getRefractiveIndex(2*sc.pi/k0)
         sin_Phi = Kx/n
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
@@ -664,7 +661,7 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : transition matrix L
         """
-        n = self.material.getRefractiveIndex(2*pi/k0)
+        n = self.material.getRefractiveIndex(2*sc.pi/k0)
         sin_Phi = Kx/n
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
@@ -778,7 +775,7 @@ class HomogeneousLayer(MaterialLayer):
         'k0' : vacuum wavenumber
         'inv' : returns the inverse matrix, BP = exp(-i h k0 Delta)
         """
-        epsilon = self.material.getTensor(2*pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
         if inv:
             h = -self.h
@@ -788,7 +785,7 @@ class HomogeneousLayer(MaterialLayer):
 
     def getDeltaMatrix(self, Kx, k0=1e6):
         """Returns Delta matrix of the homogeneous layer."""
-        epsilon = self.material.getTensor(2*pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
         return Delta
 
@@ -924,7 +921,7 @@ class InhomogeneousLayer(MaterialLayer):
         hs_propagator_*() functions, pointed by the attribute
         InhomogeneousLayer.midpoint_hs_propagator().
         """
-        epsilon = self.material.getTensor((z1+z2)/2., 2*pi/k0)
+        epsilon = self.material.getTensor((z1+z2)/2., 2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
         P = self.hs_propagator(Delta, z2-z1, k0)
         return P
@@ -947,9 +944,9 @@ class InhomogeneousLayer(MaterialLayer):
         z1 + t2 h = z2 - t2 h.
         """
         h = z2 - z1
-        epsilon1 = self.material.getTensor(z1+self.t1*h, 2*pi/k0)
-        epsilon2 = self.material.getTensor(z1+self.t2*h, 2*pi/k0)
-        epsilon3 = self.material.getTensor(z1+self.t3*h, 2*pi/k0)
+        epsilon1 = self.material.getTensor(z1+self.t1*h, 2*sc.pi/k0)
+        epsilon2 = self.material.getTensor(z1+self.t2*h, 2*sc.pi/k0)
+        epsilon3 = self.material.getTensor(z1+self.t3*h, 2*sc.pi/k0)
         Delta1 = buildDeltaMatrix(Kx, epsilon1)
         Delta2 = buildDeltaMatrix(Kx, epsilon2)
         Delta3 = buildDeltaMatrix(Kx, epsilon3)
@@ -1449,7 +1446,7 @@ class DataList(list):
         S = J / r_ss  #  Normalize matrix
         S[..., 0, :] = -S[..., 0, :]  #  Change to ellipsometry sign convention
 
-        Psi = np.arctan(np.abs(S))*180/pi
+        Psi = np.arctan(np.abs(S))*180/sc.pi
         Delta = -np.angle(S, deg=True)
         return (Psi, Delta)
 
