@@ -74,9 +74,9 @@ def rotation_V(V):
 
     Note : The inverse rotation is -V
     """
-    W = np.matrix([[0, -V[2], V[1]],
-                   [V[2], 0, -V[0]],
-                   [-V[1], V[0], 0]])
+    W = np.matrix([[0,      -V[2],  V[1]],
+                   [V[2],   0,      -V[0]],
+                   [-V[1],  V[0],   0]])
     return np.matrix(scipy.linalg.expm(W))
 
 
@@ -91,11 +91,10 @@ def rotation_v_theta(v, theta):
 
     Notes : The inverse rotation is (v,-theta)
     """
-    w = np.matrix([[0, -v[2], v[1]],
-                   [v[2], 0, -v[0]],
-                   [-v[1], v[0], 0]])
-    return np.identity(3) + w * np.sin(theta) \
-        + w**2 * (1 - np.cos(theta))
+    w = np.matrix([[0,      -v[2],  v[1]],
+                   [v[2],   0,      -v[0]],
+                   [-v[1],  v[0],   0]])
+    return np.identity(3) + w * np.sin(theta) + w**2 * (1 - np.cos(theta))
 
 
 #########################################################
@@ -153,7 +152,8 @@ class DispersionSellmeier(DispersionLaw):
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2) for c in self.coeffs)
+            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2)
+                           for c in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -174,7 +174,8 @@ class DispersionLorentzLambda(DispersionLaw):
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j * c[2] * lbda) for c in self.coeffs)
+            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j *
+                                             c[2] * lbda) for c in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -196,7 +197,8 @@ class DispersionLorentzEnergy(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = 1240e-9 / lbda
-            return 1 + sum(c[0] / (c[1]**2 - E**2 + 1j * c[2] * E) for c in self.coeffs)
+            return 1 + sum(c[0] / (c[1]**2 - E**2 + 1j * c[2] * E)
+                           for c in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -211,7 +213,7 @@ class DispersionTable(DispersionLaw):
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
-        self.dielectricFunction = scipy.interpolate.interp1d(lbda, n, kind='cubic')
+        self.dielectricFunction = scipy.interpolate.interp1d(lbda, n**2, kind='cubic')
 
 
 #########################################################
