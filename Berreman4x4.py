@@ -229,6 +229,18 @@ class DispersionTable(DispersionLaw):
         self.dielectricFunction = scipy.interpolate.interp1d(lbda, n**2, kind='cubic')
 
 
+class DispersionTableEpsilon(DispersionLaw):
+    """Dispersion law specified by a table"""
+
+    def __init__(self, lbda=None, epsilon=None):
+        """Create a dispersion law from a dielectric constant list.
+
+        'lbda'  : Wavelength list (nm)
+        'ε'     : Refractive index values (can be complex)
+        """
+        self.dielectricFunction = scipy.interpolate.interp1d(lbda, epsilon, kind='cubic')
+
+
 #########################################################
 # Materials...
 
