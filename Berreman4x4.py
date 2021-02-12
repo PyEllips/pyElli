@@ -94,7 +94,8 @@ def rotation_v_theta(v, theta):
     w = np.array([[0,      -v[2],  v[1]],
                   [v[2],   0,      -v[0]],
                   [-v[1],  v[0],   0]])
-    return np.identity(3) + w * np.sin(theta) + w**2 * (1 - np.cos(theta))
+    return np.identity(3) + w * np.sin(theta) \
+        + np.linalg.matrix_power(w, 2) * (1 - np.cos(theta))
 
 
 #########################################################
@@ -274,11 +275,10 @@ class Material:
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        epsilon = self.rotationMatrix \
-            * np.identity(3) * np.array([[self.law_x.getDielectric(lbda)],
-                                         [self.law_y.getDielectric(lbda)],
-                                         [self.law_z.getDielectric(lbda)]]) \
-            * self.rotationMatrix.T
+        epsilon = self.rotationMatrix @ np.diag([self.law_x.getDielectric(lbda),
+                                                 self.law_y.getDielectric(lbda),
+                                                 self.law_z.getDielectric(lbda)]) \
+            @ self.rotationMatrix.T
         return epsilon
 
     def getRefractiveIndex(self, lbda):
@@ -420,7 +420,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         """Returns permittivity tensor matrix for position 'z'."""
         epsilon = self.material.getTensor(lbda)
         R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
-        return R * epsilon * R.T
+        return R @ epsilon @ R.T
 
     def getSlices(self):
         """Returns z slicing.
@@ -1179,7 +1179,7 @@ class Structure:
         ILf = self.frontHalfSpace.getTransitionMatrix(Kx, k0, inv=True)
         P = self.getPropagationMatrix(Kx, k0, inv=True)
         Lb = self.backHalfSpace.getTransitionMatrix(Kx, k0)
-        T = ILf * P * Lb
+        T = ILf @ P @ Lb
         return T
 
     def getJones(self, Kx, k0=1e6):
