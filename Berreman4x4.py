@@ -265,6 +265,13 @@ class Material:
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
+    def setRotation(self, R):
+        """Rotates the Material.
+
+        'R' : rotation matrix (from rotation_Euler() or others)
+        """
+        self.rotationMatrix = R
+
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
         epsilon = self.rotationMatrix \
@@ -274,16 +281,9 @@ class Material:
             * self.rotationMatrix.T
         return epsilon
 
-    def getRefractiveIndexLambda(self, lbda):
+    def getRefractiveIndex(self, lbda):
         """Returns refractive index."""
         return np.sqrt(self.getTensor(lbda))
-
-    def setRotation(self, R):
-        """Rotates the Material.
-
-        'R' : rotation matrix (from rotation_Euler() or others)
-        """
-        self.rotationMatrix = R
 
 
 class IsotropicMaterial(Material):
