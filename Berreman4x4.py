@@ -252,134 +252,76 @@ class Material:
     * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
 
+    law_x = None
+    law_y = None
+    law_z = None
+    rotationMatrix = np.identity(3)
+
     def __init__(self):
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        raise NotImplementedError("Should be implemented in derived classes")
+        epsilon = self.rotationMatrix \
+            * np.identity(3) * np.array([[self.law_x.getDielectric(lbda)],
+                                         [self.law_y.getDielectric(lbda)],
+                                         [self.law_z.getDielectric(lbda)]]) \
+            * self.rotationMatrix.T
+        return epsilon
 
+    def getRefractiveIndexLambda(self, lbda):
+        """Returns refractive index."""
+        return np.sqrt(self.getTensor(lbda))
 
-class NonDispersiveMaterial(Material):
-
-    epsilon = None  #  Permittivity tensor matrix
-
-    def __init__(self, epsilon=None):
-        """Creates a Material with a non-dispersive permittivity tensor.
-
-        'epsilon' : permittivity tensor, 3x3 array or a matrix
-
-        Notes (sloppy... should be clarified) :
-        * Definition of electromagnetic energy requires that Re(E) > 0
-          [reference ???]
-        * Im(E) > 0 for an absorbing medium
-        * Im(E) < 0 for an amplifying medium
-        """
-        if epsilon is None:
-            epsilon = np.matrix(np.identity(3))
-        self.epsilon = np.matrix(epsilon)
-
-    def getTensor(self, lbda=None):
-        """Returns permittivity tensor matrix for the desired wavelength.
-
-        Note : permittivity tensor ε in Gaussian units.
-        """
-        return self.epsilon
-
-    def rotated(self, R):
-        """Returns a rotated Material.
+    def setRotation(self, R):
+        """Rotates the Material.
 
         'R' : rotation matrix (from rotation_Euler() or others)
         """
-        E = R * self.epsilon * R.T
-        return NonDispersiveMaterial(E)
+        self.rotationMatrix = R
 
 
 class IsotropicMaterial(Material):
-    """Isotropic material (abstract class).
-
-    Method that should be implemented in derived classes:
-    * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
-    * getTensor(lbda) : required from class Material
-    """
-
-    def __init__(self):
-        """Creates a new isotropic material  -- abstract class"""
-        raise NotImplementedError("Should be implemented in derived classes")
-
-    def getRefractiveIndex(self, lbda):
-        """Returns refractive index for wavelength 'lbda'."""
-        raise NotImplementedError("Should be implemented in derived classes")
-
-
-class IsotropicNonDispersiveMaterial(NonDispersiveMaterial, IsotropicMaterial):
-    """Isotropic non-dispersive material."""
-
-    n = None    # refractive index
-
-    def __init__(self, n=1.5):
-        """Creates an isotropic non-dispersive material.
-
-        'n' : refractive index
-
-        Notes :
-        * Im(n) > 0 for an absorbing medium
-        * Im(n) < 0 for an amplifying medium
-        """
-        self.n = n
-        self.epsilon = n**2 * np.matrix(np.identity(3))
-
-    def getRefractiveIndex(self, lbda=None):
-        """Returns refractive index."""
-        return self.n
-
-
-class IsotropicDispersive(IsotropicMaterial):
-    """Isotropic material with dispersion law."""
-
-    law = None  #  Dispersion law
+    """Isotropic material."""
 
     def __init__(self, law=None):
         """Creates isotropic material with dispersion law.
 
-        'law' : DispersionLaw object (for example DispersionSellmeier)
+        'law' : Dispersion law object
         """
-        self.law = law
-
-    def getTensor(self, lbda):
-        """Returns permittivity tensor matrix for the desired wavelength."""
-        n = self.law.getValue(lbda)
-        return np.matrix(n**2 * np.identity(3))
-
-    def getRefractiveIndex(self, lbda):
-        """Returns refractive index."""
-        return self.law.getValue(lbda)
+        self.law_x = law
+        self.law_y = law
+        self.law_z = law
 
 
-class UniaxialNonDispersiveMaterial(NonDispersiveMaterial):
-    """Non-dispersive uniaxial material."""
+class UniaxialMaterial(Material):
+    """Uniaxial material."""
 
-    def __init__(self, no=1.5, ne=1.7):
-        """Creates a uniaxial non-dispersive material.
+    def __init__(self, law_o=None, law_e=None):
+        """Creates a uniaxial material with dispersion law.
 
-        'no' : ordinary refractive index
-        'ne' : extraordinary refractive index (oriented along the z direction)
+        'law_o' : dispersion law for ordinary crystal axes (x and y direction)
+        'law_o' : dispersion law for extraordinary crystal axis (z direction)
         """
-        n = np.diag([no, no, ne])
-        self.epsilon = np.matrix(n**2)
+        self.law_x = law_o
+        self.law_y = law_o
+        self.law_z = law_e
 
 
-class BiaxialNonDispersiveMaterial(NonDispersiveMaterial):
-    """Non-dispersive biaxial material."""
+class BiaxialMaterial(Material):
+    """Biaxial material."""
 
-    def __init__(self, diag=(1.5, 1.6, 1.7)):
-        """Creates a biaxial non-dispersie material
+    def __init__(self, law_x=None, law_y=None, law_z=None):
+        """Creates a biaxial material with dispersion law.
 
-        'diag' : xyz refractive indices, tuple (n1,n2,n3)
+        'law_x' : dispersion law for x axis
+        'law_y' : dispersion law for y axis
+        'law_z' : dispersion law for z axis
         """
-        n = np.diag(diag)
-        self.epsilon = np.matrix(n**2)
+        self.law_x = law_x
+        self.law_y = law_y
+        self.law_z = law_z
 
 
 #########################################################
