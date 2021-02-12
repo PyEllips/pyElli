@@ -600,8 +600,8 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
-        n = self.material.getRefractiveIndex(2*sc.pi/k0)
-        Kx = n * np.sin(Phi)
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        Kx = nx * np.sin(Phi)
         return Kx
 
     def get_Kz_from_Kx(self, Kx, k0=1e6):
@@ -614,8 +614,8 @@ class IsotropicHalfSpace(HalfSpace):
         """
         # Not vectorized. Could be?
         # Test type(Kz2)
-        n = self.material.getRefractiveIndex(2*sc.pi/k0)
-        Kz2 = n**2 - Kx**2
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        Kz2 = nx**2 - Kx**2
         return np.sqrt(complex(Kz2))
 
     def get_Phi_from_Kx(self, Kx, k0=1e6):
@@ -627,8 +627,8 @@ class IsotropicHalfSpace(HalfSpace):
         Returns : angle Phi in radians.
         """
         # May be vectorized when I have time?
-        n = self.material.getRefractiveIndex(2*sc.pi/k0)
-        sin_Phi = Kx/n
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        sin_Phi = Kx/nx
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
         Phi = np.arcsin(sin_Phi)
@@ -643,23 +643,23 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : transition matrix L
         """
-        n = self.material.getRefractiveIndex(2*sc.pi/k0)
-        sin_Phi = Kx/n
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        sin_Phi = Kx/nx
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
         cos_Phi = np.sqrt(1 - sin_Phi**2)
         if inv:
             return 0.5 * np.array(
-                [[0, 1, -1/(n*cos_Phi),  0],
-                 [0, 1,  1/(n*cos_Phi),  0],
-                 [1/cos_Phi, 0,  0,  1/n],
-                 [1/cos_Phi, 0,  0, -1/n]])
+                [[0, 1, -1/(nx*cos_Phi),  0],
+                 [0, 1,  1/(nx*cos_Phi),  0],
+                 [1/cos_Phi, 0,  0,  1/nx],
+                 [1/cos_Phi, 0,  0, -1/nx]])
         else:
             return np.array(
                 [[0, 0, cos_Phi, cos_Phi],
                  [1, 1, 0, 0],
-                 [-n*cos_Phi, n*cos_Phi, 0, 0],
-                 [0, 0, n, -n]])
+                 [-nx*cos_Phi, nx*cos_Phi, 0, 0],
+                 [0, 0, nx, -nx]])
 
 
 #########################################################
