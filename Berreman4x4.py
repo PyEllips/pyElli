@@ -261,6 +261,10 @@ class Material:
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
+    def setDispersion(self):
+        """Creates a new material -- abstract class"""
+        raise NotImplementedError("Should be implemented in derived classes")
+
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
         epsilon = self.rotationMatrix \
@@ -290,6 +294,9 @@ class IsotropicMaterial(Material):
 
         'law' : Dispersion law object
         """
+        self.setDispersion(law)
+
+    def setDispersion(self, law):
         self.law_x = law
         self.law_y = law
         self.law_z = law
@@ -304,6 +311,9 @@ class UniaxialMaterial(Material):
         'law_o' : dispersion law for ordinary crystal axes (x and y direction)
         'law_o' : dispersion law for extraordinary crystal axis (z direction)
         """
+        self.setDispersion(law_o, law_e)
+
+    def setDispersion(self, law_o=None, law_e=None):
         self.law_x = law_o
         self.law_y = law_o
         self.law_z = law_e
@@ -319,6 +329,9 @@ class BiaxialMaterial(Material):
         'law_y' : dispersion law for y axis
         'law_z' : dispersion law for z axis
         """
+        self.setDispersion(law_x, law_y, law_z)
+
+    def setDispersion(self, law_x=None, law_y=None, law_z=None):
         self.law_x = law_x
         self.law_y = law_y
         self.law_z = law_z
