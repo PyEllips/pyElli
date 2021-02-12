@@ -52,9 +52,9 @@ def rotation_Euler(angles):
     s2 = np.sin(n)
     c3 = np.cos(r)
     s3 = np.sin(r)
-    return np.matrix([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
-                      [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
-                      [s2*s3,           s2*c3,           c2]])
+    return np.array([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
+                     [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
+                     [s2*s3,           s2*c3,           c2]])
 
 
 def rotation_V(V):
@@ -74,10 +74,10 @@ def rotation_V(V):
 
     Note : The inverse rotation is -V
     """
-    W = np.matrix([[0,      -V[2],  V[1]],
-                   [V[2],   0,      -V[0]],
-                   [-V[1],  V[0],   0]])
-    return np.matrix(scipy.linalg.expm(W))
+    W = np.array([[0,      -V[2],  V[1]],
+                  [V[2],   0,      -V[0]],
+                  [-V[1],  V[0],   0]])
+    return scipy.linalg.expm(W)
 
 
 def rotation_v_theta(v, theta):
@@ -91,9 +91,9 @@ def rotation_v_theta(v, theta):
 
     Notes : The inverse rotation is (v,-theta)
     """
-    w = np.matrix([[0,      -v[2],  v[1]],
-                   [v[2],   0,      -v[0]],
-                   [-v[1],  v[0],   0]])
+    w = np.array([[0,      -v[2],  v[1]],
+                  [v[2],   0,      -v[0]],
+                  [-v[1],  v[0],   0]])
     return np.identity(3) + w * np.sin(theta) + w**2 * (1 - np.cos(theta))
 
 
@@ -433,7 +433,7 @@ def buildDeltaMatrix(Kx, eps):
 
     Returns : Delta 4x4 matrix, generator of infinitesimal translations
     """
-    return np.matrix(
+    return np.array(
         [[-Kx * eps[2, 0] / eps[2, 2], -Kx * eps[2, 1] / eps[2, 2],
           0, 1 - Kx**2 / eps[2, 2]],
          [0, 0, -1, 0],
@@ -475,7 +475,7 @@ def hs_propagator(Delta, h, k0, method="linear"):
 def hs_propagator_lin(Delta, h, k0):
     """Returns propagator with linear approximation."""
     P_hs_lin = np.identity(4) + 1j * h * k0 * Delta
-    return np.matrix(P_hs_lin)
+    return P_hs_lin
 
 
 def hs_propagator_Pade(Delta, h, k0):
@@ -486,7 +486,7 @@ def hs_propagator_Pade(Delta, h, k0):
     Such property may be suitable for use with Z. Lu's method.
     """
     P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta)
-    return np.matrix(P_hs_Pade)
+    return P_hs_Pade
 
 
 #########################################################
@@ -549,7 +549,7 @@ class HalfSpace:
         if abs(c) == 0:
             c = 1.
         Psi = 2 * Psi / c
-        return np.matrix(Psi)
+        return Psi
 
 
 class IsotropicHalfSpace(HalfSpace):
@@ -636,13 +636,13 @@ class IsotropicHalfSpace(HalfSpace):
             sin_Phi = complex(sin_Phi)
         cos_Phi = np.sqrt(1 - sin_Phi**2)
         if inv:
-            return 0.5 * np.matrix(
+            return 0.5 * np.array(
                 [[0, 1, -1/(n*cos_Phi),  0],
                  [0, 1,  1/(n*cos_Phi),  0],
                  [1/cos_Phi, 0,  0,  1/n],
                  [1/cos_Phi, 0,  0, -1/n]])
         else:
-            return np.matrix(
+            return np.array(
                 [[0, 0, cos_Phi, cos_Phi],
                  [1, 1, 0, 0],
                  [-n*cos_Phi, n*cos_Phi, 0, 0],
@@ -874,7 +874,7 @@ class InhomogeneousLayer(MaterialLayer):
         z = self.material.getSlices()
         if inv:
             z = z[::-1]
-        P_tot = np.matrix(np.identity(4))
+        P_tot = np.identity(4)
         for i in range(len(z)-1):
             P = self.getSlicePropagator(z[i+1], z[i], Kx, k0)
             P_tot = P * P_tot
@@ -982,7 +982,7 @@ class RepeatedLayers(Layer):
     def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
         """Returns propagation matrix P for the repeated layers."""
         P_list = [L.getPropagationMatrix(Kx, k0, inv) for L in self.layers]
-        P_period = P_before = np.matrix(np.identity(4))
+        P_period = P_before = np.identity(4)
         i_after = self.after
         i_before = len(P_list) - self.before
         if inv:
@@ -1076,7 +1076,7 @@ class Structure:
             layers = reversed(self.layers)
         else:
             layers = self.layers
-        P_tot = np.matrix(np.identity(4))
+        P_tot = np.identity(4)
         # Cumulative products :
         for L in layers:
             P = L.getPropagationMatrix(Kx, k0, inv)
@@ -1195,7 +1195,7 @@ class Structure:
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
         T_it = T[2::-2, 2::-2]
         # Calculate the inverse and make sure it is a matrix.
-        T_ti = np.matrix(np.linalg.inv(T_it))
+        T_ti = np.linalg.inv(T_it)
 
         # Extraction of T_rt out of T. "3::-2" means integers {3,1}.
         T_rt = T[3::-2, 2::-2]
@@ -1301,8 +1301,8 @@ class DataList(list):
     """
 
     # Transformation matrix from the (s,p) basis to the (L,R) basis...
-    C = 1 / np.sqrt(2) * np.matrix([[1, 1], [1j, -1j]])
-    D = 1 / np.sqrt(2) * np.matrix([[1, 1], [-1j, 1j]])
+    C = 1 / np.sqrt(2) * np.array([[1, 1], [1j, -1j]])
+    D = 1 / np.sqrt(2) * np.array([[1, 1], [-1j, 1j]])
     invC = np.linalg.inv(C)
     invD = np.linalg.inv(D)
 
