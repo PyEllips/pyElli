@@ -130,6 +130,22 @@ class DispersionLaw:
         return np.sqrt(self.dielectricFunction(lbda))
 
 
+class DispersionLess(DispersionLaw):
+    """Constant Dispersion law, therefor no dispersion. """
+
+    def __init__(self, n=None):
+        """Create a dispersion law with a constant refraction index.
+
+        'n'     : Refractive index value (can be complex)
+                  (n" > 0 for an absorbing material)
+        """
+        self.n = n
+
+        def dielectricFunction(lbda):
+            return self.n**2
+
+        self.dielectricFunction = dielectricFunction
+
 
 class DispersionSellmeier(DispersionLaw):
     """Sellmeier dispersion law equation."""
