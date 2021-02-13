@@ -890,7 +890,7 @@ class InhomogeneousLayer(MaterialLayer):
         P_tot = np.identity(4)
         for i in range(len(z)-1):
             P = self.getSlicePropagator(z[i+1], z[i], Kx, k0)
-            P_tot = P * P_tot
+            P_tot = P @ P_tot
         return P_tot
 
     def getSlicePropagator_mid(self, z2, z1, Kx, k0=1e6):
@@ -935,7 +935,7 @@ class InhomogeneousLayer(MaterialLayer):
         P1 = self.hs_propagator(Delta1, self.b1*h, k0)
         P2 = self.hs_propagator(Delta2, self.b2*h, k0)
         P3 = self.hs_propagator(Delta3, self.b1*h, k0)
-        return P1*P2*P3
+        return P1 @ P2 @ P3
 
 
 #########################################################
@@ -1002,18 +1002,18 @@ class RepeatedLayers(Layer):
             for (i, P) in enumerate(P_list):
                 if i == i_after:
                     P_after = P_period
-                P_period = P_period * P
+                P_period = P_period @ P
                 if i >= i_before:
-                    P_before = P_before * P
-            return P_before * P_period**self.n * P_after
+                    P_before = P_before @ P
+            return P_before @ np.linalg.matrix_power(P_period, self.n) @ P_after
         else:
             for (i, P) in enumerate(P_list):
                 if i == i_after:
                     P_after = P_period
-                P_period = P * P_period
+                P_period = P @ P_period
                 if i >= i_before:
-                    P_before = P * P_before
-            return P_after * P_period**self.n * P_before
+                    P_before = P @ P_before
+            return P_after @ np.linalg.matrix_power(P_period, self.n) @ P_before
 
 
 #########################################################
@@ -1093,7 +1093,7 @@ class Structure:
         # Cumulative products :
         for L in layers:
             P = L.getPropagationMatrix(Kx, k0, inv)
-            P_tot = P * P_tot
+            P_tot = P @ P_tot
         return P_tot
 
     def getIndexProfile(self, lbda=1e-6, v=e_x):
