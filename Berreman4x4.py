@@ -800,7 +800,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
 
     def get_QWP_thickness(self, lbda=1e-6):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
-        nr = np.real(self.material.getRefractiveIndex(lbda))
+        nr = np.real(self.material.getRefractiveIndex(lbda)[(0, 0)])
         return lbda / (4.*nr)
 
 
