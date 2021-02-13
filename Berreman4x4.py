@@ -18,9 +18,9 @@ import matplotlib.pyplot
 #########################################################
 # Constants...
 
-e_x = np.array([1, 0, 0]).reshape((3, 1))  #  base vectors
-e_y = np.array([0, 1, 0]).reshape((3, 1))
-e_z = np.array([0, 0, 1]).reshape((3, 1))
+e_x = np.array([1, 0, 0]).reshape((3,))  #  base vectors
+e_y = np.array([0, 1, 0]).reshape((3,))
+e_z = np.array([0, 0, 1]).reshape((3,))
 
 #########################################################
 # Rotations...
