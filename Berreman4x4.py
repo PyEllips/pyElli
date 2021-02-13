@@ -600,7 +600,7 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
         Kx = nx * np.sin(Phi)
         return Kx
 
@@ -614,7 +614,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         # Not vectorized. Could be?
         # Test type(Kz2)
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
         Kz2 = nx**2 - Kx**2
         return np.sqrt(complex(Kz2))
 
@@ -627,7 +627,7 @@ class IsotropicHalfSpace(HalfSpace):
         Returns : angle Phi in radians.
         """
         # May be vectorized when I have time?
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
         sin_Phi = Kx/nx
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
@@ -643,7 +643,7 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : transition matrix L
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[(0, 0)]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
         sin_Phi = Kx/nx
         if abs(sin_Phi) > 1:
             sin_Phi = complex(sin_Phi)
@@ -800,7 +800,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
 
     def get_QWP_thickness(self, lbda=1e-6):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
-        nr = np.real(self.material.getRefractiveIndex(lbda)[(0, 0)])
+        nr = np.real(self.material.getRefractiveIndex(lbda)[0, 0])
         return lbda / (4.*nr)
 
 
