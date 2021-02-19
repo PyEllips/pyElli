@@ -45,7 +45,7 @@ def rotation_Euler(angles):
 
     Note : The inverse rotation is (-r,-n,-p)
     """
-    (p, n, r) = angles
+    (p, n, r) = np.deg2rad(angles)
     c1 = np.cos(p)
     s1 = np.sin(p)
     c2 = np.cos(n)
@@ -94,8 +94,8 @@ def rotation_v_theta(v, theta):
     w = np.array([[0,      -v[2],  v[1]],
                   [v[2],   0,      -v[0]],
                   [-v[1],  v[0],   0]])
-    return np.identity(3) + w * np.sin(theta) \
-        + np.linalg.matrix_power(w, 2) * (1 - np.cos(theta))
+    return np.identity(3) + w * np.sin(np.deg2rad(theta)) \
+        + np.linalg.matrix_power(w, 2) * (1 - np.cos(np.deg2rad(theta)))
 
 
 #########################################################
@@ -379,7 +379,7 @@ class TwistedMaterial(InhomogeneousMaterial):
     angle = None  #  Angle of the twist
     div = None          # Number of slices
 
-    def __init__(self, material=None, d=4e-6, angle=sc.pi/2, div=25):
+    def __init__(self, material=None, d=4e-6, angle=90, div=25):
         """Creates a layer with a twisted material.
 
         'material' : material for the twisted layer
@@ -397,7 +397,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         """
         self.setThickness(d)
         self.setMaterial(material)
-        self.setAngle(angle)
+        self.setAngle(np.deg2rad(angle))
         self.setDivision(div)
 
     def setDivision(self, div):
