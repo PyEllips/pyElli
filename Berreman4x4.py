@@ -277,10 +277,13 @@ class Material:
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        epsilon = self.rotationMatrix @ np.diag([self.law_x.getDielectric(lbda),
-                                                 self.law_y.getDielectric(lbda),
-                                                 self.law_z.getDielectric(lbda)]) \
-            @ self.rotationMatrix.T
+        epsilon = np.zeros((len(lbda), 3, 3), dtype=complex)
+
+        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
+        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
+        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
+
+        epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
         return epsilon
 
     def getRefractiveIndex(self, lbda):
@@ -448,16 +451,19 @@ def buildDeltaMatrix(Kx, eps):
 
     Returns : Delta 4x4 matrix, generator of infinitesimal translations
     """
-    return np.array(
-        [[-Kx * eps[2, 0] / eps[2, 2], -Kx * eps[2, 1] / eps[2, 2],
-          0, 1 - Kx**2 / eps[2, 2]],
-         [0, 0, -1, 0],
-         [eps[1, 2] * eps[2, 0] / eps[2, 2] - eps[1, 0],
-          Kx**2 - eps[1, 1] + eps[1, 2] * eps[2, 1] / eps[2, 2],
-          0, Kx * eps[1, 2] / eps[2, 2]],
-         [eps[0, 0] - eps[0, 2] * eps[2, 0] / eps[2, 2],
-          eps[0, 1] - eps[0, 2] * eps[2, 1] / eps[2, 2],
-          0, -Kx * eps[0, 2] / eps[2, 2]]])
+    i = len(Kx)
+    Delta = np.array(
+        [[-Kx * eps[:, 2, 0] / eps[:, 2, 2], -Kx * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), np.tile(1, i) - Kx**2 / eps[:, 2, 2]],
+         [np.tile(0, i), np.tile(0, i), np.tile(-1, i), np.tile(0, i)],
+         [eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
+          Kx**2 - eps[:, 1, 1] + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), Kx * eps[:, 1, 2] / eps[:, 2, 2]],
+         [eps[:, 0, 0] - eps[:, 0, 2] * eps[:, 2, 0] / eps[:, 2, 2],
+          eps[:, 0, 1] - eps[:, 0, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), -Kx * eps[:, 0, 2] / eps[:, 2, 2]]])
+    Delta = np.moveaxis(Delta, 2, 0)
+    return Delta
 
 
 #########################################################
@@ -489,7 +495,7 @@ def hs_propagator(Delta, h, k0, method="linear"):
 
 def hs_propagator_lin(Delta, h, k0):
     """Returns propagator with linear approximation."""
-    P_hs_lin = np.identity(4) + 1j * h * k0 * Delta
+    P_hs_lin = np.identity(4) + 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
     return P_hs_lin
 
 
@@ -500,7 +506,8 @@ def hs_propagator_Pade(Delta, h, k0):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    P_hs_Pade = scipy.linalg.expm(1j * h * k0 * Delta)
+    P_hs_Pade = [scipy.linalg.expm(mat) for mat in
+                 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)]
     return P_hs_Pade
 
 
@@ -537,34 +544,38 @@ class HalfSpace:
         """
         epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
-        q, Psi = scipy.linalg.eig(Delta)
+        Psi_out = np.ones_like(Delta)
 
-        # Sort according to z propagation direction, highest Re(q) first
-        i = np.argsort(-np.real(q))
-        q, Psi = q[i], Psi[:, i]  #  Result should be (+,+,-,-)
-        # For each direction, sort according to Ey component, highest Ey first
-        i1 = np.argsort(-np.abs(Psi[1, :2]))
-        i2 = 2 + np.argsort(-np.abs(Psi[1, 2:]))
-        i = np.hstack((i1, i2))  #  Result should be (s+,p+,s-,p-)
-        # Reorder
-        i[[1, 2]] = i[[2, 1]]
-        q, Psi = q[i], Psi[:, i]  #  Result should be(s+,s-,p+,p-)
+        for idx in range(Delta.shape[0]):
+            q, Psi = scipy.linalg.eig(Delta[idx])
 
-        # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
-        E = np.hstack((Psi[1, :2], Psi[0, 2:]))
-        nE = np.abs(E)
-        c = np.ones_like(E)
-        i = (nE != 0.0)
-        c[i] = E[i]/nE[i]
-        Psi = Psi * c
-        # Normalize so that Ey = c1 + c2, analog to Ey = Eis + Ers
-        # For an isotropic half-space, this should return the same matrix
-        # as IsotropicHalfSpace
-        c = Psi[1, 0] + Psi[1, 1]
-        if abs(c) == 0:
-            c = 1.
-        Psi = 2 * Psi / c
-        return Psi
+            # Sort according to z propagation direction, highest Re(q) first
+            i = np.argsort(-np.real(q))
+            q, Psi = q[i], Psi[:, i]  #  Result should be (+,+,-,-)
+            # For each direction, sort according to Ey component, highest Ey first
+            i1 = np.argsort(-np.abs(Psi[1, :2]))
+            i2 = 2 + np.argsort(-np.abs(Psi[1, 2:]))
+            i = np.hstack((i1, i2))  #  Result should be (s+,p+,s-,p-)
+            # Reorder
+            i[[1, 2]] = i[[2, 1]]
+            q, Psi = q[i], Psi[:, i]  #  Result should be(s+,s-,p+,p-)
+
+            # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
+            E = np.hstack((Psi[1, :2], Psi[0, 2:]))
+            nE = np.abs(E)
+            c = np.ones_like(E)
+            i = (nE != 0.0)
+            c[i] = E[i]/nE[i]
+            Psi = Psi * c
+            # Normalize so that Ey = c1 + c2, analog to Ey = Eis + Ers
+            # For an isotropic half-space, this should return the same matrix
+            # as IsotropicHalfSpace
+            c = Psi[1, 0] + Psi[1, 1]
+            if abs(c) == 0:
+                c = 1.
+            Psi_out[idx] = 2 * Psi / c
+
+        return Psi_out
 
 
 class IsotropicHalfSpace(HalfSpace):
@@ -602,7 +613,7 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         Kx = nx * np.sin(Phi)
         return Kx
 
@@ -616,7 +627,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         # Not vectorized. Could be?
         # Test type(Kz2)
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         Kz2 = nx**2 - Kx**2
         return np.sqrt(complex(Kz2))
 
@@ -629,10 +640,8 @@ class IsotropicHalfSpace(HalfSpace):
         Returns : angle Phi in radians.
         """
         # May be vectorized when I have time?
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         sin_Phi = Kx/nx
-        if abs(sin_Phi) > 1:
-            sin_Phi = complex(sin_Phi)
         Phi = np.arcsin(sin_Phi)
         return Phi
 
@@ -645,23 +654,56 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : transition matrix L
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         sin_Phi = Kx/nx
-        if abs(sin_Phi) > 1:
-            sin_Phi = complex(sin_Phi)
         cos_Phi = np.sqrt(1 - sin_Phi**2)
+        i = len(nx)
         if inv:
-            return 0.5 * np.array(
-                [[0, 1, -1/(nx*cos_Phi),  0],
-                 [0, 1,  1/(nx*cos_Phi),  0],
-                 [1/cos_Phi, 0,  0,  1/nx],
-                 [1/cos_Phi, 0,  0, -1/nx]])
+            L = np.tile(np.array([[0, 1, 0, 0],
+                                  [0, 1, 0, 0],
+                                  [0, 0, 0, 0],
+                                  [0, 0, 0, 0]], dtype=complex), (i, 1, 1))
+            L += np.tile(np.array([[0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [1, 0, 0, 0],
+                                   [1, 0, 0, 0]]), (i, 1, 1)) / cos_Phi[:, None, None]
+            L += np.tile(np.array([[0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 0, 1],
+                                   [0, 0, 0, -1]]), (i, 1, 1)) / nx[:, None, None]
+            L += np.tile(np.array([[0, 0, -1, 0],
+                                   [0, 0, 1, 0],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 0, 0]]), (i, 1, 1)) / cos_Phi[:, None, None] / nx[:, None, None]
+            return 0.5 * L
+            #   np.array(
+            # [[0, 1, -1/(nx*cos_Phi),  0],
+            #  [0, 1,  1/(nx*cos_Phi),  0],
+            #  [1/cos_Phi, 0,  0,  1/nx],
+            #  [1/cos_Phi, 0,  0, -1/nx]])
         else:
-            return np.array(
-                [[0, 0, cos_Phi, cos_Phi],
-                 [1, 1, 0, 0],
-                 [-nx*cos_Phi, nx*cos_Phi, 0, 0],
-                 [0, 0, nx, -nx]])
+            L = np.tile(np.array([[0, 0, 0, 0],
+                                  [1, 1, 0, 0],
+                                  [0, 0, 0, 0],
+                                  [0, 0, 0, 0]], dtype=complex), (i, 1, 1))
+            L += np.tile(np.array([[0, 0, 1, 1],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None]
+            L += np.tile(np.array([[0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [0, 0, 1, -1]]), (i, 1, 1)) * nx[:, None, None]
+            L += np.tile(np.array([[0, 0, 0, 0],
+                                   [0, 0, 0, 0],
+                                   [-1, 1, 0, 0],
+                                   [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None] * nx[:, None, None]
+            return L
+            # np.array(
+            # [[0, 0, cos_Phi, cos_Phi],
+            #  [1, 1, 0, 0],
+            #  [-nx*cos_Phi, nx*cos_Phi, 0, 0],
+            #  [0, 0, nx, -nx]])
 
 
 #########################################################
@@ -1211,16 +1253,16 @@ class Structure:
         """
         T = self.getStructureMatrix(Kx, k0)
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
-        T_it = T[2::-2, 2::-2]
+        T_it = T[:, 2::-2, 2::-2]
         # Calculate the inverse and make sure it is a matrix.
         T_ti = np.linalg.inv(T_it)
 
         # Extraction of T_rt out of T. "3::-2" means integers {3,1}.
-        T_rt = T[3::-2, 2::-2]
+        T_rt = T[:, 3::-2, 2::-2]
 
         # Then we have T_ri = T_rt * T_ti
-        T_ri = np.dot(T_rt, T_ti)
-        return (T_ri, T_ti)
+        T_ri = T_rt @ T_ti
+        return T_ri, T_ti
 
     def getPowerTransmissionCorrection(self, Kx, k0):
         """Returns correction coefficient for power transmission
@@ -1266,18 +1308,11 @@ class Evaluation:
         self.structure = structure
         self.lbda_list = lbda_list
         self.circular = circular
+        k0 = 2 * sc.pi / lbda_list / 1e-9
+        Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
 
-        self.T_ri = np.zeros((len(lbda_list), 2, 2), dtype=np.complex)
-        self.T_ti = np.zeros((len(lbda_list), 2, 2), dtype=np.complex)
-        self.power_corr = np.zeros((len(lbda_list), ))
-
-        for i in range(len(lbda_list)):
-            k0 = 2 * sc.pi / lbda_list[i] / 1e-9
-            Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
-
-            (self.T_ri[i], self.T_ti[i]) = structure.getJones(Kx, k0)
-            # self.power_corr[i] = structure.getPowerTransmissionCorrection(Kx, k0)
-
+        self.T_ri, self.T_ti = structure.getJones(Kx, k0)
+        # self.power_corr = structure.getPowerTransmissionCorrection(Kx, k0)
         # Compute additional data...
         self.R = np.abs(self.T_ri)**2
         self.T = np.abs(self.T_ti)**2  # * self.power_corr
@@ -1325,11 +1360,9 @@ class Evaluation:
         Note: Convention for ellipsometry is used.
         See Fujiwara, (4.4), (4.6), (6.14), (6.15)
         """
-        r_ss = J[..., 1, 1]           # Extract 'r_ss' and complement shape for
-        r_ss = np.array(r_ss)    # element-wise division (the second line
-        r_ss.shape += (1, 1)  #  works around a numpy bug)
-        S = J / r_ss  #  Normalize matrix
-        S[..., 0, :] = -S[..., 0, :]  #  Change to ellipsometry sign convention
+        r_ss = J[..., 1, 1]           # Extract 'r_ss'
+        S = J / r_ss[:, None, None]  # Normalize matrix
+        S[..., 0, :] = -S[..., 0, :]  # Change to ellipsometry sign convention
 
         Psi = np.arctan(np.abs(S))*180/sc.pi
         Delta = -np.angle(S, deg=True)
