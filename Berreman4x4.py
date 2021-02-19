@@ -1240,9 +1240,9 @@ class Structure:
         else:
             return None
 
-    def evaluate(self, Kx, k0=1e6):
+    def evaluate(self, lbda_list, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(self, Kx, k0)
+        return Evaluation(self, lbda_list, theta_i)
 
 
 #########################################################
@@ -1252,152 +1252,43 @@ class Evaluation:
     """Record of a simulation result."""
 
     structure = None        # Simulated structure
-    Kx = None               # Reduced incidence wavenumber
-    k0 = None               # Wavenumber
+    lbda_list = None        # Wavelength List for evaluation
     T_ri = None             # Jones matrix for reflection
     T_ti = None             # Jones matrix for transmission
     power_corr = None       # Power correction coefficient for transmission
 
-    def __init__(self, structure, Kx, k0=1e-6):
-        """Record the result of the requested simulation."""
+    def __init__(self, structure, lbda_list, phi_i, circular=False):
+        """Record the result of the requested simulation for a given list of
+        Lambda values and an incidence angle phi_i.
+
+        lbda_list:  np.array of lambda values (nm)
+        phi_i:      incidence angle of the light (deg)
+        """
         self.structure = structure
-        self.Kx = Kx
-        self.k0 = k0
-        (self.T_ri, self.T_ti) = structure.getJones(Kx, k0)
-        self.power_corr = structure.getPowerTransmissionCorrection(Kx, k0)
+        self.lbda_list = lbda_list
+        self.circular = circular
 
+        self.T_ri = np.zeros((len(lbda_list), 2, 2), dtype=np.complex)
+        self.T_ti = np.zeros((len(lbda_list), 2, 2), dtype=np.complex)
+        self.power_corr = np.zeros((len(lbda_list), ))
 
-#########################################################
-# Work with Jones matrices...
+        for i in range(len(lbda_list)):
+            k0 = 2 * sc.pi / lbda_list[i] / 1e-9
+            Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
 
-class _MonitorChangers:
-    """Provides ability to monitor the changes of an object.
-
-    Usage : MonitoredClass = _MonitorChangers.monitorized(ClassToMonitor)
-
-    * MonitoredClass is a monitorized copy of ClassToMonitor
-
-    ClassToMonitor should expose two attributes:
-
-    * 'changed' : a boolean flag that becomes True when a change happens.
-      It can be reset to False by other methods of the class, typically in
-      method update()
-
-    * '_changer_methods' : a list of method names that are declared as
-      changers. They will be wrapped so that every call to one of these
-      methods will turn the 'change' flag to True.
-    """
-
-    @staticmethod
-    def proxy_decorator(method):
-        """Return the wrapped 'method'."""
-
-        def wrapped_method(self, *args, **kw):
-            self.changed = True
-            return method(self, *args, **kw)
-        wrapped_method.__name__ = method.__name__
-        return wrapped_method
-
-    @classmethod
-    def monitorized(self, cls):
-        """Return monitorized class after wrapping 'cls._changer_methods'."""
-        # Create new method dictionary and wrap some methods
-        new_dict = cls.__dict__.copy()
-        for method_name in cls._changer_methods:
-            method = getattr(cls, method_name)
-            new_dict[method_name] = self.proxy_decorator(method)
-        # Return new class
-        return type("Monitorized_" + cls.__name__, cls.__bases__, new_dict)
-
-
-@_MonitorChangers.monitorized
-class DataList(list):
-    """A class for manipulating the simulation results.
-
-    Note : The functions getCircularJones() and getEllipsometryParameters()
-    are defined as class methods so that they can be called both from instances
-    ans from the class itself.
-    """
-
-    # Transformation matrix from the (s,p) basis to the (L,R) basis...
-    C = 1 / np.sqrt(2) * np.array([[1, 1], [1j, -1j]])
-    D = 1 / np.sqrt(2) * np.array([[1, 1], [-1j, 1j]])
-    invC = np.linalg.inv(C)
-    invD = np.linalg.inv(D)
-
-    # For monitoring changes (used by the decorator)
-    _changer_methods = ["__setitem__", "__delitem__", "pop", "append",
-                        "extend", "insert", "remove", "__iadd__"]
-    changed = False
-
-    # Parameters for table update...
-    _evaluation_keys = ("Kx", "k0", "T_ri", "T_ti", "power_corr")
-    compute_power_transmission = False
-    compute_circular = False
-    compute_ellipsometry = False
-
-    # Initialization...
-    def __init__(self, *evaluation_seq):
-        """Build a data storage from Evaluation objects."""
-        list.__init__(self, *evaluation_seq)
-        self.changed = True
-        self.compute_power_transmission = False
-        self.compute_circular = False
-        self.compute_ellipsometry = False
-
-    def update(self):
-        """Build the data arrays"""
-        # Build arrays from the Evaluation objects...
-        keys = self._evaluation_keys
-        d = self._extract_list(keys, self)
-        for k in keys:
-            setattr(self, k, np.array(d[k]))
-
-        # Rename some data...
-        (self.r, self.t) = (self.T_ri, self.T_ti)
+            (self.T_ri[i], self.T_ti[i]) = structure.getJones(Kx, k0)
+            # self.power_corr[i] = structure.getPowerTransmissionCorrection(Kx, k0)
 
         # Compute additional data...
-        self.R = abs(self.T_ri)**2
+        self.R = np.abs(self.T_ri)**2
+        self.T = np.abs(self.T_ti)**2  # * self.power_corr
 
-        if self.compute_power_transmission:
-            self.T = abs(self.T_ti)**2 * self.power_corr[:, np.newaxis, np.newaxis]
+        if self.circular:
+            self.getCircularJones()
 
-        if self.compute_circular:
-            self.Tc_ri = self.getCircularJones(self.T_ri, "reflection")
-            self.Rc = abs(self.Tc_ri)**2
-            self.Tc_ti = self.getCircularJones(self.T_ti, "transmission")
-            self.Tc = abs(self.Tc_ti)**2 * self.power_corr[:, np.newaxis, np.newaxis]
+        (self.Psi, self.Delta) = self.getEllipsometryParameters(self.T_ri)
 
-        if self.compute_ellipsometry:
-            (self.Psi, self.Delta) = self.getEllipsometryParameters(self.T_ri)
-
-        # Reset flag...
-        self.changed = False
-
-    @classmethod
-    def _extract_list(cls, keys, li):
-        """Recursive extraction of the 'keys' from objects in li 'list'.
-
-        'li' : List of objects (the list may be nested to any level).
-        'keys' : Sequence of strings naming the object attributes to extract
-
-        Returns : Dictionary with the extracted keys, reproducing the structure
-                  of the original list.
-        """
-        d = {k: [] for k in keys}
-        if isinstance(li[0], list):
-            for ll in li:
-                dd = cls._extract_list(keys, ll)
-                for k in keys:
-                    d[k].append(dd[k])
-        else:
-            for ob in li:
-                for k in keys:
-                    d[k].append(getattr(ob, k))
-        return d
-
-    @classmethod
-    def getCircularJones(cls, J, direction="reflection"):
+    def getCircularJones(self):
         """Return the Jones matrix for the circular polarization basis (L,R)
 
         The Jones matrices for reflection and transmission (T_ri, T_ti) are
@@ -1406,13 +1297,20 @@ class DataList(list):
         The Jones matrices in the (L, R) circular polarizations are
         Tc_ri = D⁻¹ T_ri C   and   Tc_ti = C⁻¹ T_ti C
         """
-        if direction[0] == 'r':
-            return np.einsum('ij,...jk,kl->...il', cls.invD, J, cls.C)
-        if direction[0] == 't':
-            return np.einsum('ij,...jk,kl->...il', cls.invC, J, cls.C)
 
-    @classmethod
-    def getEllipsometryParameters(cls, J):
+        # Transformation matrix from the (s,p) basis to the (L,R) basis...
+        C = 1 / np.sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        D = 1 / np.sqrt(2) * np.array([[1, 1], [-1j, 1j]])
+        invC = np.linalg.inv(C)
+        invD = np.linalg.inv(D)
+
+        for i in range(len(self.T_ri)):
+            self.Tc_ri[i] = np.einsum('ij,...jk,kl->...il', invD, self.T_ri[i], C)
+            self.Rc[i] = np.abs(self.Tc_ri[i])**2
+            self.Tc_ti[i] = np.einsum('ij,...jk,kl->...il', invC, self.T_ti[i], C)
+            self.Tc[i] = np.abs(self.Tc_ti[i])**2
+
+    def getEllipsometryParameters(self, J):
         """Calculate the ellipsomerty parameters from Jones matrix 'J'.
 
         The Jones matrix for reflexion is 'T_ri', with shape [...,2,2].
@@ -1458,41 +1356,21 @@ class DataList(list):
         """
         param = name[0]
 
-        # Check if some tables should be activated...
-        power_transmission = param == 'T'
-        circular = len(name) > 1 and name[2] in ['L', 'R']
-        ellipsometry = param in ['Ψ', 'Δ']
-
-        if not self.compute_power_transmission and power_transmission:
-            self.compute_power_transmission = True
-            self.changed = True
-
-        if not self.compute_ellipsometry and ellipsometry:
-            self.compute_ellipsometry = True
-            self.changed = True
-
-        if not self.compute_circular and circular:
-            self.compute_circular = True
-            self.changed = True
-
-        if self.changed:
-            self.update()
-
         # Read the requested indices...
         (i, j) = map(self._polarIndex, name[2:4]) if len(name) > 1 else (0, 0)
 
         # Select the requested array...
         if param == 'r':
-            M = self.Tc_ri if circular else self.T_ri
+            M = self.Tc_ri if self.circular else self.T_ri
         elif param == 't':
-            M = self.Tc_ti if circular else self.T_ti
+            M = self.Tc_ti if self.circular else self.T_ti
         elif param == 'R':
-            M = self.Rc if circular else self.R
+            M = self.Rc if self.circular else self.R
         elif param == 'T':
-            M = self.Tc if circular else self.T
-        elif param == 'Ψ':
+            M = self.Tc if self.circular else self.T
+        elif param == 'Ψ' or param == 'psi':
             M = self.Psi
-        elif param == 'Δ':
+        elif param == 'Δ' or param == 'delta':
             M = self.Delta
 
         # Return the requested data...
