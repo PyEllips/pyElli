@@ -1286,7 +1286,7 @@ class Evaluation:
         if self.circular:
             self.getCircularJones()
 
-        (self.Psi, self.Delta) = self.getEllipsometryParameters(self.T_ri)
+        (self.Psi, self.Delta, self.Mueller) = self.getEllipsometryParameters(self.T_ri)
 
     def getCircularJones(self):
         """Return the Jones matrix for the circular polarization basis (L,R)
@@ -1334,7 +1334,19 @@ class Evaluation:
 
         Psi = np.arctan(np.abs(S))*180/sc.pi
         Delta = -np.angle(S, deg=True)
-        return (Psi, Delta)
+
+        A = np.array([[1,  0,    0,  1],
+                      [1,  0,    0, -1],
+                      [0,  1,    1,  0],
+                      [0,  1j, -1j,  0]])
+
+        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', J, np.conjugate(J))
+                         .reshape(J.shape[0], 4, 4) @ A.T)
+
+        m11 = Mueller[:, 0, 0]
+        Mueller = Mueller / m11[:, None, None]
+
+        return (Psi, Delta, Mueller)
 
     def get(self, name):
         """Return the data for the requested coefficient 'name'.
