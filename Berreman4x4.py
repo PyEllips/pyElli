@@ -418,7 +418,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         """Defines the thickness of this TwistedMaterial."""
         self.d = d
 
-    def getTensor(self, z, lbda=None):
+    def getTensor(self, z, lbda):
         """Returns permittivity tensor matrix for position 'z'."""
         epsilon = self.material.getTensor(lbda)
         R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
@@ -524,7 +524,7 @@ class HalfSpace:
         """Defines the material for this half-space."""
         self.material = material
 
-    def getTransitionMatrix(self, Kx, k0=1e6):
+    def getTransitionMatrix(self, Kx, k0):
         """Returns transition matrix L.
 
         'Kx' : reduced wavenumber in the x direction, Kx = kx/k0
@@ -589,7 +589,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         self.setMaterial(material)
 
-    def get_Kx_from_Phi(self, Phi, k0=1e6):
+    def get_Kx_from_Phi(self, Phi, k0):
         """Returns the value of Kx.
 
         'Phi' : incidence angle of the wave (radians)
@@ -606,7 +606,7 @@ class IsotropicHalfSpace(HalfSpace):
         Kx = nx * np.sin(Phi)
         return Kx
 
-    def get_Kz_from_Kx(self, Kx, k0=1e6):
+    def get_Kz_from_Kx(self, Kx, k0):
         """Returns the value of Kz in the half-space, function of Kx
 
         'Kx' : Reduced wavenumber,      Kx = kx/k0 = n sin(Φ)
@@ -620,7 +620,7 @@ class IsotropicHalfSpace(HalfSpace):
         Kz2 = nx**2 - Kx**2
         return np.sqrt(complex(Kz2))
 
-    def get_Phi_from_Kx(self, Kx, k0=1e6):
+    def get_Phi_from_Kx(self, Kx, k0):
         """Returns the value of angle Phi according to the value of Kx.
 
         'Kx' : Reduced wavenumber,      Kx = kx/k0 = n sin(Φ)
@@ -636,7 +636,7 @@ class IsotropicHalfSpace(HalfSpace):
         Phi = np.arcsin(sin_Phi)
         return Phi
 
-    def getTransitionMatrix(self, Kx, k0=1e6, inv=False):
+    def getTransitionMatrix(self, Kx, k0, inv=False):
         """Returns transition matrix L.
 
         'Kx' : Reduced wavenumber
@@ -742,14 +742,14 @@ class HomogeneousLayer(MaterialLayer):
             raise NotImplementedError("Method " + hs_method +
                                       " not available for propagator calculation")
 
-    def getPermittivityProfile(self, lbda=1e-6):
+    def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
         Returns a list containing one tuple: [(h, epsilon)]
         """
         return [(self.h, self.material.getTensor(lbda))]
 
-    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+    def getPropagationMatrix(self, Kx, k0, inv=False):
         """Returns propagation matrix P
 
         Psi(z+h) = P * Psi(z)
@@ -767,7 +767,7 @@ class HomogeneousLayer(MaterialLayer):
             h = self.h
         return self.hs_propagator(Delta, h, k0)
 
-    def getDeltaMatrix(self, Kx, k0=1e6):
+    def getDeltaMatrix(self, Kx, k0):
         """Returns Delta matrix of the homogeneous layer."""
         epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
@@ -873,7 +873,7 @@ class InhomogeneousLayer(MaterialLayer):
                 raise NotImplementedError("Method " + hs_method +
                                           " not available for symplectic evaluation")
 
-    def getPermittivityProfile(self, lbda=1e-6):
+    def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
@@ -885,7 +885,7 @@ class InhomogeneousLayer(MaterialLayer):
         tensor = [self.material.getTensor(z, lbda) for z in zmid]
         return list(zip(h, tensor))
 
-    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+    def getPropagationMatrix(self, Kx, k0, inv=False):
         """Returns propagation matrix P."""
         z = self.material.getSlices()
         if inv:
@@ -896,7 +896,7 @@ class InhomogeneousLayer(MaterialLayer):
             P_tot = P @ P_tot
         return P_tot
 
-    def getSlicePropagator_mid(self, z2, z1, Kx, k0=1e6):
+    def getSlicePropagator_mid(self, z2, z1, Kx, k0):
         """Returns propagation matrix P(z2,z1) for a thin slice.
 
         Evaluates the Delta Matrix at midpoint between z1 and z2. The
@@ -919,7 +919,7 @@ class InhomogeneousLayer(MaterialLayer):
     t2 = 1./2
     t3 = 1./2 - (s-1)/(2*(2-s))
 
-    def getSlicePropagator_sym(self, z2, z1, Kx, k0=1e6):
+    def getSlicePropagator_sym(self, z2, z1, Kx, k0):
         """Returns propagation matrix P_sym(z2,z1) for a thin slice.
 
         Uses Z. Lu's symplectic method, leading to a global error in O(h^4).
@@ -983,7 +983,7 @@ class RepeatedLayers(Layer):
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda=1e-6):
+    def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
         Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
@@ -995,7 +995,7 @@ class RepeatedLayers(Layer):
             before = []
         return before + self.n * layers + layers[:self.after]
 
-    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+    def getPropagationMatrix(self, Kx, k0, inv=False):
         """Returns propagation matrix P for the repeated layers."""
         P_list = [L.getPropagationMatrix(Kx, k0, inv) for L in self.layers]
         P_period = P_before = np.identity(4)
@@ -1077,7 +1077,7 @@ class Structure:
         back = (float('inf'), self.backHalfSpace.material.getTensor(lbda))
         return sum([[front], layers, [back]], [])
 
-    def getPropagationMatrix(self, Kx, k0=1e6, inv=False):
+    def getPropagationMatrix(self, Kx, k0, inv=False):
         """Gives the propagation matrix of the structure.
 
         'Kx' : reduced wavenumber along x
@@ -1100,7 +1100,7 @@ class Structure:
             P_tot = P @ P_tot
         return P_tot
 
-    def getIndexProfile(self, lbda=1e-6, v=e_x):
+    def getIndexProfile(self, lbda, v=e_x):
         """Returns refractive index profile.
 
         'v' : Unit vector, direction of evaluation of the refraction index.
@@ -1112,7 +1112,7 @@ class Structure:
         n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
-    def drawStructure(self, lbda=1e-6, method="graph", margin=0.15):
+    def drawStructure(self, lbda, method="graph", margin=0.15):
         """Draw the structure.
 
         'method' : 'graph' or 'section'
@@ -1176,7 +1176,7 @@ class Structure:
         colbar.ax.set_xlabel("n'", position=(3, 0))
         return ax
 
-    def getStructureMatrix(self, Kx, k0=1e6):
+    def getStructureMatrix(self, Kx, k0):
         """Returns the transfer matrix T of the structure.
 
         [Eis, Ers, Eip, Erp].T = T * [c1, c2, c3, c4].T
@@ -1188,7 +1188,7 @@ class Structure:
         T = ILf @ P @ Lb
         return T
 
-    def getJones(self, Kx, k0=1e6):
+    def getJones(self, Kx, k0):
         """Returns the Jones matrices.
 
         Returns : tuple (T_ri, T_ti)
@@ -1223,7 +1223,7 @@ class Structure:
         T_ri = np.dot(T_rt, T_ti)
         return (T_ri, T_ti)
 
-    def getPowerTransmissionCorrection(self, Kx, k0=1e6):
+    def getPowerTransmissionCorrection(self, Kx, k0):
         """Returns correction coefficient for power transmission
 
         The power transmission coefficient is the ratio of the 'z' components
