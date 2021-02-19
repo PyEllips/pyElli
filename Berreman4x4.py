@@ -18,7 +18,7 @@ import matplotlib.pyplot
 #########################################################
 # Constants...
 
-e_x = np.array([1, 0, 0]).reshape((3,))  #  base vectors
+e_x = np.array([1, 0, 0]).reshape((3,))  # base vectors
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
@@ -376,12 +376,12 @@ class TwistedMaterial(InhomogeneousMaterial):
     Used to describe twisted nematic or cholesteric liquid crystal for example.
     """
 
-    material = None  #  Material for the twisted layer
+    material = None  # Material for the twisted layer
     d = None            # Thickness of the layer
-    angle = None  #  Angle of the twist
+    angle = None  # Angle of the twist
     div = None          # Number of slices
 
-    def __init__(self, material=None, d=4e-6, angle=90, div=25):
+    def __init__(self, material, d, angle=90, div=25):
         """Creates a layer with a twisted material.
 
         'material' : material for the twisted layer
@@ -416,7 +416,7 @@ class TwistedMaterial(InhomogeneousMaterial):
 
     def setThickness(self, d):
         """Defines the thickness of this TwistedMaterial."""
-        self.d = d
+        self.d = d * 1e-9
 
     def getTensor(self, z, lbda):
         """Returns permittivity tensor matrix for position 'z'."""
@@ -514,9 +514,9 @@ class HalfSpace:
     * getTransitionMatrix(k0, Kx) : return transition matrix
     """
 
-    material = None  #  Material object
+    material = None  # Material object
 
-    def __init__(self, material=None):
+    def __init__(self, material):
         """Create a homogeneous half-space of the given material."""
         self.setMaterial(material)
 
@@ -582,7 +582,7 @@ class IsotropicHalfSpace(HalfSpace):
       oriented by y). The angle of the wave traveling to the left is '-Φ'.
     """
 
-    def __init__(self, material=None):
+    def __init__(self, material):
         """Create a HalfSpace of the given material.
 
         'material' : IsotropicMaterial
@@ -711,12 +711,12 @@ class MaterialLayer(Layer):
 class HomogeneousLayer(MaterialLayer):
     """Homogeneous layer of dielectric material."""
 
-    h = None  #  Thickness of the layer
+    h = None  # Thickness of the layer
     material = None         # Material object
     hs_propagator = None    # Function used for the propagator calculation
 
-    def __init__(self, material=None, h=1e-6, hs_method="Padé"):
-        """New homogeneous layer of material 'material', with thickness 'h' in nm
+    def __init__(self, material, h, hs_method="Padé"):
+        """New homogeneous layer of material 'material', with thickness 'h'
 
         'hs_method': see setMethod()
         """
@@ -782,7 +782,7 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
     Provides function get_QWP_thickness(lbda) returning the thickness of a
     Quarter Wave Plate at wavelength 'lbda'.
 
-    Can be created with parameter h = ("QWP", 1e-6), see method setThickness().
+    Can be created with parameter h = ("QWP", 1000), see method setThickness().
     """
 
     def setThickness(self, h):
@@ -795,14 +795,13 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
         if isinstance(h, tuple):
             (name, lbda) = h
             if name == "QWP":
-                h = self.get_QWP_thickness(lbda)
+                h = self.get_QWP_thickness(lbda * 1e-9)
             else:
                 raise ValueError("Thickness not correctly defined.")
-        self.h = h
+        self.h = h * 1e-9
 
     def get_QWP_thickness(self, lbda):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
-        lbda = lbda * 1e-9
         nr = np.real(self.material.getRefractiveIndex(lbda)[0, 0])
         return lbda / (4.*nr)
 
@@ -816,7 +815,7 @@ class InhomogeneousLayer(MaterialLayer):
     Must be fabricated with an InhomogemeousMaterial object.
     """
 
-    material = None  #  InhomogemeousMaterial object
+    material = None  # InhomogemeousMaterial object
 
     # Method used to decompose the inhomogeneous layer into homogeneous slabs:
     getSlicePropagator = None
@@ -1031,7 +1030,7 @@ class Structure:
     """
     frontHalfSpace = None
     backHalfSpace = None
-    layers = None  #  list of layers
+    layers = None  # list of layers
 
     def __init__(self, front=None, layers=None, back=None):
         """Creates an empty structure.
@@ -1040,7 +1039,7 @@ class Structure:
         'layers' : layer list, see setLayers()
         'back' : back half space, see setBackHalfSpace()
         """
-        self.layers = []  #  list of layers
+        self.layers = []  # list of layers
         if front is not None:
             self.setFrontHalfSpace(front)
         if layers is not None:
@@ -1112,7 +1111,7 @@ class Structure:
         n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
-    def drawStructure(self, lbda, method="graph", margin=0.15):
+    def drawStructure(self, lbda=1000, method="graph", margin=0.15):
         """Draw the structure.
 
         'method' : 'graph' or 'section'
@@ -1286,7 +1285,7 @@ class Evaluation:
         if self.circular:
             self.getCircularJones()
 
-        (self.Psi, self.Delta, self.Mueller) = self.getEllipsometryParameters(self.T_ri)
+        self.Psi, self.Delta, self.Mueller = self.getEllipsometryParameters(self.T_ri)
 
     def getCircularJones(self):
         """Return the Jones matrix for the circular polarization basis (L,R)
@@ -1320,7 +1319,7 @@ class Evaluation:
                        [ tan(Ψ_sp)*exp(-i Δ_sp) ,           1            ]]
 
         The returned arrays are the angles in degrees, in a tuple
-           Psi = [[ Ψ_pp, Ψ_ps ]        Delta = [[ Δ_pp, Δ_ps ]
+           Psi = [[ Ψ_pp, Ψ_ps ]        Delta = [[ Δ_pp, Δ_ps ]
                   [ Ψ_sp, 45°  ]],               [ Δ_sp,  0°  ]].
 
         Note: Convention for ellipsometry is used.
@@ -1346,7 +1345,7 @@ class Evaluation:
         m11 = Mueller[:, 0, 0]
         Mueller = Mueller / m11[:, None, None]
 
-        return (Psi, Delta, Mueller)
+        return Psi, Delta, Mueller
 
     def get(self, name):
         """Return the data for the requested coefficient 'name'.
