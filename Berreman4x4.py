@@ -124,10 +124,12 @@ class DispersionLaw:
 
     def getDielectric(self, lbda):
         """Returns the dielectric constant for wavelength 'lbda'."""
+        lbda = lbda * 1e9
         return self.dielectricFunction(lbda)
 
     def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda'."""
+        lbda = lbda * 1e9
         return np.sqrt(self.dielectricFunction(lbda))
 
 
@@ -714,7 +716,7 @@ class HomogeneousLayer(MaterialLayer):
     hs_propagator = None    # Function used for the propagator calculation
 
     def __init__(self, material=None, h=1e-6, hs_method="Padé"):
-        """New homogeneous layer of material 'material', with thickness 'h'
+        """New homogeneous layer of material 'material', with thickness 'h' in nm
 
         'hs_method': see setMethod()
         """
@@ -724,7 +726,7 @@ class HomogeneousLayer(MaterialLayer):
 
     def setThickness(self, h):
         """Defines the thickness of this homogeneous layer."""
-        self.h = h
+        self.h = h * 1e-9
 
     def setMethod(self, hs_method):
         """Defines how the homogeneous slab propagator is calculated.
@@ -798,8 +800,9 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
                 raise ValueError("Thickness not correctly defined.")
         self.h = h
 
-    def get_QWP_thickness(self, lbda=1e-6):
+    def get_QWP_thickness(self, lbda):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
+        lbda = lbda * 1e-9
         nr = np.real(self.material.getRefractiveIndex(lbda)[0, 0])
         return lbda / (4.*nr)
 
@@ -1066,8 +1069,9 @@ class Structure:
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda=1e-6):
+    def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile."""
+        lbda = lbda * 1e-9
         layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
         front = (float('inf'), self.frontHalfSpace.material.getTensor(lbda))
         back = (float('inf'), self.backHalfSpace.material.getTensor(lbda))
@@ -1102,6 +1106,7 @@ class Structure:
         'v' : Unit vector, direction of evaluation of the refraction index.
               Default value is v = e_x.
         """
+        lbda = lbda * 1e-9
         profile = self.getPermittivityProfile(lbda)
         (h, epsilon) = list(zip(*profile))  # unzip
         n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
@@ -1114,6 +1119,7 @@ class Structure:
         Returns : Axes object
         """
         # Build index profile
+        lbda = lbda * 1e-9
         profile = self.getIndexProfile(lbda)
         (h, n) = list(zip(*profile))     # unzip
         n = np.array(n)
