@@ -150,6 +150,34 @@ class DispersionLess(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
+class DispersionCauchy(DispersionLaw):
+    """Sellmeier dispersion law equation."""
+
+    def __init__(self, n0=1.5, n1=0, n2=0, k0=0, k1=0, k2=0):
+        """Creates a Cauchy dispersion law.
+
+        Cauchy coefficients:
+        n = [n0, n1, n2]
+        k = [k0, k1, k2]
+
+        n(λ) = n0 + 100 * n1/λ² + 10e7 n2/λ^4
+        k(λ) = k0 + 100 * k1/λ² + 10e7 k2/λ^4
+        """
+        self.n0 = n0
+        self.n1 = n1
+        self.n2 = n2
+        self.k0 = k0
+        self.k1 = k1
+        self.k2 = k2
+
+        def dielectricFunction(lbda):
+            N = self.n0 + 10e2 * self.n1/lbda**2 + 10e7 * self.n2/lbda**4 \
+                + 1j * (self.k0 + 10e2 * self.k1/lbda**2 + 10e7 * self.k2/lbda**4)
+            return N**2
+
+        self.dielectricFunction = dielectricFunction
+
+
 class DispersionSellmeier(DispersionLaw):
     """Sellmeier dispersion law equation."""
 
