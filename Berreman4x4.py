@@ -1320,9 +1320,9 @@ class Structure:
         else:
             return None
 
-    def evaluate(self, lbda_list, theta_i):
+    def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(self, lbda_list, theta_i)
+        return Evaluation(self, lbda, theta_i)
 
 
 #########################################################
@@ -1332,22 +1332,25 @@ class Evaluation:
     """Record of a simulation result."""
 
     structure = None        # Simulated structure
-    lbda_list = None        # Wavelength List for evaluation
+    lbda = None        # Wavelength List for evaluation
     T_ri = None             # Jones matrix for reflection
     T_ti = None             # Jones matrix for transmission
     power_corr = None       # Power correction coefficient for transmission
 
-    def __init__(self, structure, lbda_list, phi_i, circular=False):
+    def __init__(self, structure, lbda, phi_i, circular=False):
         """Record the result of the requested simulation for a given list of
         Lambda values and an incidence angle phi_i.
 
-        lbda_list:  np.array of lambda values (nm)
+        lbda:       Singular wavelength or np.array of values (nm)
         phi_i:      incidence angle of the light (deg)
         """
+        if isinstance(lbda, int) or isinstance(lbda, float):
+            lbda = np.array([lbda])
+
         self.structure = structure
-        self.lbda_list = lbda_list
+        self.lbda = lbda
         self.circular = circular
-        k0 = 2 * sc.pi / lbda_list / 1e-9
+        k0 = 2 * sc.pi / lbda / 1e-9
         Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
 
         self.T_ri, self.T_ti = structure.getJones(Kx, k0)
