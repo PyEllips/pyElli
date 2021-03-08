@@ -15,6 +15,12 @@ import scipy.constants as sc
 import matplotlib
 import matplotlib.pyplot
 
+tfImported = True
+try:
+    import tensorflow as tf
+except ImportError:
+    tfImported = False
+
 #########################################################
 # Constants...
 
@@ -532,8 +538,15 @@ def hs_propagator_Pade(Delta, h, k0):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    P_hs_Pade = [scipy.linalg.expm(mat) for mat in
-                 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)]
+    mats = 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
+
+    if tfImported:
+        t = tf.convert_to_tensor(mats, dtype=tf.complex64)
+        texp = tf.linalg.expm(t)
+        P_hs_Pade = np.array(texp)
+    else:
+        P_hs_Pade = [scipy.linalg.expm(m) for mat in mats]
+
     return P_hs_Pade
 
 
