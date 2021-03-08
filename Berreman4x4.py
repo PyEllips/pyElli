@@ -130,13 +130,13 @@ class DispersionLaw:
 
     def getDielectric(self, lbda):
         """Returns the dielectric constant for wavelength 'lbda'."""
-        lbda = lbda * 1e9
-        return self.dielectricFunction(lbda)
+        lbda_nm = lbda * 1e9
+        return self.dielectricFunction(lbda_nm)
 
     def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda'."""
-        lbda = lbda * 1e9
-        return np.sqrt(self.dielectricFunction(lbda))
+        lbda_nm = lbda * 1e9
+        return np.sqrt(self.dielectricFunction(lbda_nm))
 
 
 class DispersionLess(DispersionLaw):
@@ -545,7 +545,7 @@ def hs_propagator_Pade(Delta, h, k0):
         texp = tf.linalg.expm(t)
         P_hs_Pade = np.array(texp)
     else:
-        P_hs_Pade = [scipy.linalg.expm(m) for mat in mats]
+        P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]
 
     return P_hs_Pade
 
@@ -933,7 +933,7 @@ class InhomogeneousLayer(MaterialLayer):
         The error on the propagator for an inhomogeneous thin slice due to the
         replacement by a homogeneous slice is O(h^3) in the midpoint method and
         O(h^5) in the symplectic method. A Padé approximant of order q gives an
-        approximation of the propagator to order O(h^(2q)). Consequently, q = 3
+        approximation of the propagator to order O(h^(2q)). Consequently, q = 3
         should be a good enough for the syplectic method.
         """
         if evaluation == "midpoint":
@@ -1151,7 +1151,6 @@ class Structure:
 
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile."""
-        lbda = lbda * 1e-9
         layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
         front = (float('inf'), self.frontHalfSpace.material.getTensor(lbda))
         back = (float('inf'), self.backHalfSpace.material.getTensor(lbda))
@@ -1186,7 +1185,6 @@ class Structure:
         'v' : Unit vector, direction of evaluation of the refraction index.
               Default value is v = e_x.
         """
-        lbda = lbda * 1e-9
         profile = self.getPermittivityProfile(lbda)
         (h, epsilon) = list(zip(*profile))  # unzip
         n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
