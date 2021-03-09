@@ -583,38 +583,45 @@ class HalfSpace:
         """
         epsilon = self.material.getTensor(2*sc.pi/k0)
         Delta = buildDeltaMatrix(Kx, epsilon)
-        Psi_out = np.ones_like(Delta)
 
-        for idx in range(Delta.shape[0]):
-            q, Psi = scipy.linalg.eig(Delta[idx])
+        q, Psi = np.linalg.eig(Delta)
 
-            # Sort according to z propagation direction, highest Re(q) first
-            i = np.argsort(-np.real(q))
-            q, Psi = q[i], Psi[:, i]  #  Result should be (+,+,-,-)
-            # For each direction, sort according to Ey component, highest Ey first
-            i1 = np.argsort(-np.abs(Psi[1, :2]))
-            i2 = 2 + np.argsort(-np.abs(Psi[1, 2:]))
-            i = np.hstack((i1, i2))  #  Result should be (s+,p+,s-,p-)
-            # Reorder
-            i[[1, 2]] = i[[2, 1]]
-            q, Psi = q[i], Psi[:, i]  #  Result should be(s+,s-,p+,p-)
+        # Sort according to z propagation direction, highest Re(q) first
+        i = np.argsort(-np.real(q))
 
-            # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
-            E = np.hstack((Psi[1, :2], Psi[0, 2:]))
-            nE = np.abs(E)
-            c = np.ones_like(E)
-            i = (nE != 0.0)
-            c[i] = E[i]/nE[i]
-            Psi = Psi * c
-            # Normalize so that Ey = c1 + c2, analog to Ey = Eis + Ers
-            # For an isotropic half-space, this should return the same matrix
-            # as IsotropicHalfSpace
-            c = Psi[1, 0] + Psi[1, 1]
-            if abs(c) == 0:
-                c = 1.
-            Psi_out[idx] = 2 * Psi / c
+        q = np.take_along_axis(q, i, axis=-1)
+        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)  # Result should be (+,+,-,-)
 
-        return Psi_out
+        # For each direction, sort according to Ey component, highest Ey first
+        i1 = np.argsort(-np.abs(Psi[:, 1, :2]))
+        i2 = 2 + np.argsort(-np.abs(Psi[:, 1, 2:]))
+        i = np.hstack((i1, i2))  # Result should be (s+,p+,s-,p-)
+
+        # Reorder
+        i[:, [1, 2]] = i[:, [2, 1]]
+
+        q = np.take_along_axis(q, i, axis=-1)
+        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)  # Result should be(s+,s-,p+,p-)
+
+        # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
+        E = np.hstack((Psi[:, 1, :2], Psi[:, 0, 2:]))
+
+        nE = np.abs(E)
+        c = np.ones_like(E)
+        i = (nE != 0.0)
+        c[i] = E[i]/nE[i]
+
+        Psi = Psi * c[:, np.newaxis, :]
+
+        # Normalize so that Ey = c1 + c2, analog to Ey = Eis + Ers
+        # For an isotropic half-space, this should return the same matrix
+        # as IsotropicHalfSpace
+        c = Psi[:, 1, 0] + Psi[:, 1, 1]
+        np.where(np.abs(c) == 0, 1, c)
+
+        Psi = 2 * Psi / c[:, np.newaxis, np.newaxis]
+
+        return Psi
 
 
 class IsotropicHalfSpace(HalfSpace):
