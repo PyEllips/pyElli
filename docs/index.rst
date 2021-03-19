@@ -1,8 +1,8 @@
-========
-Berreman
-========
+===========
+berreman4x4
+===========
 
-This is the documentation of **Berreman**.
+This is the documentation of **berreman4x4**.
 
 .. note::
 
@@ -29,6 +29,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   Overview <readme>
    License <license>
    Authors <authors>
    Changelog <changelog>

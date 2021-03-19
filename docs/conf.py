@@ -37,7 +37,7 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../src/berreman")
+module_dir = os.path.join(__location__, "../src/berreman4x4")
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:
@@ -45,13 +45,15 @@ except FileNotFoundError:
 
 try:
     import sphinx
-    from pkg_resources import parse_version
 
-    cmd_line_template = "sphinx-apidoc -f -o {outputdir} {moduledir}"
+    cmd_line_template = (
+        "sphinx-apidoc --implicit-namespaces -f -o {outputdir} {moduledir}"
+    )
     cmd_line = cmd_line_template.format(outputdir=output_dir, moduledir=module_dir)
 
     args = cmd_line.split(" ")
-    if parse_version(sphinx.__version__) >= parse_version("1.7"):
+    if tuple(sphinx.__version__.split(".")) >= ("1", "7"):
+        # This is a rudimentary parse_version to avoid external dependencies
         args = args[1:]
 
     apidoc.main(args)
@@ -91,8 +93,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Berreman"
-copyright = "2021, dobener"
+project = "berreman4x4"
+copyright = "2021, Marius Müller"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -115,7 +117,7 @@ release = ""  # Is set by calling `setup.py docs`
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".venv"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -161,7 +163,7 @@ html_theme_options = {
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 try:
-    from berreman import __version__ as version
+    from berreman4x4 import __version__ as version
 except ImportError:
     pass
 else:
@@ -226,7 +228,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "berreman-doc"
+htmlhelp_basename = "berreman4x4-doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -243,7 +245,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "Berreman Documentation", "dobener", "manual")
+    ("index", "user_guide.tex", "berreman4x4 Documentation", "Marius Müller", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -276,4 +278,5 @@ intersphinx_mapping = {
     "sklearn": ("https://scikit-learn.org/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
+    "pyscaffold": ("https://pyscaffold.org/en/stable", None),
 }
