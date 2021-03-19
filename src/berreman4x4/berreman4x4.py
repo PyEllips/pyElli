@@ -214,8 +214,8 @@ class DispersionSellmeier(DispersionLaw):
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2)
-                           for c in self.coeffs)
+            return 1 + sum(Bi * lbda**2 / (lbda**2 - Li**2)
+                           for Bi, Li in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -273,13 +273,13 @@ class DispersionLorentzLambda(DispersionLaw):
           λi : resonance wavelength (nm)
           ζi :
 
-        ε(λ) = 1 + Σi Ai × λ²/(λ²-λi²+j ζi λ)
+        ε(λ) = 1 + Σi Ai × λ² / (λ² - λi² + j ζi λ)
         """
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            return 1 - sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j *
-                                             c[2] * lbda) for c in self.coeffs)
+            return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
+                           for Ai, Li, Zi in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -291,17 +291,17 @@ class DispersionLorentzEnergy(DispersionLaw):
         """Creates a Lorentz dispersion law, with energy coefficients.
 
         Lorentz coefficients [A1, E1, Γ1], [A2, E2, Γ2],...
-          Bi : coefficient
+          Ai : coefficient
           Ei : resonance Energy (eV)
           Γi :
 
-        ε(λ) = 1 + Σi Ai × λ²/(λ²-λi²+j Γi λ)
+        ε(E) = 1 + Σi Ai /(E²-Ei²+j Γi E)
         """
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return 1 - sum(Ai / (Ei**2 - E**2 + 1j * Ci * E)
+            return 1 + sum(Ai / (Ei**2 - E**2 - 1j * Ci * E)
                            for Ai, Ei, Ci in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
