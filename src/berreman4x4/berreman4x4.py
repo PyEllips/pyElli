@@ -142,7 +142,8 @@ class DispersionLaw:
     def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda'."""
         lbda_nm = lbda * 1e9
-        return np.sqrt(self.dielectricFunction(lbda_nm))
+        return sqrt(self.dielectricFunction(lbda_nm))
+
 
 class DispersionSum(DispersionLaw):
     """Representation for a sum of two dispersions"""
@@ -459,7 +460,7 @@ class Material:
 
     def getRefractiveIndex(self, lbda):
         """Returns refractive index."""
-        return np.sqrt(self.getTensor(lbda))
+        return sqrt(self.getTensor(lbda))
 
 
 class IsotropicMaterial(Material):
@@ -814,7 +815,7 @@ class IsotropicHalfSpace(HalfSpace):
         # Test type(Kz2)
         nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         Kz2 = nx**2 - Kx**2
-        return np.sqrt(complex(Kz2))
+        return sqrt(complex(Kz2))
 
     def get_Phi_from_Kx(self, Kx, k0):
         """Returns the value of angle Phi according to the value of Kx.
@@ -841,7 +842,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         sin_Phi = Kx/nx
-        cos_Phi = np.sqrt(1 - sin_Phi**2)
+        cos_Phi = sqrt(1 - sin_Phi**2)
         i = len(nx)
         if inv:
             L = np.tile(np.array([[0, 1, 0, 0],
@@ -1333,7 +1334,7 @@ class Structure:
         """
         profile = self.getPermittivityProfile(lbda)
         (h, epsilon) = list(zip(*profile))  # unzip
-        n = [np.sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
+        n = [sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
     def drawStructure(self, lbda=1000, method="graph", margin=0.15):
@@ -1519,8 +1520,8 @@ class Evaluation:
         """
 
         # Transformation matrix from the (s,p) basis to the (L,R) basis...
-        C = 1 / np.sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        D = 1 / np.sqrt(2) * np.array([[1, 1], [-1j, 1j]])
+        C = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        D = 1 / sqrt(2) * np.array([[1, 1], [-1j, 1j]])
         invC = np.linalg.inv(C)
         invD = np.linalg.inv(D)
 
