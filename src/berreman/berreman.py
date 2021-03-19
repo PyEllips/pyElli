@@ -14,6 +14,7 @@ import scipy.interpolate
 import scipy.constants as sc
 import matplotlib
 import matplotlib.pyplot
+from numpy.lib.scimath import sqrt
 
 tfImported = True
 try:
@@ -108,7 +109,7 @@ def rotation_v_theta(v, theta):
 # Energy Wavelength Conversion
 
 def Lambda2E(value):
-    return 1240 / value
+    return 1239.8419840550368 / value
 
 
 #########################################################
@@ -128,6 +129,10 @@ class DispersionLaw:
         """Creates a new dispersion law -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
+    def __add__(self, other):
+        """Add up the dielectric function of multiple models"""
+        return DispersionSum(self.dielectricFunction, other.dielectricFunction)
+
     def getDielectric(self, lbda):
         """Returns the dielectric constant for wavelength 'lbda'."""
         lbda_nm = lbda * 1e9
@@ -137,6 +142,12 @@ class DispersionLaw:
         """Returns the refractive index for wavelength 'lbda'."""
         lbda_nm = lbda * 1e9
         return np.sqrt(self.dielectricFunction(lbda_nm))
+
+class DispersionSum(DispersionLaw):
+    """Representation for a sum of two dispersions"""
+
+    def __init__(self, disp1, disp2):
+        self.dielectricFunction = lambda lbda: disp1(lbda) + disp2(lbda)
 
 
 class DispersionLess(DispersionLaw):
@@ -222,7 +233,7 @@ class DispersionLorentzLambda(DispersionLaw):
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
-            return 1 + sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j *
+            return 1 - sum(c[0] * lbda**2 / (lbda**2 - c[1]**2 + 1j *
                                              c[2] * lbda) for c in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
@@ -245,11 +256,53 @@ class DispersionLorentzEnergy(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return 1 + sum(c[0] / (c[1]**2 - E**2 + 1j * c[2] * E)
-                           for c in self.coeffs)
+            return 1 - sum(Ai / (Ei**2 - E**2 + 1j * Ci * E)
+                           for Ai, Ei, Ci in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
+class DispersionTaucLorentz(DispersionLaw):
+    """Tauc-Lorentz model by Jellison and Modine
+        Literature:
+            G.E. Jellision and F.A. Modine, Appl. Phys. Lett. 69 (3), 371-374 (1996)
+            Erratum, G.E. Jellison and F.A. Modine, Appl. Phys. Lett 69 (14), 2137 (1996)
+            H. Chen, W.Z. Shen, Eur. Phys. J. B. 43, 503-507 (2005)
+    """
+
+    def __init__(self, *coeffs):
+        """Creates a Tauc-Lorentz model.
+
+        Tauc-Lorentz coefficients Eg, eps_inf, [A1, E1, C1], [A2, E2, C2],...
+          Eg : optical band gap energy (eV)
+          eps_inf : epsilon infinity
+          Ai : Strength of ith absorption. Typically 10 < Ai < 200
+          Ei : lorentz resonance energy (eV). Always Eg < Ei
+          Ci : lorentz broadening (eV). Typically 0 < Ci < 10
+        """
+        self.coeffs = coeffs
+        
+        def eps2(E, Eg, Ai, Ei, Ci):
+            gamma2 = sqrt(Ei**2 - Ci**2 / 2)**2
+            alpha = sqrt(4 * Ei**2 - Ci**2)
+            aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
+            aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
+            zeta4 = (E**2 - gamma2)**2 + alpha**2 * Ci**2 / 4
+
+            return Ai*Ci*aL/2.0/np.pi/zeta4/alpha/Ei*np.log((Ei**2 + Eg**2 + alpha*Eg)/(Ei**2 + Eg**2 - alpha*Eg)) - \
+                Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
+                2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
+                Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
+                2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
+
+        def dielectricFunction(lbda):
+            E = Lambda2E(lbda)
+            Eg = self.coeffs[0]
+            eps_inf = self.coeffs[1]
+            return eps_inf + sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
+                                eps2(E, Eg, Ai, Ei, Ci)
+                                for Ai, Ei, Ci in self.coeffs[2:])
+
+        self.dielectricFunction = dielectricFunction
 
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
