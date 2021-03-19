@@ -235,7 +235,7 @@ class DispersionDrudeEnergy(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return self.coeffs[0] - self.coeffs[1] / (E **2 - 1j * self.coeffs[2] * E)
+            return self.coeffs[0] - self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
 
         self.dielectricFunction = dielectricFunction
 
@@ -306,6 +306,7 @@ class DispersionLorentzEnergy(DispersionLaw):
 
         self.dielectricFunction = dielectricFunction
 
+
 class DispersionTaucLorentz(DispersionLaw):
     """Tauc-Lorentz model by Jellison and Modine
         Literature:
@@ -325,7 +326,7 @@ class DispersionTaucLorentz(DispersionLaw):
           Ci : lorentz broadening (eV). Typically 0 < Ci < 10
         """
         self.coeffs = coeffs
-        
+
         def eps2(E, Eg, Ai, Ei, Ci):
             gamma2 = sqrt(Ei**2 - Ci**2 / 2)**2
             alpha = sqrt(4 * Ei**2 - Ci**2)
@@ -344,8 +345,8 @@ class DispersionTaucLorentz(DispersionLaw):
             Eg = self.coeffs[0]
             eps_inf = self.coeffs[1]
             return eps_inf + sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                eps2(E, Eg, Ai, Ei, Ci)
-                                for Ai, Ei, Ci in self.coeffs[2:])
+                                 eps2(E, Eg, Ai, Ei, Ci)
+                                 for Ai, Ei, Ci in self.coeffs[2:])
 
         self.dielectricFunction = dielectricFunction
 
@@ -368,10 +369,10 @@ class DispersionTanguy(DispersionLaw):
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
             return 1 + a / (b - E**2) + \
-                    A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
-                    (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) + \
-                    DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) - \
-                    2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d))
+                A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
+                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
+                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
+                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d))
 
         self.dielectricFunction = dielectricFunction
 
@@ -390,7 +391,6 @@ class DispersionTanguy(DispersionLaw):
         return 2 * np.pi * gamma(D/2 + xsi) / gamma(D/2)**2 / gamma(1 - D/2 + xsi) / xsi**(d - 2) * \
             (1 / np.tan(np.pi * (D/2 - xsi)) - 1 / np.tan(np.pi * D))
 
-        
 
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
@@ -731,18 +731,21 @@ class HalfSpace:
         i = np.argsort(-np.real(q))
 
         q = np.take_along_axis(q, i, axis=-1)
-        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)  # Result should be (+,+,-,-)
+        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)
+        # Result should be (+,+,-,-)
 
         # For each direction, sort according to Ey component, highest Ey first
         i1 = np.argsort(-np.abs(Psi[:, 1, :2]))
         i2 = 2 + np.argsort(-np.abs(Psi[:, 1, 2:]))
-        i = np.hstack((i1, i2))  # Result should be (s+,p+,s-,p-)
+        i = np.hstack((i1, i2))
+        # Result should be (s+,p+,s-,p-)
 
         # Reorder
         i[:, [1, 2]] = i[:, [2, 1]]
 
         q = np.take_along_axis(q, i, axis=-1)
-        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)  # Result should be(s+,s-,p+,p-)
+        Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)
+        # Result should be(s+,s-,p+,p-)
 
         # Adjust Ey in ℝ⁺ for 's', and Ex in ℝ⁺ for 'p'
         E = np.hstack((Psi[:, 1, :2], Psi[:, 0, 2:]))
