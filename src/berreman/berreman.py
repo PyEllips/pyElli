@@ -217,6 +217,48 @@ class DispersionSellmeier(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
+class DispersionDrudeEnergy(DispersionLaw):
+    """Drude dispersion with energy paramters."""
+
+    def __init__(self, *coeffs):
+        """Creates a Drude model.
+
+        Drude coefficients ϵinf, A, Γ
+        ϵinf : epsilon infinity
+        A : Amplitude of Drude oscillator (eV^2)
+        Γ : Broadening of Drude oscillator (eV)
+        """
+        self.coeffs = coeffs
+
+        def dielectricFunction(lbda):
+            E = Lambda2E(lbda)
+            return self.coeffs[0] - self.coeffs[1] / (E **2 - 1j * self.coeffs[2] * E)
+
+        self.dielectricFunction = dielectricFunction
+
+
+class DispersionDrudeResistivity(DispersionLaw):
+     """Drude dispersion with resistivity paramters."""
+
+    def __init__(self, *coeffs):
+        """Creates a Drude model.
+
+        Drude coefficients ϵinf, ρopt, τ
+        ϵinf : epsilon infinity
+        ρopt : optical resistivity (Ω-cm)
+        τ : Mean scattering time (s)
+        """
+        self.coeffs = coeffs
+        hbar = sc.values("Planck constant in eV/Hz") / 2 / np.pi
+        eps0 = sc.values("vacuum electric permittivity") * 1e-2
+
+        def dielectricFunction(lbda):
+            E = Lambda2E(lbda)
+            return self.coeffs[0] - hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
+
+        self.dielectricFunction = dielectricFunction
+
+
 class DispersionLorentzLambda(DispersionLaw):
     """Lorentz dispersion law equation, with wavelength coefficients."""
 
@@ -275,7 +317,7 @@ class DispersionTaucLorentz(DispersionLaw):
         Tauc-Lorentz coefficients Eg, eps_inf, [A1, E1, C1], [A2, E2, C2],...
           Eg : optical band gap energy (eV)
           eps_inf : epsilon infinity
-          Ai : Strength of ith absorption. Typically 10 < Ai < 200
+          Ai : Strength of ith absorption (eV). Typically 10 < Ai < 200
           Ei : lorentz resonance energy (eV). Always Eg < Ei
           Ci : lorentz broadening (eV). Typically 0 < Ci < 10
         """
