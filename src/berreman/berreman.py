@@ -12,6 +12,7 @@ import numpy as np
 import scipy.linalg
 import scipy.interpolate
 import scipy.constants as sc
+from scipy.special import gamma, digamma
 import matplotlib
 import matplotlib.pyplot
 from numpy.lib.scimath import sqrt
@@ -238,7 +239,7 @@ class DispersionDrudeEnergy(DispersionLaw):
 
 
 class DispersionDrudeResistivity(DispersionLaw):
-     """Drude dispersion with resistivity paramters."""
+    """Drude dispersion with resistivity paramters."""
 
     def __init__(self, *coeffs):
         """Creates a Drude model.
@@ -345,6 +346,49 @@ class DispersionTaucLorentz(DispersionLaw):
                                 for Ai, Ei, Ci in self.coeffs[2:])
 
         self.dielectricFunction = dielectricFunction
+
+
+class DispersionTanguy(DispersionLaw):
+    """Fractional dimensional Tanguy model"""
+
+    def __init__(self, A, d, gam, R, Eg, a, b):
+        """Creates a Tanguy dispersion model
+
+        Tanguy coefficients A, d, gamma, R, Eg, a, b
+          A : Amplitude (eV)
+          d : dimensionality 1 < d <= 3
+          gam: excitonic broadening (eV)
+          R : excitonic binding energy (eV²)
+          Eg : optical band gap energy (eV)
+          a : Sellmeier coefficient for background dielectric constant (eV²)
+          b : Sellmeier coefficient for background dielectric constant (eV²)
+        """
+        def dielectricFunction(lbda):
+            E = Lambda2E(lbda)
+            return 1 + a / (b - E**2) + \
+                    A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
+                    (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) + \
+                    DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) - \
+                    2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d))
+
+        self.dielectricFunction = dielectricFunction
+
+    @staticmethod
+    def xsi(z, R, Eg):
+        return sqrt(R / (Eg - z))
+
+    @staticmethod
+    def g(xsi, d):
+        if d == 2:
+            return 2 * np.log(xsi) - 2 * digamma(0.5 - xsi)
+        if d == 3:
+            return 2 * np.log(xsi) - 2 * digamma(1 - xsi) - 1 / xsi
+
+        D = d - 1
+        return 2 * np.pi * gamma(D/2 + xsi) / gamma(D/2)**2 / gamma(1 - D/2 + xsi) / xsi**(d - 2) * \
+            (1 / np.tan(np.pi * (D/2 - xsi)) - 1 / np.tan(np.pi * D))
+
+        
 
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
