@@ -12,9 +12,9 @@ import numpy as np
 import scipy.linalg
 import scipy.interpolate
 import scipy.constants as sc
-from scipy.special import gamma, digamma
+from scipy.special import gamma, digamma, dawsn
 import matplotlib
-import matplotlib.pyplot
+import matplotlib.pyplot 
 from numpy.lib.scimath import sqrt
 
 tfImported = True
@@ -304,6 +304,36 @@ class DispersionLorentzEnergy(DispersionLaw):
                            for Ai, Ei, Ci in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
+
+
+class DispersionGauss(DispersionLaw):
+    """Gauss model with energy parameters.
+        References:
+        D. De Sousa Meneses, M. Malki, P. Echegut, J. Non-Cryst. Solids 351, 769-776 (2006)
+        K.-E. Peiponen, E.M. Vartiainen, Phys. Rev. B. 44, 8301 (1991)
+        H. Fujiwara, R. W. Collins, Spectroscopic Ellipsometry for Photovoltaics Volume 1, Springer International Publishing AG, 2018, p. 137
+    """
+
+    def __init__(self, eps_inf, *coeffs):
+        """Creates a Gauss model
+
+        Gauss coefficients ϵinf, [A1, E1, Γ1], [A2, E2, Γ2],...
+        ϵinf : infinity dielectric constant
+        Ai : Amplitude of ith Gaussian
+        Ei : Central energy of ith Gaussian (eV)
+        Γ1 : Broadening of ith Gaussian (eV)
+        """
+        self.coeffs = coeffs
+        ftos = 2 * sqrt(np.log(2))
+
+        def dielectricFunction(lbda):
+            E = Lambda2E(lbda)
+            return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) +
+                                1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                for Ai, Ei, gami in self.coeffs)
+        
+        self.dielectricFunction = dielectricFunction
+
 
 class DispersionTaucLorentz(DispersionLaw):
     """Tauc-Lorentz model by Jellison and Modine
