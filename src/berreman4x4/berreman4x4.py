@@ -1,6 +1,7 @@
 # Encoding: utf-8
 
-# Copyright (C) 2012-2016 Olivier Castany
+# Copyright (C) 2012-2020 Olivier Castany
+# Copyright (C) 2021-2021 Marius Müller
 # This program is free software (see LICENCE file)
 
 """Berreman4x4: module implementing Berreman's 4x4 matrix method.
