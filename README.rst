@@ -1,16 +1,23 @@
-Berreman4x4
+===========
+berreman4x4
 ===========
 
-Python implementation of Berreman's 4x4 matrix method.
 
-This is the git repository for the source code of Berreman4x4.
+Berreman's 4x4 matrix method for optical simulation.
 
-The front web page is http://Berreman4x4.github.com (GitHub Organization web page). 
 
-See [documentation](http://sourceforge.net/projects/berreman4x4/files/documentation.pdf) for more information.
+Description
+===========
 
--- 
-Copyright (C) 2012-2016 Olivier Castany
+
+
+
+
+Copyright
+===========
+
+Copyright (C) 2021-2021 Marius Müller
+Copyright (C) 2012-2020 Olivier Castany
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,3 +31,9 @@ GNU General Public License for more details.
 
 A copy of the GNU General Public License is available in file LICENCE.
 
+
+Note
+====
+
+This project has been set up using PyScaffold 4.0.1. For details and usage
+information on PyScaffold see https://pyscaffold.org/.
