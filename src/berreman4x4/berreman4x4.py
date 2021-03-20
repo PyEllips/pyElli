@@ -307,7 +307,6 @@ class DispersionLorentzEnergy(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
-<<<<<<< HEAD
 class DispersionGauss(DispersionLaw):
     """Gauss model with energy parameters.
         References:
@@ -337,8 +336,6 @@ class DispersionGauss(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
-=======
->>>>>>> upstream/master
 class DispersionTaucLorentz(DispersionLaw):
     """Tauc-Lorentz model by Jellison and Modine
         Literature:
