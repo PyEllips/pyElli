@@ -33,8 +33,26 @@ e_z = np.array([0, 0, 1]).reshape((3,))
 
 
 #########################################################
-# Rotations...
+# Conversions
 
+def Lambda2E(value, unit='nm'):
+    '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
+    return 1239.8419840550368 / (value * UnitConversion[unit] / 1e-9)
+
+
+UnitConversion = {
+    'm': 1,
+    'cm': 1e-2,
+    'mm': 1e-3,
+    'µm': 1e-6,
+    'nm': 1e-9,
+    'A': 1e-10,
+    'pm': 1e-12
+}
+
+
+#########################################################
+# Rotations...
 
 def rotation_Euler(angles):
     """Returns rotation matrix defined by Euler angles (p,n,r)
@@ -106,13 +124,6 @@ def rotation_v_theta(v, theta):
                   [-v[1],  v[0],   0]])
     return np.identity(3) + w * np.sin(np.deg2rad(theta)) \
         + np.linalg.matrix_power(w, 2) * (1 - np.cos(np.deg2rad(theta)))
-
-
-#########################################################
-# Energy Wavelength Conversion
-
-def Lambda2E(value):
-    return 1239.8419840550368 / value
 
 
 #########################################################
