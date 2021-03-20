@@ -135,13 +135,21 @@ class DispersionLaw:
         """Add up the dielectric function of multiple models"""
         return DispersionSum(self.dielectricFunction, other.dielectricFunction)
 
+    def getDielectricConj(self, lbda):
+        """Returns the conjugated dielectric constant for wavelength 'lbda' (nm) in the convention ε1 - iε2."""
+        return np.conjugate(self.dielectricFunction(lbda))
+
+    def getRefractiveIndexConj(self, lbda):
+        """Returns the conjugated refractive index for wavelength 'lbda' (nm) in the convention n - ik."""
+        return sqrt(np.conjugate(self.dielectricFunction(lbda)))
+
     def getDielectric(self, lbda):
-        """Returns the dielectric constant for wavelength 'lbda'."""
+        """Returns the dielectric constant for wavelength 'lbda' (m) in the convention ε1 + iε2."""
         lbda_nm = lbda * 1e9
         return self.dielectricFunction(lbda_nm)
 
     def getRefractiveIndex(self, lbda):
-        """Returns the refractive index for wavelength 'lbda'."""
+        """Returns the refractive index for wavelength 'lbda' (m) in the convention n + ik."""
         lbda_nm = lbda * 1e9
         return sqrt(self.dielectricFunction(lbda_nm))
 
@@ -235,7 +243,7 @@ class DispersionDrudeEnergy(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return self.coeffs[0] - self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
+            return self.coeffs[0] + self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
 
         self.dielectricFunction = dielectricFunction
 
@@ -257,7 +265,7 @@ class DispersionDrudeResistivity(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return self.coeffs[0] - hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
+            return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
 
         self.dielectricFunction = dielectricFunction
 
@@ -329,7 +337,7 @@ class DispersionGauss(DispersionLaw):
 
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) +
+            return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
                                 1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
                                 for Ai, Ei, gami in self.coeffs)
         
@@ -373,9 +381,9 @@ class DispersionTaucLorentz(DispersionLaw):
             E = Lambda2E(lbda)
             Eg = self.coeffs[0]
             eps_inf = self.coeffs[1]
-            return eps_inf + sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                 eps2(E, Eg, Ai, Ei, Ci)
-                                 for Ai, Ei, Ci in self.coeffs[2:])
+            return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
+                                            eps2(E, Eg, Ai, Ei, Ci)
+                                            for Ai, Ei, Ci in self.coeffs[2:]))
 
         self.dielectricFunction = dielectricFunction
 
@@ -397,11 +405,11 @@ class DispersionTanguy(DispersionLaw):
         """
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
-            return 1 + a / (b - E**2) + \
+            return np.conjugate(1 + a / (b - E**2) + \
                 A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
                 (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
                  DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
-                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d))
+                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
 
         self.dielectricFunction = dielectricFunction
 
