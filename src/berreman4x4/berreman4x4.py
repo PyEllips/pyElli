@@ -15,7 +15,7 @@ import scipy.interpolate
 import scipy.constants as sc
 from scipy.special import gamma, digamma, dawsn
 import matplotlib
-import matplotlib.pyplot 
+import matplotlib.pyplot
 from numpy.lib.scimath import sqrt
 
 tfImported = True
@@ -30,6 +30,7 @@ except ImportError:
 e_x = np.array([1, 0, 0]).reshape((3,))  # base vectors
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
+
 
 #########################################################
 # Rotations...
@@ -338,9 +339,9 @@ class DispersionGauss(DispersionLaw):
         def dielectricFunction(lbda):
             E = Lambda2E(lbda)
             return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
-                                for Ai, Ei, gami in self.coeffs)
-        
+                                 1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                 for Ai, Ei, gami in self.coeffs)
+
         self.dielectricFunction = dielectricFunction
 
 
@@ -382,8 +383,8 @@ class DispersionTaucLorentz(DispersionLaw):
             Eg = self.coeffs[0]
             eps_inf = self.coeffs[1]
             return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                            eps2(E, Eg, Ai, Ei, Ci)
-                                            for Ai, Ei, Ci in self.coeffs[2:]))
+                                              eps2(E, Eg, Ai, Ei, Ci)
+                                              for Ai, Ei, Ci in self.coeffs[2:]))
 
         self.dielectricFunction = dielectricFunction
 
@@ -403,13 +404,11 @@ class DispersionTanguy(DispersionLaw):
           a : Sellmeier coefficient for background dielectric constant (eV²)
           b : Sellmeier coefficient for background dielectric constant (eV²)
         """
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
-            return np.conjugate(1 + a / (b - E**2) + \
-                A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
-                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
-                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
-                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
+            return np.conjugate(1 + a / (b - E**2) +
+                                A * R**(d/2 - 1) / (E + 1j * gam)**2 *
+                                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
+                                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
+                                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
 
         self.dielectricFunction = dielectricFunction
 
