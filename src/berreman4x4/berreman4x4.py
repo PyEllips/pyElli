@@ -1612,8 +1612,8 @@ class Evaluation:
                       [0,  1,    1,  0],
                       [0,  1j, -1j,  0]])
 
-        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', J, np.conjugate(J))
-                         .reshape(J.shape[0], 4, 4) @ A.T)
+        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', S, np.conjugate(S))
+                         .reshape(S.shape[0], 4, 4) @ A.T)
 
         m11 = Mueller[:, 0, 0]
         Mueller = Mueller / m11[:, None, None]
