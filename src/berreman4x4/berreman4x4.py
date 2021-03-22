@@ -487,7 +487,12 @@ class Material:
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        epsilon = np.zeros((len(lbda), 3, 3), dtype=complex)
+        if np.shape(lbda) == ():
+            i = 1
+        else:
+            i = np.shape(lbda)[0]
+
+        epsilon = np.zeros((i, 3, 3), dtype=complex)
 
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
         epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
@@ -661,7 +666,11 @@ def buildDeltaMatrix(Kx, eps):
 
     Returns : Delta 4x4 matrix, generator of infinitesimal translations
     """
-    i = len(Kx)
+    if np.shape(Kx) == ():
+        i = 1
+    else:
+        i = np.shape(Kx)[0]
+
     Delta = np.array(
         [[-Kx * eps[:, 2, 0] / eps[:, 2, 2], -Kx * eps[:, 2, 1] / eps[:, 2, 2],
           np.tile(0, i), np.tile(1, i) - Kx**2 / eps[:, 2, 2]],
@@ -884,7 +893,12 @@ class IsotropicHalfSpace(HalfSpace):
         nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         sin_Phi = Kx/nx
         cos_Phi = sqrt(1 - sin_Phi**2)
-        i = len(nx)
+
+        if np.shape(Kx) == ():
+            i = 1
+        else:
+            i = np.shape(Kx)[0]
+
         if inv:
             L = np.tile(np.array([[0, 1, 0, 0],
                                   [0, 1, 0, 0],
@@ -1530,8 +1544,6 @@ class Evaluation:
         lbda:       Singular wavelength or np.array of values (nm)
         phi_i:      incidence angle of the light (deg)
         """
-        if isinstance(lbda, int) or isinstance(lbda, float):
-            lbda = np.array([lbda])
 
         self.structure = structure
         self.lbda = lbda
