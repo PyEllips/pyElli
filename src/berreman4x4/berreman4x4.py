@@ -15,7 +15,7 @@ import scipy.interpolate
 import scipy.constants as sc
 from scipy.special import gamma, digamma, dawsn
 import matplotlib
-import matplotlib.pyplot 
+import matplotlib.pyplot
 from numpy.lib.scimath import sqrt
 
 tfImported = True
@@ -31,9 +31,30 @@ e_x = np.array([1, 0, 0]).reshape((3,))  # base vectors
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
+
+#########################################################
+# Conversions
+
+def Lambda2E(value, unit='nm'):
+    '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
+    return 1239.8419840550368 / (value * UnitConversion[unit] / 1e-9)
+
+
+UnitConversion = {
+    'm': 1,
+    'cm': 1e-2,
+    'mm': 1e-3,
+    'µm': 1e-6,
+    'um': 1e-6,
+    'nm': 1e-9,
+    'A': 1e-10,
+    'Å': 1e-10,
+    'pm': 1e-12
+}
+
+
 #########################################################
 # Rotations...
-
 
 def rotation_Euler(angles):
     """Returns rotation matrix defined by Euler angles (p,n,r)
@@ -108,13 +129,6 @@ def rotation_v_theta(v, theta):
 
 
 #########################################################
-# Energy Wavelength Conversion
-
-def Lambda2E(value):
-    return 1239.8419840550368 / value
-
-
-#########################################################
 # Dispersion laws...
 
 class DispersionLaw:
@@ -135,23 +149,25 @@ class DispersionLaw:
         """Add up the dielectric function of multiple models"""
         return DispersionSum(self.dielectricFunction, other.dielectricFunction)
 
-    def getDielectricConj(self, lbda):
-        """Returns the conjugated dielectric constant for wavelength 'lbda' (nm) in the convention ε1 - iε2."""
-        return np.conjugate(self.dielectricFunction(lbda))
+    def getDielectricConj(self, lbda, unit='nm'):
+        """Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
+        in the convention ε1 - iε2."""
+        return np.conjugate(self.dielectricFunction(lbda, unit))
 
-    def getRefractiveIndexConj(self, lbda):
-        """Returns the conjugated refractive index for wavelength 'lbda' (nm) in the convention n - ik."""
-        return sqrt(np.conjugate(self.dielectricFunction(lbda)))
+    def getRefractiveIndexConj(self, lbda, unit='nm'):
+        """Returns the conjugated refractive index for wavelength 'lbda' default unit (nm)
+        in the convention n - ik."""
+        return sqrt(np.conjugate(self.dielectricFunction(lbda, unit)))
 
-    def getDielectric(self, lbda):
-        """Returns the dielectric constant for wavelength 'lbda' (m) in the convention ε1 + iε2."""
-        lbda_nm = lbda * 1e9
-        return self.dielectricFunction(lbda_nm)
+    def getDielectric(self, lbda, unit='nm'):
+        """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
+        in the convention ε1 + iε2."""
+        return self.dielectricFunction(lbda, unit)
 
-    def getRefractiveIndex(self, lbda):
-        """Returns the refractive index for wavelength 'lbda' (m) in the convention n + ik."""
-        lbda_nm = lbda * 1e9
-        return sqrt(self.dielectricFunction(lbda_nm))
+    def getRefractiveIndex(self, lbda, unit='nm'):
+        """Returns the refractive index for wavelength 'lbda' default unit (nm)
+        in the convention n + ik."""
+        return sqrt(self.dielectricFunction(lbda, unit))
 
 
 class DispersionSum(DispersionLaw):
@@ -172,7 +188,7 @@ class DispersionLess(DispersionLaw):
         """
         self.n = n
 
-        def dielectricFunction(lbda):
+        def dielectricFunction(lbda, unit):
             return self.n**2
 
         self.dielectricFunction = dielectricFunction
@@ -185,6 +201,7 @@ class DispersionCauchy(DispersionLaw):
         """Creates a Cauchy dispersion law.
 
         Cauchy coefficients: n0, n1, n2, k0, k1, k2
+        coefficients defined for λ in nm
 
         n(λ) = n0 + 100 * n1/λ² + 10e7 n2/λ^4
         k(λ) = k0 + 100 * k1/λ² + 10e7 k2/λ^4
@@ -196,7 +213,10 @@ class DispersionCauchy(DispersionLaw):
         self.k1 = k1
         self.k2 = k2
 
-        def dielectricFunction(lbda):
+        def dielectricFunction(lbda, unit='nm'):
+            # Convert wavelength to nm
+            lbda = lbda * UnitConversion[unit] / UnitConversion['nm']
+
             N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
                 + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
             return N**2
@@ -211,19 +231,18 @@ class DispersionSellmeier(DispersionLaw):
         """Creates a Sellmeier dispersion law.
 
         Sellmeier coefficients [B1, λ1], [B2, λ2],...
-          Bi : coefficient for n² contribution
-          λi : resonance wavelength (nm)
+          Ai : coefficient for n² contribution
+          Bi : resonance wavelength (µm^-2)
 
-        ε(λ) = 1 + Σi Bi × λ²/(λ²-λi²)
-
-        Exemple for fused silica : DispersionSellmeier([0.696, 0.068e-6],
-                                    [0.407, 0.116e-6], [0.897, 9.896e-6])
+        ε(λ) = 1 + Σi Ai × λ²/(λ² - Bi)
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            return 1 + sum(Bi * lbda**2 / (lbda**2 - Li**2)
-                           for Bi, Li in self.coeffs)
+        def dielectricFunction(lbda, unit='nm'):
+            lbda = lbda * UnitConversion[unit] / UnitConversion['µm']
+
+            return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
+                           for Ai, Bi in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
 
@@ -241,8 +260,8 @@ class DispersionDrudeEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
             return self.coeffs[0] + self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
 
         self.dielectricFunction = dielectricFunction
@@ -263,8 +282,8 @@ class DispersionDrudeResistivity(DispersionLaw):
         hbar = sc.values("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.values("vacuum electric permittivity") * 1e-2
 
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
             return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
 
         self.dielectricFunction = dielectricFunction
@@ -285,7 +304,9 @@ class DispersionLorentzLambda(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
+        def dielectricFunction(lbda, unit='nm'):
+            lbda = lbda * UnitConversion[unit] / UnitConversion['nm']
+
             return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
                            for Ai, Li, Zi in self.coeffs)
 
@@ -307,8 +328,8 @@ class DispersionLorentzEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
             return 1 + sum(Ai / (Ei**2 - E**2 - 1j * Ci * E)
                            for Ai, Ei, Ci in self.coeffs)
 
@@ -335,12 +356,12 @@ class DispersionGauss(DispersionLaw):
         self.coeffs = coeffs
         ftos = 2 * sqrt(np.log(2))
 
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
             return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
-                                for Ai, Ei, gami in self.coeffs)
-        
+                                 1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                 for Ai, Ei, gami in self.coeffs)
+
         self.dielectricFunction = dielectricFunction
 
 
@@ -377,13 +398,13 @@ class DispersionTaucLorentz(DispersionLaw):
                 Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
                 2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
 
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
             Eg = self.coeffs[0]
             eps_inf = self.coeffs[1]
             return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                            eps2(E, Eg, Ai, Ei, Ci)
-                                            for Ai, Ei, Ci in self.coeffs[2:]))
+                                              eps2(E, Eg, Ai, Ei, Ci)
+                                              for Ai, Ei, Ci in self.coeffs[2:]))
 
         self.dielectricFunction = dielectricFunction
 
@@ -403,13 +424,13 @@ class DispersionTanguy(DispersionLaw):
           a : Sellmeier coefficient for background dielectric constant (eV²)
           b : Sellmeier coefficient for background dielectric constant (eV²)
         """
-        def dielectricFunction(lbda):
-            E = Lambda2E(lbda)
-            return np.conjugate(1 + a / (b - E**2) + \
-                A * R**(d/2 - 1) / (E + 1j * gam)**2 * \
-                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
-                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
-                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
+        def dielectricFunction(lbda, unit='nm'):
+            E = Lambda2E(lbda, unit)
+            return np.conjugate(1 + a / (b - E**2) +
+                                A * R**(d/2 - 1) / (E + 1j * gam)**2 *
+                                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
+                                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
+                                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
 
         self.dielectricFunction = dielectricFunction
 
@@ -432,26 +453,40 @@ class DispersionTanguy(DispersionLaw):
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
 
-    def __init__(self, lbda=None, n=None):
+    def __init__(self, lbda=None, n=None, unit='nm'):
         """Create a dispersion law from a refraction index list.
 
         'lbda'  : Wavelength list (nm)
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
-        self.dielectricFunction = scipy.interpolate.interp1d(lbda, n**2, kind='cubic')
+        self.interpolation = scipy.interpolate.interp1d(
+            lbda * UnitConversion[unit], n**2, kind='cubic')
+
+        def dielectricFunction(lbda, unit='nm'):
+            lbda = lbda * UnitConversion[unit]
+            return self.interpolation(lbda)
+
+        self.dielectricFunction = dielectricFunction
 
 
 class DispersionTableEpsilon(DispersionLaw):
     """Dispersion law specified by a table"""
 
-    def __init__(self, lbda=None, epsilon=None):
+    def __init__(self, lbda=None, epsilon=None, unit='nm'):
         """Create a dispersion law from a dielectric constant list.
 
         'lbda'  : Wavelength list (nm)
         'ε'     : Refractive index values (can be complex)
         """
-        self.dielectricFunction = scipy.interpolate.interp1d(lbda, epsilon, kind='cubic')
+        self.interpolation = scipy.interpolate.interp1d(
+            lbda * UnitConversion[unit], epsilon, kind='cubic')
+
+        def dielectricFunction(lbda, unit='nm'):
+            lbda = lbda * UnitConversion[unit]
+            return self.interpolation(lbda)
+
+        self.dielectricFunction = dielectricFunction
 
 
 #########################################################
@@ -485,7 +520,7 @@ class Material:
         """
         self.rotationMatrix = R
 
-    def getTensor(self, lbda):
+    def getTensor(self, lbda, unit='nm'):
         """Returns permittivity tensor matrix for the desired wavelength."""
         if np.shape(lbda) == ():
             i = 1
@@ -494,16 +529,16 @@ class Material:
 
         epsilon = np.zeros((i, 3, 3), dtype=complex)
 
-        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
-        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
-        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
+        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda, unit)
+        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda, unit)
+        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda, unit)
 
         epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
         return epsilon
 
-    def getRefractiveIndex(self, lbda):
+    def getRefractiveIndex(self, lbda, unit='nm'):
         """Returns refractive index."""
-        return sqrt(self.getTensor(lbda))
+        return sqrt(self.getTensor(lbda, unit))
 
 
 class IsotropicMaterial(Material):
@@ -572,7 +607,7 @@ class InhomogeneousMaterial:
         """Creates a new inhomogeneous material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def getTensor(self, z, lbda):
+    def getTensor(self, z, lbda, unit='nm'):
         """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
 
         'z' : position where the tensor is evaluated
@@ -599,7 +634,7 @@ class TwistedMaterial(InhomogeneousMaterial):
     angle = None  # Angle of the twist
     div = None          # Number of slices
 
-    def __init__(self, material, d, angle=90, div=25):
+    def __init__(self, material, d, unit='nm', angle=90, div=25):
         """Creates a layer with a twisted material.
 
         'material' : material for the twisted layer
@@ -615,7 +650,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         exact result with eigenvector decomposition. On the other hand, if
         k0·h is small, a linear or Taylor approximation may suffice.
         """
-        self.setThickness(d)
+        self.setThickness(d, unit)
         self.setMaterial(material)
         self.setAngle(np.deg2rad(angle))
         self.setDivision(div)
@@ -632,13 +667,13 @@ class TwistedMaterial(InhomogeneousMaterial):
         """Defines the material making this TwistedMaterial."""
         self.material = material
 
-    def setThickness(self, d):
+    def setThickness(self, d, unit='nm'):
         """Defines the thickness of this TwistedMaterial."""
-        self.d = d * 1e-9
+        self.d = d * UnitConversion[unit]
 
-    def getTensor(self, z, lbda):
+    def getTensor(self, z, lbda, unit='nm'):
         """Returns permittivity tensor matrix for position 'z'."""
-        epsilon = self.material.getTensor(lbda)
+        epsilon = self.material.getTensor(lbda, unit)
         R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
         return R @ epsilon @ R.T
 
@@ -768,7 +803,7 @@ class HalfSpace:
 
         Returns eigenvectors ordered like (s+,s-,p+,p-)
         """
-        epsilon = self.material.getTensor(2*sc.pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0, unit='m')
         Delta = buildDeltaMatrix(Kx, epsilon)
 
         q, Psi = np.linalg.eig(Delta)
@@ -849,7 +884,8 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
+
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         Kx = nx * np.sin(Phi * sc.pi / 180)
         return Kx
 
@@ -863,7 +899,7 @@ class IsotropicHalfSpace(HalfSpace):
         """
         # Not vectorized. Could be?
         # Test type(Kz2)
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         Kz2 = nx**2 - Kx**2
         return sqrt(complex(Kz2))
 
@@ -876,7 +912,7 @@ class IsotropicHalfSpace(HalfSpace):
         Returns : angle Phi in radians.
         """
         # May be vectorized when I have time?
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         sin_Phi = Kx/nx
         Phi = 180 * np.arcsin(sin_Phi) / sc.pi
         return Phi
@@ -890,7 +926,7 @@ class IsotropicHalfSpace(HalfSpace):
 
         Returns : transition matrix L
         """
-        nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
+        nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         sin_Phi = Kx/nx
         cos_Phi = sqrt(1 - sin_Phi**2)
 
@@ -998,18 +1034,18 @@ class HomogeneousLayer(MaterialLayer):
     material = None         # Material object
     hs_propagator = None    # Function used for the propagator calculation
 
-    def __init__(self, material, h, hs_method="Padé"):
+    def __init__(self, material, h, unit='nm', hs_method="Padé"):
         """New homogeneous layer of material 'material', with thickness 'h'
 
         'hs_method': see setMethod()
         """
         self.setMaterial(material)
         self.setMethod(hs_method)
-        self.setThickness(h)
+        self.setThickness(h, unit)
 
-    def setThickness(self, h):
+    def setThickness(self, h, unit='nm'):
         """Defines the thickness of this homogeneous layer."""
-        self.h = h * 1e-9
+        self.h = h * UnitConversion[unit]
 
     def setMethod(self, hs_method):
         """Defines how the homogeneous slab propagator is calculated.
@@ -1025,12 +1061,12 @@ class HomogeneousLayer(MaterialLayer):
             raise NotImplementedError("Method " + hs_method +
                                       " not available for propagator calculation")
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda, unit='m'):
         """Returns permittivity tensor profile.
 
         Returns a list containing one tuple: [(h, epsilon)]
         """
-        return [(self.h, self.material.getTensor(lbda))]
+        return [(self.h, self.material.getTensor(lbda, unit))]
 
     def getPropagationMatrix(self, Kx, k0, inv=False):
         """Returns propagation matrix P
@@ -1042,7 +1078,7 @@ class HomogeneousLayer(MaterialLayer):
         'k0' : vacuum wavenumber
         'inv' : returns the inverse matrix, BP = exp(-i h k0 Delta)
         """
-        epsilon = self.material.getTensor(2*sc.pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0, 'm')
         Delta = buildDeltaMatrix(Kx, epsilon)
         if inv:
             h = -self.h
@@ -1052,7 +1088,7 @@ class HomogeneousLayer(MaterialLayer):
 
     def getDeltaMatrix(self, Kx, k0):
         """Returns Delta matrix of the homogeneous layer."""
-        epsilon = self.material.getTensor(2*sc.pi/k0)
+        epsilon = self.material.getTensor(2*sc.pi/k0, 'm')
         Delta = buildDeltaMatrix(Kx, epsilon)
         return Delta
 
@@ -1068,24 +1104,24 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
     Can be created with parameter h = ("QWP", 1000), see method setThickness().
     """
 
-    def setThickness(self, h):
+    def setThickness(self, h, unit='nm'):
         """Defines the thickness of this homogeneous isotropic layer.
 
-        If h is a tuple ('QWP', lbda), the thickness 'h' is calculated for a
+        If h is a tuple ('QWP', lbda), the thickness 'h' in (nm) is calculated for a
         quarter-wave plate at wavelength 'lbda'.
         """
         # Special case when a quarter-wave plate is requested
         if isinstance(h, tuple):
             (name, lbda) = h
             if name == "QWP":
-                h = self.get_QWP_thickness(lbda * 1e-9)
+                h = self.get_QWP_thickness(lbda, unit)
             else:
                 raise ValueError("Thickness not correctly defined.")
-        self.h = h * 1e-9
+        self.h = h * UnitConversion[unit]
 
-    def get_QWP_thickness(self, lbda):
-        """Return the thickness of a Quater Wave Plate at wavelength 'lbda'."""
-        nr = np.real(self.material.getRefractiveIndex(lbda)[0, 0])
+    def get_QWP_thickness(self, lbda, unit='nm'):
+        """Return the thickness of a Quater Wave Plate at wavelength 'lbda' (nm)."""
+        nr = np.real(self.material.getRefractiveIndex(lbda, unit)[0, 0, 0])
         return lbda / (4.*nr)
 
 
@@ -1155,7 +1191,7 @@ class InhomogeneousLayer(MaterialLayer):
                 raise NotImplementedError("Method " + hs_method +
                                           " not available for symplectic evaluation")
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda, unit='m'):
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
@@ -1164,7 +1200,7 @@ class InhomogeneousLayer(MaterialLayer):
         z = self.material.getSlices()
         h = np.diff(z)
         zmid = (z[:-1] + z[1:]) / 2.
-        tensor = [self.material.getTensor(z, lbda) for z in zmid]
+        tensor = [self.material.getTensor(z, lbda, unit) for z in zmid]
         return list(zip(h, tensor))
 
     def getPropagationMatrix(self, Kx, k0, inv=False):
@@ -1188,7 +1224,7 @@ class InhomogeneousLayer(MaterialLayer):
         hs_propagator_*() functions, pointed by the attribute
         InhomogeneousLayer.midpoint_hs_propagator().
         """
-        epsilon = self.material.getTensor((z1+z2)/2., 2*sc.pi/k0)
+        epsilon = self.material.getTensor((z1+z2)/2., 2*sc.pi/k0, 'm')
         Delta = buildDeltaMatrix(Kx, epsilon)
         P = self.hs_propagator(Delta, z2-z1, k0)
         return P
@@ -1211,9 +1247,9 @@ class InhomogeneousLayer(MaterialLayer):
         z1 + t2 h = z2 - t2 h.
         """
         h = z2 - z1
-        epsilon1 = self.material.getTensor(z1+self.t1*h, 2*sc.pi/k0)
-        epsilon2 = self.material.getTensor(z1+self.t2*h, 2*sc.pi/k0)
-        epsilon3 = self.material.getTensor(z1+self.t3*h, 2*sc.pi/k0)
+        epsilon1 = self.material.getTensor(z1+self.t1*h, 2*sc.pi/k0, 'm')
+        epsilon2 = self.material.getTensor(z1+self.t2*h, 2*sc.pi/k0, 'm')
+        epsilon3 = self.material.getTensor(z1+self.t3*h, 2*sc.pi/k0, 'm')
         Delta1 = buildDeltaMatrix(Kx, epsilon1)
         Delta2 = buildDeltaMatrix(Kx, epsilon2)
         Delta3 = buildDeltaMatrix(Kx, epsilon3)
@@ -1265,12 +1301,12 @@ class RepeatedLayers(Layer):
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda, unit='m'):
         """Returns permittivity tensor profile.
 
         Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
         """
-        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        layers = sum([L.getPermittivityProfile(lbda, unit) for L in self.layers], [])
         if self.before > 0:
             before = layers[-self.before:]
         else:
@@ -1351,11 +1387,11 @@ class Structure:
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda, unit='m'):
         """Returns permittivity tensor profile."""
-        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
-        front = (float('inf'), self.frontHalfSpace.material.getTensor(lbda))
-        back = (float('inf'), self.backHalfSpace.material.getTensor(lbda))
+        layers = sum([L.getPermittivityProfile(lbda, unit) for L in self.layers], [])
+        front = (float('inf'), self.frontHalfSpace.material.getTensor(lbda, unit))
+        back = (float('inf'), self.backHalfSpace.material.getTensor(lbda, unit))
         return sum([[front], layers, [back]], [])
 
     def getPropagationMatrix(self, Kx, k0, inv=False):
@@ -1381,26 +1417,25 @@ class Structure:
             P_tot = P @ P_tot
         return P_tot
 
-    def getIndexProfile(self, lbda, v=e_x):
+    def getIndexProfile(self, lbda, unit='m', v=e_x):
         """Returns refractive index profile.
 
         'v' : Unit vector, direction of evaluation of the refraction index.
               Default value is v = e_x.
         """
-        profile = self.getPermittivityProfile(lbda)
+        profile = self.getPermittivityProfile(lbda, unit)
         (h, epsilon) = list(zip(*profile))  # unzip
-        n = [sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
+        n = [sqrt((v.T * eps * v)[0, 0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
-    def drawStructure(self, lbda=1000, method="graph", margin=0.15):
+    def drawStructure(self, lbda=1000, unit='nm', method="graph", margin=0.15):
         """Draw the structure.
 
         'method' : 'graph' or 'section'
         Returns : Axes object
         """
         # Build index profile
-        lbda = lbda * 1e-9
-        profile = self.getIndexProfile(lbda)
+        profile = self.getIndexProfile(lbda, unit)
         (h, n) = list(zip(*profile))     # unzip
         n = np.array(n)
         z_layers = np.hstack((0., np.cumsum(h[1:-1])))
@@ -1412,14 +1447,14 @@ class Structure:
         z = np.hstack((-z_margin, z_layers, z_max + z_margin))
         # Call specialized methods
         if method == "graph":
-            ax = self._drawStructureGraph(z, n)
+            ax = self._drawStructureGraph(z, n, unit)
         elif method == "section":
-            ax = self._drawStructureSection(z, n)
+            ax = self._drawStructureSection(z, n, unit)
         else:
             ax = None
         return ax
 
-    def _drawStructureGraph(self, z, n):
+    def _drawStructureGraph(self, z, n, unit):
         """Draw a graph of the refractive index profile """
         n = np.hstack((n, n[-1]))
         # Draw the graph
@@ -1429,14 +1464,14 @@ class Structure:
         ax.step(z, n.real, 'black', where='post')
         ax.spines['top'].set_visible(False)
         ax.xaxis.set_ticks_position('bottom')
-        ax.set_xlabel("z (m)")
+        ax.set_xlabel("z ({})".format(unit))
         ax.set_ylabel("n'")
         ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
         ax.set_xlim(z.min(), z.max())
         ax.set_ylim(bottom=1.0)
         return ax
 
-    def _drawStructureSection(self, z, n):
+    def _drawStructureSection(self, z, n, unit):
         """Draw a cross section of the structure"""
         # Prepare arrays for pcolormesh()
         X = z * np.ones((2, 1))
@@ -1447,7 +1482,7 @@ class Structure:
         ax = fig.add_subplot(1, 1, 1)
         fig.subplots_adjust(left=0.05, bottom=0.15)
         ax.set_yticks([])
-        ax.set_xlabel("z (m)")
+        ax.set_xlabel("z ({})".format(unit))
         ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
         ax.set_xlim(z.min(), z.max())
         stack = ax.pcolormesh(X, Y, n, cmap=matplotlib.cm.gray_r)
@@ -1520,9 +1555,9 @@ class Structure:
         else:
             return None
 
-    def evaluate(self, lbda, theta_i):
+    def evaluate(self, lbda, theta_i, unit='nm'):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(self, lbda, theta_i)
+        return Evaluation(self, lbda, theta_i, unit)
 
 
 #########################################################
@@ -1537,18 +1572,20 @@ class Evaluation:
     T_ti = None             # Jones matrix for transmission
     power_corr = None       # Power correction coefficient for transmission
 
-    def __init__(self, structure, lbda, phi_i, circular=False):
+    def __init__(self, structure, lbda, phi_i, unit='nm', circular=False):
         """Record the result of the requested simulation for a given list of
         Lambda values and an incidence angle phi_i.
 
-        lbda:       Singular wavelength or np.array of values (nm)
+        lbda:       Singular wavelength or np.array of values
         phi_i:      incidence angle of the light (deg)
+        unit:       unit of the wavelength (default='nm')
         """
 
         self.structure = structure
-        self.lbda = lbda
+        self.lbda = lbda * UnitConversion[unit]
         self.circular = circular
-        k0 = 2 * sc.pi / lbda / 1e-9
+
+        k0 = 2 * sc.pi / self.lbda
         Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(phi_i, k0)
 
         self.T_ri, self.T_ti = structure.getJones(Kx, k0)
