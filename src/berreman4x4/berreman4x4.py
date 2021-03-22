@@ -522,7 +522,12 @@ class Material:
 
     def getTensor(self, lbda, unit='nm'):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        epsilon = np.zeros((len(lbda), 3, 3), dtype=complex)
+        if np.shape(lbda) == ():
+            i = 1
+        else:
+            i = np.shape(lbda)[0]
+
+        epsilon = np.zeros((i, 3, 3), dtype=complex)
 
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda, unit)
         epsilon[:, 1, 1] = self.law_y.getDielectric(lbda, unit)
@@ -696,7 +701,11 @@ def buildDeltaMatrix(Kx, eps):
 
     Returns : Delta 4x4 matrix, generator of infinitesimal translations
     """
-    i = len(Kx)
+    if np.shape(Kx) == ():
+        i = 1
+    else:
+        i = np.shape(Kx)[0]
+
     Delta = np.array(
         [[-Kx * eps[:, 2, 0] / eps[:, 2, 2], -Kx * eps[:, 2, 1] / eps[:, 2, 2],
           np.tile(0, i), np.tile(1, i) - Kx**2 / eps[:, 2, 2]],
@@ -875,8 +884,9 @@ class IsotropicHalfSpace(HalfSpace):
                            If n ∈ ℂ, then Φ ∈ ℂ
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
+
         nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
-        Kx = nx * np.sin(Phi)
+        Kx = nx * np.sin(Phi * sc.pi / 180)
         return Kx
 
     def get_Kz_from_Kx(self, Kx, k0):
@@ -904,7 +914,7 @@ class IsotropicHalfSpace(HalfSpace):
         # May be vectorized when I have time?
         nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         sin_Phi = Kx/nx
-        Phi = np.arcsin(sin_Phi)
+        Phi = 180 * np.arcsin(sin_Phi) / sc.pi
         return Phi
 
     def getTransitionMatrix(self, Kx, k0, inv=False):
@@ -919,7 +929,12 @@ class IsotropicHalfSpace(HalfSpace):
         nx = self.material.getRefractiveIndex(2*sc.pi/k0, unit='m')[:, 0, 0]
         sin_Phi = Kx/nx
         cos_Phi = sqrt(1 - sin_Phi**2)
-        i = len(nx)
+
+        if np.shape(Kx) == ():
+            i = 1
+        else:
+            i = np.shape(Kx)[0]
+
         if inv:
             L = np.tile(np.array([[0, 1, 0, 0],
                                   [0, 1, 0, 0],
@@ -1565,14 +1580,13 @@ class Evaluation:
         phi_i:      incidence angle of the light (deg)
         unit:       unit of the wavelength (default='nm')
         """
-        if isinstance(lbda, int) or isinstance(lbda, float):
-            lbda = np.array([lbda])
 
         self.structure = structure
         self.lbda = lbda * UnitConversion[unit]
         self.circular = circular
+
         k0 = 2 * sc.pi / self.lbda
-        Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
+        Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(phi_i, k0)
 
         self.T_ri, self.T_ti = structure.getJones(Kx, k0)
         # self.power_corr = structure.getPowerTransmissionCorrection(Kx, k0)
@@ -1635,8 +1649,8 @@ class Evaluation:
                       [0,  1,    1,  0],
                       [0,  1j, -1j,  0]])
 
-        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', J, np.conjugate(J))
-                         .reshape(J.shape[0], 4, 4) @ A.T)
+        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', S, np.conjugate(S))
+                         .reshape(S.shape[0], 4, 4) @ A.T)
 
         m11 = Mueller[:, 0, 0]
         Mueller = Mueller / m11[:, None, None]
