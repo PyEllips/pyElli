@@ -1114,14 +1114,14 @@ class HomogeneousIsotropicLayer(HomogeneousLayer):
         if isinstance(h, tuple):
             (name, lbda) = h
             if name == "QWP":
-                h = self.get_QWP_thickness(h, unit)
+                h = self.get_QWP_thickness(lbda, unit)
             else:
                 raise ValueError("Thickness not correctly defined.")
         self.h = h * UnitConversion[unit]
 
     def get_QWP_thickness(self, lbda, unit='nm'):
         """Return the thickness of a Quater Wave Plate at wavelength 'lbda' (nm)."""
-        nr = np.real(self.material.getRefractiveIndex(lbda, unit)[0, 0])
+        nr = np.real(self.material.getRefractiveIndex(lbda, unit)[0, 0, 0])
         return lbda / (4.*nr)
 
 
@@ -1425,7 +1425,7 @@ class Structure:
         """
         profile = self.getPermittivityProfile(lbda, unit)
         (h, epsilon) = list(zip(*profile))  # unzip
-        n = [sqrt((v.T * eps * v)[0, 0]) for eps in epsilon]
+        n = [sqrt((v.T * eps * v)[0, 0, 0]) for eps in epsilon]
         return list(zip(h, n))
 
     def drawStructure(self, lbda=1000, unit='nm', method="graph", margin=0.15):
