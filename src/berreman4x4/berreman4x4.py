@@ -841,7 +841,7 @@ class IsotropicHalfSpace(HalfSpace):
         Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         """
         nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
-        Kx = nx * np.sin(Phi)
+        Kx = nx * np.sin(Phi * sc.pi / 180)
         return Kx
 
     def get_Kz_from_Kx(self, Kx, k0):
@@ -869,7 +869,7 @@ class IsotropicHalfSpace(HalfSpace):
         # May be vectorized when I have time?
         nx = self.material.getRefractiveIndex(2*sc.pi/k0)[:, 0, 0]
         sin_Phi = Kx/nx
-        Phi = np.arcsin(sin_Phi)
+        Phi = 180 * np.arcsin(sin_Phi) / sc.pi
         return Phi
 
     def getTransitionMatrix(self, Kx, k0, inv=False):
@@ -1537,7 +1537,7 @@ class Evaluation:
         self.lbda = lbda
         self.circular = circular
         k0 = 2 * sc.pi / lbda / 1e-9
-        Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
+        Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(phi_i, k0)
 
         self.T_ri, self.T_ti = structure.getJones(Kx, k0)
         # self.power_corr = structure.getPowerTransmissionCorrection(Kx, k0)
