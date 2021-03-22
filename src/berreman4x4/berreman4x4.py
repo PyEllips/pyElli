@@ -45,8 +45,10 @@ UnitConversion = {
     'cm': 1e-2,
     'mm': 1e-3,
     'µm': 1e-6,
+    'um': 1e-6,
     'nm': 1e-9,
     'A': 1e-10,
+    'Å': 1e-10,
     'pm': 1e-12
 }
 
@@ -236,10 +238,10 @@ class DispersionSellmeier(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda, unit):
+        def dielectricFunction(lbda, unit='nm'):
             lbda = lbda * UnitConversion[unit] / UnitConversion['µm']
 
-            return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi**2)
+            return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
                            for Ai, Bi in self.coeffs)
 
         self.dielectricFunction = dielectricFunction
@@ -280,7 +282,7 @@ class DispersionDrudeResistivity(DispersionLaw):
         hbar = sc.values("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.values("vacuum electric permittivity") * 1e-2
 
-        def dielectricFunction(lbda, unit):
+        def dielectricFunction(lbda, unit='nm'):
             E = Lambda2E(lbda, unit)
             return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
 
@@ -461,7 +463,7 @@ class DispersionTable(DispersionLaw):
         self.interpolation = scipy.interpolate.interp1d(
             lbda * UnitConversion[unit], n**2, kind='cubic')
 
-        def dielectricFunction(self, lbda, unit='nm'):
+        def dielectricFunction(lbda, unit='nm'):
             lbda = lbda * UnitConversion[unit]
             return self.interpolation(lbda)
 
@@ -480,7 +482,7 @@ class DispersionTableEpsilon(DispersionLaw):
         self.interpolation = scipy.interpolate.interp1d(
             lbda * UnitConversion[unit], epsilon, kind='cubic')
 
-        def dielectricFunction(self, lbda, unit='nm'):
+        def dielectricFunction(lbda, unit='nm'):
             lbda = lbda * UnitConversion[unit]
             return self.interpolation(lbda)
 
@@ -600,7 +602,7 @@ class InhomogeneousMaterial:
         """Creates a new inhomogeneous material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def getTensor(self, z, lbda):
+    def getTensor(self, z, lbda, unit='nm'):
         """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
 
         'z' : position where the tensor is evaluated
@@ -1569,7 +1571,7 @@ class Evaluation:
         self.structure = structure
         self.lbda = lbda * UnitConversion[unit]
         self.circular = circular
-        k0 = 2 * sc.pi / lbda
+        k0 = 2 * sc.pi / self.lbda
         Kx = self.structure.frontHalfSpace.get_Kx_from_Phi(np.deg2rad(phi_i), k0)
 
         self.T_ri, self.T_ti = structure.getJones(Kx, k0)
