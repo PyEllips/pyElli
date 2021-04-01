@@ -174,7 +174,7 @@ class DispersionSum(DispersionLaw):
     """Representation for a sum of two dispersions"""
 
     def __init__(self, disp1, disp2):
-        self.dielectricFunction = lambda lbda: disp1(lbda) + disp2(lbda)
+        self.dielectricFunction = lambda lbda, unit: disp1(lbda, unit) + disp2(lbda, unit)
 
 
 class DispersionLess(DispersionLaw):
