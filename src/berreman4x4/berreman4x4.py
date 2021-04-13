@@ -147,7 +147,7 @@ class DispersionLaw:
 
     def __add__(self, other):
         """Add up the dielectric function of multiple models"""
-        return DispersionSum(self.dielectricFunction, other.dielectricFunction)
+        return DispersionSum(self, other)
 
     def getDielectricConj(self, lbda, unit='nm'):
         """Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
