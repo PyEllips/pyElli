@@ -232,7 +232,7 @@ class DispersionSellmeier(DispersionLaw):
     def __init__(self, *coeffs):
         """Creates a Sellmeier dispersion law.
 
-        Sellmeier coefficients [B1, λ1], [B2, λ2],...
+        Sellmeier coefficients [A1, B1], [A1, B1],...
           Ai : coefficient for n² contribution
           Bi : resonance wavelength (µm^-2)
 
