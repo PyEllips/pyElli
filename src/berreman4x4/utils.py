@@ -1,9 +1,11 @@
+# Encoding: utf-8
 import pandas as pd
 import numpy as np
 import scipy.constants as sc
-from .berreman4x4 import DispersionTableEpsilon
+from .dispersions import DispersionTableEpsilon
 
-def calc_pseudo_diel(df, angle):
+
+def calcPseudoDiel(df, angle):
     psi = df['Ψ'] * np.pi / 180
     delta = df['Δ'] * np.pi / 180
     theta = angle * np.pi / 180
@@ -13,6 +15,7 @@ def calc_pseudo_diel(df, angle):
 
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),
                       'ϵ2': eps.apply(lambda x: x.imag)}, axis=1)
+
 
 class SpectraRay():
 
