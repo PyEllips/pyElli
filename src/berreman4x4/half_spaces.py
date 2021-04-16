@@ -3,7 +3,7 @@ import numpy as np
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
-from .delta_matrix import buildDeltaMatrix
+from .math import buildDeltaMatrix
 
 class HalfSpace:
     """Homogeneous half-space with arbitrary permittivity.

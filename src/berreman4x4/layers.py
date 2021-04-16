@@ -1,9 +1,8 @@
 # Encoding: utf-8
 import numpy as np
 import scipy.constants as sc
-from .delta_matrix import buildDeltaMatrix
 from .dispersions import UnitConversion
-from .propagator import hs_propagator_lin, hs_propagator_Pade
+from .math import hs_propagator_lin, hs_propagator_Pade, buildDeltaMatrix
 
 class Layer:
     """A very general layer (abstract class).
