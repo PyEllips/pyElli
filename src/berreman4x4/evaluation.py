@@ -14,10 +14,11 @@ class Evaluation:
     T_ri = None             # Jones matrix for reflection
     T_ti = None             # Jones matrix for transmission
     power_corr = None       # Power correction coefficient for transmission
-    Tc_ri = None
-    Rc = None
-    Tc_ti = None
-    Tc = None
+
+    Tc_ri = []
+    Rc = []
+    Tc_ti = []
+    Tc = []
 
     def __init__(self, structure, lbda, phi_i, unit='nm', circular=False):
         """Record the result of the requested simulation for a given list of
