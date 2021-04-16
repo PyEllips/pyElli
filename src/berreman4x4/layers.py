@@ -2,7 +2,7 @@
 import numpy as np
 import scipy.constants as sc
 from .delta_matrix import buildDeltaMatrix
-from .utils import UnitConversion
+from .dispersions import UnitConversion
 from .propagator import hs_propagator_lin, hs_propagator_Pade
 
 class Layer:
