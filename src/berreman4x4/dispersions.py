@@ -6,7 +6,7 @@ import scipy.interpolate
 from numpy.lib.scimath import sqrt
 
 from .settings import settings
-from .utils import UnitConversion, lambda2E
+from .math import UnitConversion, lambda2E
 
 
 class DispersionLaw:

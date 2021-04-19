@@ -4,7 +4,7 @@ from numpy.lib.scimath import sqrt
 
 from .rotations import rotation_v_theta
 from .settings import settings
-from .utils import UnitConversion
+from .math import UnitConversion
 
 
 class Material:

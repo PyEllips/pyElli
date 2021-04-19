@@ -4,6 +4,7 @@ from .evaluation import Evaluation
 from .dispersions import *
 from .half_spaces import *
 from .layers import *
+from .math import lambda2E
 from .structure import *
 from .materials import *
 from .settings import *

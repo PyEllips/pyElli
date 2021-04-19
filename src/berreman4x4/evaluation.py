@@ -3,7 +3,7 @@ import numpy as np
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
-from .utils import UnitConversion
+from .math import UnitConversion
 from .settings import settings
 
 
