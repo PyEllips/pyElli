@@ -2,8 +2,9 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
-from .utils import UnitConversion
 from .rotations import rotation_v_theta
+from .settings import settings
+from .utils import UnitConversion
 
 
 class Material:
@@ -40,7 +41,7 @@ class Material:
         else:
             i = np.shape(lbda)[0]
 
-        epsilon = np.zeros((i, 3, 3), dtype=complex)
+        epsilon = np.zeros((i, 3, 3), dtype=settings['dtype'])
 
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda, unit)
         epsilon[:, 1, 1] = self.law_y.getDielectric(lbda, unit)

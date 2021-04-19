@@ -4,6 +4,8 @@ import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
 from .math import buildDeltaMatrix
+from .settings import settings
+
 
 class HalfSpace:
     """Homogeneous half-space with arbitrary permittivity.
@@ -162,7 +164,7 @@ class IsotropicHalfSpace(HalfSpace):
             L = np.tile(np.array([[0, 1, 0, 0],
                                   [0, 1, 0, 0],
                                   [0, 0, 0, 0],
-                                  [0, 0, 0, 0]], dtype=complex), (i, 1, 1))
+                                  [0, 0, 0, 0]], dtype=settings['dtype']), (i, 1, 1))
             L += np.tile(np.array([[0, 0, 0, 0],
                                    [0, 0, 0, 0],
                                    [1, 0, 0, 0],
@@ -185,7 +187,7 @@ class IsotropicHalfSpace(HalfSpace):
             L = np.tile(np.array([[0, 0, 0, 0],
                                   [1, 1, 0, 0],
                                   [0, 0, 0, 0],
-                                  [0, 0, 0, 0]], dtype=complex), (i, 1, 1))
+                                  [0, 0, 0, 0]], dtype=settings['dtype']), (i, 1, 1))
             L += np.tile(np.array([[0, 0, 1, 1],
                                    [0, 0, 0, 0],
                                    [0, 0, 0, 0],

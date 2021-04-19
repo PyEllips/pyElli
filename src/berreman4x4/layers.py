@@ -2,8 +2,8 @@
 import numpy as np
 import scipy.constants as sc
 
-from .utils import UnitConversion
 from .math import hs_propagator_lin, hs_propagator_Pade, buildDeltaMatrix
+from .utils import UnitConversion
 
 
 class Layer:

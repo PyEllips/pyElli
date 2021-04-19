@@ -81,15 +81,15 @@ def hs_propagator_Pade(Delta, h, k0):
     """
     mats = 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
 
-    if settings['expmBackend'] == 'scipy':
+    if settings['ExpmBackend'] == 'scipy':
         P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]
 
-    elif settings['expmBackend'] == 'tensorflow':
+    elif settings['ExpmBackend'] == 'tensorflow':
         t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
         texp = tf.linalg.expm(t)
         P_hs_Pade = np.array(texp)
 
-    elif settings['expmBackend'] == 'pytorch':
+    elif settings['ExpmBackend'] == 'pytorch':
         t = torch.from_numpy(mats)
         texp = torch.matrix_exp(t)
         P_hs_Pade = texp.numpy()

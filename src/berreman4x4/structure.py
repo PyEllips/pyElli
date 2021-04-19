@@ -3,12 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.lib.scimath import sqrt
 
-from .half_spaces import IsotropicHalfSpace
 from .evaluation import Evaluation
+from .half_spaces import IsotropicHalfSpace
 
 e_x = np.array([1, 0, 0]).reshape((3,))  # base vectors
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
+
 
 class Structure:
     """Description of the whole structure.

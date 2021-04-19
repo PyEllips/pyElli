@@ -1,11 +1,18 @@
 # Encoding: utf-8
+import numpy as np
 
 """
 Settings used during runtime.
 Change in script by accessing the settings dict.
 
+dtype:
+    Datatype used by numpy
 
-expmBackend:
+    np.complex128 (default)
+    np.complex64
+
+
+ExpmBackend:
     Library used to calculate the matrix exponential
 
     scipy (default) - not vectorized, thus slow
@@ -17,5 +24,6 @@ expmBackend:
 # Default settings
 
 settings = {
-    'expmBackend': 'scipy'
+    'dtype': np.complex128,
+    'ExpmBackend': 'scipy'
 }

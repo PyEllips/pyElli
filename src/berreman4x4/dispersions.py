@@ -5,6 +5,7 @@ from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 from numpy.lib.scimath import sqrt
 
+from .settings import settings
 from .utils import UnitConversion, lambda2E
 
 
@@ -16,7 +17,7 @@ class DispersionLaw:
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    def dielectricFunction(lbda, unit): return 0 * 1j       # Complex dielectric function
+    def dielectricFunction(lbda, unit): return 0 * 1j     # Complex dielectric function
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
@@ -39,7 +40,7 @@ class DispersionLaw:
     def getDielectric(self, lbda, unit='nm'):
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 + iε2."""
-        return self.dielectricFunction(lbda, unit)
+        return np.asarray(self.dielectricFunction(lbda, unit), dtype=settings['dtype'])
 
     def getRefractiveIndex(self, lbda, unit='nm'):
         """Returns the refractive index for wavelength 'lbda' default unit (nm)

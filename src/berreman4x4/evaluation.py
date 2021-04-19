@@ -4,13 +4,14 @@ import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
 from .utils import UnitConversion
+from .settings import settings
 
 
 class Evaluation:
     """Record of a simulation result."""
 
     structure = None        # Simulated structure
-    lbda = None        # Wavelength List for evaluation
+    lbda = None             # Wavelength List for evaluation
     T_ri = None             # Jones matrix for reflection
     T_ti = None             # Jones matrix for transmission
     power_corr = None       # Power correction coefficient for transmission
@@ -30,7 +31,7 @@ class Evaluation:
         """
 
         self.structure = structure
-        self.lbda = lbda * UnitConversion[unit]
+        self.lbda = np.asarray(lbda * UnitConversion[unit], dtype=settings['dtype'])
         self.circular = circular
 
         k0 = 2 * sc.pi / self.lbda
