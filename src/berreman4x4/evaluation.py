@@ -3,7 +3,8 @@ import numpy as np
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
-from .dispersions import UnitConversion
+from .utils import UnitConversion
+
 
 class Evaluation:
     """Record of a simulation result."""

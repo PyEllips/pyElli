@@ -5,6 +5,24 @@ import scipy.constants as sc
 from .dispersions import DispersionTableEpsilon
 
 
+UnitConversion = {
+    'm': 1,
+    'cm': 1e-2,
+    'mm': 1e-3,
+    'µm': 1e-6,
+    'um': 1e-6,
+    'nm': 1e-9,
+    'A': 1e-10,
+    'Å': 1e-10,
+    'pm': 1e-12
+}
+
+
+def lambda2E(value, unit='nm'):
+    '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
+    return sc.speed_of_light * sc.Planck / (value * UnitConversion[unit] / UnitConversion['nm'])
+
+
 def calcPseudoDiel(df, angle):
     psi = df['Ψ'] * np.pi / 180
     delta = df['Δ'] * np.pi / 180

@@ -5,21 +5,8 @@ from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 from numpy.lib.scimath import sqrt
 
-UnitConversion = {
-    'm': 1,
-    'cm': 1e-2,
-    'mm': 1e-3,
-    'µm': 1e-6,
-    'um': 1e-6,
-    'nm': 1e-9,
-    'A': 1e-10,
-    'Å': 1e-10,
-    'pm': 1e-12
-}
+from .utils import UnitConversion, lambda2E
 
-def lambda2E(value, unit='nm'):
-    '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
-    return 1239.8419840550368 / (value * UnitConversion[unit] / 1e-9)
 
 class DispersionLaw:
     """Dispersion law (abstract class).
@@ -29,7 +16,7 @@ class DispersionLaw:
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    dielectricFunction = lambda lbda, unit: 0 * 1j       # Complex dielectric function
+    def dielectricFunction(lbda, unit): return 0 * 1j       # Complex dielectric function
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""

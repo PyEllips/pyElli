@@ -2,8 +2,9 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
-from .dispersions import UnitConversion
+from .utils import UnitConversion
 from .rotations import rotation_v_theta
+
 
 class Material:
     """Base class for materials (abstract class).
@@ -105,6 +106,7 @@ class BiaxialMaterial(Material):
 
 #########################################################
 # Inhomogeneous materials...
+
 
 class InhomogeneousMaterial:
     """Base class for inhomogeneous materials (abstract class).

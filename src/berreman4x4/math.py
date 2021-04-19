@@ -1,6 +1,7 @@
 # Encoding: utf-8
 import numpy as np
 import scipy.linalg
+
 from .settings import settings
 
 try:
