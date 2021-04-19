@@ -1,6 +1,4 @@
 # Encoding: utf-8
-import numpy as np
-
 """
 Settings used during runtime.
 Change in script by accessing the settings dict.
@@ -20,9 +18,9 @@ ExpmBackend:
     pytorch         - experimental
 
 """
+import numpy as np
 
 # Default settings
-
 settings = {
     'dtype': np.complex128,
     'ExpmBackend': 'scipy'
