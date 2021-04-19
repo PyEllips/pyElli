@@ -10,6 +10,7 @@ expmBackend:
 
     scipy (default) - not vectorized, thus slow
     tensorflow      - faster, but experimental and maybe loss of accuracy
+    pytorch         - experimental
 
 """
 

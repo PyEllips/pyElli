@@ -8,6 +8,11 @@ try:
 except ImportError:
     pass
 
+try:
+    import torch
+except ImportError:
+    pass
+
 
 def buildDeltaMatrix(Kx, eps):
     """Returns Delta matrix for given permittivity and reduced wave number.
@@ -82,6 +87,11 @@ def hs_propagator_Pade(Delta, h, k0):
         t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
         texp = tf.linalg.expm(t)
         P_hs_Pade = np.array(texp)
+
+    elif settings['expmBackend'] == 'pytorch':
+        t = torch.from_numpy(mats)
+        texp = torch.matrix_exp(t)
+        P_hs_Pade = texp.numpy()
 
     else:
         raise ValueError("Wrong expmBackend configuration.")
