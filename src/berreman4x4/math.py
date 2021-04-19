@@ -1,12 +1,13 @@
 # Encoding: utf-8
 import numpy as np
 import scipy.linalg
+from .settings import settings
 
-TF_IMPORTED = True
 try:
     import tensorflow as tf
 except ImportError:
-    TF_IMPORTED = False
+    pass
+
 
 def buildDeltaMatrix(Kx, eps):
     """Returns Delta matrix for given permittivity and reduced wave number.
@@ -33,6 +34,7 @@ def buildDeltaMatrix(Kx, eps):
           np.tile(0, i), -Kx * eps[:, 0, 2] / eps[:, 2, 2]]])
     Delta = np.moveaxis(Delta, 2, 0)
     return Delta
+
 
 def hs_propagator(Delta, h, k0, method="linear"):
     """Returns propagator for homogeneous slab of thickness h.
@@ -73,11 +75,15 @@ def hs_propagator_Pade(Delta, h, k0):
     """
     mats = 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
 
-    if TF_IMPORTED:
-        t = tf.convert_to_tensor(mats, dtype=tf.complex64)
+    if settings['expmBackend'] == 'scipy':
+        P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]
+
+    elif settings['expmBackend'] == 'tensorflow':
+        t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
         texp = tf.linalg.expm(t)
         P_hs_Pade = np.array(texp)
+
     else:
-        P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]
+        raise ValueError("Wrong expmBackend configuration.")
 
     return P_hs_Pade

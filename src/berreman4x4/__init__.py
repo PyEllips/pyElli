@@ -6,6 +6,7 @@ from .half_spaces import *
 from .layers import *
 from .structure import *
 from .materials import *
+from .settings import *
 from .utils import *
 
 from importlib_metadata import PackageNotFoundError, version
