@@ -16,6 +16,13 @@ except ImportError:
     pass
 
 
+# base vectors
+e_x = np.array([1, 0, 0]).reshape((3,))
+e_y = np.array([0, 1, 0]).reshape((3,))
+e_z = np.array([0, 0, 1]).reshape((3,))
+
+
+# Unit factors
 UnitConversion = {
     'm': 1,
     'cm': 1e-2,
