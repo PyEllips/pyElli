@@ -28,10 +28,11 @@ UnitConversion = {
     'pm': 1e-12
 }
 
+CONV_NM_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz') * 1e9
 
 def lambda2E(value, unit='nm'):
     '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
-    return sc.speed_of_light * sc.Planck / (value * UnitConversion[unit] / UnitConversion['nm'])
+    return CONV_NM_EV / (value * UnitConversion[unit] / UnitConversion['nm'])
 
 
 def buildDeltaMatrix(Kx, eps):
