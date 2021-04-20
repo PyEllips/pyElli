@@ -16,6 +16,13 @@ except ImportError:
     pass
 
 
+# base vectors
+e_x = np.array([1, 0, 0]).reshape((3,))
+e_y = np.array([0, 1, 0]).reshape((3,))
+e_z = np.array([0, 0, 1]).reshape((3,))
+
+
+# Unit factors
 UnitConversion = {
     'm': 1,
     'cm': 1e-2,
@@ -88,7 +95,7 @@ def hs_propagator(Delta, h, k0, method="linear"):
 
 def hs_propagator_lin(Delta, h, k0):
     """Returns propagator with linear approximation."""
-    P_hs_lin = np.identity(4) + 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
+    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, k0)
     return P_hs_lin
 
 
@@ -99,7 +106,7 @@ def hs_propagator_Pade(Delta, h, k0):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    mats = 1j * h * np.swapaxes(k0 * np.swapaxes(Delta, 0, 2), 0, 2)
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
 
     if settings['ExpmBackend'] == 'scipy':
         P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]

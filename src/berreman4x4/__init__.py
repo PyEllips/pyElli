@@ -4,10 +4,11 @@ from .evaluation import Evaluation
 from .dispersions import *
 from .half_spaces import *
 from .layers import *
-from .math import lambda2E
-from .structure import *
 from .materials import *
+from .math import lambda2E
+from .rotations import *
 from .settings import *
+from .structure import *
 from .utils import *
 
 from importlib_metadata import PackageNotFoundError, version
