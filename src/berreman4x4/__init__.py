@@ -4,9 +4,10 @@ from .dispersions import *
 from .experiment import Experiment
 from .materials import *
 from .math import lambda2E
-from .result import result
+from .result import Result
 from .rotations import *
 from .settings import *
+from .solver import *
 from .structure import *
 from .utils import *
 

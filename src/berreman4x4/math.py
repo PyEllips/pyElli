@@ -49,7 +49,7 @@ def unitConversion(tup):
     If only a wavelength is given it asumes 'nm' as unit.
     '''
     if type(tup) == tuple:
-        value, unit = tuple
+        (value, unit) = tup
         return value * unitFactors[unit]
     else:
         return tup * unitFactors['nm']
@@ -112,13 +112,15 @@ def hs_propagator_lin(Delta, h, k0):
     return P_hs_lin
 
 
-def hs_propagator_Pade(Delta, h, k0):
+def hs_propagator_Pade(Delta, h, lbda):
     """Returns propagator with Padé approximation.
 
     The diagonal Padé approximant of any order is symplectic, i.e.
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
+    k0 = 2*sc.pi / unitConversion(lbda)
+
     mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
 
     if settings['ExpmBackend'] == 'scipy':

@@ -16,8 +16,8 @@ class Structure:
     * back half-space (exit), may be anisotropic
     * layer succession
     """
-    frontHalfSpace = None
-    backHalfSpace = None
+    frontMaterial = None
+    backMaterial = None
     layers = []  # list of layers
 
     def __init__(self, front=None, layers=None, back=None):
@@ -27,23 +27,23 @@ class Structure:
         'layers' : layer list, see setLayers()
         'back' : back half space, see setBackHalfSpace()
         """
-        self.setFrontHalfSpace(front)
+        self.setFrontMaterial(front)
         self.setLayers(layers)
-        self.setBackHalfSpace(back)
+        self.setBackMaterial(back)
 
-    def setFrontHalfSpace(self, halfSpace):
+    def setFrontMaterial(self, material):
         """Defines the front half-space material.
 
         'material' : Material object
         """
-        self.frontHalfSpace = halfSpace
+        self.frontMaterial = material
 
-    def setBackHalfSpace(self, halfSpace):
+    def setBackMaterial(self, material):
         """Defines the back half-space material.
 
         'material' : Material object
         """
-        self.backHalfSpace = halfSpace
+        self.backMaterial = material
 
     def setLayers(self, layers):
         """Set list of layers.
@@ -64,31 +64,31 @@ class Layer:
     """Homogeneous layer finite of dielectric material."""
 
     material = None     # Material making the layer
-    h = None            # Thickness of the layer
+    d = None            # Thickness of the layer
 
-    def __init__(self, material, h):
+    def __init__(self, material, d):
         """New layer of material 'material', with thickness 'h'
 
         'material' : Material object
         'h'        : Thickness of layer in nm or tuple (thickness, unit)
         """
         self.setMaterial(material)
-        self.setThickness(h)
+        self.setThickness(d)
 
     def setMaterial(self, material):
         """Defines the material for this layer. """
         self.material = material
 
-    def setThickness(self, h):
+    def setThickness(self, d):
         """Defines the thickness of this homogeneous layer."""
-        self.h = unitConversion(h)
+        self.d = unitConversion(d)
 
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
         Returns a list containing one tuple: [(h, epsilon)]
         """
-        return [(self.h, self.material.getTensor(lbda))]
+        return (self.d, self.material.getTensor(lbda))
 
 
 #########################################################

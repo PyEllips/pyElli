@@ -36,13 +36,22 @@ class Material:
 
     def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
-        if np.shape(lbda) == ():
+
+        # Check for shape of lbda
+        if type(lbda) == tuple:
+            shape = np.shape(lbda[0])
+        else:
+            shape = np.shape(lbda)
+
+        if shape == ():
             i = 1
         else:
-            i = np.shape(lbda)[0]
+            i = shape[0]
 
+        # create empty tensor
         epsilon = np.zeros((i, 3, 3), dtype=settings['dtype'])
 
+        # get get dielectric functions from dispersion law
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
         epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
         epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)

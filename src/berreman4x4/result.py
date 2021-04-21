@@ -1,6 +1,6 @@
 # Encoding: utf-8
 
-from .solver import SolverExpm
+from .solverExpm import SolverExpm
 
 
 class Result:
@@ -8,16 +8,18 @@ class Result:
 
     experiment = None       # Simulated experiment
     solver = None
-    dataDict = {}
+    data = None
 
     def __init__(self, experiment, solver=SolverExpm):
         """
 
         """
         self.experiment = experiment
-        self.solver = solver
+#        self.solver = solver
 
-        self.dataDict = self.solver.evaluate(self.experiment)
+        result = solver(self.experiment)
+
+        self.data = result.data
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.
