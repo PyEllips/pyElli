@@ -1,6 +1,6 @@
 # Encoding: utf-8
-from .evaluation import Evaluation
 from .math import unitConversion
+from .result import Result
 
 
 class Experiment:
@@ -60,4 +60,4 @@ class Experiment:
 
     def evaluate(self):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(self)
+        return Result(self)

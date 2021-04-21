@@ -1,9 +1,9 @@
 # Encoding: utf-8
 import numpy as np
 
-from .evaluation import Evaluation
 from .experiment import Experiment
 from .math import unitConversion
+from .result import Result
 
 
 #########################################################
@@ -54,7 +54,7 @@ class Structure:
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(Experiment(self, lbda, theta_i, None))
+        return Result(Experiment(self, lbda, theta_i, None))
 
 
 #########################################################
