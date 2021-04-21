@@ -23,7 +23,7 @@ e_z = np.array([0, 0, 1]).reshape((3,))
 
 
 # Unit factors
-UnitConversion = {
+unitFactors = {
     'm': 1,
     'cm': 1e-2,
     'mm': 1e-3,
@@ -38,9 +38,21 @@ UnitConversion = {
 CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
 
-def lambda2E(value, unit='nm'):
+def lambda2E(value):
     '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
-    return CONV_M_EV / (value * UnitConversion[unit])
+    return CONV_M_EV / unitConversion(value)
+
+
+def unitConversion(tup):
+    '''Returns the wavelength in m for a given value with [unit] (default 'nm')
+    Takes a tupel (wavelength, unitString).
+    If only a wavelength is given it asumes 'nm' as unit.
+    '''
+    if type(tup) == tuple:
+        value, unit = tuple
+        return value * unitFactors[unit]
+    else:
+        return tup * unitFactors['nm']
 
 
 def buildDeltaMatrix(Kx, eps):

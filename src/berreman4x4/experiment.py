@@ -1,6 +1,6 @@
 # Encoding: utf-8
 from .evaluation import Evaluation
-from .math import UnitConversion
+from .math import unitConversion
 
 
 class Experiment:
@@ -13,15 +13,13 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure=None, jonesVector=None, theta_i=None,
-                 lbda=None, unit='nm'):
+    def __init__(self, structure=None, lbda=None, theta_i=None, jonesVector=None):
         """Creates an empty structure.
 
         'structure' : Structure object
-        'jonesVector' : Jones Vector of incident light
+        'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
         'theta_i' : incident angle in degrees
-        'lbda' : single or list of wavelengths
-        'unit' : unit to use (default: nm)
+        'jonesVector' : Jones Vector of incident light
         """
         self.setStructure(structure)
         self.setJonesVector(jonesVector)
@@ -53,13 +51,12 @@ class Experiment:
         """
         self.theta_i = theta_i
 
-    def setLbda(self, lbda, unit='nm'):
+    def setLbda(self, lbda):
         """Set experiment wavelengths.
 
-        'lbda' : single or list of wavelengths
-        'unit' : unit to use (default: nm)
+        'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
         """
-        self.lbda = lbda * UnitConversion[unit]
+        self.lbda = (unitConversion(lbda), 'm')
 
     def evaluate(self):
         """Return the Evaluation of the structure for the given parameters"""

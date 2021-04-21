@@ -6,7 +6,7 @@ import scipy.interpolate
 from numpy.lib.scimath import sqrt
 
 from .settings import settings
-from .math import UnitConversion, lambda2E
+from .math import lambda2E, unitConversion, unitFactors
 
 
 class DispersionLaw:
@@ -17,7 +17,7 @@ class DispersionLaw:
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    def dielectricFunction(lbda, unit): return 0 * 1j     # Complex dielectric function
+    def dielectricFunction(lbda): return 0 * 1j     # Complex dielectric function
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
@@ -27,25 +27,25 @@ class DispersionLaw:
         """Add up the dielectric function of multiple models"""
         return DispersionSum(self, other)
 
-    def getDielectricConj(self, lbda, unit='nm'):
+    def getDielectricConj(self, lbda):
         """Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 - iε2."""
-        return np.conjugate(self.dielectricFunction(lbda, unit))
+        return np.conjugate(self.dielectricFunction(lbda))
 
-    def getRefractiveIndexConj(self, lbda, unit='nm'):
+    def getRefractiveIndexConj(self, lbda):
         """Returns the conjugated refractive index for wavelength 'lbda' default unit (nm)
         in the convention n - ik."""
-        return sqrt(np.conjugate(self.dielectricFunction(lbda, unit)))
+        return sqrt(np.conjugate(self.dielectricFunction(lbda)))
 
-    def getDielectric(self, lbda, unit='nm'):
+    def getDielectric(self, lbda):
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 + iε2."""
-        return np.asarray(self.dielectricFunction(lbda, unit), dtype=settings['dtype'])
+        return np.asarray(self.dielectricFunction(lbda), dtype=settings['dtype'])
 
-    def getRefractiveIndex(self, lbda, unit='nm'):
+    def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda' default unit (nm)
         in the convention n + ik."""
-        return sqrt(self.dielectricFunction(lbda, unit))
+        return sqrt(self.dielectricFunction(lbda))
 
 
 class DispersionSum(DispersionLaw):
@@ -53,8 +53,8 @@ class DispersionSum(DispersionLaw):
 
     def __init__(self, disp1, disp2):
 
-        self.dielectricFunction = lambda lbda, unit: \
-            disp1.dielectricFunction(lbda, unit) + disp2.dielectricFunction(lbda, unit)
+        self.dielectricFunction = lambda lbda: \
+            disp1.dielectricFunction(lbda) + disp2.dielectricFunction(lbda)
 
 
 class DispersionLess(DispersionLaw):
@@ -68,7 +68,7 @@ class DispersionLess(DispersionLaw):
         """
         self.n = n
 
-        def dielectricFunction(lbda, unit):
+        def dielectricFunction(lbda):
             return self.n**2
 
         self.dielectricFunction = dielectricFunction
@@ -93,9 +93,9 @@ class DispersionCauchy(DispersionLaw):
         self.k1 = k1
         self.k2 = k2
 
-        def dielectricFunction(lbda, unit='nm'):
+        def dielectricFunction(lbda):
             # Convert wavelength to nm
-            lbda = lbda * UnitConversion[unit] / UnitConversion['nm']
+            lbda = unitConversion(lbda) / unitFactors['nm']
 
             N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
                 + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
@@ -118,8 +118,8 @@ class DispersionSellmeier(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda, unit='nm'):
-            lbda = lbda * UnitConversion[unit] / UnitConversion['µm']
+        def dielectricFunction(lbda):
+            lbda = unitConversion(lbda) / unitFactors['µm']
 
             return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
                            for Ai, Bi in self.coeffs)
@@ -140,8 +140,8 @@ class DispersionDrudeEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return self.coeffs[0] + self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
 
         self.dielectricFunction = dielectricFunction
@@ -162,8 +162,8 @@ class DispersionDrudeResistivity(DispersionLaw):
         hbar = sc.value("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.value("vacuum electric permittivity") * 1e-2
 
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
 
         self.dielectricFunction = dielectricFunction
@@ -184,8 +184,8 @@ class DispersionLorentzLambda(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda, unit='nm'):
-            lbda = lbda * UnitConversion[unit] / UnitConversion['nm']
+        def dielectricFunction(lbda):
+            lbda = unitConversion(lbda) / unitFactors['nm']
 
             return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
                            for Ai, Li, Zi in self.coeffs)
@@ -208,8 +208,8 @@ class DispersionLorentzEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return 1 + sum(Ai / (Ei**2 - E**2 - 1j * Ci * E)
                            for Ai, Ei, Ci in self.coeffs)
 
@@ -236,8 +236,8 @@ class DispersionGauss(DispersionLaw):
         self.coeffs = coeffs
         ftos = 2 * sqrt(np.log(2))
 
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
                                  1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
                                  for Ai, Ei, gami in self.coeffs)
@@ -278,8 +278,8 @@ class DispersionTaucLorentz(DispersionLaw):
                 Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
                 2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
 
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             Eg = self.coeffs[0]
             eps_inf = self.coeffs[1]
             return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
@@ -304,8 +304,8 @@ class DispersionTanguy(DispersionLaw):
           a : Sellmeier coefficient for background dielectric constant (eV²)
           b : Sellmeier coefficient for background dielectric constant (eV²)
         """
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return np.conjugate(1 + a / (b - E**2) +
                                 A * R**(d/2 - 1) / (E + 1j * gam)**2 *
                                 (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
@@ -333,18 +333,18 @@ class DispersionTanguy(DispersionLaw):
 class DispersionTable(DispersionLaw):
     """Dispersion law specified by a table"""
 
-    def __init__(self, lbda=None, n=None, unit='nm'):
+    def __init__(self, lbda=None, n=None):
         """Create a dispersion law from a refraction index list.
 
-        'lbda'  : Wavelength list (nm)
+        'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
         self.interpolation = scipy.interpolate.interp1d(
-            lbda * UnitConversion[unit], n**2, kind='cubic')
+            unitConversion(lbda), n**2, kind='cubic')
 
-        def dielectricFunction(lbda, unit='nm'):
-            lbda = lbda * UnitConversion[unit]
+        def dielectricFunction(lbda):
+            lbda = unitConversion(lbda)
             return self.interpolation(lbda)
 
         self.dielectricFunction = dielectricFunction
@@ -353,17 +353,17 @@ class DispersionTable(DispersionLaw):
 class DispersionTableEpsilon(DispersionLaw):
     """Dispersion law specified by a table"""
 
-    def __init__(self, lbda=None, epsilon=None, unit='nm'):
+    def __init__(self, lbda=None, epsilon=None):
         """Create a dispersion law from a dielectric constant list.
 
-        'lbda'  : Wavelength list (nm)
+        'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'ε'     : Refractive index values (can be complex)
         """
         self.interpolation = scipy.interpolate.interp1d(
-            lbda * UnitConversion[unit], epsilon, kind='cubic')
+            unitConversion(lbda), epsilon, kind='cubic')
 
-        def dielectricFunction(lbda, unit='nm'):
-            lbda = lbda * UnitConversion[unit]
+        def dielectricFunction(lbda):
+            lbda = unitConversion(lbda)
             return self.interpolation(lbda)
 
         self.dielectricFunction = dielectricFunction

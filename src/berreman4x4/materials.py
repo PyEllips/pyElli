@@ -4,7 +4,7 @@ from numpy.lib.scimath import sqrt
 
 from .rotations import rotation_v_theta
 from .settings import settings
-from .math import UnitConversion
+from .math import unitConversion
 
 
 class Material:
@@ -34,7 +34,7 @@ class Material:
         """
         self.rotationMatrix = R
 
-    def getTensor(self, lbda, unit='nm'):
+    def getTensor(self, lbda):
         """Returns permittivity tensor matrix for the desired wavelength."""
         if np.shape(lbda) == ():
             i = 1
@@ -43,16 +43,16 @@ class Material:
 
         epsilon = np.zeros((i, 3, 3), dtype=settings['dtype'])
 
-        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda, unit)
-        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda, unit)
-        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda, unit)
+        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
+        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
+        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
 
         epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
         return epsilon
 
-    def getRefractiveIndex(self, lbda, unit='nm'):
+    def getRefractiveIndex(self, lbda):
         """Returns refractive index."""
-        return sqrt(self.getTensor(lbda, unit))
+        return sqrt(self.getTensor(lbda))
 
 
 class IsotropicMaterial(Material):
@@ -121,7 +121,7 @@ class InhomogeneousMaterial:
         """Creates a new inhomogeneous material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def getTensor(self, z, lbda, unit='nm'):
+    def getTensor(self, z, lbda):
         """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
 
         'z' : position where the tensor is evaluated
@@ -148,11 +148,11 @@ class TwistedMaterial(InhomogeneousMaterial):
     angle = None  # Angle of the twist
     div = None          # Number of slices
 
-    def __init__(self, material, d, unit='nm', angle=90, div=25):
+    def __init__(self, material, d, angle=90, div=25):
         """Creates a layer with a twisted material.
 
         'material' : material for the twisted layer
-        'd' : thickness of the layer
+        'd' : thickness of the layer in nm or tuple (thickness, unit)
         'angle' : rotation angle for distance 'd'
         'div' : number of slices
 
@@ -164,7 +164,7 @@ class TwistedMaterial(InhomogeneousMaterial):
         exact result with eigenvector decomposition. On the other hand, if
         k0·h is small, a linear or Taylor approximation may suffice.
         """
-        self.setThickness(d, unit)
+        self.setThickness(d)
         self.setMaterial(material)
         self.setAngle(np.deg2rad(angle))
         self.setDivision(div)
@@ -181,13 +181,13 @@ class TwistedMaterial(InhomogeneousMaterial):
         """Defines the material making this TwistedMaterial."""
         self.material = material
 
-    def setThickness(self, d, unit='nm'):
+    def setThickness(self, d):
         """Defines the thickness of this TwistedMaterial."""
-        self.d = d * UnitConversion[unit]
+        self.d = unitConversion(d)
 
-    def getTensor(self, z, lbda, unit='nm'):
+    def getTensor(self, z, lbda):
         """Returns permittivity tensor matrix for position 'z'."""
-        epsilon = self.material.getTensor(lbda, unit)
+        epsilon = self.material.getTensor(lbda)
         R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
         return R @ epsilon @ R.T
 
