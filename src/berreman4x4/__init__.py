@@ -1,13 +1,13 @@
 # Encoding: utf-8
 import sys
-from .evaluation import Evaluation
 from .dispersions import *
-from .half_spaces import *
-from .layers import *
+from .experiment import Experiment
 from .materials import *
 from .math import lambda2E
+from .result import Result
 from .rotations import *
 from .settings import *
+from .solver import *
 from .structure import *
 from .utils import *
 

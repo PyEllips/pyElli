@@ -23,7 +23,7 @@ e_z = np.array([0, 0, 1]).reshape((3,))
 
 
 # Unit factors
-UnitConversion = {
+unitFactors = {
     'm': 1,
     'cm': 1e-2,
     'mm': 1e-3,
@@ -35,11 +35,24 @@ UnitConversion = {
     'pm': 1e-12
 }
 
-CONV_NM_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz') * 1e9
+CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
-def lambda2E(value, unit='nm'):
+
+def lambda2E(value):
     '''Returns the Energy in eV of the given wavelength in [unit] (default 'nm')'''
-    return CONV_NM_EV / (value * UnitConversion[unit] / UnitConversion['nm'])
+    return CONV_M_EV / unitConversion(value)
+
+
+def unitConversion(tup):
+    '''Returns the wavelength in m for a given value with [unit] (default 'nm')
+    Takes a tupel (wavelength, unitString).
+    If only a wavelength is given it asumes 'nm' as unit.
+    '''
+    if type(tup) == tuple:
+        (value, unit) = tup
+        return value * unitFactors[unit]
+    else:
+        return tup * unitFactors['nm']
 
 
 def buildDeltaMatrix(Kx, eps):
@@ -99,13 +112,15 @@ def hs_propagator_lin(Delta, h, k0):
     return P_hs_lin
 
 
-def hs_propagator_Pade(Delta, h, k0):
+def hs_propagator_Pade(Delta, h, lbda):
     """Returns propagator with Padé approximation.
 
     The diagonal Padé approximant of any order is symplectic, i.e.
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
+    k0 = 2*sc.pi / unitConversion(lbda)
+
     mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
 
     if settings['ExpmBackend'] == 'scipy':
