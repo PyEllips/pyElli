@@ -11,7 +11,7 @@ def calcPseudoDiel(df, angle):
     delta = df['Δ'] * np.pi / 180
     theta = angle * np.pi / 180
 
-    rho = np.tan(psi) * np.exp(1j * delta)
+    rho = np.tan(psi) * np.exp(-1j * delta)
     eps = np.sin(theta)**2 * (1 + np.tan(theta)**2 * ((1 - rho) / (1 + rho))**2)
 
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),

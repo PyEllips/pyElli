@@ -88,7 +88,7 @@ def calc_ellips(n_list, d_list, Θ, λ):
     rtotp = Mp[1,0] / Mp[0,0]
     ttotp = 1 / Mp[0,0]
 
-    psi = np.arctan(abs(rtotp / rtots))
+    psi = np.arctan(np.abs(rtotp / rtots))
     delta = np.angle(-rtotp / rtots)
     rho = rtotp / rtots
 

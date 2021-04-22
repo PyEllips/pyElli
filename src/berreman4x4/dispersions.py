@@ -17,7 +17,8 @@ class DispersionLaw:
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    def dielectricFunction(lbda, unit): return 0 * 1j     # Complex dielectric function
+    def dielectricFunction(lbda, unit): 
+        return 0 * 1j     # Complex dielectric function
 
     def __init__(self):
         """Creates a new dispersion law -- abstract class"""
@@ -289,6 +290,24 @@ class DispersionTaucLorentz(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 
+class DispersionHighEnergyBands(DispersionLaw):
+
+    def __init__(self, A, E_xsi):
+        def dielectricFunction(lbda, unit='nm'):
+            E = lambda2E(lbda, unit)
+            a = -(E_xsi - E)**2 / E**3
+            b = (E_xsi + E)**2 / E**3
+            eps_r = 3 * E_xsi / np.pi / E**2 * (a * np.log(np.abs(1 - E / E_xsi)) +
+                                                b * np.log(np.abs(1 + E / E_xsi))
+                                                - 2 / 3 / E_xsi
+                                                - 2 * E_xsi / E**2)
+            eps_i = 3 * E_xsi * (np.abs(E) - E_xsi)**2 / E**5 * np.heaviside(np.abs(E) - E_xsi, 0)
+
+            return A * (eps_r - 1j * eps_i)
+
+        self.dielectricFunction = dielectricFunction
+
+
 class DispersionTanguy(DispersionLaw):
     """Fractional dimensional Tanguy model"""
 
@@ -328,6 +347,18 @@ class DispersionTanguy(DispersionLaw):
         D = d - 1
         return 2 * np.pi * gamma(D/2 + xsi) / gamma(D/2)**2 / gamma(1 - D/2 + xsi) / xsi**(d - 2) * \
             (1 / np.tan(np.pi * (D/2 - xsi)) - 1 / np.tan(np.pi * D))
+
+
+class DispersionPoles(DispersionLaw):
+    """Disperion law for an UV and IR pole, i.e. Lorentz oscillators outside the fitting spectral range"""
+
+    def __init__(self, A_ir, A_uv, E_uv):
+        
+        def dielectricFunction(lbda, unit='nm'):
+            E = lambda2E(lbda, unit)
+            return A_ir / E**2 + A_uv / (E_uv**2 - E**2)
+
+        self.dielectricFunction = dielectricFunction
 
 
 class DispersionTable(DispersionLaw):
