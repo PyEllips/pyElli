@@ -1,9 +1,9 @@
 # Encoding: utf-8
+from abc import ABC, abstractmethod
 import numpy as np
 import scipy.constants as sc
 
-
-class Solver:
+class Solver(ABC):
     '''
     Solver base class to evaluate Experiment objects.
     Here the experiment and structure get unpacked
@@ -21,19 +21,42 @@ class Solver:
 
     data = {}
 
-    def __init__(self, experiment):
+    @property
+    @abstractmethod
+    def T_ri(self):
+        pass
 
+    @property
+    @abstractmethod
+    def T_ti(self):
+        pass
+
+    @property
+    @abstractmethod
+    def Psi(self):
+        pass
+
+    @property
+    @abstractmethod
+    def Delta(self):
+        pass
+
+    @property
+    @abstractmethod
+    def Mueller(self):
+        pass
+
+    def __init__(self, experiment):
         self.permProfile = []
         self.unpackData(experiment)
         self.calculate()
         self.convertResult()
 
+    @abstractmethod
     def calculate(self):
-        """Simulates optical Experiment"""
-        raise NotImplementedError("Should be implemented in derived classes")
+        pass
 
     def unpackData(self, experiment):
-
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i
@@ -47,18 +70,16 @@ class Solver:
 
         self.permProfile.append(self.structure.backMaterial.getTensor(self.lbda))
 
-        """Returns the value of Kx.
-        As detailed in the documentation, 'Phi' is the angle of the wave
-        traveling to the right with respect to the horizontal.
-        kx = n k0 sin(Φ) : Real and constant throughout the structure.
-                           If n ∈ ℂ, then Φ ∈ ℂ
-        Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
-        """
+        # Returns the value of Kx.
+        # As detailed in the documentation, 'Phi' is the angle of the wave
+        # traveling to the right with respect to the horizontal.
+        # kx = n k0 sin(Φ) : Real and constant throughout the structure.
+        #                   If n ∈ ℂ, then Φ ∈ ℂ
+        # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         nx = self.structure.frontMaterial.getRefractiveIndex(self.lbda)[:, 0, 0]
         self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
 
     def convertResult(self):
-
         self.R = np.abs(self.T_ri)**2
         self.T = np.abs(self.T_ti)**2  # * self.power_corr
 
