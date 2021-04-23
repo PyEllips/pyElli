@@ -43,17 +43,7 @@ class SolverExpm(Solver):
     @property
     def jones_matrix_r(self):
         return None
-
-    @property
-    def data(self):
-        return {
-            'T_ri': self.jones_matrix_r,
-            'T_ti': self.jones_matrix_t,
-            'Psi': self.psi,
-            'Delta': self.delta,
-            'Mueller': self.mueller_matrix
-        }
-
+        
     def calculate(self):
         """Simulates optical Experiment"""
         pass

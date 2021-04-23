@@ -44,9 +44,14 @@ class Solver(ABC):
         pass
 
     @property
-    @abstractmethod
     def data(self):
-        pass
+        return {
+            'T_ri': self.jones_matrix_r,
+            'T_ti': self.jones_matrix_t,
+            'Psi': self.psi,
+            'Delta': self.delta,
+            'Mueller': self.mueller_matrix
+        }
 
     def __init__(self, experiment):
         self.permProfile = []
