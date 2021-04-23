@@ -1,7 +1,6 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 import numpy as np
-import scipy.constants as sc
 
 class Solver(ABC):
     '''
