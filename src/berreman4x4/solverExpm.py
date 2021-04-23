@@ -12,6 +12,59 @@ class SolverExpm(Solver):
     Solver class to evaluate Experiment objects.
     Based on Berreman's 4x4 method.
     '''
+    _S = None
+    _jones_matrix_t = None
+    _jones_matrix_r = None
+
+    @property
+    def psi(self):
+        if self._S is None:
+            return None
+        return np.arctan(np.abs(self._S)) * 180 / np.pi
+
+    @property
+    def rho(self):
+        return None
+
+    @property
+    def delta(self):
+        if self._S is None:
+            return None
+        return -np.angle(self._S, deg=True)
+
+    @property
+    def mueller_matrix(self):
+        if self._S is None:
+            return None
+
+        A = np.array([[1,  0,    0,  1],
+                      [1,  0,    0, -1],
+                      [0,  1,    1,  0],
+                      [0,  1j, -1j,  0]])
+
+        mmatrix = np.abs(A @ np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S))
+                        .reshape(self._S.shape[0], 4, 4) @ A.T)
+        m11 = mmatrix[:, 0, 0]
+
+        return mmatrix / m11[:, None, None]
+
+    @property
+    def jones_matrix_t(self):
+        return self._jones_matrix_t
+
+    @property
+    def jones_matrix_r(self):
+        return self._jones_matrix_r
+
+    @property
+    def data(self):
+        return {
+            'T_ri': self.jones_matrix_r,
+            'T_ti': self.jones_matrix_t,
+            'Psi': self.psi,
+            'Delta': self.delta,
+            'Mueller': self.mueller_matrix
+        }
 
     def calculate(self):
         """Simulates optical Experiment"""
@@ -39,8 +92,13 @@ class SolverExpm(Solver):
         # Then we have T_ri = T_rt * T_ti
         T_ri = T_rt @ T_ti
 
-        self.T_ti = T_ti
-        self.T_ri = T_ri
+        r_ss = T_ri[..., 1, 1]
+        S = T_ri / r_ss[:, None, None]
+        S[..., 0, :] = -S[..., 0, :]
+
+        self._jones_matrix_t = T_ti
+        self._jones_matrix_r = T_ri
+        self._S = S
 
 
 def TransitionMatrixHalfspace(Kx, epsilon):

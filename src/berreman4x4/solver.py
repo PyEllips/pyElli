@@ -19,38 +19,40 @@ class Solver(ABC):
     jonesVector = None
     Kx = None
 
-    data = {}
-
     @property
     @abstractmethod
-    def T_ri(self):
+    def psi(self):
         pass
 
     @property
     @abstractmethod
-    def T_ti(self):
+    def delta(self):
         pass
 
     @property
     @abstractmethod
-    def Psi(self):
+    def mueller_matrix(self):
         pass
 
     @property
     @abstractmethod
-    def Delta(self):
+    def jones_matrix_t(self):
         pass
 
     @property
     @abstractmethod
-    def Mueller(self):
+    def jones_matrix_r(self):
+        pass
+
+    @property
+    @abstractmethod
+    def data(self):
         pass
 
     def __init__(self, experiment):
         self.permProfile = []
         self.unpackData(experiment)
         self.calculate()
-        self.convertResult()
 
     @abstractmethod
     def calculate(self):
@@ -78,33 +80,3 @@ class Solver(ABC):
         # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         nx = self.structure.frontMaterial.getRefractiveIndex(self.lbda)[:, 0, 0]
         self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
-
-    def convertResult(self):
-        self.R = np.abs(self.T_ri)**2
-        self.T = np.abs(self.T_ti)**2  # * self.power_corr
-
-        r_ss = self.T_ri[..., 1, 1]           # Extract 'r_ss'
-        S = self.T_ri / r_ss[:, None, None]  # Normalize matrix
-        S[..., 0, :] = -S[..., 0, :]  # Change to ellipsometry sign convention
-
-        self.Psi = np.arctan(np.abs(S))*180/sc.pi
-        self.Delta = -np.angle(S, deg=True)
-
-        A = np.array([[1,  0,    0,  1],
-                      [1,  0,    0, -1],
-                      [0,  1,    1,  0],
-                      [0,  1j, -1j,  0]])
-
-        Mueller = np.abs(A @ np.einsum('aij,akl->aikjl', S, np.conjugate(S))
-                         .reshape(S.shape[0], 4, 4) @ A.T)
-
-        m11 = Mueller[:, 0, 0]
-        self.Mueller = Mueller / m11[:, None, None]
-
-        self.data = {
-            'T_ri': self.T_ri,
-            'T_ti': self.T_ti,
-            'Psi': self.Psi,
-            'Delta': self.Delta,
-            'Mueller': self.Mueller
-        }
