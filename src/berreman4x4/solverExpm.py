@@ -16,21 +16,23 @@ class SolverExpm(Solver):
     _jones_matrix_t = None
     _jones_matrix_r = None
 
+
     @property
     def psi(self):
         if self._S is None:
             return None
-        return np.arctan(np.abs(self._S)) * 180 / np.pi
+        return np.rad2deg(np.arctan(np.abs(self._S[:, 0, 0])))
 
     @property
     def rho(self):
-        return None
+        return self._S[:, 0, 0]
 
     @property
     def delta(self):
         if self._S is None:
             return None
-        return -np.angle(self._S, deg=True)
+        d = -np.angle(self._S[:, 0, 0], deg=True)
+        return np.where(d < 0, d + 360, d)
 
     @property
     def mueller_matrix(self):
@@ -66,10 +68,10 @@ class SolverExpm(Solver):
              for d, epsilon in layers]
         Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
 
-        T = ILf
+        P_tot = np.identity(4)
         for p in P:
-            T = T @ p
-        T = T @ Lb
+            P_tot = p @ P_tot 
+        T = ILf @ P_tot @ Lb
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
         T_it = T[:, 2::-2, 2::-2]

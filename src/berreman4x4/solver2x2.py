@@ -45,8 +45,8 @@ class Solver2x2(Solver):
     @property
     def jones_matrix_r(self):
         return None
-        
-    def list_snell(n_list):
+
+    def list_snell(self, n_list):
         angles = arcsin(n_list[0] * np.sin(self.theta_i) / n_list)
 
         angles[0] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[0], angles[0])), 
@@ -54,14 +54,14 @@ class Solver2x2(Solver):
         angles[-1] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[-1], angles[-1])), 
                             np.pi - angles[-1], angles[-1])
 
-        return angle
-        
+        return angles
+
     def calculate(self):
         """Calculates the transfer matrix for the given material stack"""
         lbda = np.array(self.lbda)
         d, n = list(zip(*self.permProfile))
         d_list = np.array(d)
-        n_list = np.array(n)[:,:,0,0]
+        n_list = np.array(n)[...,0,0]
 
         if n_list.shape[0] != d_list.shape[0]:
             raise Exception("Solver2x2: n and d arrays do not have the same length")

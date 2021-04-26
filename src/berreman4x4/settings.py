@@ -23,5 +23,6 @@ import numpy as np
 # Default settings
 settings = {
     'dtype': np.complex128,
-    'ExpmBackend': 'scipy'
+    'ExpmBackend': 'tensorflow',
+    'solver': 'berreman4x4'
 }

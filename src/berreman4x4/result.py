@@ -1,25 +1,56 @@
 # Encoding: utf-8
-
 from .solverExpm import SolverExpm
-
+from .solver2x2 import Solver2x2
+from .settings import settings
 
 class Result:
     """Record of a simulation result."""
 
-    experiment = None       # Simulated experiment
-    solver = None
-    data = None
+    __experiment = None       # Simulated experiment
+    __result = None
 
-    def __init__(self, experiment, solver=SolverExpm):
+    @property
+    def psi(self):
+        return self.__result.psi
+
+    @property
+    def delta(self):
+        return self.__result.delta
+
+    @property
+    def rho(self):
+        return self.__result.rho
+
+    @property
+    def mueller_matrix(self):
+        return self.__result.mueller_matrix
+
+    @property
+    def jones_matrix_r(self):
+        return self.__result.jones_matrix_r
+
+    @property
+    def jones_matrix_t(self):
+        return self.__result.jones_matrix_t
+
+    def __init__(self, experiment, solver='default'):
         """
 
         """
-        self.experiment = experiment
-#        self.solver = solver
+        self.__experiment = experiment
 
-        result = solver(self.experiment)
+        if solver == 'default' and 'solver' in settings:
+            solver = settings['solver']
 
-        self.data = result.data
+        solvers = ['berreman4x4', 'simple2x2']
+        if solver not in solvers:
+            raise ValueError("Invalid solver type {:}. Expected one of: {:}"
+                             .format(solver, solvers))
+
+        if solver == 'berreman4x4':
+            self.__result = SolverExpm(self.__experiment)
+        elif solver == 'simple2x2':
+            self.__result = Solver2x2(self.__experiment)
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.

@@ -17,6 +17,7 @@ class Solver(ABC):
     theta_i = None
     jonesVector = None
     Kx = None
+    permProfile = None
 
     @property
     @abstractmethod
@@ -53,14 +54,14 @@ class Solver(ABC):
             'Mueller': self.mueller_matrix
         }
 
+    @abstractmethod
+    def calculate(self):
+        pass
+
     def __init__(self, experiment):
         self.permProfile = []
         self.unpackData(experiment)
         self.calculate()
-
-    @abstractmethod
-    def calculate(self):
-        pass
 
     def unpackData(self, experiment):
         self.structure = experiment.structure
