@@ -54,7 +54,7 @@ class Structure:
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Result(Experiment(self, lbda, theta_i, None))
+        return Result(Experiment(self, lbda, theta_i, [1, 0, 1, 0]))
 
 
 #########################################################
