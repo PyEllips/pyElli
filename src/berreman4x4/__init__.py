@@ -10,6 +10,7 @@ from .settings import *
 from .solver import *
 from .structure import *
 from .utils import *
+from .materials_db import *
 
 from importlib_metadata import PackageNotFoundError, version
 

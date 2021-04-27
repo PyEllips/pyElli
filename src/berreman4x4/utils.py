@@ -53,7 +53,19 @@ class SpectraRay():
 
     @staticmethod
     def read_psi_delta_file(fname):
-        return pd.read_csv(fname, index_col=0, sep=' ', usecols=[0, 1, 2], names=['Wavelength', 'Ψ', 'Δ'], skiprows=1)
+        return pd.read_csv(fname,
+                           index_col=0,
+                           sep=' ',
+                           usecols=[0, 1, 2],
+                           names=['Wavelength', 'Ψ', 'Δ'],
+                           skiprows=1)
+
+    @staticmethod
+    def read_rho(fname):
+        psi_delta = SpectraRay.read_psi_delta_file(fname)
+        return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
+                               np.exp(1j * np.deg2rad(x['Δ'])),
+                               axis=1)
 
     @staticmethod
     def eV2nm(wlen):

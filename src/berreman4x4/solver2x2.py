@@ -60,11 +60,17 @@ class Solver2x2(Solver):
     def calculate(self):
         """Calculates the transfer matrix for the given material stack"""
         lbda = np.array(unitConversion(self.lbda)) * 1e9
-        d, eps = list(zip(*self.permProfile[1:-1]))
-        d_list = unitConversion((np.array(d), 'm')) * 1e9
-        n_list = sqrt(np.vstack([self.permProfile[0][:, 0, 0],
-                                 np.array(eps)[..., 0, 0],
-                                 self.permProfile[-1][:, 0, 0]]))
+
+        if len(self.permProfile) > 2:
+            d, eps = list(zip(*self.permProfile[1:-1]))
+            d_list = unitConversion((np.array(d), 'm')) * 1e9
+            n_list = sqrt(np.vstack([self.permProfile[0][:, 0, 0],
+                                     np.array(eps)[..., 0, 0],
+                                     self.permProfile[-1][:, 0, 0]]))
+        else:
+            d_list = np.array([])
+            n_list = sqrt(np.vstack([self.permProfile[0][:, 0, 0],
+                                     self.permProfile[-1][:, 0, 0]]))
 
         num_layers = n_list.shape[0]
         th_list = self.list_snell(n_list)
