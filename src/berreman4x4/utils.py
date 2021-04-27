@@ -64,7 +64,7 @@ class SpectraRay():
     def read_rho(fname):
         psi_delta = SpectraRay.read_psi_delta_file(fname)
         return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
-                               np.exp(1j * np.deg2rad(x['Δ'])),
+                               np.exp(-1j * np.deg2rad(x['Δ'])),
                                axis=1)
 
     @staticmethod

@@ -60,11 +60,11 @@ class Experiment:
         if vectorArray.shape == (2,):
             self.jonesVector = vectorArray
 
-            self.stokesVector = np.array[
+            self.stokesVector = np.array([
                 np.abs(self.jonesVector[0])**2 + np.abs(self.jonesVector[1])**2,
                 np.abs(self.jonesVector[0])**2 - np.abs(self.jonesVector[1])**2,
                 2 * np.real(self.jonesVector[0] * np.conjugate(self.jonesVector[1])),
-                -2 * np.imag(self.jonesVector[0] * np.conjugate(self.jonesVector[1]))]
+                -2 * np.imag(self.jonesVector[0] * np.conjugate(self.jonesVector[1]))])
 
         elif vectorArray.shape == (4,):
             self.stokesVector = vectorArray
@@ -108,8 +108,8 @@ class Experiment:
         if solver not in solvers:
             raise ValueError("Invalid solver type {:}. Expected one of: {:}"
                              .format(solver, solvers))
-
-        if solver == 'berreman4x4':
-            return Result(self, SolverExpm(self))
-        elif solver == 'simple2x2':
-            return Result(self, Solver2x2(self))
+        else:
+            if solver == 'berreman4x4':
+                return Result(self, SolverExpm(self))
+            elif solver == 'simple2x2':
+                return Result(self, Solver2x2(self))
