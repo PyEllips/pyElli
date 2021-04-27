@@ -55,11 +55,7 @@ def calc_ellips(n_list, d_list, Θ, λ):
     th_list = list_snell(n_list, Θ)
     kz_list = 2 * np.pi * n_list * np.cos(th_list) / λ
 
-    # TODO(Flo): multiply only the layers to avoid inf multiplication. 
-    # Should not be relevant when integrated into the half space formalism.
-    olderr = np.seterr(invalid='ignore')
-    delta = kz_list * (d_list if n_list.ndim == 1 else d_list[:,None])
-    np.seterr(**olderr)
+    delta = kz_list[1:-1] * (d_list[1:-1] if n_list.ndim == 1 else d_list[1:-1,None])
 
     esum = 'ij...,jk...->ik...'
     ones = np.repeat(1, n_list.shape[1]) if n_list.ndim > 1 else 1
@@ -72,8 +68,8 @@ def calc_ellips(n_list, d_list, Θ, λ):
 
     for i in range(1, num_layers-1):
         rs, rp, ts, tp = fresnel(n_list[i], n_list[i+1], th_list[i], th_list[i+1])
-        em = np.exp(-1j * delta[i])
-        ep = np.exp(1j * delta[i])
+        em = np.exp(-1j * delta[i-1])
+        ep = np.exp(1j * delta[i-1])
 
         Ms = np.einsum(esum, Ms,
                        np.array([[em, rs * em],

@@ -1,8 +1,9 @@
 # Encoding: utf-8
 import numpy as np
-from numpy.lib.scimath import arcsin
+from numpy.lib.scimath import arcsin, sqrt
 
 from .solver import Solver
+from .math import unitConversion
 
 class Solver2x2(Solver):
     '''
@@ -18,21 +19,21 @@ class Solver2x2(Solver):
 
     @property
     def psi(self):
-        if not all((self._rtotp, self._rtots)):
+        if self._rtotp is None or self._rtots is None:
             return None
-        return np.arctan(np.abs(self._rtotp / self._rtots))
+        return np.rad2deg(np.arctan(np.abs(self._rtotp / self._rtots)))
 
     @property
     def rho(self):
-        if not all((self._rtotp, self._rtots)):
+        if self._rtotp is None or self._rtots is None:
             return None
         return self._rtotp / self._rtots
 
     @property
     def delta(self):
-        if not all((self._rtotp, self._rtots)):
+        if self._rtotp is None or self._rtots is None:
             return None
-        return np.angle(-self._rtotp / self._rtots)
+        return np.angle(-self._rtotp / self._rtots, deg=True)
 
     @property
     def mueller_matrix(self):
@@ -47,7 +48,7 @@ class Solver2x2(Solver):
         return None
 
     def list_snell(self, n_list):
-        angles = arcsin(n_list[0] * np.sin(self.theta_i) / n_list)
+        angles = arcsin(n_list[0] * np.sin(np.deg2rad(self.theta_i)) / n_list)
 
         angles[0] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[0], angles[0])), 
                             np.pi - angles[0], angles[0])
@@ -58,22 +59,18 @@ class Solver2x2(Solver):
 
     def calculate(self):
         """Calculates the transfer matrix for the given material stack"""
-        lbda = np.array(self.lbda)
-        d, n = list(zip(*self.permProfile))
-        d_list = np.array(d)
-        n_list = np.array(n)[...,0,0]
-
-        if n_list.shape[0] != d_list.shape[0]:
-            raise Exception("Solver2x2: n and d arrays do not have the same length")
-
-        if not n_list.ndim == 1 and n_list.shape[1] != lbda.size:
-            raise Exception("Solver2x2: n and lbda arrays do not have the same length")
+        lbda = np.array(unitConversion(self.lbda)) * 1e9
+        d, eps = list(zip(*self.permProfile[1:-1]))
+        d_list = unitConversion((np.array(d), 'm')) * 1e9
+        n_list = sqrt(np.vstack([self.permProfile[0][:, 0, 0],
+                                 np.array(eps)[..., 0, 0],
+                                 self.permProfile[-1][:, 0, 0]]))
 
         num_layers = n_list.shape[0]
         th_list = self.list_snell(n_list)
         kz_list = 2 * np.pi * n_list * np.cos(th_list) / lbda
 
-        delta = kz_list[1:-1] * (d_list[1:-1] if n_list.ndim == 1 else d_list[1:-1,None])
+        delta = kz_list[1:-1] * (d_list if n_list.ndim == 1 else d_list[:,None])
 
         esum = 'ij...,jk...->ik...'
         ones = np.repeat(1, n_list.shape[1]) if n_list.ndim > 1 else 1
