@@ -3,7 +3,6 @@ import numpy as np
 
 from .experiment import Experiment
 from .math import unitConversion
-from .result import Result
 
 
 #########################################################
@@ -54,7 +53,8 @@ class Structure:
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Result(Experiment(self, lbda, theta_i, [1, 0, 1, 0]))
+        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        return exp.evaluate()
 
 
 #########################################################

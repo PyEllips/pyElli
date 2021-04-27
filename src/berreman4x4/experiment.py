@@ -110,6 +110,6 @@ class Experiment:
                              .format(solver, solvers))
 
         if solver == 'berreman4x4':
-            return Result(self, SolverExpm(self.__experiment))
+            return Result(self, SolverExpm(self))
         elif solver == 'simple2x2':
-            return Result(self, Solver2x2(self.__experiment))
+            return Result(self, Solver2x2(self))
