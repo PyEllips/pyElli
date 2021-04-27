@@ -1,6 +1,9 @@
 # Encoding: utf-8
 from .math import unitConversion
 from .result import Result
+from .settings import settings
+from .solverExpm import SolverExpm
+from .solver2x2 import Solver2x2
 
 
 class Experiment:
@@ -58,6 +61,17 @@ class Experiment:
         """
         self.lbda = (unitConversion(lbda), 'm')
 
-    def evaluate(self):
+    def evaluate(self, solver='default'):
         """Return the Evaluation of the structure for the given parameters"""
-        return Result(self)
+        if solver == 'default' and 'solver' in settings:
+            solver = settings['solver']
+
+        solvers = ['berreman4x4', 'simple2x2']
+        if solver not in solvers:
+            raise ValueError("Invalid solver type {:}. Expected one of: {:}"
+                             .format(solver, solvers))
+
+        if solver == 'berreman4x4':
+            return Result(self, SolverExpm(self.__experiment))
+        elif solver == 'simple2x2':
+            return Result(self, Solver2x2(self.__experiment))
