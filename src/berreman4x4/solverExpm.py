@@ -16,22 +16,19 @@ class SolverExpm(Solver):
     _jones_matrix_t = None
     _jones_matrix_r = None
 
+    @property
+    def rho(self):
+        rho = np.dot(self._S, self.jonesVector)
+        rho = rho[:, 0]/rho[:, 1]
+        return rho
 
     @property
     def psi(self):
-        if self._S is None:
-            return None
-        return np.rad2deg(np.arctan(np.abs(self._S[:, 0, 0])))
-
-    @property
-    def rho(self):
-        return self._S[:, 0, 0]
+        return np.rad2deg(np.arctan(np.abs(self.rho)))
 
     @property
     def delta(self):
-        if self._S is None:
-            return None
-        d = -np.angle(self._S[:, 0, 0], deg=True)
+        d = -np.angle(self.rho, deg=True)
         return np.where(d < 0, d + 360, d)
 
     @property
@@ -44,8 +41,10 @@ class SolverExpm(Solver):
                       [0,  1,    1,  0],
                       [0,  1j, -1j,  0]])
 
-        mmatrix = np.abs(A @ np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S))
-                        .reshape(self._S.shape[0], 4, 4) @ A.T)
+        # Kroneker product of S S*
+        SxS_star = np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
+
+        mmatrix = np.abs(A @ SxS_star @ A.T)
         m11 = mmatrix[:, 0, 0]
 
         return mmatrix / m11[:, None, None]
@@ -70,7 +69,7 @@ class SolverExpm(Solver):
 
         P_tot = np.identity(4)
         for p in P:
-            P_tot = p @ P_tot 
+            P_tot = p @ P_tot
         T = ILf @ P_tot @ Lb
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
