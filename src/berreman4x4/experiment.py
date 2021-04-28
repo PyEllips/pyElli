@@ -97,7 +97,7 @@ class Experiment:
 
         'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
         """
-        self.lbda = (unitConversion(lbda), 'm')
+        self.lbda = (np.asarray(unitConversion(lbda)), 'm')
 
     def evaluate(self, solver='default'):
         """Return the Evaluation of the structure for the given parameters"""

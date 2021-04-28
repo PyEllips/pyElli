@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+
 class Solver(ABC):
     '''
     Solver base class to evaluate Experiment objects.
