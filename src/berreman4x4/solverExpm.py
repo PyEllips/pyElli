@@ -44,7 +44,7 @@ class SolverExpm(Solver):
         # Kroneker product of S S*
         SxS_star = np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
 
-        mmatrix = np.abs(A @ SxS_star @ A.T)
+        mmatrix = np.real(A @ SxS_star @ A.T)
         m11 = mmatrix[:, 0, 0]
 
         return mmatrix / m11[:, None, None]
