@@ -11,7 +11,7 @@ def calcPseudoDiel(df, angle):
     delta = df['Δ'] * np.pi / 180
     theta = angle * np.pi / 180
 
-    rho = np.tan(psi) * np.exp(1j * delta)
+    rho = np.tan(psi) * np.exp(-1j * delta)
     eps = np.sin(theta)**2 * (1 + np.tan(theta)**2 * ((1 - rho) / (1 + rho))**2)
 
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),
@@ -53,7 +53,19 @@ class SpectraRay():
 
     @staticmethod
     def read_psi_delta_file(fname):
-        return pd.read_csv(fname, index_col=0, sep=' ', usecols=[0, 1, 2], names=['Wavelength', 'Ψ', 'Δ'], skiprows=1)
+        return pd.read_csv(fname,
+                           index_col=0,
+                           sep=' ',
+                           usecols=[0, 1, 2],
+                           names=['Wavelength', 'Ψ', 'Δ'],
+                           skiprows=1)
+
+    @staticmethod
+    def read_rho(fname):
+        psi_delta = SpectraRay.read_psi_delta_file(fname)
+        return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
+                               np.exp(-1j * np.deg2rad(x['Δ'])),
+                               axis=1)
 
     @staticmethod
     def eV2nm(wlen):

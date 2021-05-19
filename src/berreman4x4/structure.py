@@ -1,9 +1,12 @@
 # Encoding: utf-8
 import numpy as np
 
-from .evaluation import Evaluation
-from .half_spaces import IsotropicHalfSpace
+from .experiment import Experiment
+from .math import unitConversion
 
+
+#########################################################
+# Structure Class...
 
 class Structure:
     """Description of the whole structure.
@@ -12,9 +15,9 @@ class Structure:
     * back half-space (exit), may be anisotropic
     * layer succession
     """
-    frontHalfSpace = None
-    backHalfSpace = None
-    layers = None  # list of layers
+    frontMaterial = None
+    backMaterial = None
+    layers = []  # list of layers
 
     def __init__(self, front=None, layers=None, back=None):
         """Creates an empty structure.
@@ -23,27 +26,23 @@ class Structure:
         'layers' : layer list, see setLayers()
         'back' : back half space, see setBackHalfSpace()
         """
-        self.layers = []  # list of layers
-        if front is not None:
-            self.setFrontHalfSpace(front)
-        if layers is not None:
-            self.setLayers(layers)
-        if back is not None:
-            self.setBackHalfSpace(back)
+        self.setFrontMaterial(front)
+        self.setLayers(layers)
+        self.setBackMaterial(back)
 
-    def setFrontHalfSpace(self, halfSpace):
-        """Defines the front half-space.
+    def setFrontMaterial(self, material):
+        """Defines the front half-space material.
 
-        'halfSpace' : HalfSpace object
+        'material' : Material object
         """
-        self.frontHalfSpace = halfSpace
+        self.frontMaterial = material
 
-    def setBackHalfSpace(self, halfSpace):
-        """Defines the back half-space.
+    def setBackMaterial(self, material):
+        """Defines the back half-space material.
 
-        'halfSpace' : HalfSpace object
+        'material' : Material object
         """
-        self.backHalfSpace = halfSpace
+        self.backMaterial = material
 
     def setLayers(self, layers):
         """Set list of layers.
@@ -52,93 +51,118 @@ class Structure:
         """
         self.layers = layers
 
-    def getPropagationMatrix(self, Kx, k0, inv=False):
-        """Gives the propagation matrix of the structure.
-
-        'Kx' : reduced wavenumber along x
-        'k0' : wavenumber in vacuum
-        'inv' : returns propagation matrix for decreasing z
-
-        Returns : propagation matrix P(zb,zf) for the full structure
-
-        Psi(zb) = P_(zb, z_{N-1}) * ... * P(z1,zf) * Psi(zf)
-                = P(zb,zf) * Psi(zf)
-        """
-        if inv:
-            layers = reversed(self.layers)
-        else:
-            layers = self.layers
-        P_tot = np.identity(4)
-        # Cumulative products :
-        for L in layers:
-            P = L.getPropagationMatrix(Kx, k0, inv)
-            P_tot = P @ P_tot
-        return P_tot
-
-    def getStructureMatrix(self, Kx, k0):
-        """Returns the transfer matrix T of the structure.
-
-        [Eis, Ers, Eip, Erp].T = T * [c1, c2, c3, c4].T
-        T = Lf^-1 * P(zf,zb) * Lb
-        """
-        ILf = self.frontHalfSpace.getTransitionMatrix(Kx, k0, inv=True)
-        P = self.getPropagationMatrix(Kx, k0, inv=True)
-        Lb = self.backHalfSpace.getTransitionMatrix(Kx, k0)
-        T = ILf @ P @ Lb
-        return T
-
-    def getJones(self, Kx, k0):
-        """Returns the Jones matrices.
-
-        Returns : tuple (T_ri, T_ti)
-
-        T_ri is the Jones matrix for reflexion : [[r_pp, r_ps],
-                                                  [r_sp, r_ss]]
-
-        T_ti is the Jones matrix for transmission : [[t_pp, t_ps],
-                                                     [t_sp, t_ss]]
-
-        Naming convention (Fujiwara, p. 220):
-        't_ps' : transmitted 'p' component for an 's' incident wave
-        't_ss' : transmitted 's' component for an 's' incident wave
-        ...
-
-        Note: If all materials are isotropic, r_ps = r_sp = t_sp = t_ps = 0
-
-        See also:
-        * extractCoefficient() to extract the desired coefficients.
-        * circularJones() for circular polarization basis
-        """
-        T = self.getStructureMatrix(Kx, k0)
-        # Extraction of T_it out of T. "2::-2" means integers {2,0}.
-        T_it = T[:, 2::-2, 2::-2]
-        # Calculate the inverse and make sure it is a matrix.
-        T_ti = np.linalg.inv(T_it)
-
-        # Extraction of T_rt out of T. "3::-2" means integers {3,1}.
-        T_rt = T[:, 3::-2, 2::-2]
-
-        # Then we have T_ri = T_rt * T_ti
-        T_ri = T_rt @ T_ti
-        return T_ri, T_ti
-
-    def getPowerTransmissionCorrection(self, Kx, k0):
-        """Returns correction coefficient for power transmission
-
-        The power transmission coefficient is the ratio of the 'z' components
-        of the Poynting vector:       T = P_t_z / P_i_z
-        For isotropic media, we have: T = kb'/kf' |t_bf|^2
-        The correction coefficient is kb'/kf'
-
-        Note : For the moment it is only meaningful for isotropic half spaces.
-        """
-        Kzf = self.frontHalfSpace.get_Kz_from_Kx(Kx, k0)
-        if isinstance(self.backHalfSpace, IsotropicHalfSpace):
-            Kzb = self.backHalfSpace.get_Kz_from_Kx(Kx, k0)
-            return Kzb.real / Kzf.real
-        else:
-            return None
-
-    def evaluate(self, lbda, theta_i, unit='nm'):
+    def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        return Evaluation(self, lbda, theta_i, unit)
+        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        return exp.evaluate()
+
+
+#########################################################
+# Layer Class...
+
+class Layer:
+    """Homogeneous layer finite of dielectric material."""
+
+    material = None     # Material making the layer
+    d = None            # Thickness of the layer
+
+    def __init__(self, material, d):
+        """New layer of material 'material', with thickness 'h'
+
+        'material' : Material object
+        'h'        : Thickness of layer in nm or tuple (thickness, unit)
+        """
+        self.setMaterial(material)
+        self.setThickness(d)
+
+    def setMaterial(self, material):
+        """Defines the material for this layer. """
+        self.material = material
+
+    def setThickness(self, d):
+        """Defines the thickness of this homogeneous layer."""
+        self.d = unitConversion(d)
+
+    def getPermittivityProfile(self, lbda):
+        """Returns permittivity tensor profile.
+
+        Returns a list containing one tuple: [(h, epsilon)]
+        """
+        return (self.d, self.material.getTensor(lbda))
+
+
+#########################################################
+# Repeated layers...
+
+class RepeatedLayers(Layer):
+    """Repetition of a structure."""
+
+    n = None        # Number of repetitions
+    before = None   # additionnal layers before the first period
+    after = None    # additionnal layers after the last period
+    layers = None   # layers to repeat
+
+    def __init__(self, layers=None, n=2, before=0, after=0):
+        """Repeated structure of layers
+
+        'layers' : list of the repeated layers
+        'n' : number of repetitions
+        'before', 'after' : see method setRepetition()
+        """
+        self.setRepetition(n, before, after)
+        self.setLayers(layers)
+
+    def setRepetition(self, n,  before=0, after=0):
+        """Defines the number of repetitions.
+
+        'n' : number of repetitions
+        'before' : number of additionnal layers before the first period
+        'after' : number of additionnal layers after the last period
+
+        Example : For layers [1,2,3] with n=2, before=1 and after=0, the
+        structure will be 3123123.
+        """
+        self.n = n
+        self.before = before
+        self.after = after
+
+    def setLayers(self, layers):
+        """Set list of layers.
+
+        'layers' : list of layers, starting from z=0
+        """
+        self.layers = layers
+
+    def getPermittivityProfile(self, lbda):
+        """Returns permittivity tensor profile.
+
+        Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
+        """
+        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        if self.before > 0:
+            before = layers[-self.before:]
+        else:
+            before = []
+        return before + self.n * layers + layers[:self.after]
+
+
+#########################################################
+# Inhomogeneous layers...
+
+class InhomogeneousLayer(Layer):
+    """Inhomogeneous layer.
+
+    Must be fabricated with an InhomogemeousMaterial object.
+    """
+
+    def getPermittivityProfile(self, lbda):
+        """Returns permittivity tensor profile.
+
+        Tensor is evaluated in the middle of each slice.
+        Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
+        """
+        z = self.material.getSlices()
+        h = np.diff(z)
+        zmid = (z[:-1] + z[1:]) / 2.
+        tensor = [self.material.getTensor(z, lbda) for z in zmid]
+        return list(zip(h, tensor))
