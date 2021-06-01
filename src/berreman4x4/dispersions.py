@@ -293,8 +293,8 @@ class DispersionTaucLorentz(DispersionLaw):
 class DispersionHighEnergyBands(DispersionLaw):
 
     def __init__(self, A, E_xsi):
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             a = -(E_xsi - E)**2 / E**3
             b = (E_xsi + E)**2 / E**3
             eps_r = 3 * E_xsi / np.pi / E**2 * (a * np.log(np.abs(1 - E / E_xsi)) +
@@ -354,8 +354,8 @@ class DispersionPoles(DispersionLaw):
 
     def __init__(self, A_ir, A_uv, E_uv):
         
-        def dielectricFunction(lbda, unit='nm'):
-            E = lambda2E(lbda, unit)
+        def dielectricFunction(lbda):
+            E = lambda2E(lbda)
             return A_ir / E**2 + A_uv / (E_uv**2 - E**2)
 
         self.dielectricFunction = dielectricFunction

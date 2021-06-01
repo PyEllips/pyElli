@@ -6,12 +6,8 @@ import scipy.constants as sc
 from .dispersions import DispersionTableEpsilon
 
 
-def calcPseudoDiel(df, angle):
-    psi = df['Ψ'] * np.pi / 180
-    delta = df['Δ'] * np.pi / 180
+def calcPseudoDiel(rho, angle):
     theta = angle * np.pi / 180
-
-    rho = np.tan(psi) * np.exp(-1j * delta)
     eps = np.sin(theta)**2 * (1 + np.tan(theta)**2 * ((1 - rho) / (1 + rho))**2)
 
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),

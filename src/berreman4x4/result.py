@@ -31,6 +31,10 @@ class Result:
     def jones_matrix_t(self):
         return self.__result.jones_matrix_t
 
+    @property
+    def R(self):
+        return self.__result.R
+
     def __init__(self, experiment, solver):
         """
 

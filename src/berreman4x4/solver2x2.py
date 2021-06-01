@@ -47,6 +47,10 @@ class Solver2x2(Solver):
     def jones_matrix_r(self):
         return None
 
+    @property
+    def R(self):
+        return np.abs(self._rtotp + self._rtots)
+
     def list_snell(self, n_list):
         angles = arcsin(n_list[0] * np.sin(np.deg2rad(self.theta_i)) / n_list)
 
