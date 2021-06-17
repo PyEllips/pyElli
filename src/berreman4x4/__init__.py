@@ -12,7 +12,10 @@ from .structure import *
 from .utils import *
 from .materials_db import *
 
-from importlib_metadata import PackageNotFoundError, version
+if sys.version_info.major >= 3 and sys.version_info.minor > 7:
+    from importlib.metadata import PackageNotFoundError, version
+else:
+    from importlib_metadata import PackageNotFoundError, version
 
 try:
     # Change here if project is renamed and does not equal the package name
