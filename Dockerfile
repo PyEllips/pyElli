@@ -1,4 +1,4 @@
-FROM domna/jupyter-base
+FROM domna/jupyter-tf-base
 
 ENV APP_HOME=/home/jovyan/berreman4x4
 RUN mkdir -p $APP_HOME
