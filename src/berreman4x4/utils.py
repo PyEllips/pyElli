@@ -2,6 +2,9 @@
 import pandas as pd
 import numpy as np
 import scipy.constants as sc
+from ipywidgets import widgets
+from IPython.display import display
+import plotly.graph_objects as go
 
 from .dispersions import DispersionTableEpsilon
 
@@ -12,6 +15,41 @@ def calcPseudoDiel(rho, angle):
 
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),
                       'ϵ2': eps.apply(lambda x: x.imag)}, axis=1)
+
+
+def manual_parameters(exp_data, params):
+
+    def decorator_func(model):
+        fig = go.FigureWidget(pd.concat([exp_data, 
+                                        pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
+                                                      'Δ_tmm': model(exp_data.index, params).delta}, 
+                                                      index=exp_data.index)]).plot())
+
+        def update_params(v, fig):
+            params[v.owner.description].value = v.new
+
+            with fig.batch_update():
+                data = model(exp_data.index, params)
+                fig.data[2].y = data.psi
+                fig.data[3].y = data.delta
+
+        widget_list = []
+        for param in params.valuesdict():
+            curr_widget = widgets.BoundedFloatText(params[param], 
+                                                   min=params[param].min, 
+                                                   max=params[param].max, 
+                                                   description=param, 
+                                                   continuous_update=False)
+            curr_widget.observe(lambda x: update_params(x, fig), names=('value', 'owner'))
+            widget_list.append(curr_widget)
+
+        display(widgets.VBox([widgets.HBox(widget_list, 
+                                           layout=widgets.Layout(width='100%', 
+                                                                 display='inline-flex',
+                                                                 flex_flow='row wrap')), 
+                            fig]))
+        
+    return decorator_func
 
 
 class SpectraRay():
