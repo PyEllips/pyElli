@@ -4,6 +4,7 @@ import numpy as np
 import scipy.constants as sc
 from ipywidgets import widgets
 from IPython.display import display
+from lmfit import minimize
 import plotly.graph_objects as go
 
 from .dispersions import DispersionTableEpsilon
@@ -48,7 +49,45 @@ def manual_parameters(exp_data, params):
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')), 
                             fig]))
-        
+
+        def fit_function(params, lbda, rhor, rhoi):
+            result = model(lbda, params)
+
+            resid_rhor = rhor - result.rho.real
+            resid_rhoi = rhoi - result.rho.imag
+
+            return np.concatenate((resid_rhor, resid_rhoi))
+
+        def execute_fit(rho, method='leastsq'):
+            return minimize(fit_function, 
+                            params, 
+                            args=(rho.index.to_numpy(), rho.values.real, rho.values.imag), 
+                            method=method)
+
+        def fit_result(params):
+            fit_result = model(exp_data.index.to_numpy(), params)
+
+            return go.FigureWidget(pd.concat([exp_data,
+                                            pd.DataFrame({'Ψ_fit': fit_result.psi,
+                                                          'Δ_fit': fit_result.delta}, 
+                                                          index=exp_data.index)]
+                                    ).plot())
+
+        def fit_result_rho(rho, params):
+            fit_result = model(rho.index.to_numpy(), params)
+
+            return go.FigureWidget(pd.DataFrame({'ρr': rho.apply(lambda x: x.real),
+                                                 'ρi': rho.apply(lambda x: x.imag),
+                                                 'ρcr': fit_result.rho.real,
+                                                 'ρci': fit_result.rho.imag},
+                                                 index=rho.index).plot())
+
+        return {'value': model, 
+                'residual': fit_function,
+                'fit': execute_fit,
+                'plot': fit_result,
+                'plot_rho': fit_result_rho}
+
     return decorator_func
 
 
