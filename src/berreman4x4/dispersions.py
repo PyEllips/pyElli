@@ -4,6 +4,7 @@ import scipy.constants as sc
 from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 from numpy.lib.scimath import sqrt
+import pandas as pd
 
 from .settings import settings
 from .math import lambda2E, unitConversion, unitFactors
@@ -17,7 +18,7 @@ class DispersionLaw:
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    def dielectricFunction(lbda): 
+    def dielectricFunction(lbda):
         return 0 * 1j     # Complex dielectric function
 
     def __init__(self):
@@ -47,6 +48,20 @@ class DispersionLaw:
         """Returns the refractive index for wavelength 'lbda' default unit (nm)
         in the convention n + ik."""
         return sqrt(self.dielectricFunction(lbda))
+
+    def getDielectric_df(self, lbda=None, conjugate=False):
+        lbda = np.linspace(200, 1000, 500) if lbda is None else lbda
+        eps = self.getDielectricConj(lbda) if conjugate else self.getDielectric(lbda)
+
+        return pd.DataFrame({'ϵ1': eps.real,
+                             'ϵ2': eps.imag}, index=pd.Index(lbda, name='Wavelength'))
+
+    def getRefractiveIndex_df(self, lbda=None, conjugate=False):
+        lbda = np.linspace(200, 1000, 500) if lbda is None else lbda
+        eps = self.getRefractiveIndexConj(lbda) if conjugate else self.getRefractiveIndex(lbda)
+
+        return pd.DataFrame({'ϵ1': eps.real,
+                             'ϵ2': eps.imag}, index=pd.Index(lbda, name='Wavelength'))
 
 
 class DispersionSum(DispersionLaw):
@@ -124,6 +139,22 @@ class DispersionSellmeier(DispersionLaw):
 
             return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
                            for Ai, Bi in self.coeffs)
+
+        self.dielectricFunction = dielectricFunction
+
+class DispersionMgO(DispersionLaw):
+    """Alternative form of the Sellmeier dispersion law equation"""
+
+    def __init__(self, *coeffs):
+        self.coeffs = coeffs
+
+        def dielectricFunction(lbda):
+            lbda = unitConversion(lbda) / unitFactors['µm']
+
+            return coeffs[0] + \
+                    coeffs[1] * lbda **2 + \
+                    coeffs[2] * lbda**4 + \
+                    coeffs[3] / (lbda**2 - coeffs[4])
 
         self.dielectricFunction = dielectricFunction
 
