@@ -15,8 +15,6 @@ jupyter:
 
 ```python
 import berreman4x4 as bm
-from lmfit import minimize, Parameters, fit_report
-
 bm.settings['ExpmBackend'] = 'tensorflow'
 bm.settings['solver'] = 'berreman4x4'
 ```
