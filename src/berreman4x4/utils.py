@@ -6,6 +6,7 @@ from ipywidgets import widgets
 from IPython.display import display
 from lmfit import minimize
 import plotly.graph_objects as go
+from types import SimpleNamespace
 
 from .dispersions import DispersionTableEpsilon
 
@@ -17,8 +18,13 @@ def calcPseudoDiel(rho, angle):
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),
                       'ϵ2': eps.apply(lambda x: x.imag)}, axis=1)
 
+def calc_rho(psi_delta):
+    return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
+                               np.exp(-1j * np.deg2rad(x['Δ'])),
+                               axis=1)
 
-def manual_parameters(exp_data, params):
+
+def manual_parameters(exp_data, params, angle=70):
 
     def decorator_func(model):
         fig = go.FigureWidget(pd.concat([exp_data,
@@ -38,6 +44,11 @@ def manual_parameters(exp_data, params):
                 elif selected.value == 'Rho':
                     fig.data[2].y = data.rho.real
                     fig.data[3].y = data.rho.imag
+                elif selected.value == 'Pseudo Diel.':
+                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:,0], 
+                                          angle)
+                    fig.data[2].y = peps.loc[:,'ϵ1']
+                    fig.data[3].y = peps.loc[:,'ϵ2']
 
         def update_selection(v, fig):
             with fig.batch_update():
@@ -53,9 +64,8 @@ def manual_parameters(exp_data, params):
                     fig.data[2].name = 'Ψ_tmm'
                     fig.data[3].name = 'Δ_tmm'
                 elif v.new == 'Rho':
-                    exp_rho = exp_data.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
-                                            np.exp(-1j * np.deg2rad(x['Δ'])),
-                                            axis=1)
+                    exp_rho = calc_rho(exp_data)
+
                     fig.data[0].y = exp_rho.apply(lambda x: x.real).values
                     fig.data[1].y = exp_rho.apply(lambda x: x.imag).values
                     fig.data[2].y = data.rho.real
@@ -64,10 +74,22 @@ def manual_parameters(exp_data, params):
                     fig.data[1].name = 'ρi'
                     fig.data[2].name = 'ρr_tmm'
                     fig.data[3].name = 'ρi_tmm'
+                elif v.new == 'Pseudo Diel.':
+                    exp_peps = calcPseudoDiel(calc_rho(exp_data), angle)
+                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:,0], 
+                                          angle)
+                    fig.data[0].y = exp_peps.loc[:,'ϵ1']
+                    fig.data[1].y = exp_peps.loc[:,'ϵ2']
+                    fig.data[2].y = peps.loc[:,'ϵ1']
+                    fig.data[3].y = peps.loc[:,'ϵ2']
+                    fig.data[0].name = 'ϵ1'
+                    fig.data[1].name = 'ϵ2'
+                    fig.data[2].name = 'ϵ1_tmm'
+                    fig.data[3].name = 'ϵ2_tmm'
 
         widget_list = []
         selector = widgets.Dropdown(
-            options=['Psi/Delta', 'Rho'],
+            options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
             value='Psi/Delta',
             description='Display: ',
             disabled=False
@@ -97,7 +119,8 @@ def manual_parameters(exp_data, params):
 
             return np.concatenate((resid_rhor, resid_rhoi))
 
-        def execute_fit(rho, method='leastsq'):
+        def execute_fit(method='leastsq'):
+            rho = calc_rho(exp_data)
             return minimize(fit_function,
                             params,
                             args=(rho.index.to_numpy(), rho.values.real, rho.values.imag),
@@ -112,7 +135,8 @@ def manual_parameters(exp_data, params):
                                                           index=exp_data.index)]
                                     ).plot())
 
-        def fit_result_rho(rho, params):
+        def fit_result_rho(params):
+            rho = calc_rho(exp_data)
             fit_result = model(rho.index.to_numpy(), params)
 
             return go.FigureWidget(pd.DataFrame({'ρr': rho.apply(lambda x: x.real),
@@ -121,11 +145,11 @@ def manual_parameters(exp_data, params):
                                                  'ρci': fit_result.rho.imag},
                                                  index=rho.index).plot())
 
-        return {'value': model,
-                'residual': fit_function,
-                'fit': execute_fit,
-                'plot': fit_result,
-                'plot_rho': fit_result_rho}
+        return SimpleNamespace(**{'value': model,
+                                  'residual': fit_function,
+                                  'fit': execute_fit,
+                                  'plot': fit_result,
+                                  'plot_rho': fit_result_rho})
 
     return decorator_func
 
@@ -175,9 +199,7 @@ class SpectraRay():
     @staticmethod
     def read_rho(fname):
         psi_delta = SpectraRay.read_psi_delta_file(fname)
-        return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
-                               np.exp(-1j * np.deg2rad(x['Δ'])),
-                               axis=1)
+        return calc_rho(psi_delta)
 
     @staticmethod
     def eV2nm(wlen):

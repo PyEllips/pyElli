@@ -79,18 +79,18 @@ def model(lbda, params):
 # Fit to experimental data
 
 ```python
-out = model['fit'](ρ, method='leastsq')
+out = model.fit(method='leastsq')
 out
 ```
 
 # Show fits
 
 ```python
-model['plot'](out.params)
+model.plot(out.params)
 ```
 
 ```python
-model['plot_rho'](ρ, out.params)
+model.plot_rho(ρ, out.params)
 ```
 
 ```python
