@@ -11,6 +11,7 @@ from .solver import *
 from .structure import *
 from .utils import *
 from .materials_db import *
+from .fitting.params_hist import ParamsHist
 
 if sys.version_info.major >= 3 and sys.version_info.minor > 7:
     from importlib.metadata import PackageNotFoundError, version

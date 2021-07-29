@@ -34,7 +34,7 @@ tss = bm.SpectraRay.read_psi_delta_file('TiO2_400cycles.txt').loc[400:800]
 # Estimate Parameters and build model
 
 ```python
-params = Parameters()
+params = bm.ParamsHist()
 params.add('SiO2_n0', value=1.452, min=-100, max=100, vary=False)
 params.add('SiO2_n1', value=36.0, min=-40000, max=40000, vary=False)
 params.add('SiO2_n2', value=0, min=-40000, max=40000, vary=False)
@@ -82,6 +82,7 @@ def model(lbda, params):
 
 ```python
 out = model['fit'](ρ, method='leastsq')
+out
 ```
 
 # Show fits
@@ -92,4 +93,8 @@ model['plot'](out.params)
 
 ```python
 model['plot_rho'](ρ, out.params)
+```
+
+```python
+
 ```

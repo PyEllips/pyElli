@@ -44,10 +44,10 @@ def manual_parameters(exp_data, params):
             curr_widget.observe(lambda x: update_params(x, fig), names=('value', 'owner'))
             widget_list.append(curr_widget)
 
-        display(widgets.VBox([widgets.HBox(widget_list, 
-                                           layout=widgets.Layout(width='100%', 
+        display(widgets.VBox([widgets.HBox(widget_list,
+                                           layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
-                                                                 flex_flow='row wrap')), 
+                                                                 flex_flow='row wrap')),
                             fig]))
 
         def fit_function(params, lbda, rhor, rhoi):
@@ -59,8 +59,8 @@ def manual_parameters(exp_data, params):
             return np.concatenate((resid_rhor, resid_rhoi))
 
         def execute_fit(rho, method='leastsq'):
-            return minimize(fit_function, 
-                            params, 
+            return minimize(fit_function,
+                            params,
                             args=(rho.index.to_numpy(), rho.values.real, rho.values.imag), 
                             method=method)
 
