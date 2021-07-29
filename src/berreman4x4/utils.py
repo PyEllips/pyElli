@@ -21,28 +21,67 @@ def calcPseudoDiel(rho, angle):
 def manual_parameters(exp_data, params):
 
     def decorator_func(model):
-        fig = go.FigureWidget(pd.concat([exp_data, 
+        fig = go.FigureWidget(pd.concat([exp_data,
                                         pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
-                                                      'Δ_tmm': model(exp_data.index, params).delta}, 
+                                                      'Δ_tmm': model(exp_data.index, params).delta},
                                                       index=exp_data.index)]).plot())
 
-        def update_params(v, fig):
+        def update_params(v, fig, selected):
             params[v.owner.description].value = v.new
 
             with fig.batch_update():
                 data = model(exp_data.index, params)
-                fig.data[2].y = data.psi
-                fig.data[3].y = data.delta
+
+                if selected.value == 'Psi/Delta':
+                    fig.data[2].y = data.psi
+                    fig.data[3].y = data.delta
+                elif selected.value == 'Rho':
+                    fig.data[2].y = data.rho.real
+                    fig.data[3].y = data.rho.imag
+
+        def update_selection(v, fig):
+            with fig.batch_update():
+                data = model(exp_data.index, params)
+
+                if v.new == 'Psi/Delta':
+                    fig.data[0].y = exp_data.loc[:,'Ψ']
+                    fig.data[1].y = exp_data.loc[:,'Δ']
+                    fig.data[2].y = data.psi
+                    fig.data[3].y = data.delta
+                    fig.data[0].name = 'Ψ'
+                    fig.data[1].name = 'Δ'
+                    fig.data[2].name = 'Ψ_tmm'
+                    fig.data[3].name = 'Δ_tmm'
+                elif v.new == 'Rho':
+                    exp_rho = exp_data.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
+                                            np.exp(-1j * np.deg2rad(x['Δ'])),
+                                            axis=1)
+                    fig.data[0].y = exp_rho.apply(lambda x: x.real).values
+                    fig.data[1].y = exp_rho.apply(lambda x: x.imag).values
+                    fig.data[2].y = data.rho.real
+                    fig.data[3].y = data.rho.imag
+                    fig.data[0].name = 'ρr'
+                    fig.data[1].name = 'ρi'
+                    fig.data[2].name = 'ρr_tmm'
+                    fig.data[3].name = 'ρi_tmm'
 
         widget_list = []
+        selector = widgets.Dropdown(
+            options=['Psi/Delta', 'Rho'],
+            value='Psi/Delta',
+            description='Display: ',
+            disabled=False
+        )
         for param in params.valuesdict():
-            curr_widget = widgets.BoundedFloatText(params[param], 
-                                                   min=params[param].min, 
-                                                   max=params[param].max, 
-                                                   description=param, 
+            curr_widget = widgets.BoundedFloatText(params[param],
+                                                   min=params[param].min,
+                                                   max=params[param].max,
+                                                   description=param,
                                                    continuous_update=False)
-            curr_widget.observe(lambda x: update_params(x, fig), names=('value', 'owner'))
+            curr_widget.observe(lambda x: update_params(x, fig, selector), names=('value', 'owner'))
             widget_list.append(curr_widget)
+        selector.observe(lambda x: update_selection(x, fig), names='value')
+        widget_list.append(selector)
 
         display(widgets.VBox([widgets.HBox(widget_list,
                                            layout=widgets.Layout(width='100%',
@@ -61,7 +100,7 @@ def manual_parameters(exp_data, params):
         def execute_fit(rho, method='leastsq'):
             return minimize(fit_function,
                             params,
-                            args=(rho.index.to_numpy(), rho.values.real, rho.values.imag), 
+                            args=(rho.index.to_numpy(), rho.values.real, rho.values.imag),
                             method=method)
 
         def fit_result(params):
@@ -69,7 +108,7 @@ def manual_parameters(exp_data, params):
 
             return go.FigureWidget(pd.concat([exp_data,
                                             pd.DataFrame({'Ψ_fit': fit_result.psi,
-                                                          'Δ_fit': fit_result.delta}, 
+                                                          'Δ_fit': fit_result.delta},
                                                           index=exp_data.index)]
                                     ).plot())
 
@@ -82,7 +121,7 @@ def manual_parameters(exp_data, params):
                                                  'ρci': fit_result.rho.imag},
                                                  index=rho.index).plot())
 
-        return {'value': model, 
+        return {'value': model,
                 'residual': fit_function,
                 'fit': execute_fit,
                 'plot': fit_result,
