@@ -7,16 +7,26 @@ from IPython.display import display
 from lmfit import minimize
 import plotly.graph_objects as go
 from types import SimpleNamespace
+from numpy.lib.scimath import sqrt
 
 from .dispersions import DispersionTableEpsilon
 
 
-def calcPseudoDiel(rho, angle):
+def calcPseudoDiel(rho, angle, output='eps'):
     theta = angle * np.pi / 180
     eps = np.sin(theta)**2 * (1 + np.tan(theta)**2 * ((1 - rho) / (1 + rho))**2)
 
+    if output == 'n':
+        n = sqrt(eps)
+        return pd.DataFrame({'n': n.real,
+                             'k': n.imag}, index=eps.index)
+
+    if output == 'epsi':
+        return eps
+
     return pd.concat({'ϵ1': eps.apply(lambda x: x.real),
                       'ϵ2': eps.apply(lambda x: x.imag)}, axis=1)
+
 
 def calc_rho(psi_delta):
     return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
