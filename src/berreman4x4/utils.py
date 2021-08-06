@@ -198,17 +198,18 @@ class SpectraRay():
             return DispersionTableEpsilon(SpectraRay.eV2nm(df.index), df.loc[:, 'ϵ1'] + 1j * df.loc[:, 'ϵ2'])
 
     @staticmethod
-    def read_psi_delta_file(fname):
+    def read_psi_delta_file(fname, decimal='.'):
         return pd.read_csv(fname,
                            index_col=0,
-                           sep=' ',
+                           sep=r'\s+',
+                           decimal=decimal,
                            usecols=[0, 1, 2],
                            names=['Wavelength', 'Ψ', 'Δ'],
                            skiprows=1)
 
     @staticmethod
-    def read_rho(fname):
-        psi_delta = SpectraRay.read_psi_delta_file(fname)
+    def read_rho(fname, decimal='.'):
+        psi_delta = SpectraRay.read_psi_delta_file(fname, decimal)
         return calc_rho(psi_delta)
 
     @staticmethod
