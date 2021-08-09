@@ -11,42 +11,42 @@ from .math import lambda2E, unitConversion, unitFactors
 
 
 class DispersionLaw:
-    """Dispersion law (abstract class).
+    '''Dispersion law (abstract class).
 
     Funktions provided for derived classes:
     * getDielectric(lbda) : returns dielectric constant for wavelength 'lbda'
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
-    """
+    '''
 
     def dielectricFunction(lbda):
         return 0 * 1j     # Complex dielectric function
 
     def __init__(self):
-        """Creates a new dispersion law -- abstract class"""
+        '''Creates a new dispersion law -- abstract class'''
         raise NotImplementedError("Should be implemented in derived classes")
 
     def __add__(self, other):
-        """Add up the dielectric function of multiple models"""
+        '''Add up the dielectric function of multiple models'''
         return DispersionSum(self, other)
 
     def getDielectricConj(self, lbda):
-        """Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
-        in the convention ε1 - iε2."""
+        '''Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
+        in the convention ε1 - iε2.'''
         return np.conjugate(self.dielectricFunction(lbda))
 
     def getRefractiveIndexConj(self, lbda):
-        """Returns the conjugated refractive index for wavelength 'lbda' default unit (nm)
-        in the convention n - ik."""
+        '''Returns the conjugated refractive index for wavelength 'lbda' default unit (nm)
+        in the convention n - ik.'''
         return sqrt(np.conjugate(self.dielectricFunction(lbda)))
 
     def getDielectric(self, lbda):
-        """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
-        in the convention ε1 + iε2."""
+        '''Returns the dielectric constant for wavelength 'lbda' default unit (nm)
+        in the convention ε1 + iε2.'''
         return np.asarray(self.dielectricFunction(lbda), dtype=settings['dtype'])
 
     def getRefractiveIndex(self, lbda):
-        """Returns the refractive index for wavelength 'lbda' default unit (nm)
-        in the convention n + ik."""
+        '''Returns the refractive index for wavelength 'lbda' default unit (nm)
+        in the convention n + ik.'''
         return sqrt(self.dielectricFunction(lbda))
 
     def getDielectric_df(self, lbda=None, conjugate=False):
@@ -65,7 +65,7 @@ class DispersionLaw:
 
 
 class DispersionSum(DispersionLaw):
-    """Representation for a sum of two dispersions"""
+    '''Representation for a sum of two dispersions'''
 
     def __init__(self, disp1, disp2):
 
@@ -74,14 +74,14 @@ class DispersionSum(DispersionLaw):
 
 
 class DispersionLess(DispersionLaw):
-    """Constant Dispersion law, therefor no dispersion. """
+    '''Constant Dispersion law, therefor no dispersion. '''
 
     def __init__(self, n=None):
-        """Create a dispersion law with a constant refraction index.
+        '''Create a dispersion law with a constant refraction index.
 
         'n'     : Refractive index value (can be complex)
                   (n" > 0 for an absorbing material)
-        """
+        '''
         self.n = n
 
         def dielectricFunction(lbda):
@@ -91,17 +91,17 @@ class DispersionLess(DispersionLaw):
 
 
 class DispersionCauchy(DispersionLaw):
-    """Sellmeier dispersion law equation."""
+    '''Sellmeier dispersion law equation.'''
 
     def __init__(self, n0=1.5, n1=0, n2=0, k0=0, k1=0, k2=0):
-        """Creates a Cauchy dispersion law.
+        '''Creates a Cauchy dispersion law.
 
         Cauchy coefficients: n0, n1, n2, k0, k1, k2
         coefficients defined for λ in nm
 
         n(λ) = n0 + 100 * n1/λ² + 10e7 n2/λ^4
         k(λ) = k0 + 100 * k1/λ² + 10e7 k2/λ^4
-        """
+        '''
         self.n0 = n0
         self.n1 = n1
         self.n2 = n2
@@ -121,17 +121,17 @@ class DispersionCauchy(DispersionLaw):
 
 
 class DispersionSellmeier(DispersionLaw):
-    """Sellmeier dispersion law equation."""
+    '''Sellmeier dispersion law equation.'''
 
     def __init__(self, *coeffs):
-        """Creates a Sellmeier dispersion law.
+        '''Creates a Sellmeier dispersion law.
 
         Sellmeier coefficients [A1, B1], [A1, B1],...
           Ai : coefficient for n² contribution
           Bi : resonance wavelength (µm^-2)
 
         ε(λ) = 1 + Σi Ai × λ²/(λ² - Bi)
-        """
+        '''
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
@@ -143,7 +143,7 @@ class DispersionSellmeier(DispersionLaw):
         self.dielectricFunction = dielectricFunction
 
 class DispersionMgO(DispersionLaw):
-    """Alternative form of the Sellmeier dispersion law equation"""
+    '''Alternative form of the Sellmeier dispersion law equation'''
 
     def __init__(self, *coeffs):
         self.coeffs = coeffs
@@ -160,16 +160,16 @@ class DispersionMgO(DispersionLaw):
 
 
 class DispersionDrudeEnergy(DispersionLaw):
-    """Drude dispersion with energy paramters."""
+    '''Drude dispersion with energy paramters.'''
 
     def __init__(self, *coeffs):
-        """Creates a Drude model.
+        '''Creates a Drude model.
 
         Drude coefficients ϵinf, A, Γ
         ϵinf : epsilon infinity
         A : Amplitude of Drude oscillator (eV^2)
         Γ : Broadening of Drude oscillator (eV)
-        """
+        '''
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
@@ -180,16 +180,16 @@ class DispersionDrudeEnergy(DispersionLaw):
 
 
 class DispersionDrudeResistivity(DispersionLaw):
-    """Drude dispersion with resistivity paramters."""
+    '''Drude dispersion with resistivity paramters.'''
 
     def __init__(self, *coeffs):
-        """Creates a Drude model.
+        '''Creates a Drude model.
 
         Drude coefficients ϵinf, ρopt, τ
         ϵinf : epsilon infinity
         ρopt : optical resistivity (Ω-cm)
         τ : Mean scattering time (s)
-        """
+        '''
         self.coeffs = coeffs
         hbar = sc.value("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.value("vacuum electric permittivity") * 1e-2
@@ -202,10 +202,10 @@ class DispersionDrudeResistivity(DispersionLaw):
 
 
 class DispersionLorentzLambda(DispersionLaw):
-    """Lorentz dispersion law equation, with wavelength coefficients."""
+    '''Lorentz dispersion law equation, with wavelength coefficients.'''
 
     def __init__(self, *coeffs):
-        """Creates a Lorentz dispersion law, with wavelength coefficients.
+        '''Creates a Lorentz dispersion law, with wavelength coefficients.
 
         Lorentz coefficients [A1, λ1, ζ1], [A2, λ2, ζ2],...
           Bi : coefficient
@@ -213,7 +213,7 @@ class DispersionLorentzLambda(DispersionLaw):
           ζi :
 
         ε(λ) = 1 + Σi Ai × λ² / (λ² - λi² + j ζi λ)
-        """
+        '''
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
@@ -226,10 +226,10 @@ class DispersionLorentzLambda(DispersionLaw):
 
 
 class DispersionLorentzEnergy(DispersionLaw):
-    """Lorentz dispersion law equation, with energy coefficients."""
+    '''Lorentz dispersion law equation, with energy coefficients.'''
 
     def __init__(self, *coeffs):
-        """Creates a Lorentz dispersion law, with energy coefficients.
+        '''Creates a Lorentz dispersion law, with energy coefficients.
 
         Lorentz coefficients [A1, E1, Γ1], [A2, E2, Γ2],...
           Ai : coefficient
@@ -237,7 +237,7 @@ class DispersionLorentzEnergy(DispersionLaw):
           Γi :
 
         ε(E) = 1 + Σi Ai /(E²-Ei²+j Γi E)
-        """
+        '''
         self.coeffs = coeffs
 
         def dielectricFunction(lbda):
@@ -249,22 +249,22 @@ class DispersionLorentzEnergy(DispersionLaw):
 
 
 class DispersionGauss(DispersionLaw):
-    """Gauss model with energy parameters.
+    '''Gauss model with energy parameters.
         References:
         D. De Sousa Meneses, M. Malki, P. Echegut, J. Non-Cryst. Solids 351, 769-776 (2006)
         K.-E. Peiponen, E.M. Vartiainen, Phys. Rev. B. 44, 8301 (1991)
         H. Fujiwara, R. W. Collins, Spectroscopic Ellipsometry for Photovoltaics Volume 1, Springer International Publishing AG, 2018, p. 137
-    """
+    '''
 
     def __init__(self, eps_inf, *coeffs):
-        """Creates a Gauss model
+        '''Creates a Gauss model
 
         Gauss coefficients ϵinf, [A1, E1, Γ1], [A2, E2, Γ2],...
         ϵinf : infinity dielectric constant
         Ai : Amplitude of ith Gaussian
         Ei : Central energy of ith Gaussian (eV)
         Γ1 : Broadening of ith Gaussian (eV)
-        """
+        '''
         self.coeffs = coeffs
         ftos = 2 * sqrt(np.log(2))
 
@@ -278,15 +278,15 @@ class DispersionGauss(DispersionLaw):
 
 
 class DispersionTaucLorentz(DispersionLaw):
-    """Tauc-Lorentz model by Jellison and Modine
+    '''Tauc-Lorentz model by Jellison and Modine
         Literature:
             G.E. Jellision and F.A. Modine, Appl. Phys. Lett. 69 (3), 371-374 (1996)
             Erratum, G.E. Jellison and F.A. Modine, Appl. Phys. Lett 69 (14), 2137 (1996)
             H. Chen, W.Z. Shen, Eur. Phys. J. B. 43, 503-507 (2005)
-    """
+    '''
 
     def __init__(self, *coeffs):
-        """Creates a Tauc-Lorentz model.
+        '''Creates a Tauc-Lorentz model.
 
         Tauc-Lorentz coefficients Eg, eps_inf, [A1, E1, C1], [A2, E2, C2],...
           Eg : optical band gap energy (eV)
@@ -294,7 +294,7 @@ class DispersionTaucLorentz(DispersionLaw):
           Ai : Strength of ith absorption (eV). Typically 10 < Ai < 200
           Ei : lorentz resonance energy (eV). Always Eg < Ei
           Ci : lorentz broadening (eV). Typically 0 < Ci < 10
-        """
+        '''
         self.coeffs = coeffs
 
         def eps2(E, Eg, Ai, Ei, Ci):
@@ -340,10 +340,10 @@ class DispersionHighEnergyBands(DispersionLaw):
 
 
 class DispersionTanguy(DispersionLaw):
-    """Fractional dimensional Tanguy model"""
+    '''Fractional dimensional Tanguy model'''
 
     def __init__(self, A, d, gam, R, Eg, a, b):
-        """Creates a Tanguy dispersion model
+        '''Creates a Tanguy dispersion model
 
         Tanguy coefficients A, d, gamma, R, Eg, a, b
           A : Amplitude (eV)
@@ -353,7 +353,7 @@ class DispersionTanguy(DispersionLaw):
           Eg : optical band gap energy (eV)
           a : Sellmeier coefficient for background dielectric constant (eV²)
           b : Sellmeier coefficient for background dielectric constant (eV²)
-        """
+        '''
         def dielectricFunction(lbda):
             E = lambda2E(lbda)
             return np.conjugate(1 + a / (b - E**2) +
@@ -381,7 +381,7 @@ class DispersionTanguy(DispersionLaw):
 
 
 class DispersionPoles(DispersionLaw):
-    """Disperion law for an UV and IR pole, i.e. Lorentz oscillators outside the fitting spectral range"""
+    '''Disperion law for an UV and IR pole, i.e. Lorentz oscillators outside the fitting spectral range'''
 
     def __init__(self, A_ir, A_uv, E_uv):
         
@@ -393,15 +393,15 @@ class DispersionPoles(DispersionLaw):
 
 
 class DispersionTable(DispersionLaw):
-    """Dispersion law specified by a table"""
+    '''Dispersion law specified by a table'''
 
     def __init__(self, lbda=None, n=None):
-        """Create a dispersion law from a refraction index list.
+        '''Create a dispersion law from a refraction index list.
 
         'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
-        """
+        '''
         self.interpolation = scipy.interpolate.interp1d(
             unitConversion(lbda), n**2, kind='cubic')
 
@@ -413,14 +413,14 @@ class DispersionTable(DispersionLaw):
 
 
 class DispersionTableEpsilon(DispersionLaw):
-    """Dispersion law specified by a table"""
+    '''Dispersion law specified by a table'''
 
     def __init__(self, lbda=None, epsilon=None):
-        """Create a dispersion law from a dielectric constant list.
+        '''Create a dispersion law from a dielectric constant list.
 
         'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'ε'     : Refractive index values (can be complex)
-        """
+        '''
         self.interpolation = scipy.interpolate.interp1d(
             unitConversion(lbda), epsilon, kind='cubic')
 
