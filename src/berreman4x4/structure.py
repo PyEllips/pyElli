@@ -1,60 +1,10 @@
 # Encoding: utf-8
 import numpy as np
+from typing import List
 
 from .experiment import Experiment
 from .math import unitConversion
-
-
-#########################################################
-# Structure Class...
-
-class Structure:
-    """Description of the whole structure.
-
-    * front half-space (incident), must be isotropic
-    * back half-space (exit), may be anisotropic
-    * layer succession
-    """
-    frontMaterial = None
-    backMaterial = None
-    layers = []  # list of layers
-
-    def __init__(self, front=None, layers=None, back=None):
-        """Creates an empty structure.
-
-        'front' : front half space, see setFrontHalfSpace()
-        'layers' : layer list, see setLayers()
-        'back' : back half space, see setBackHalfSpace()
-        """
-        self.setFrontMaterial(front)
-        self.setLayers(layers)
-        self.setBackMaterial(back)
-
-    def setFrontMaterial(self, material):
-        """Defines the front half-space material.
-
-        'material' : Material object
-        """
-        self.frontMaterial = material
-
-    def setBackMaterial(self, material):
-        """Defines the back half-space material.
-
-        'material' : Material object
-        """
-        self.backMaterial = material
-
-    def setLayers(self, layers):
-        """Set list of layers.
-
-        'layers' : list of layers, starting from z=0
-        """
-        self.layers = layers
-
-    def evaluate(self, lbda, theta_i):
-        """Return the Evaluation of the structure for the given parameters"""
-        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
-        return exp.evaluate()
+from .materials import Material
 
 
 #########################################################
@@ -66,7 +16,7 @@ class Layer:
     material = None     # Material making the layer
     d = None            # Thickness of the layer
 
-    def __init__(self, material, d):
+    def __init__(self, material: Material, d):
         """New layer of material 'material', with thickness 'h'
 
         'material' : Material object
@@ -75,7 +25,7 @@ class Layer:
         self.setMaterial(material)
         self.setThickness(d)
 
-    def setMaterial(self, material):
+    def setMaterial(self, material: Material):
         """Defines the material for this layer. """
         self.material = material
 
@@ -102,7 +52,7 @@ class RepeatedLayers(Layer):
     after = None    # additionnal layers after the last period
     layers = None   # layers to repeat
 
-    def __init__(self, layers=None, n=2, before=0, after=0):
+    def __init__(self, layers: List[Layer], n: int = 2, before: int = 0, after: int = 0):
         """Repeated structure of layers
 
         'layers' : list of the repeated layers
@@ -112,7 +62,7 @@ class RepeatedLayers(Layer):
         self.setRepetition(n, before, after)
         self.setLayers(layers)
 
-    def setRepetition(self, n,  before=0, after=0):
+    def setRepetition(self, n: int, before: int = 0, after: int = 0):
         """Defines the number of repetitions.
 
         'n' : number of repetitions
@@ -126,7 +76,7 @@ class RepeatedLayers(Layer):
         self.before = before
         self.after = after
 
-    def setLayers(self, layers):
+    def setLayers(self, layers: List[Layer]):
         """Set list of layers.
 
         'layers' : list of layers, starting from z=0
@@ -166,3 +116,55 @@ class InhomogeneousLayer(Layer):
         zmid = (z[:-1] + z[1:]) / 2.
         tensor = [self.material.getTensor(z, lbda) for z in zmid]
         return list(zip(h, tensor))
+
+
+#########################################################
+# Structure Class...
+
+class Structure:
+    """Description of the whole structure.
+
+    * front half-space (incident), must be isotropic
+    * back half-space (exit), may be anisotropic
+    * layer succession
+    """
+    frontMaterial = None
+    backMaterial = None
+    layers = []  # list of layers
+
+    def __init__(self, front: Material, layers: List[Layer], back: Material):
+        """Creates an empty structure.
+
+        'front' : front half space, see setFrontHalfSpace()
+        'layers' : layer list, see setLayers()
+        'back' : back half space, see setBackHalfSpace()
+        """
+        self.setFrontMaterial(front)
+        self.setLayers(layers)
+        self.setBackMaterial(back)
+
+    def setFrontMaterial(self, material: Material):
+        """Defines the front half-space material.
+
+        'material' : Material object
+        """
+        self.frontMaterial = material
+
+    def setBackMaterial(self, material: Material):
+        """Defines the back half-space material.
+
+        'material' : Material object
+        """
+        self.backMaterial = material
+
+    def setLayers(self, layers: List[Layer]):
+        """Set list of layers.
+
+        'layers' : list of layers, starting from z=0
+        """
+        self.layers = layers
+
+    def evaluate(self, lbda, theta_i):
+        """Return the Evaluation of the structure for the given parameters"""
+        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        return exp.evaluate()
