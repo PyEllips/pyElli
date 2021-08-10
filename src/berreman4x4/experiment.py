@@ -6,6 +6,7 @@ from .result import Result
 from .settings import settings
 from .solverExpm import SolverExpm
 from .solver2x2 import Solver2x2
+from .structure import Structure
 
 
 class Experiment:
@@ -19,7 +20,7 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure=None, lbda=None, theta_i=None, vector=None):
+    def __init__(self, structure: Structure, lbda, theta_i: float, vector=None):
         """Creates an empty structure.
 
         'structure' : Structure object
@@ -32,7 +33,7 @@ class Experiment:
         self.setLbda(lbda)
         self.setVector(vector)
 
-    def setStructure(self, structure):
+    def setStructure(self, structure: Structure):
         """Defines the Structure.
 
         'structure' : Structure object
@@ -85,7 +86,7 @@ class Experiment:
 
             self.jonesVector = np.array([a, b])
 
-    def setTheta(self, theta_i):
+    def setTheta(self, theta_i: float):
         """Set incident angle, or list of angles to evaluate.
 
         'theta_i' : incident angle in degrees
