@@ -8,10 +8,10 @@ from .solver import Solver
 
 
 class SolverExpm(Solver):
-    '''
+    """
     Solver class to evaluate Experiment objects.
     Based on Berreman's 4x4 method.
-    '''
+    """
     _S = None
     _jones_matrix_t = None
     _jones_matrix_r = None

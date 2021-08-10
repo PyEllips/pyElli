@@ -2,9 +2,8 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
-from .rotations import rotation_v_theta
+from .math import unitConversion, rotation_v_theta
 from .settings import settings
-from .math import unitConversion
 
 
 class Material:
@@ -114,6 +113,7 @@ class BiaxialMaterial(Material):
         self.law_y = law_y
         self.law_z = law_z
 
+
 #########################################################
 # Inhomogeneous materials...
 
@@ -153,9 +153,9 @@ class TwistedMaterial(InhomogeneousMaterial):
     """
 
     material = None  # Material for the twisted layer
-    d = None            # Thickness of the layer
+    d = None  # Thickness of the layer
     angle = None  # Angle of the twist
-    div = None          # Number of slices
+    div = None  # Number of slices
 
     def __init__(self, material, d, angle=90, div=25):
         """Creates a layer with a twisted material.

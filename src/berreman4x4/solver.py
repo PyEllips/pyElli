@@ -4,14 +4,14 @@ import numpy as np
 
 
 class Solver(ABC):
-    '''
+    """
     Solver base class to evaluate Experiment objects.
     Here the experiment and structure get unpacked
     and the simulation results get returned.
 
     The actual simulation is handled by subclasses.
     Because of this, this class should never be called.
-    '''
+    """
 
     structure = None
     lbda = None

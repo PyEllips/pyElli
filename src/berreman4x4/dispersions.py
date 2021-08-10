@@ -142,6 +142,7 @@ class DispersionSellmeier(DispersionLaw):
 
         self.dielectricFunction = dielectricFunction
 
+
 class DispersionMgO(DispersionLaw):
     """Alternative form of the Sellmeier dispersion law equation"""
 
@@ -152,9 +153,9 @@ class DispersionMgO(DispersionLaw):
             lbda = unitConversion(lbda) / unitFactors['µm']
 
             return coeffs[0] + \
-                    coeffs[1] * lbda **2 + \
-                    coeffs[2] * lbda**4 + \
-                    coeffs[3] / (lbda**2 - coeffs[4])
+                coeffs[1] * lbda ** 2 + \
+                coeffs[2] * lbda**4 + \
+                coeffs[3] / (lbda**2 - coeffs[4])
 
         self.dielectricFunction = dielectricFunction
 
@@ -384,7 +385,7 @@ class DispersionPoles(DispersionLaw):
     """Disperion law for an UV and IR pole, i.e. Lorentz oscillators outside the fitting spectral range"""
 
     def __init__(self, A_ir, A_uv, E_uv):
-        
+
         def dielectricFunction(lbda):
             E = lambda2E(lbda)
             return A_ir / E**2 + A_uv / (E_uv**2 - E**2)
