@@ -2,6 +2,8 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+from .experiment import Experiment
+
 
 class Solver(ABC):
     """
@@ -59,7 +61,7 @@ class Solver(ABC):
     def calculate(self):
         pass
 
-    def __init__(self, experiment):
+    def __init__(self, experiment: Experiment):
         self.permProfile = []
         self.unpackData(experiment)
         self.calculate()
