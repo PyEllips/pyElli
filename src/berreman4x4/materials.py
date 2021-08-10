@@ -2,9 +2,8 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
-from .rotations import rotation_v_theta
+from .math import unitConversion, rotation_v_theta
 from .settings import settings
-from .math import unitConversion
 
 
 class Material:
