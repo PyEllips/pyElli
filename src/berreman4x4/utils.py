@@ -12,7 +12,7 @@ from numpy.lib.scimath import sqrt
 from .dispersions import DispersionTableEpsilon
 
 
-def calcPseudoDiel(rho, angle, output='eps'):
+def calcPseudoDiel(rho, angle: float, output: str = 'eps'):
     """Calculates the pseudo dielectric function of a measurement from rho.
 
     Args:
@@ -61,7 +61,7 @@ def calc_rho(psi_delta):
                                axis=1)
 
 
-def manual_parameters(exp_data, params, angle=70):
+def manual_parameters(exp_data, params, angle: float = 70):
 
     def decorator_func(model):
         fig = go.FigureWidget(pd.concat([exp_data,
