@@ -2,6 +2,7 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
+from .dispersions import DispersionLaw
 from .math import unitConversion, rotation_v_theta
 from .settings import settings
 
@@ -66,14 +67,14 @@ class Material:
 class IsotropicMaterial(Material):
     """Isotropic material."""
 
-    def __init__(self, law=None):
+    def __init__(self, law: DispersionLaw):
         """Creates isotropic material with dispersion law.
 
         'law' : Dispersion law object
         """
         self.setDispersion(law)
 
-    def setDispersion(self, law):
+    def setDispersion(self, law: DispersionLaw):
         self.law_x = law
         self.law_y = law
         self.law_z = law
@@ -82,7 +83,7 @@ class IsotropicMaterial(Material):
 class UniaxialMaterial(Material):
     """Uniaxial material."""
 
-    def __init__(self, law_o=None, law_e=None):
+    def __init__(self, law_o: DispersionLaw, law_e: DispersionLaw):
         """Creates a uniaxial material with dispersion law.
 
         'law_o' : dispersion law for ordinary crystal axes (x and y direction)
@@ -90,7 +91,7 @@ class UniaxialMaterial(Material):
         """
         self.setDispersion(law_o, law_e)
 
-    def setDispersion(self, law_o=None, law_e=None):
+    def setDispersion(self, law_o: DispersionLaw, law_e: DispersionLaw):
         self.law_x = law_o
         self.law_y = law_o
         self.law_z = law_e
@@ -99,7 +100,7 @@ class UniaxialMaterial(Material):
 class BiaxialMaterial(Material):
     """Biaxial material."""
 
-    def __init__(self, law_x=None, law_y=None, law_z=None):
+    def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw):
         """Creates a biaxial material with dispersion law.
 
         'law_x' : dispersion law for x axis
@@ -108,7 +109,7 @@ class BiaxialMaterial(Material):
         """
         self.setDispersion(law_x, law_y, law_z)
 
-    def setDispersion(self, law_x=None, law_y=None, law_z=None):
+    def setDispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw):
         self.law_x = law_x
         self.law_y = law_y
         self.law_z = law_z
