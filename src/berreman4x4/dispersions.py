@@ -1,29 +1,31 @@
 # Encoding: utf-8
+from abc import ABC, abstractmethod
 import numpy as np
+from numpy.lib.scimath import sqrt
 import scipy.constants as sc
 from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
-from numpy.lib.scimath import sqrt
 import pandas as pd
 
 from .settings import settings
 from .math import lambda2E
 
 
-class DispersionLaw:
+class DispersionLaw(ABC):
     """Dispersion law (abstract class).
 
-    Funktions provided for derived classes:
+    Functions provided for derived classes:
     * getDielectric(lbda) : returns dielectric constant for wavelength 'lbda'
     * getRefractiveIndex(lbda) : returns refractive index for wavelength 'lbda'
     """
 
-    def dielectricFunction(lbda):
-        return 0 * 1j     # Complex dielectric function
-
+    @abstractmethod
     def __init__(self):
-        """Creates a new dispersion law -- abstract class"""
-        raise NotImplementedError("Should be implemented in derived classes")
+        pass
+
+    @abstractmethod
+    def dielectricFunction(self, lbda):
+        pass
 
     def __add__(self, other):
         """Add up the dielectric function of multiple models"""
