@@ -31,9 +31,17 @@ class Structure:
         self.backMaterial = backMaterial
         self.layers = layers
 
+    def getPermittivityProfile(self, lbda):
+        """Get permitivity profile of the complete structure for the wavelenghts lbda.
         """
+        permProfile = []
+        permProfile.append(self.frontMaterial.getTensor(lbda))
 
+        for L in self.layers:
+            permProfile.append(L.getPermittivityProfile(lbda))
 
+        permProfile.append(self.backMaterial.getTensor(lbda))
+        return permProfile
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
