@@ -1,9 +1,9 @@
 # Encoding: utf-8
+from .materials import Material
 import numpy as np
 from typing import List
 
 from .experiment import Experiment
-from .materials import Material
 
 
 #########################################################
@@ -163,6 +163,18 @@ class Structure:
         'layers' : list of layers, starting from z=0
         """
         self.layers = layers
+
+    def getPermittivityProfile(self, lbda):
+        """Get permitivity profile of the complete structure for the wavelenghts lbda.
+        """
+        permProfile = []
+        permProfile.append(self.frontMaterial.getTensor(lbda))
+
+        for L in self.layers:
+            permProfile.append(L.getPermittivityProfile(lbda))
+
+        permProfile.append(self.backMaterial.getTensor(lbda))
+        return permProfile
 
     def evaluate(self, lbda, theta_i, vector=[1, 0, 1, 0]):
         """Return the Evaluation of the structure for the given parameters"""

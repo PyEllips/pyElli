@@ -81,19 +81,23 @@ class SolverExpm(Solver):
     def calculate(self):
         """Simulates optical Experiment"""
 
+        # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
+        nx = self.structure.frontMaterial.getRefractiveIndex(self.lbda)[:, 0, 0]
+        Kx = nx * np.sin(np.deg2rad(self.theta_i))
+
         layers = reversed(self.permProfile[1:-1])
 
-        ILf = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[0], inv=True)
+        ILf = TransitionMatrixIsoHalfspace(Kx, self.permProfile[0], inv=True)
 
         P_tot = np.identity(4)
         for d, epsilon in layers:
-            P = hs_propagator_Pade(buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
+            P = hs_propagator_Pade(buildDeltaMatrix(Kx, epsilon), -d, self.lbda)
             P_tot = P @ P_tot
 
         if isinstance(self.structure.backMaterial, IsotropicMaterial):
-            Lb = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
+            Lb = TransitionMatrixIsoHalfspace(Kx, self.permProfile[-1])
         else:
-            Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
+            Lb = TransitionMatrixHalfspace(Kx, self.permProfile[-1])
 
         T = ILf @ P_tot @ Lb
 
@@ -112,7 +116,7 @@ class SolverExpm(Solver):
         S = T_ri / r_ss[:, None, None]
         S[..., 0, :] = -S[..., 0, :]
 
-        self.powerCorrection = getPowerTransmissionCorrection(self.structure, self.lbda, self.Kx)
+        self.powerCorrection = getPowerTransmissionCorrection(self.structure, self.lbda, Kx)
 
         self._jones_matrix_t = T_ti
         self._jones_matrix_r = T_ri
