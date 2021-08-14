@@ -1,4 +1,5 @@
 # Encoding: utf-8
+from abc import ABC, abstractmethod
 import numpy as np
 from numpy.lib.scimath import sqrt
 
@@ -6,7 +7,7 @@ from .math import unitConversion, rotation_v_theta
 from .settings import settings
 
 
-class Material:
+class Material(ABC):
     """Base class for materials (abstract class).
 
     Method that should be implemented in derived classes:
@@ -18,10 +19,7 @@ class Material:
     law_z = None
     rotationMatrix = np.identity(3)
 
-    def __init__(self):
-        """Creates a new material -- abstract class"""
-        raise NotImplementedError("Should be implemented in derived classes")
-
+    @abstractmethod
     def setDispersion(self):
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
