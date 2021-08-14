@@ -27,17 +27,10 @@ class Experiment:
         'theta_i' : incident angle in degrees
         'vector' : Jones or Stokes vector of incident light
         """
-        self.setStructure(structure)
-        self.setTheta(theta_i)
-        self.setLbda(lbda)
-        self.setVector(vector)
-
-    def setStructure(self, structure):
-        """Defines the Structure.
-
-        'structure' : Structure object
-        """
         self.structure = structure
+        self.theta_i = theta_i
+        self.lbda = (np.asarray(unitConversion(lbda)), 'm')
+        self.setVector(vector)
 
     def setVector(self, vector):
         """Defines the Jones or Stokes vector of the incident Light.
@@ -84,20 +77,6 @@ class Experiment:
                 b = U / (2 * a) - 1j * V / (2 * a)
 
             self.jonesVector = np.array([a, b])
-
-    def setTheta(self, theta_i):
-        """Set incident angle, or list of angles to evaluate.
-
-        'theta_i' : incident angle in degrees
-        """
-        self.theta_i = theta_i
-
-    def setLbda(self, lbda):
-        """Set experiment wavelengths.
-
-        'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
-        """
-        self.lbda = (np.asarray(unitConversion(lbda)), 'm')
 
     def evaluate(self, solver='default'):
         """Return the Evaluation of the structure for the given parameters"""

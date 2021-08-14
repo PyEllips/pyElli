@@ -19,37 +19,21 @@ class Structure:
     backMaterial = None
     layers = []  # list of layers
 
-    def __init__(self, front=None, layers=None, back=None):
-        """Creates an empty structure.
+    def __init__(self, frontMaterial=None, layers=None, backMaterial=None):
+        """Creates an structure consisting of a semiinfinit frontmaterial,
+        an optional list of finite layers and a semiinfinit material in the back.
 
-        'front' : front half space, see setFrontHalfSpace()
-        'layers' : layer list, see setLayers()
-        'back' : back half space, see setBackHalfSpace()
+        'front' : front half space material
+        'layers' : List of layers
+        'back' : back half space material
         """
-        self.setFrontMaterial(front)
-        self.setLayers(layers)
-        self.setBackMaterial(back)
-
-    def setFrontMaterial(self, material):
-        """Defines the front half-space material.
-
-        'material' : Material object
-        """
-        self.frontMaterial = material
-
-    def setBackMaterial(self, material):
-        """Defines the back half-space material.
-
-        'material' : Material object
-        """
-        self.backMaterial = material
-
-    def setLayers(self, layers):
-        """Set list of layers.
-
-        'layers' : list of layers, starting from z=0
-        """
+        self.frontMaterial = frontMaterial
+        self.backMaterial = backMaterial
         self.layers = layers
+
+        """
+
+
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
@@ -72,15 +56,7 @@ class Layer:
         'material' : Material object
         'h'        : Thickness of layer in nm or tuple (thickness, unit)
         """
-        self.setMaterial(material)
-        self.setThickness(d)
-
-    def setMaterial(self, material):
-        """Defines the material for this layer. """
         self.material = material
-
-    def setThickness(self, d):
-        """Defines the thickness of this homogeneous layer."""
         self.d = unitConversion(d)
 
     def getPermittivityProfile(self, lbda):
@@ -97,40 +73,25 @@ class Layer:
 class RepeatedLayers(Layer):
     """Repetition of a structure."""
 
-    n = None        # Number of repetitions
+    reps = None        # Number of repetitions
     before = None   # additionnal layers before the first period
     after = None    # additionnal layers after the last period
     layers = None   # layers to repeat
 
-    def __init__(self, layers=None, n=2, before=0, after=0):
+    def __init__(self, layers=None, reps=2, before=0, after=0):
         """Repeated structure of layers
 
         'layers' : list of the repeated layers
-        'n' : number of repetitions
-        'before', 'after' : see method setRepetition()
-        """
-        self.setRepetition(n, before, after)
-        self.setLayers(layers)
-
-    def setRepetition(self, n,  before=0, after=0):
-        """Defines the number of repetitions.
-
-        'n' : number of repetitions
+        'reps' : number of repetitions
         'before' : number of additionnal layers before the first period
         'after' : number of additionnal layers after the last period
 
         Example : For layers [1,2,3] with n=2, before=1 and after=0, the
         structure will be 3123123.
         """
-        self.n = n
+        self.reps = reps
         self.before = before
         self.after = after
-
-    def setLayers(self, layers):
-        """Set list of layers.
-
-        'layers' : list of layers, starting from z=0
-        """
         self.layers = layers
 
     def getPermittivityProfile(self, lbda):
@@ -143,7 +104,7 @@ class RepeatedLayers(Layer):
             before = layers[-self.before:]
         else:
             before = []
-        return before + self.n * layers + layers[:self.after]
+        return before + self.reps * layers + layers[:self.after]
 
 
 #########################################################
