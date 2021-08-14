@@ -20,9 +20,12 @@ ExpmBackend:
 """
 import numpy as np
 
+from .solverExpm import SolverExpm
+from .solver2x2 import Solver2x2
+
 # Default settings
 settings = {
     'dtype': np.complex128,
     'ExpmBackend': 'tensorflow',
-    'solver': 'berreman4x4'
+    'solver': SolverExpm
 }

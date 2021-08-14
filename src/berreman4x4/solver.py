@@ -53,18 +53,13 @@ class Solver(ABC):
             'Mueller': self.mueller_matrix
         }
 
-    @abstractmethod
-    def calculate(self):
-        pass
-
     def __init__(self, experiment):
-        self.unpackData(experiment)
-        self.calculate()
-
-    def unpackData(self, experiment):
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i
         self.jonesVector = experiment.jonesVector
         self.permProfile = self.structure.getPermittivityProfile(self.lbda)
 
+    @abstractmethod
+    def calculate(self):
+        pass

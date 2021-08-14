@@ -35,12 +35,12 @@ class Result:
     def R(self):
         return self.__result.R
 
-    def __init__(self, experiment, solver):
+    def __init__(self, solver, experiment):
         """
 
         """
-        self.__experiment = experiment
         self.__result = solver
+        self.__experiment = experiment
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.

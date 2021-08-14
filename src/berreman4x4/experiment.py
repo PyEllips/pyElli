@@ -4,8 +4,6 @@ import numpy as np
 from .math import unitConversion
 from .result import Result
 from .settings import settings
-from .solverExpm import SolverExpm
-from .solver2x2 import Solver2x2
 
 
 class Experiment:
@@ -19,17 +17,19 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure=None, lbda=None, theta_i=None, vector=None):
+    def __init__(self, structure=None, lbda=None, theta_i=None, solver=settings['solver'], vector=None):
         """Creates an empty structure.
 
         'structure' : Structure object
         'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
         'theta_i' : incident angle in degrees
         'vector' : Jones or Stokes vector of incident light
+        'solver' : Solver subclass
         """
         self.structure = structure
         self.theta_i = theta_i
         self.lbda = (np.asarray(unitConversion(lbda)), 'm')
+        self.solver = solver
         self.setVector(vector)
 
     def setVector(self, vector):
@@ -78,17 +78,8 @@ class Experiment:
 
             self.jonesVector = np.array([a, b])
 
-    def evaluate(self, solver='default'):
+    def evaluate(self):
         """Return the Evaluation of the structure for the given parameters"""
-        if solver == 'default' and 'solver' in settings:
-            solver = settings['solver']
-
-        solvers = ['berreman4x4', 'simple2x2']
-        if solver not in solvers:
-            raise ValueError("Invalid solver type {:}. Expected one of: {:}"
-                             .format(solver, solvers))
-        else:
-            if solver == 'berreman4x4':
-                return Result(self, SolverExpm(self))
-            elif solver == 'simple2x2':
-                return Result(self, Solver2x2(self))
+        solver = self.solver(self)
+        solver.calculate()
+        return Result(solver, self)
