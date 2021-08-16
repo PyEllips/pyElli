@@ -3,7 +3,6 @@
 # %% [markdown]
 # # Example of a TiO2/SiO2 Bragg mirror with 8.5 periods
 #
-# Berreman4x4 example
 # Author: O. Castany, M.Müller
 
 # %%
@@ -17,14 +16,14 @@ bm.settings['ExpmBackend'] = 'scipy'
 np.set_printoptions(suppress=True, precision=3)
 
 # %% [markdown]
-# Front and back materials
+# ## Front and back materials
 
 # %%
 air = bm.IsotropicMaterial(bm.DispersionLess(1.0))
 glass = bm.IsotropicMaterial(bm.DispersionLess(1.5))
 
 # %% [markdown]
-# Materials for a SiO2/TiO2 Bragg mirror
+# ## Materials for a SiO2/TiO2 Bragg mirror
 
 # %%
 n_SiO2 = 1.47
@@ -34,7 +33,7 @@ SiO2 = bm.IsotropicMaterial(bm.DispersionLess(n_SiO2))
 TiO2 = bm.IsotropicMaterial(bm.DispersionLess(n_TiO2))
 
 # %% [markdown]
-# Calculate layer thickness as quarterwaveplates
+# ## Calculate layer thickness as quarterwaveplates
 
 # %%
 lbda0 = 1550
@@ -46,7 +45,7 @@ print("Thickness of the SiO2 QWP: {} nm".format(d_SiO2))
 print("Thickness of the TiO2 QWP: {} nm".format(d_TiO2))
 
 # %% [markdown]
-# Create layers
+# ## Create layers and structure
 
 # %%
 L_SiO2 = bm.Layer(SiO2, d_SiO2)
@@ -55,14 +54,10 @@ L_TiO2 = bm.Layer(TiO2, d_TiO2)
 # Repeated layers: 8.5 periods
 Layerstack = bm.RepeatedLayers([L_TiO2, L_SiO2], 8, 0, 1)
 
-# %% [markdown]
-# Structure
-
-# %%
 s = bm.Structure(air, [Layerstack], glass)
 
 # %% [markdown]
-# Calculation
+# ## Calculation
 
 # %%
 (lbda1, lbda2) = (1100, 2500)
@@ -74,7 +69,7 @@ R = data.R[:, 1, 1]
 T = data.T[:, 1, 1]
 
 # %% [markdown]
-# Plotting
+# ## Plotting
 
 # %%
 fig = pyplot.figure()
@@ -90,7 +85,7 @@ fmt.set_powerlimits((-3, 3))
 pyplot.show()
 
 # %% [markdown]
-# Structure Graph
+# ## Structure Graph
 
 # %%
 bmplot.drawStructure(s)
