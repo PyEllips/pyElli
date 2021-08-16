@@ -35,6 +35,10 @@ class Result:
     def R(self):
         return self.__result.R
 
+    @property
+    def T(self):
+        return self.__result.T
+
     def __init__(self, experiment, solver):
         """
 

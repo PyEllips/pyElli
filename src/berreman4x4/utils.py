@@ -10,6 +10,7 @@ from types import SimpleNamespace
 from numpy.lib.scimath import sqrt
 
 from .dispersions import DispersionTableEpsilon
+from .math import unitConversion, unitFactors
 
 
 def calcPseudoDiel(rho, angle, output='eps'):
@@ -242,3 +243,10 @@ class SpectraRay():
     @staticmethod
     def eV2nm(wlen):
         return sc.value('Planck constant in eV s') * sc.c * 1e9 / wlen
+
+
+def get_QWP_thickness(material, lbda, unit='nm'):
+    """Return the thickness in nm of a Quater Wave Plate at wavelength 'lbda'."""
+    lbda = unitConversion(lbda)
+    nr = np.real(material.getRefractiveIndex(lbda)[0, 0, 0])
+    return lbda / (4.*nr) / unitFactors['nm']

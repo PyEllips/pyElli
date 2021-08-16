@@ -74,7 +74,7 @@ class Solver(ABC):
         self.permProfile.append(self.structure.frontMaterial.getTensor(self.lbda))
 
         for L in self.structure.layers:
-            self.permProfile.append(L.getPermittivityProfile(self.lbda))
+            self.permProfile.extend(L.getPermittivityProfile(self.lbda))
 
         self.permProfile.append(self.structure.backMaterial.getTensor(self.lbda))
 

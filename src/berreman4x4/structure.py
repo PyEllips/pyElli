@@ -67,10 +67,10 @@ class Layer:
     d = None            # Thickness of the layer
 
     def __init__(self, material, d):
-        """New layer of material 'material', with thickness 'h'
+        """New layer of material 'material', with thickness 'd'
 
         'material' : Material object
-        'h'        : Thickness of layer in nm or tuple (thickness, unit)
+        'd'        : Thickness of layer in nm or tuple (thickness, unit)
         """
         self.setMaterial(material)
         self.setThickness(d)
@@ -86,9 +86,9 @@ class Layer:
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns a list containing one tuple: [(h, epsilon)]
+        Returns a list containing one tuple: [(d, epsilon)]
         """
-        return (self.d, self.material.getTensor(lbda))
+        return [(self.d, self.material.getTensor(lbda))]
 
 
 #########################################################
@@ -136,9 +136,10 @@ class RepeatedLayers(Layer):
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
         """
-        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        layers = [L.getPermittivityProfile(lbda)[0] for L in self.layers]
+
         if self.before > 0:
             before = layers[-self.before:]
         else:
@@ -159,7 +160,7 @@ class InhomogeneousLayer(Layer):
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
-        Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list [(d1, epsilon1), (d2, epsilon2), ... ]
         """
         z = self.material.getSlices()
         h = np.diff(z)
