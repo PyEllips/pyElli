@@ -20,6 +20,19 @@ class Result:
         return self.__result.rho
 
     @property
+    def rhoMat(self):
+        return self.__result.rhoMat
+
+    @property
+    def psiMat(self):
+        return self.__result.psiMat
+
+    @property
+    def deltaMat(self):
+        return self.__result.deltaMat
+
+
+    @property
     def mueller_matrix(self):
         return self.__result.mueller_matrix
 

@@ -33,6 +33,19 @@ class SolverExpm(Solver):
         return np.where(d < 0, d + 360, d)
 
     @property
+    def rhoMat(self):
+        return self._S
+
+    @property
+    def psiMat(self):
+        return np.rad2deg(np.arctan(np.abs(self.rhoMat)))
+
+    @property
+    def deltaMat(self):
+        d = -np.angle(self.rhoMat, deg=True)
+        return -np.angle(self.rhoMat, deg=True)
+
+    @property
     def mueller_matrix(self):
         if self._S is None:
             return None

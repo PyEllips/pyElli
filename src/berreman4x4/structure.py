@@ -51,9 +51,9 @@ class Structure:
         """
         self.layers = layers
 
-    def evaluate(self, lbda, theta_i):
+    def evaluate(self, lbda, theta_i, vector=[1, 0, 1, 0]):
         """Return the Evaluation of the structure for the given parameters"""
-        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        exp = Experiment(self, lbda, theta_i, vector)
         return exp.evaluate()
 
 
