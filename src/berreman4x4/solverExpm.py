@@ -91,7 +91,10 @@ class SolverExpm(Solver):
             P = hs_propagator_Pade(buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
             P_tot = P @ P_tot
 
-        Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
+        if isinstance(self.structure.backMaterial, IsotropicMaterial):
+            Lb = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
+        else:
+            Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
 
         T = ILf @ P_tot @ Lb
 
