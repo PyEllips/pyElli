@@ -4,7 +4,6 @@ import numpy as np
 from numpy.lib.scimath import sqrt
 
 from .math import unitConversion, rotation_v_theta
-from .settings import settings
 
 
 class Material(ABC):
@@ -46,7 +45,7 @@ class Material(ABC):
             i = shape[0]
 
         # create empty tensor
-        epsilon = np.zeros((i, 3, 3), dtype=settings['dtype'])
+        epsilon = np.zeros((i, 3, 3), dtype=np.complex128)
 
         # get get dielectric functions from dispersion law
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)

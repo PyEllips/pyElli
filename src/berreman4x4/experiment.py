@@ -2,9 +2,6 @@
 import numpy as np
 
 from .math import unitConversion
-from .result import Result
-from .settings import settings
-
 
 class Experiment:
     """Description of an experiment.
@@ -17,19 +14,17 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure=None, lbda=None, theta_i=None, solver=settings['solver'], vector=None):
+    def __init__(self, structure=None, lbda=None, theta_i=None, vector=None):
         """Creates an empty structure.
 
         'structure' : Structure object
         'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
         'theta_i' : incident angle in degrees
         'vector' : Jones or Stokes vector of incident light
-        'solver' : Solver subclass
         """
         self.structure = structure
         self.theta_i = theta_i
         self.lbda = (np.asarray(unitConversion(lbda)), 'm')
-        self.solver = solver
         self.setVector(vector)
 
     def setVector(self, vector):
@@ -78,8 +73,7 @@ class Experiment:
 
             self.jonesVector = np.array([a, b])
 
-    def evaluate(self):
+    def evaluate(self, solver):
         """Return the Evaluation of the structure for the given parameters"""
-        solver = self.solver(self)
-        solver.calculate()
-        return Result(solver, self)
+        solver(self)
+        return solver.calculate()

@@ -54,6 +54,9 @@ class Solver(ABC):
         }
 
     def __init__(self, experiment):
+        self.load_experiment(experiment)
+
+    def load_experiment(self, experiment):
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i

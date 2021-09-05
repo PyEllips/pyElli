@@ -4,7 +4,6 @@
 class Result:
     """Record of a simulation result."""
 
-    __experiment = None       # Simulated experiment
     __result = None
 
     @property
@@ -35,12 +34,11 @@ class Result:
     def R(self):
         return self.__result.R
 
-    def __init__(self, solver, experiment):
+    def __init__(self, solver):
         """
 
         """
         self.__result = solver
-        self.__experiment = experiment
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.

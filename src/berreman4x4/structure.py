@@ -3,7 +3,7 @@ import numpy as np
 
 from .experiment import Experiment
 from .math import unitConversion
-from .settings import settings
+from .solver4x4 import Solver4x4
 
 
 #########################################################
@@ -46,8 +46,8 @@ class Structure:
 
     def evaluate(self, lbda, theta_i):
         """Return the Evaluation of the structure for the given parameters"""
-        exp = Experiment(self, lbda, theta_i, settings['solver'], [1, 0, 1, 0])
-        return exp.evaluate()
+        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        return exp.evaluate(Solver4x4())
 
 
 #########################################################

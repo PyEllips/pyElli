@@ -7,7 +7,6 @@ from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 import pandas as pd
 
-from .settings import settings
 from .math import lambda2E, unitConversion, unitFactors
 
 
@@ -44,7 +43,7 @@ class DispersionLaw(ABC):
     def getDielectric(self, lbda):
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 + iε2."""
-        return np.asarray(self.dielectricFunction(lbda), dtype=settings['dtype'])
+        return np.asarray(self.dielectricFunction(lbda), dtype=np.complex128)
 
     def getRefractiveIndex(self, lbda):
         """Returns the refractive index for wavelength 'lbda' default unit (nm)
