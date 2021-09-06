@@ -8,7 +8,7 @@
 # %%
 import berreman4x4 as bm
 import berreman4x4.plotter as bmplot
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import numpy as np
 
 # %%
@@ -72,7 +72,7 @@ T = data.T[:, 1, 1]
 # ## Plotting
 
 # %%
-fig = pyplot.figure()
+fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 ax.plot(lbda_list, R, label="$R$")
 ax.plot(lbda_list, T, label="$T$")
@@ -80,9 +80,7 @@ ax.legend(loc='center right')
 ax.set_xlabel(r"Wavelength $\lambda$ (nm)")
 ax.set_ylabel(r"Power reflection $R$ or transmission $T$")
 ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x8/TiO$_2$/Glass")
-fmt = ax.xaxis.get_major_formatter()
-fmt.set_powerlimits((-3, 3))
-pyplot.show()
+plt.show()
 
 # %% [markdown]
 # ## Structure Graph

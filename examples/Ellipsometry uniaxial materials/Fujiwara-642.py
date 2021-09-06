@@ -18,7 +18,7 @@ import scipy.linalg
 
 # reduces the number of printed figures in numbers:
 np.set_printoptions(suppress=True, precision=4)
-bm.settings['ExpmBackend']='pytorch'
+bm.settings['ExpmBackend']='scipy'
 
 # %% [markdown]
 # ## Example: Air / anisotropic film / silicon substrate
@@ -27,9 +27,9 @@ bm.settings['ExpmBackend']='pytorch'
 n_i = 1.0       # incident medium is air
 n_o = 2.0       # ordinary index of thin layer
 n_e = 2.5       # extraordinary index of thin layer
-lbda = 620      # Wavelength for evaluation
+lbda = 620      # Wavelength for evaluation (nm)
 Phi_i = 70      # 70° indicence angle (degree)
-d = 0.1e-6      # thin layer thickness (m)
+d = 100      # thin layer thickness (nm)
 # Orientation of the anisotropy of the thin layer
 Phi_E = 45      # 1st Euler angle
 Theta_E = 45    # 2nd Eulet angle
@@ -64,7 +64,7 @@ print("Kx: {:.4f}".format(Kx))
 # ```
 
 # %%
-film = bm.Layer(filmMaterial, (d, 'm'))
+film = bm.Layer(filmMaterial, d)
 epsilon = filmMaterial.getTensor(lbda)
 Delta = bm.math.buildDeltaMatrix(Kx, epsilon)[0]
 print("\nDelta matrix:")
@@ -93,10 +93,10 @@ print(Tp)
 
 # %% [markdown]
 # ```python
-# [[-0.353-0.057j,  0.091-0.001j,  0.033+0.044j,  0.056-0.397j],
-#  [ 0.104+0.08j , -0.327-0.011j,  0.004+0.502j, -0.033-0.044j],
-#  [ 0.162-0.014j, -0.017+1.753j, -0.327-0.011j, -0.091+0.001j],
-#  [ 0.300-2.12j , -0.162+0.014j, -0.104-0.08j , -0.353-0.057j]]
+# [[[-0.353-0.057j,  0.091-0.001j,  0.033+0.044j,  0.056-0.397j],
+#   [ 0.104+0.08j , -0.327-0.011j,  0.004+0.502j, -0.033-0.044j],
+#   [ 0.162-0.014j, -0.017+1.753j, -0.327-0.011j, -0.091+0.001j],
+#   [ 0.300-2.12j , -0.162+0.014j, -0.104-0.08j , -0.353-0.057j]]]
 # ```
 
 # %%
@@ -157,7 +157,7 @@ for Theta_E in Theta_E_list:
     for Phi_E in Phi_E_list:
         R = bm.rotation_Euler((Phi_E, Theta_E, 0))
         filmMaterial.setRotation(R)
-        data = s.evaluate(np.array([620]), Phi_i)
+        data = s.evaluate(np.array([lbda]), Phi_i)
         Psi_pp.append(data.psiMat[0,0,0])
         Delta_pp.append(data.deltaMat[0,0,0])
         Psi_ps.append(data.psiMat[0,0,1])
