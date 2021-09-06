@@ -64,9 +64,8 @@ def _drawStructureGraph(structure, z, n):
     ax.step(z, n.real, 'black', where='post')
     ax.spines['top'].set_visible(False)
     ax.xaxis.set_ticks_position('bottom')
-    ax.set_xlabel("z (m)")
+    ax.set_xlabel("z (nm)")
     ax.set_ylabel("n'")
-    ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
     ax.set_xlim(z.min(), z.max())
     ax.set_ylim(bottom=1.0)
     return ax
@@ -83,8 +82,7 @@ def _drawStructureSection(structure, z, n):
     ax = fig.add_subplot(1, 1, 1)
     fig.subplots_adjust(left=0.05, bottom=0.15)
     ax.set_yticks([])
-    ax.set_xlabel("z (m)")
-    ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
+    ax.set_xlabel("z (nm)")
     ax.set_xlim(z.min(), z.max())
     stack = ax.pcolormesh(X, Y, n, cmap=plt.get_cmap('gray_r'))
     colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2, 0.5),

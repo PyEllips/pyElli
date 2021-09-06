@@ -2,7 +2,6 @@
 import numpy as np
 
 from .experiment import Experiment
-from .math import unitConversion
 
 
 #########################################################
@@ -80,8 +79,8 @@ class Layer:
         self.material = material
 
     def setThickness(self, d):
-        """Defines the thickness of this homogeneous layer."""
-        self.d = unitConversion(d)
+        """Defines the thickness of this homogeneous layer in nm."""
+        self.d = d
 
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
@@ -98,8 +97,8 @@ class RepeatedLayers(Layer):
     """Repetition of a structure."""
 
     n = None        # Number of repetitions
-    before = None   # additionnal layers before the first period
-    after = None    # additionnal layers after the last period
+    before = None   # additional layers before the first period
+    after = None    # additional layers after the last period
     layers = None   # layers to repeat
 
     def __init__(self, layers=None, n=2, before=0, after=0):
@@ -116,8 +115,8 @@ class RepeatedLayers(Layer):
         """Defines the number of repetitions.
 
         'n' : number of repetitions
-        'before' : number of additionnal layers before the first period
-        'after' : number of additionnal layers after the last period
+        'before' : number of additional layers before the first period
+        'after' : number of additional layers after the last period
 
         Example : For layers [1,2,3] with n=2, before=1 and after=0, the
         structure will be 3123123.

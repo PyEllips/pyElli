@@ -42,7 +42,6 @@ class SolverExpm(Solver):
 
     @property
     def deltaMat(self):
-        d = -np.angle(self.rhoMat, deg=True)
         return -np.angle(self.rhoMat, deg=True)
 
     @property
@@ -180,7 +179,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     """Returns transition matrix L.
 
     'Kx' : Reduced wavenumber
-    'k0' : wavenumber in vacuum
+    'epsilon' : dielectric tensor
     'inv' : if True, returns inverse transition matrix L^-1
 
     Returns : transition matrix L
@@ -189,10 +188,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     sin_Phi = Kx/nx
     cos_Phi = sqrt(1 - sin_Phi**2)
 
-    if np.shape(Kx) == ():
-        i = 1
-    else:
-        i = np.shape(Kx)[0]
+    i = np.shape(Kx)[0]
 
     if inv:
         L = np.tile(np.array([[0, 1, 0, 0],
@@ -241,6 +237,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
         #  [-nx*cos_Phi, nx*cos_Phi, 0, 0],
         #  [0, 0, nx, -nx]])
 
+
 def getPowerTransmissionCorrection(structure, lbda, Kx):
     """Returns correction coefficient for power transmission
 
@@ -257,6 +254,7 @@ def getPowerTransmissionCorrection(structure, lbda, Kx):
         return Kzb.real / Kzf.real
     else:
         return np.ones_like(lbda)
+
 
 def getKz(material, lbda, Kx):
     """Returns the value of Kz in the half-space"""

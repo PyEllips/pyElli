@@ -3,7 +3,6 @@ import numpy as np
 from numpy.lib.scimath import arcsin, sqrt
 
 from .solver import Solver
-from .math import unitConversion
 
 class Solver2x2(Solver):
     '''
@@ -63,11 +62,9 @@ class Solver2x2(Solver):
 
     def calculate(self):
         """Calculates the transfer matrix for the given material stack"""
-        lbda = np.array(unitConversion(self.lbda)) * 1e9
-
         if len(self.permProfile) > 2:
             d, eps = list(zip(*self.permProfile[1:-1]))
-            d_list = unitConversion((np.array(d), 'm')) * 1e9
+            d_list = np.array(d)
             n_list = sqrt(np.vstack([self.permProfile[0][:, 0, 0],
                                      np.array(eps)[..., 0, 0],
                                      self.permProfile[-1][:, 0, 0]]))
@@ -78,7 +75,7 @@ class Solver2x2(Solver):
 
         num_layers = n_list.shape[0]
         th_list = self.list_snell(n_list)
-        kz_list = 2 * np.pi * n_list * np.cos(th_list) / lbda
+        kz_list = 2 * np.pi * n_list * np.cos(th_list) / self.lbda
 
         delta = kz_list[1:-1] * (d_list if n_list.ndim == 1 else d_list[:,None])
 
