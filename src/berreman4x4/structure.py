@@ -2,7 +2,6 @@
 import numpy as np
 
 from .experiment import Experiment
-from .math import unitConversion
 from .solver4x4 import Solver4x4
 
 
@@ -44,7 +43,7 @@ class Structure:
         permProfile.append(self.backMaterial.getTensor(lbda))
         return permProfile
 
-    def evaluate(self, lbda, theta_i):
+    def evaluate(self, lbda, theta_i, vector=[1, 0, 1, 0]):
         """Return the Evaluation of the structure for the given parameters"""
         exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
         return exp.evaluate(Solver4x4())
@@ -60,20 +59,23 @@ class Layer:
     d = None            # Thickness of the layer
 
     def __init__(self, material, d):
-        """New layer of material 'material', with thickness 'h'
+        """New layer of material 'material', with thickness 'd'
 
         'material' : Material object
-        'h'        : Thickness of layer in nm or tuple (thickness, unit)
+        'd'        : Thickness of layer in nm or tuple (thickness, unit)
         """
         self.material = material
-        self.d = unitConversion(d)
+
+    def setThickness(self, d):
+        """Defines the thickness of this homogeneous layer in nm."""
+        self.d = d
 
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns a list containing one tuple: [(h, epsilon)]
+        Returns a list containing one tuple: [(d, epsilon)]
         """
-        return (self.d, self.material.getTensor(lbda))
+        return [(self.d, self.material.getTensor(lbda))]
 
 
 #########################################################
@@ -106,9 +108,10 @@ class RepeatedLayers(Layer):
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
         """
-        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        layers = [L.getPermittivityProfile(lbda)[0] for L in self.layers]
+
         if self.before > 0:
             before = layers[-self.before:]
         else:
@@ -129,7 +132,7 @@ class InhomogeneousLayer(Layer):
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
-        Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list [(d1, epsilon1), (d2, epsilon2), ... ]
         """
         z = self.material.getSlices()
         h = np.diff(z)

@@ -19,6 +19,18 @@ class Result:
         return self.__result.rho
 
     @property
+    def rhoMat(self):
+        return self.__result.rhoMat
+
+    @property
+    def psiMat(self):
+        return self.__result.psiMat
+
+    @property
+    def deltaMat(self):
+        return self.__result.deltaMat
+
+    @property
     def mueller_matrix(self):
         return self.__result.mueller_matrix
 
@@ -33,6 +45,10 @@ class Result:
     @property
     def R(self):
         return self.__result.R
+
+    @property
+    def T(self):
+        return self.__result.T
 
     def __init__(self, solver):
         """

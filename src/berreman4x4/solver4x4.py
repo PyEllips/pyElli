@@ -1,8 +1,9 @@
 # Encoding: utf-8
 import numpy as np
 
+from .materials import IsotropicMaterial
 from .solver4x4_math import hs_propagator_pade_scipy, TransitionMatrixHalfspace, TransitionMatrixIsoHalfspace, \
-    buildDeltaMatrix
+    buildDeltaMatrix, getPowerTransmissionCorrection
 from .solver import Solver
 from .result import Result
 
@@ -41,7 +42,7 @@ class Solver4x4(Solver):
                       [0, 1, 1, 0],
                       [0, 1j, -1j, 0]])
 
-        # Kroneker product of S S*
+        # Kroneker product of S and S*
         SxS_star = np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
 
         mmatrix = np.real(A @ SxS_star @ A.T)
@@ -57,6 +58,14 @@ class Solver4x4(Solver):
     def jones_matrix_r(self):
         return self._jones_matrix_r
 
+    @property
+    def R(self):
+        return np.abs(self._jones_matrix_r)**2
+
+    @property
+    def T(self):
+        return np.abs(self._jones_matrix_t)**2 * self.powerCorrection[:, None, None]
+
     def __init__(self, experiment, hs_propagator=hs_propagator_pade_scipy):
         super().__init__(experiment)
         self.hs_propagator = hs_propagator
@@ -71,13 +80,17 @@ class Solver4x4(Solver):
         layers = reversed(self.permProfile[1:-1])
 
         ILf = TransitionMatrixIsoHalfspace(Kx, self.permProfile[0], inv=True)
-        P = [self.hs_propagator(buildDeltaMatrix(Kx, epsilon), -d, self.lbda)
-             for d, epsilon in layers]
-        Lb = TransitionMatrixHalfspace(Kx, self.permProfile[-1])
 
         P_tot = np.identity(4)
-        for p in P:
-            P_tot = p @ P_tot
+        for d, epsilon in layers:
+            P = hs_propagator_pade_scipy(buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
+            P_tot = P @ P_tot
+
+        if isinstance(self.structure.backMaterial, IsotropicMaterial):
+            Lb = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
+        else:
+            Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
+
         T = ILf @ P_tot @ Lb
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
@@ -95,6 +108,8 @@ class Solver4x4(Solver):
         r_ss = T_ri[..., 1, 1]
         S = T_ri / r_ss[:, None, None]
         S[..., 0, :] = -S[..., 0, :]
+
+        self.powerCorrection = getPowerTransmissionCorrection(self.structure, self.lbda, self.Kx)
 
         self._jones_matrix_t = T_ti
         self._jones_matrix_r = T_ri

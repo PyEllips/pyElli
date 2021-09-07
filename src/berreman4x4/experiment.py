@@ -1,7 +1,6 @@
 # Encoding: utf-8
 import numpy as np
 
-from .math import unitConversion
 
 class Experiment:
     """Description of an experiment.
@@ -24,7 +23,7 @@ class Experiment:
         """
         self.structure = structure
         self.theta_i = theta_i
-        self.lbda = (np.asarray(unitConversion(lbda)), 'm')
+        self.lbda = np.asarray(lbda)
         self.setVector(vector)
 
     def setVector(self, vector):
@@ -72,6 +71,23 @@ class Experiment:
                 b = U / (2 * a) - 1j * V / (2 * a)
 
             self.jonesVector = np.array([a, b])
+
+    def setTheta(self, theta_i):
+        """Set incident angle, or list of angles to evaluate.
+
+        'theta_i' : incident angle in degrees
+        """
+        self.theta_i = theta_i
+
+    def setLbda(self, lbda):
+        """Set experiment wavelengths.
+
+        'lbda' : single or list of wavelengths in nm
+        """
+        lbda_array = np.asarray(lbda)
+        if np.shape(lbda_array) == ():
+            lbda_array = np.asarray([lbda])
+        self.lbda = lbda_array
 
     def evaluate(self, solver):
         """Return the Evaluation of the structure for the given parameters"""

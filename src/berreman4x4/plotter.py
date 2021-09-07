@@ -5,34 +5,36 @@ from numpy.lib.scimath import sqrt
 from .math import e_x
 
 
-def getPermittivityProfile(structure, lbda, unit='m'):
+def getPermittivityProfile(structure, lbda):
     """Returns permittivity tensor profile."""
-    layers = sum([L.getPermittivityProfile(lbda, unit) for L in structure.layers], [])
-    front = (float('inf'), structure.frontHalfSpace.material.getTensor(lbda, unit))
-    back = (float('inf'), structure.backHalfSpace.material.getTensor(lbda, unit))
+    layers =[]
+    for L in structure.layers:
+        layers.extend(L.getPermittivityProfile(lbda))
+    front = (float('inf'), structure.frontMaterial.getTensor(lbda))
+    back = (float('inf'), structure.backMaterial.getTensor(lbda))
     return sum([[front], layers, [back]], [])
 
 
-def getIndexProfile(structure, lbda, unit='m', v=e_x):
+def getIndexProfile(structure, lbda, v=e_x):
     """Returns refractive index profile.
 
     'v' : Unit vector, direction of evaluation of the refraction index.
           Default value is v = e_x.
     """
-    profile = getPermittivityProfile(structure, lbda, unit)
+    profile = getPermittivityProfile(structure, lbda)
     (h, epsilon) = list(zip(*profile))  # unzip
     n = [sqrt((v.T * eps * v)[0, 0, 0]) for eps in epsilon]
     return list(zip(h, n))
 
 
-def drawStructure(structure, lbda=1000, unit='nm', method="graph", margin=0.15):
+def drawStructure(structure, lbda=1000, method="graph", margin=0.15):
     """Draw the structure.
 
     'method' : 'graph' or 'section'
     Returns : Axes object
     """
     # Build index profile
-    profile = getIndexProfile(structure, lbda, unit)
+    profile = getIndexProfile(structure, lbda)
     (h, n) = list(zip(*profile))     # unzip
     n = np.array(n)
     z_layers = np.hstack((0., np.cumsum(h[1:-1])))
@@ -44,15 +46,15 @@ def drawStructure(structure, lbda=1000, unit='nm', method="graph", margin=0.15):
     z = np.hstack((-z_margin, z_layers, z_max + z_margin))
     # Call specialized methods
     if method == "graph":
-        ax = _drawStructureGraph(structure, z, n, unit)
+        ax = _drawStructureGraph(structure, z, n)
     elif method == "section":
-        ax = _drawStructureSection(structure, z, n, unit)
+        ax = _drawStructureSection(structure, z, n)
     else:
         ax = None
     return ax
 
 
-def _drawStructureGraph(structure, z, n, unit):
+def _drawStructureGraph(structure, z, n):
     """Draw a graph of the refractive index profile """
     n = np.hstack((n, n[-1]))
     # Draw the graph
@@ -62,15 +64,14 @@ def _drawStructureGraph(structure, z, n, unit):
     ax.step(z, n.real, 'black', where='post')
     ax.spines['top'].set_visible(False)
     ax.xaxis.set_ticks_position('bottom')
-    ax.set_xlabel("z ({})".format(unit))
+    ax.set_xlabel("z (nm)")
     ax.set_ylabel("n'")
-    ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
     ax.set_xlim(z.min(), z.max())
     ax.set_ylim(bottom=1.0)
     return ax
 
 
-def _drawStructureSection(structure, z, n, unit):
+def _drawStructureSection(structure, z, n):
     """Draw a cross section of the structure"""
     # Prepare arrays for pcolormesh()
     X = z * np.ones((2, 1))
@@ -81,8 +82,7 @@ def _drawStructureSection(structure, z, n, unit):
     ax = fig.add_subplot(1, 1, 1)
     fig.subplots_adjust(left=0.05, bottom=0.15)
     ax.set_yticks([])
-    ax.set_xlabel("z ({})".format(unit))
-    ax.ticklabel_format(style='scientific', axis='x', scilimits=(0, 0))
+    ax.set_xlabel("z (nm)")
     ax.set_xlim(z.min(), z.max())
     stack = ax.pcolormesh(X, Y, n, cmap=plt.get_cmap('gray_r'))
     colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2, 0.5),

@@ -4,7 +4,7 @@ from numpy.lib.scimath import sqrt
 from scipy.linalg import expm
 import scipy.constants as sc
 
-from .math import unitConversion
+from .materials import IsotropicMaterial
 
 try:
     import tensorflow as tf
@@ -77,7 +77,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     """Returns transition matrix L.
 
     'Kx' : Reduced wavenumber
-    'k0' : wavenumber in vacuum
+    'epsilon' : dielectric tensor
     'inv' : if True, returns inverse transition matrix L^-1
 
     Returns : transition matrix L
@@ -86,10 +86,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     sin_Phi = Kx/nx
     cos_Phi = sqrt(1 - sin_Phi**2)
 
-    if np.shape(Kx) == ():
-        i = 1
-    else:
-        i = np.shape(Kx)[0]
+    i = np.shape(Kx)[0]
 
     if inv:
         L = np.tile(np.array([[0, 1, 0, 0],
@@ -138,23 +135,28 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
         #  [-nx*cos_Phi, nx*cos_Phi, 0, 0],
         #  [0, 0, nx, -nx]])
 
-#
-# def getPowerTransmissionCorrection(self, Kx, k0):
-#     """Returns correction coefficient for power transmission
-#
-#     The power transmission coefficient is the ratio of the 'z' components
-#     of the Poynting vector:       T = P_t_z / P_i_z
-#     For isotropic media, we have: T = kb'/kf' |t_bf|^2
-#     The correction coefficient is kb'/kf'
-#
-#     Note : For the moment it is only meaningful for isotropic half spaces.
-#     """
-#     Kzf = self.frontHalfSpace.get_Kz_from_Kx(Kx, k0)
-#     if isinstance(self.backHalfSpace, IsotropicHalfSpace):
-#         Kzb = self.backHalfSpace.get_Kz_from_Kx(Kx, k0)
-#         return Kzb.real / Kzf.real
-#     else:
-#         return None
+
+def getPowerTransmissionCorrection(structure, lbda, Kx):
+    """Returns correction coefficient for power transmission
+    The power transmission coefficient is the ratio of the 'z' components
+    of the Poynting vector:       T = P_t_z / P_i_z
+    For isotropic media, we have: T = kb'/kf' |t_bf|^2
+    The correction coefficient is kb'/kf'
+    Note : For the moment it is only meaningful for isotropic half spaces.
+    """
+    Kzf = getKz(structure.frontMaterial, lbda, Kx)
+    if isinstance(structure.backMaterial, IsotropicMaterial):
+        Kzb = getKz(structure.backMaterial, lbda, Kx)
+        return Kzb.real / Kzf.real
+    else:
+        return np.ones_like(lbda)
+
+
+def getKz(material, lbda, Kx):
+    """Returns the value of Kz in the half-space"""
+    nx = material.getRefractiveIndex(lbda)[:, 0, 0]
+    Kz2 = nx ** 2 - Kx ** 2
+    return sqrt(Kz2)
 
 
 def buildDeltaMatrix(Kx, eps):
@@ -184,18 +186,18 @@ def buildDeltaMatrix(Kx, eps):
     return Delta
 
 
-def hs_propagator_lin(Delta, h, k0):
+def hs_propagator_lin(Delta, h, lbda):
     """Returns propagator with linear approximation.
 
     'Delta' : Delta matrix of the homogeneous material
     'h' : thickness of the homogeneous slab
-    'k0' : wave vector in vacuum, k0 = ω/c
+    'lbda' : wavelenght in nm
 
     Returns : propagator matrix
 
     The exact propagator is: P_hs = exp(i h k0 Δ)
     """
-    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, k0)
+    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
     return P_hs_lin
 
 
@@ -204,7 +206,7 @@ def hs_propagator_pade_scipy(Delta, h, lbda):
 
     'Delta' : Delta matrix of the homogeneous material
     'h' : thickness of the homogeneous slab
-    'k0' : wave vector in vacuum, k0 = ω/c
+    'lbda' : wavelenght in nm
 
     Returns : propagator matrix
 
@@ -212,11 +214,9 @@ def hs_propagator_pade_scipy(Delta, h, lbda):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    k0 = 2 * sc.pi / unitConversion(lbda)
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
 
-    mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
-
-    P_hs_Pade = [expm(mat) for mat in mats]
+    P_hs_Pade = np.asarray([expm(mat) for mat in mats])
 
     return P_hs_Pade
 
@@ -226,7 +226,7 @@ def hs_propagator_pade_tf(Delta, h, lbda):
 
     'Delta' : Delta matrix of the homogeneous material
     'h' : thickness of the homogeneous slab
-    'k0' : wave vector in vacuum, k0 = ω/c
+    'lbda' : wavelenght in nm
 
     Returns : propagator matrix
 
@@ -234,9 +234,7 @@ def hs_propagator_pade_tf(Delta, h, lbda):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    k0 = 2 * sc.pi / unitConversion(lbda)
-
-    mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
 
     t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
     texp = tf.linalg.expm(t)
@@ -250,7 +248,7 @@ def hs_propagator_pade_torch(Delta, h, lbda):
 
     'Delta' : Delta matrix of the homogeneous material
     'h' : thickness of the homogeneous slab
-    'k0' : wave vector in vacuum, k0 = ω/c
+    'lbda' : wavelenght in nm
 
     Returns : propagator matrix
 
@@ -258,9 +256,7 @@ def hs_propagator_pade_torch(Delta, h, lbda):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    k0 = 2 * sc.pi / unitConversion(lbda)
-
-    mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
 
     t = torch.from_numpy(mats)
     texp = torch.matrix_exp(t)

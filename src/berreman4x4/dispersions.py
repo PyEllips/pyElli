@@ -7,7 +7,7 @@ from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 import pandas as pd
 
-from .math import lambda2E, unitConversion, unitFactors
+from .math import lambda2E
 
 
 class DispersionLaw(ABC):
@@ -111,9 +111,6 @@ class DispersionCauchy(DispersionLaw):
         self.k2 = k2
 
     def dielectricFunction(self, lbda):
-        # Convert wavelength to nm
-        lbda = unitConversion(lbda) / unitFactors['nm']
-
         N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
             + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
         return N**2
@@ -134,7 +131,7 @@ class DispersionSellmeier(DispersionLaw):
         self.coeffs = coeffs
 
     def dielectricFunction(self, lbda):
-        lbda = unitConversion(lbda) / unitFactors['µm']
+        lbda = lbda / 1e3
 
         return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
                        for Ai, Bi in self.coeffs)
@@ -147,8 +144,7 @@ class DispersionMgO(DispersionLaw):
         self.coeffs = coeffs
 
     def dielectricFunction(self, lbda):
-        lbda = unitConversion(lbda) / unitFactors['µm']
-
+        lbda = lbda / 1e3
         return self.coeffs[0] + \
             self.coeffs[1] * lbda ** 2 + \
             self.coeffs[2] * lbda**4 + \
@@ -210,8 +206,6 @@ class DispersionLorentzLambda(DispersionLaw):
         self.coeffs = coeffs
 
     def dielectricFunction(self, lbda):
-        lbda = unitConversion(lbda) / unitFactors['nm']
-
         return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
                        for Ai, Li, Zi in self.coeffs)
 
@@ -356,8 +350,8 @@ class DispersionTanguy(DispersionLaw):
         return np.conjugate(1 + self.a / (self.b - E**2) +
                             self.A * self.R**(self.d/2 - 1) / (E + 1j * self.gam)**2 *
                             (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * self.gam, self.R, self.Eg), self.d) +
-                            DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * self.gam, self.R, self.Eg), self.d) -
-                            2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, self.R, self.Eg), self.d)))
+                             DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * self.gam, self.R, self.Eg), self.d) -
+                             2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, self.R, self.Eg), self.d)))
 
     @staticmethod
     def xsi(z, R, Eg):
@@ -394,15 +388,13 @@ class DispersionTable(DispersionLaw):
     def __init__(self, lbda=None, n=None):
         """Create a dispersion law from a refraction index list.
 
-        'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
+        'lbda'  : Wavelength list (in nm)
         'n'     : Refractive index values (can be complex)
                   (n" > 0 for an absorbing material)
         """
-        self.interpolation = scipy.interpolate.interp1d(
-            unitConversion(lbda), n**2, kind='cubic')
+        self.interpolation = scipy.interpolate.interp1d(lbda, n**2, kind='cubic')
 
     def dielectricFunction(self, lbda):
-        lbda = unitConversion(lbda)
         return self.interpolation(lbda)
 
 
@@ -415,9 +407,7 @@ class DispersionTableEpsilon(DispersionLaw):
         'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'ε'     : Refractive index values (can be complex)
         """
-        self.interpolation = scipy.interpolate.interp1d(
-            unitConversion(lbda), epsilon, kind='cubic')
+        self.interpolation = scipy.interpolate.interp1d(lbda, epsilon, kind='cubic')
 
     def dielectricFunction(self, lbda):
-        lbda = unitConversion(lbda)
         return self.interpolation(lbda)

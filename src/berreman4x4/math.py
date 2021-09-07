@@ -18,37 +18,12 @@ e_x = np.array([1, 0, 0]).reshape((3,))
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
-# Unit factors
-unitFactors = {
-    'm': 1,
-    'cm': 1e-2,
-    'mm': 1e-3,
-    'µm': 1e-6,
-    'um': 1e-6,
-    'nm': 1e-9,
-    'A': 1e-10,
-    'Å': 1e-10,
-    'pm': 1e-12
-}
-
 CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
 
 def lambda2E(value):
-    """Returns the Energy in eV of the given wavelength in [unit] (default 'nm')"""
-    return CONV_M_EV / unitConversion(value)
-
-
-def unitConversion(tup):
-    """Returns the wavelength in m for a given value with [unit] (default 'nm')
-    Takes a tupel (wavelength, unitString).
-    If only a wavelength is given it asumes 'nm' as unit.
-    """
-    if type(tup) == tuple:
-        (value, unit) = tup
-        return value * unitFactors[unit]
-    else:
-        return tup * unitFactors['nm']
+    """Returns the Energy in eV of the given wavelength in 'nm'"""
+    return CONV_M_EV / value * 1e-9
 
 
 #########################################################
