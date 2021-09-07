@@ -9,9 +9,8 @@
 import numpy as np
 import berreman4x4 as bm
 import berreman4x4.plotter as bmplot
-import scipy.linalg
 import matplotlib.pyplot as plt
-from scipy.constants import c, pi
+from scipy.constants import pi
 
 # %% [markdown]
 # ## Structure definition

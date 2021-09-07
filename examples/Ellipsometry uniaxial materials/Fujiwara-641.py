@@ -11,8 +11,7 @@
 # %%
 import numpy as np
 import berreman4x4 as bm
-from scipy.constants import c, pi
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
 # %% [markdown]
 # ## Setting up the materials
@@ -51,13 +50,13 @@ for θ_E in θ_E_list:
 Psi = np.array(Psi)
 Psi = Psi.reshape(3, 300).T
 
-fig = pyplot.figure()
+fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.plot(Φ_i_list, Psi)
 ax.set_xlabel(r"$\theta_i$")
 ax.set_ylabel(r"$\Psi_{pp}$")
 
-pyplot.tight_layout()
+plt.tight_layout()
 
 # %% [markdown]
 # ## We reproduce figure 6.17 (p. 239)
@@ -83,14 +82,14 @@ for θ_E in θ_E_list:
 
 Psi = np.array(Psi).T
 
-fig = pyplot.figure()
+fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.plot(Φ_E_list, Psi)
 ax.set_xlim(0, 360)
 ax.set_xlabel(r"$\phi_E$")
 ax.set_ylabel(r"$\Psi_{pp}$")
 
-pyplot.tight_layout()
-pyplot.show()
+plt.tight_layout()
+plt.show()
 
 # %%

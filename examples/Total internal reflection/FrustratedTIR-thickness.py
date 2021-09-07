@@ -8,7 +8,7 @@
 # %%
 import numpy as np
 import berreman4x4 as bm
-from scipy.constants import c, pi
+from scipy.constants import pi
 import matplotlib.pyplot as plt
 
 # %% [markdown]
