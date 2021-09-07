@@ -70,7 +70,7 @@ for Phi_i in Phi_list:
     
 R = np.array(R)
 T = np.array(T)
-jt = np.real(np.array(jt))
+jt = np.array(jt)
 
 
 R_pp = R[:, 0, 0]
@@ -79,14 +79,14 @@ R_ss = R[:, 1, 1]
 T_pp = T[:, 0, 0]
 T_ss = T[:, 1, 1]
 
-t2_pp = jt[:, 0, 0]**2
-t2_ss = jt[:, 1, 1]**2
+t2_pp = np.abs(jt[:, 0, 0])**2
+t2_ss = np.abs(jt[:, 1, 1])**2
 
 # %% [markdown]
 # ## Plotting
 # %%
 fig = plt.figure(figsize=(12., 6.))
-plt.rcParams['axes.prop_cycle'] = plt.cycler('color', 'bgrcbg')
+plt.rcParams['axes.prop_cycle'] = plt.cycler('color', 'bgrcmk')
 ax = fig.add_axes([0.1, 0.1, 0.7, 0.8])
 
 d = np.vstack((R_ss, R_pp, t2_ss, t2_pp, T_ss, T_pp)).T
@@ -104,5 +104,6 @@ ax.set_title("Interface n$_1$={:} / n$_2$={:}".format(n1, n2))
 ax.set_xlabel(r"Incidence angle $\Phi_i$ ")
 ax.set_ylabel(r"Reflexion and transmission coefficients $R$, $T$, $|t|^2$")
 
-print("Lines and circles should be superimposed!")
 plt.show()
+
+# %%
