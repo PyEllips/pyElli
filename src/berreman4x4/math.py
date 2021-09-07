@@ -21,38 +21,12 @@ e_x = np.array([1, 0, 0]).reshape((3,))
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
-
-# Unit factors
-unitFactors = {
-    'm': 1,
-    'cm': 1e-2,
-    'mm': 1e-3,
-    'µm': 1e-6,
-    'um': 1e-6,
-    'nm': 1e-9,
-    'A': 1e-10,
-    'Å': 1e-10,
-    'pm': 1e-12
-}
-
 CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
 
 def lambda2E(value):
-    """Returns the Energy in eV of the given wavelength in [unit] (default 'nm')"""
-    return CONV_M_EV / unitConversion(value)
-
-
-def unitConversion(tup):
-    """Returns the wavelength in m for a given value with [unit] (default 'nm')
-    Takes a tupel (wavelength, unitString).
-    If only a wavelength is given it asumes 'nm' as unit.
-    """
-    if type(tup) == tuple:
-        (value, unit) = tup
-        return value * unitFactors[unit]
-    else:
-        return tup * unitFactors['nm']
+    """Returns the Energy in eV of the given wavelength in 'nm'"""
+    return CONV_M_EV / value * 1e-9
 
 
 def buildDeltaMatrix(Kx, eps):
@@ -106,9 +80,9 @@ def hs_propagator(Delta, h, k0, method="linear"):
         return hs_propagator_Pade(Delta, h, k0)
 
 
-def hs_propagator_lin(Delta, h, k0):
+def hs_propagator_lin(Delta, h, lbda):
     """Returns propagator with linear approximation."""
-    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, k0)
+    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
     return P_hs_lin
 
 
@@ -119,12 +93,10 @@ def hs_propagator_Pade(Delta, h, lbda):
     P_hs_Pade(h)·P_hs_Pade(-h) = 1.
     Such property may be suitable for use with Z. Lu's method.
     """
-    k0 = 2*sc.pi / unitConversion(lbda)
-
-    mats = 1j * h * np.einsum('nij,n->nij', Delta, k0)
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
 
     if settings['ExpmBackend'] == 'scipy':
-        P_hs_Pade = [scipy.linalg.expm(mat) for mat in mats]
+        P_hs_Pade = np.asarray([scipy.linalg.expm(mat) for mat in mats])
 
     elif settings['ExpmBackend'] == 'tensorflow':
         t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))

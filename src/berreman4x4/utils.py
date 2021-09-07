@@ -242,3 +242,9 @@ class SpectraRay():
     @staticmethod
     def eV2nm(wlen):
         return sc.value('Planck constant in eV s') * sc.c * 1e9 / wlen
+
+
+def get_QWP_thickness(material, lbda):
+    """Return the thickness in nm of a Quater Wave Plate at wavelength 'lbda'."""
+    nr = np.real(material.getRefractiveIndex(lbda)[0, 0, 0])
+    return lbda / (4.*nr)
