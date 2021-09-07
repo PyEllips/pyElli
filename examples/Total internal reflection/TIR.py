@@ -52,7 +52,7 @@ R = np.array(R)
 # ## Plotting
 
 # %%
-plt.figure(figsize=(12., 6.))
+plt.figure()
 plt.plot(Phi_list, np.real(R[:, 0, 0]), label='R_pp')
 plt.plot(Phi_list, np.real(R[:, 1, 1]), label='R_ss')
 plt.title("FTIR: Glass / Air")
