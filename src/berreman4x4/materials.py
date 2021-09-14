@@ -4,7 +4,7 @@ import numpy as np
 from numpy.lib.scimath import sqrt
 
 from .dispersions import DispersionLaw
-from .math import unitConversion, rotation_v_theta
+from .math import rotation_v_theta
 from .settings import settings
 
 
@@ -191,7 +191,7 @@ class TwistedMaterial(InhomogeneousMaterial):
 
     def setThickness(self, d):
         """Defines the thickness of this TwistedMaterial."""
-        self.d = unitConversion(d)
+        self.d = d
 
     def getTensor(self, z, lbda):
         """Returns permittivity tensor matrix for position 'z'."""

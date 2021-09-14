@@ -2,6 +2,7 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 
+from .materials import IsotropicMaterial
 from .math import buildDeltaMatrix, hs_propagator_Pade
 from .settings import settings
 from .solver import Solver
@@ -32,6 +33,18 @@ class SolverExpm(Solver):
         return np.where(d < 0, d + 360, d)
 
     @property
+    def rhoMat(self):
+        return self._S
+
+    @property
+    def psiMat(self):
+        return np.rad2deg(np.arctan(np.abs(self.rhoMat)))
+
+    @property
+    def deltaMat(self):
+        return -np.angle(self.rhoMat, deg=True)
+
+    @property
     def mueller_matrix(self):
         if self._S is None:
             return None
@@ -41,7 +54,7 @@ class SolverExpm(Solver):
                       [0,  1,    1,  0],
                       [0,  1j, -1j,  0]])
 
-        # Kroneker product of S S*
+        # Kroneker product of S and S*
         SxS_star = np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
 
         mmatrix = np.real(A @ SxS_star @ A.T)
@@ -57,19 +70,31 @@ class SolverExpm(Solver):
     def jones_matrix_r(self):
         return self._jones_matrix_r
 
+    @property
+    def R(self):
+        return np.abs(self._jones_matrix_r)**2
+
+    @property
+    def T(self):
+        return np.abs(self._jones_matrix_t)**2 * self.powerCorrection[:, None, None]
+
     def calculate(self):
         """Simulates optical Experiment"""
 
         layers = reversed(self.permProfile[1:-1])
 
         ILf = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[0], inv=True)
-        P = [hs_propagator_Pade(buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
-             for d, epsilon in layers]
-        Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
 
         P_tot = np.identity(4)
-        for p in P:
-            P_tot = p @ P_tot
+        for d, epsilon in layers:
+            P = hs_propagator_Pade(buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
+            P_tot = P @ P_tot
+
+        if isinstance(self.structure.backMaterial, IsotropicMaterial):
+            Lb = TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
+        else:
+            Lb = TransitionMatrixHalfspace(self.Kx, self.permProfile[-1])
+
         T = ILf @ P_tot @ Lb
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
@@ -86,6 +111,8 @@ class SolverExpm(Solver):
         r_ss = T_ri[..., 1, 1]
         S = T_ri / r_ss[:, None, None]
         S[..., 0, :] = -S[..., 0, :]
+
+        self.powerCorrection = getPowerTransmissionCorrection(self.structure, self.lbda, self.Kx)
 
         self._jones_matrix_t = T_ti
         self._jones_matrix_r = T_ri
@@ -152,7 +179,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     """Returns transition matrix L.
 
     'Kx' : Reduced wavenumber
-    'k0' : wavenumber in vacuum
+    'epsilon' : dielectric tensor
     'inv' : if True, returns inverse transition matrix L^-1
 
     Returns : transition matrix L
@@ -161,10 +188,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     sin_Phi = Kx/nx
     cos_Phi = sqrt(1 - sin_Phi**2)
 
-    if np.shape(Kx) == ():
-        i = 1
-    else:
-        i = np.shape(Kx)[0]
+    i = np.shape(Kx)[0]
 
     if inv:
         L = np.tile(np.array([[0, 1, 0, 0],
@@ -213,20 +237,27 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
         #  [-nx*cos_Phi, nx*cos_Phi, 0, 0],
         #  [0, 0, nx, -nx]])
 
-#
-# def getPowerTransmissionCorrection(self, Kx, k0):
-#     """Returns correction coefficient for power transmission
-#
-#     The power transmission coefficient is the ratio of the 'z' components
-#     of the Poynting vector:       T = P_t_z / P_i_z
-#     For isotropic media, we have: T = kb'/kf' |t_bf|^2
-#     The correction coefficient is kb'/kf'
-#
-#     Note : For the moment it is only meaningful for isotropic half spaces.
-#     """
-#     Kzf = self.frontHalfSpace.get_Kz_from_Kx(Kx, k0)
-#     if isinstance(self.backHalfSpace, IsotropicHalfSpace):
-#         Kzb = self.backHalfSpace.get_Kz_from_Kx(Kx, k0)
-#         return Kzb.real / Kzf.real
-#     else:
-#         return None
+
+def getPowerTransmissionCorrection(structure, lbda, Kx):
+    """Returns correction coefficient for power transmission
+
+    The power transmission coefficient is the ratio of the 'z' components
+    of the Poynting vector:       T = P_t_z / P_i_z
+    For isotropic media, we have: T = kb'/kf' |t_bf|^2
+    The correction coefficient is kb'/kf'
+
+    Note : For the moment it is only meaningful for isotropic half spaces.
+    """
+    Kzf = getKz(structure.frontMaterial, lbda, Kx)
+    if isinstance(structure.backMaterial, IsotropicMaterial):
+        Kzb = getKz(structure.backMaterial, lbda, Kx)
+        return Kzb.real / Kzf.real
+    else:
+        return np.ones_like(lbda)
+
+
+def getKz(material, lbda, Kx):
+    """Returns the value of Kz in the half-space"""
+    nx = material.getRefractiveIndex(lbda)[:, 0, 0]
+    Kz2 = nx ** 2 - Kx ** 2
+    return sqrt(Kz2)

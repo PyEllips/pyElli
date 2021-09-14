@@ -3,7 +3,7 @@ import sys
 from .dispersions import *
 from .experiment import Experiment
 from .materials import *
-from .math import lambda2E
+from .math import lambda2E, rotation_Euler
 from .result import Result
 from .settings import *
 from .solver import *

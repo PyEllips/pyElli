@@ -1,7 +1,6 @@
 # Encoding: utf-8
 import numpy as np
 
-from .math import unitConversion
 from .result import Result
 from .settings import settings
 from .solverExpm import SolverExpm
@@ -96,9 +95,12 @@ class Experiment:
     def setLbda(self, lbda):
         """Set experiment wavelengths.
 
-        'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
+        'lbda' : single or list of wavelengths in nm
         """
-        self.lbda = (np.asarray(unitConversion(lbda)), 'm')
+        lbda_array = np.asarray(lbda)
+        if np.shape(lbda_array) == ():
+            lbda_array = np.asarray([lbda])
+        self.lbda = lbda_array
 
     def evaluate(self, solver='default'):
         """Return the Evaluation of the structure for the given parameters"""

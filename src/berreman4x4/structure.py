@@ -3,7 +3,6 @@ import numpy as np
 from typing import List
 
 from .experiment import Experiment
-from .math import unitConversion
 from .materials import Material
 
 
@@ -16,11 +15,11 @@ class Layer:
     material = None     # Material making the layer
     d = None            # Thickness of the layer
 
-    def __init__(self, material: Material, d):
-        """New layer of material 'material', with thickness 'h'
+    def __init__(self, material, d):
+        """New layer of material 'material', with thickness 'd'
 
         'material' : Material object
-        'h'        : Thickness of layer in nm or tuple (thickness, unit)
+        'd'        : Thickness of layer in nm or tuple (thickness, unit)
         """
         self.setMaterial(material)
         self.setThickness(d)
@@ -30,15 +29,15 @@ class Layer:
         self.material = material
 
     def setThickness(self, d):
-        """Defines the thickness of this homogeneous layer."""
-        self.d = unitConversion(d)
+        """Defines the thickness of this homogeneous layer in nm."""
+        self.d = d
 
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns a list containing one tuple: [(h, epsilon)]
+        Returns a list containing one tuple: [(d, epsilon)]
         """
-        return (self.d, self.material.getTensor(lbda))
+        return [(self.d, self.material.getTensor(lbda))]
 
 
 #########################################################
@@ -48,8 +47,8 @@ class RepeatedLayers(Layer):
     """Repetition of a structure."""
 
     n = None        # Number of repetitions
-    before = None   # additionnal layers before the first period
-    after = None    # additionnal layers after the last period
+    before = None   # additional layers before the first period
+    after = None    # additional layers after the last period
     layers = None   # layers to repeat
 
     def __init__(self, layers: List[Layer], n: int = 2, before: int = 0, after: int = 0):
@@ -66,8 +65,8 @@ class RepeatedLayers(Layer):
         """Defines the number of repetitions.
 
         'n' : number of repetitions
-        'before' : number of additionnal layers before the first period
-        'after' : number of additionnal layers after the last period
+        'before' : number of additional layers before the first period
+        'after' : number of additional layers after the last period
 
         Example : For layers [1,2,3] with n=2, before=1 and after=0, the
         structure will be 3123123.
@@ -86,9 +85,10 @@ class RepeatedLayers(Layer):
     def getPermittivityProfile(self, lbda):
         """Returns permittivity tensor profile.
 
-        Returns list of tuples [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
         """
-        layers = sum([L.getPermittivityProfile(lbda) for L in self.layers], [])
+        layers = [L.getPermittivityProfile(lbda)[0] for L in self.layers]
+
         if self.before > 0:
             before = layers[-self.before:]
         else:
@@ -109,7 +109,7 @@ class InhomogeneousLayer(Layer):
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
-        Returns list [(h1, epsilon1), (h2, epsilon2), ... ]
+        Returns list [(d1, epsilon1), (d2, epsilon2), ... ]
         """
         z = self.material.getSlices()
         h = np.diff(z)
@@ -164,7 +164,7 @@ class Structure:
         """
         self.layers = layers
 
-    def evaluate(self, lbda, theta_i):
+    def evaluate(self, lbda, theta_i, vector=[1, 0, 1, 0]):
         """Return the Evaluation of the structure for the given parameters"""
-        exp = Experiment(self, lbda, theta_i, [1, 0, 1, 0])
+        exp = Experiment(self, lbda, theta_i, vector)
         return exp.evaluate()
