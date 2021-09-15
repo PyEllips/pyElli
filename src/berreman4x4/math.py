@@ -85,8 +85,7 @@ def hs_propagator_lin(Delta, h, lbda):
     P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
     return P_hs_lin
 
-
-def hs_propagator_Pade(Delta, h, lbda):
+def hs_propagator_pade_scipy(Delta, h, lbda):
     """Returns propagator with Padé approximation.
 
     The diagonal Padé approximant of any order is symplectic, i.e.
@@ -95,21 +94,37 @@ def hs_propagator_Pade(Delta, h, lbda):
     """
     mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
 
-    if settings['ExpmBackend'] == 'scipy':
-        P_hs_Pade = np.asarray([scipy.linalg.expm(mat) for mat in mats])
+    P_hs_Pade = np.asarray([scipy.linalg.expm(mat) for mat in mats])
 
-    elif settings['ExpmBackend'] == 'tensorflow':
-        t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
-        texp = tf.linalg.expm(t)
-        P_hs_Pade = np.array(texp, dtype=settings['dtype'])
+    return P_hs_Pade
 
-    elif settings['ExpmBackend'] == 'pytorch':
-        t = torch.from_numpy(mats)
-        texp = torch.matrix_exp(t)
-        P_hs_Pade = np.asarray(texp.numpy(), dtype=settings['dtype'])
+def hs_propagator_pade_torch(Delta, h, lbda):
+    """Returns propagator with Padé approximation.
 
-    else:
-        raise ValueError("Wrong expmBackend configuration.")
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
+    Such property may be suitable for use with Z. Lu's method.
+    """
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+
+    t = torch.from_numpy(mats)
+    texp = torch.matrix_exp(t)
+    P_hs_Pade = np.asarray(texp.numpy(), dtype=np.complex128)
+
+    return P_hs_Pade
+
+def hs_propagator_pade_tf(Delta, h, lbda):
+    """Returns propagator with Padé approximation.
+
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
+    Such property may be suitable for use with Z. Lu's method.
+    """
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+
+    t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
+    texp = tf.linalg.expm(t)
+    P_hs_Pade = np.array(texp, dtype=np.complex128)
 
     return P_hs_Pade
 
