@@ -3,8 +3,7 @@ import numpy as np
 from numpy.lib.scimath import sqrt
 
 from .materials import IsotropicMaterial
-from .math import buildDeltaMatrix, hs_propagator_Pade
-from .settings import settings
+from .math import buildDeltaMatrix, hs_propagator_pade_scipy
 from .solver import Solver
 
 
@@ -91,7 +90,7 @@ class Solver4x4(Solver):
 
         P_tot = np.identity(4)
         for d, epsilon in layers:
-            P = hs_propagator_Pade(buildDeltaMatrix(Kx, epsilon), -d, self.lbda)
+            P = hs_propagator_pade_scipy(buildDeltaMatrix(Kx, epsilon), -d, self.lbda)
             P_tot = P @ P_tot
 
         if isinstance(self.structure.backMaterial, IsotropicMaterial):
@@ -198,7 +197,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
         L = np.tile(np.array([[0, 1, 0, 0],
                               [0, 1, 0, 0],
                               [0, 0, 0, 0],
-                              [0, 0, 0, 0]], dtype=settings['dtype']), (i, 1, 1))
+                              [0, 0, 0, 0]], dtype=np.complex128), (i, 1, 1))
         L += np.tile(np.array([[0, 0, 0, 0],
                                [0, 0, 0, 0],
                                [1, 0, 0, 0],
@@ -221,7 +220,7 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
         L = np.tile(np.array([[0, 0, 0, 0],
                               [1, 1, 0, 0],
                               [0, 0, 0, 0],
-                              [0, 0, 0, 0]], dtype=settings['dtype']), (i, 1, 1))
+                              [0, 0, 0, 0]], dtype=np.complex128), (i, 1, 1))
         L += np.tile(np.array([[0, 0, 1, 1],
                                [0, 0, 0, 0],
                                [0, 0, 0, 0],

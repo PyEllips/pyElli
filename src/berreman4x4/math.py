@@ -3,8 +3,6 @@ import numpy as np
 import scipy.linalg
 import scipy.constants as sc
 
-from .settings import settings
-
 try:
     import tensorflow as tf
 except ImportError:
@@ -51,7 +49,7 @@ def buildDeltaMatrix(Kx, eps):
           np.tile(0, i), Kx * eps[:, 1, 2] / eps[:, 2, 2]],
          [eps[:, 0, 0] - eps[:, 0, 2] * eps[:, 2, 0] / eps[:, 2, 2],
           eps[:, 0, 1] - eps[:, 0, 2] * eps[:, 2, 1] / eps[:, 2, 2],
-          np.tile(0, i), -Kx * eps[:, 0, 2] / eps[:, 2, 2]]], dtype=settings['dtype'])
+          np.tile(0, i), -Kx * eps[:, 0, 2] / eps[:, 2, 2]]], dtype=np.complex128)
     Delta = np.moveaxis(Delta, 2, 0)
     return Delta
 
@@ -127,6 +125,7 @@ def hs_propagator_pade_tf(Delta, h, lbda):
     P_hs_Pade = np.array(texp, dtype=np.complex128)
 
     return P_hs_Pade
+
 
 #########################################################
 # Rotations

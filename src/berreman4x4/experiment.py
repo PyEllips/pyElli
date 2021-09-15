@@ -2,7 +2,6 @@
 import numpy as np
 
 from .result import Result
-from .settings import settings
 from .solver4x4 import Solver4x4
 from .solver2x2 import Solver2x2
 from .structure import Structure
@@ -102,10 +101,8 @@ class Experiment:
             lbda_array = np.asarray([lbda])
         self.lbda = lbda_array
 
-    def evaluate(self, solver='default'):
+    def evaluate(self, solver='berreman4x4'):
         """Return the Evaluation of the structure for the given parameters"""
-        if solver == 'default' and 'solver' in settings:
-            solver = settings['solver']
 
         solvers = ['berreman4x4', 'simple2x2']
         if solver not in solvers:

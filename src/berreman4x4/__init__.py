@@ -5,7 +5,6 @@ from .experiment import Experiment
 from .materials import *
 from .math import lambda2E, rotation_Euler
 from .result import Result
-from .settings import *
 from .structure import *
 from .utils import *
 from .materials_db import *
