@@ -8,7 +8,7 @@ from .settings import settings
 from .solver import Solver
 
 
-class SolverExpm(Solver):
+class Solver4x4(Solver):
     """
     Solver class to evaluate Experiment objects.
     Based on Berreman's 4x4 method.

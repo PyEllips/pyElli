@@ -3,7 +3,7 @@ import numpy as np
 
 from .result import Result
 from .settings import settings
-from .solverExpm import SolverExpm
+from .solver4x4 import Solver4x4
 from .solver2x2 import Solver2x2
 from .structure import Structure
 
@@ -113,6 +113,6 @@ class Experiment:
                              .format(solver, solvers))
         else:
             if solver == 'berreman4x4':
-                return Result(self, SolverExpm(self))
+                return Result(self, Solver4x4(self))
             elif solver == 'simple2x2':
                 return Result(self, Solver2x2(self))
