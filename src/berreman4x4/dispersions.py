@@ -70,9 +70,11 @@ class DispersionSum(DispersionLaw):
     """Representation for a sum of two dispersions"""
 
     def __init__(self, disp1: DispersionLaw, disp2: DispersionLaw):
+        self.disp1 = disp1
+        self.disp2 = disp2
 
-        self.dielectricFunction = lambda lbda: \
-            disp1.dielectricFunction(lbda) + disp2.dielectricFunction(lbda)
+    def dielectricFunction(self, lbda):
+        return lambda lbda: self.disp1.dielectricFunction(lbda) + self.disp2.dielectricFunction(lbda)
 
 
 class DispersionLess(DispersionLaw):
@@ -86,10 +88,8 @@ class DispersionLess(DispersionLaw):
         """
         self.n = n
 
-        def dielectricFunction(lbda):
-            return self.n**2
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        return self.n**2
 
 
 class DispersionCauchy(DispersionLaw):
@@ -111,12 +111,10 @@ class DispersionCauchy(DispersionLaw):
         self.k1 = k1
         self.k2 = k2
 
-        def dielectricFunction(lbda):
-            N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
-                + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
-            return N**2
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
+            + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
+        return N**2
 
 
 class DispersionSellmeier(DispersionLaw):
@@ -133,13 +131,10 @@ class DispersionSellmeier(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            lbda = lbda / 1e3
-
-            return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
-                           for Ai, Bi in self.coeffs)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        lbda = lbda / 1e3
+        return 1 + sum(Ai * lbda**2 / (lbda**2 - Bi)
+                       for Ai, Bi in self.coeffs)
 
 
 class DispersionMgO(DispersionLaw):
@@ -148,15 +143,12 @@ class DispersionMgO(DispersionLaw):
     def __init__(self, *coeffs):
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            lbda = lbda / 1e3
-
-            return coeffs[0] + \
-                coeffs[1] * lbda ** 2 + \
-                coeffs[2] * lbda**4 + \
-                coeffs[3] / (lbda**2 - coeffs[4])
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        lbda = lbda / 1e3
+        return self.coeffs[0] + \
+            self.coeffs[1] * lbda ** 2 + \
+            self.coeffs[2] * lbda**4 + \
+            self.coeffs[3] / (lbda**2 - self.coeffs[4])
 
 
 class DispersionDrudeEnergy(DispersionLaw):
@@ -172,11 +164,9 @@ class DispersionDrudeEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return self.coeffs[0] + self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
+        return self.coeffs[0] + self.coeffs[1] / (E**2 - 1j * self.coeffs[2] * E)
 
 
 class DispersionDrudeResistivity(DispersionLaw):
@@ -191,14 +181,13 @@ class DispersionDrudeResistivity(DispersionLaw):
         τ : Mean scattering time (s)
         """
         self.coeffs = coeffs
+
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
         hbar = sc.value("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.value("vacuum electric permittivity") * 1e-2
 
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
-
-        self.dielectricFunction = dielectricFunction
+        return self.coeffs[0] + hbar**2 / (eps0 * self.coeffs[1] * (self.coeffs[2] * E**2 - 1j * hbar * E))
 
 
 class DispersionLorentzLambda(DispersionLaw):
@@ -216,11 +205,9 @@ class DispersionLorentzLambda(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
-                           for Ai, Li, Zi in self.coeffs)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        return 1 + sum(Ai * lbda**2 / (lbda**2 - Li**2 - 1j * Zi * lbda)
+                       for Ai, Li, Zi in self.coeffs)
 
 
 class DispersionLorentzEnergy(DispersionLaw):
@@ -238,12 +225,10 @@ class DispersionLorentzEnergy(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return 1 + sum(Ai / (Ei**2 - E**2 - 1j * Ci * E)
-                           for Ai, Ei, Ci in self.coeffs)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
+        return 1 + sum(Ai / (Ei**2 - E**2 - 1j * Ci * E)
+                       for Ai, Ei, Ci in self.coeffs)
 
 
 class DispersionGauss(DispersionLaw):
@@ -263,16 +248,15 @@ class DispersionGauss(DispersionLaw):
         Ei : Central energy of ith Gaussian (eV)
         Γ1 : Broadening of ith Gaussian (eV)
         """
+        self.eps_inf = eps_inf
         self.coeffs = coeffs
+
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
         ftos = 2 * sqrt(np.log(2))
-
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                 1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
-                                 for Ai, Ei, gami in self.coeffs)
-
-        self.dielectricFunction = dielectricFunction
+        return self.eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
+                                  1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                  for Ai, Ei, gami in self.coeffs)
 
 
 class DispersionTaucLorentz(DispersionLaw):
@@ -295,46 +279,48 @@ class DispersionTaucLorentz(DispersionLaw):
         """
         self.coeffs = coeffs
 
-        def eps2(E, Eg, Ai, Ei, Ci):
-            gamma2 = sqrt(Ei**2 - Ci**2 / 2)**2
-            alpha = sqrt(4 * Ei**2 - Ci**2)
-            aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
-            aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
-            zeta4 = (E**2 - gamma2)**2 + alpha**2 * Ci**2 / 4
+    @staticmethod
+    def eps2(E, Eg, Ai, Ei, Ci):
+        gamma2 = sqrt(Ei**2 - Ci**2 / 2)**2
+        alpha = sqrt(4 * Ei**2 - Ci**2)
+        aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
+        aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
+        zeta4 = (E**2 - gamma2)**2 + alpha**2 * Ci**2 / 4
 
-            return Ai*Ci*aL/2.0/np.pi/zeta4/alpha/Ei*np.log((Ei**2 + Eg**2 + alpha*Eg)/(Ei**2 + Eg**2 - alpha*Eg)) - \
-                Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
-                2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
-                Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
-                2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
+        return Ai*Ci*aL/2.0/np.pi/zeta4/alpha/Ei*np.log((Ei**2 + Eg**2 + alpha*Eg)/(Ei**2 + Eg**2 - alpha*Eg)) - \
+            Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
+            2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
+            Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
+            2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
 
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            Eg = self.coeffs[0]
-            eps_inf = self.coeffs[1]
-            return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                              eps2(E, Eg, Ai, Ei, Ci)
-                                              for Ai, Ei, Ci in self.coeffs[2:]))
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
+        Eg = self.coeffs[0]
+        eps_inf = self.coeffs[1]
+        return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
+                                          self.eps2(E, Eg, Ai, Ei, Ci)
+                                          for Ai, Ei, Ci in self.coeffs[2:]))
 
 
 class DispersionHighEnergyBands(DispersionLaw):
 
     def __init__(self, A, E_xsi):
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            a = -(E_xsi - E)**2 / E**3
-            b = (E_xsi + E)**2 / E**3
-            eps_r = 3 * E_xsi / np.pi / E**2 * (a * np.log(np.abs(1 - E / E_xsi)) +
-                                                b * np.log(np.abs(1 + E / E_xsi))
-                                                - 2 / 3 / E_xsi
-                                                - 2 * E_xsi / E**2)
-            eps_i = 3 * E_xsi * (np.abs(E) - E_xsi)**2 / E**5 * np.heaviside(np.abs(E) - E_xsi, 0)
+        self.A = A
+        self.E_xsi = E_xsi
 
-            return A * (eps_r - 1j * eps_i)
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
 
-        self.dielectricFunction = dielectricFunction
+        a = -(self.E_xsi - E)**2 / E**3
+        b = (self.E_xsi + E)**2 / E**3
+
+        eps_r = 3 * self.E_xsi / np.pi / E**2 * (a * np.log(np.abs(1 - E / self.E_xsi)) +
+                                                 b * np.log(np.abs(1 + E / self.E_xsi))
+                                                 - 2 / 3 / self.E_xsi
+                                                 - 2 * self.E_xsi / E**2)
+        eps_i = 3 * self.E_xsi * (np.abs(E) - self.E_xsi)**2 / E**5 * np.heaviside(np.abs(E) - self.E_xsi, 0)
+
+        return self.A * (eps_r - 1j * eps_i)
 
 
 class DispersionTanguy(DispersionLaw):
@@ -352,15 +338,21 @@ class DispersionTanguy(DispersionLaw):
           a : Sellmeier coefficient for background dielectric constant (eV²)
           b : Sellmeier coefficient for background dielectric constant (eV²)
         """
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return np.conjugate(1 + a / (b - E**2) +
-                                A * R**(d/2 - 1) / (E + 1j * gam)**2 *
-                                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * gam, R, Eg), d) +
-                                 DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * gam, R, Eg), d) -
-                                 2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, R, Eg), d)))
+        self.A = A
+        self.d = d
+        self.gam = gam
+        self.R = R
+        self.Eg = Eg
+        self.a = a
+        self.b = b
 
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
+        return np.conjugate(1 + self.a / (self.b - E**2) +
+                            self.A * self.R**(self.d/2 - 1) / (E + 1j * self.gam)**2 *
+                            (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * self.gam, self.R, self.Eg), self.d) +
+                             DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * self.gam, self.R, self.Eg), self.d) -
+                             2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, self.R, self.Eg), self.d)))
 
     @staticmethod
     def xsi(z, R, Eg):
@@ -382,12 +374,13 @@ class DispersionPoles(DispersionLaw):
     """Disperion law for an UV and IR pole, i.e. Lorentz oscillators outside the fitting spectral range"""
 
     def __init__(self, A_ir, A_uv, E_uv):
+        self.A_ir = A_ir
+        self.A_uv = A_uv
+        self.E_uv = E_uv
 
-        def dielectricFunction(lbda):
-            E = lambda2E(lbda)
-            return A_ir / E**2 + A_uv / (E_uv**2 - E**2)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        E = lambda2E(lbda)
+        return self.A_ir / E**2 + self.A_uv / (self.E_uv**2 - E**2)
 
 
 class DispersionTable(DispersionLaw):
@@ -402,10 +395,8 @@ class DispersionTable(DispersionLaw):
         """
         self.interpolation = scipy.interpolate.interp1d(lbda, n**2, kind='cubic')
 
-        def dielectricFunction(lbda):
-            return self.interpolation(lbda)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        return self.interpolation(lbda)
 
 
 class DispersionTableEpsilon(DispersionLaw):
@@ -419,7 +410,5 @@ class DispersionTableEpsilon(DispersionLaw):
         """
         self.interpolation = scipy.interpolate.interp1d(lbda, epsilon, kind='cubic')
 
-        def dielectricFunction(lbda):
-            return self.interpolation(lbda)
-
-        self.dielectricFunction = dielectricFunction
+    def dielectricFunction(self, lbda):
+        return self.interpolation(lbda)
