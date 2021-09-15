@@ -1,9 +1,20 @@
 # Encoding: utf-8
 import numpy as np
 from numpy.lib.scimath import sqrt
+from scipy.linalg import expm as scipy_expm
+import scipy.constants as sc
+
+try:
+    import tensorflow as tf
+except ImportError:
+    pass
+
+try:
+    import torch
+except ImportError:
+    pass
 
 from .materials import IsotropicMaterial
-from .math import buildDeltaMatrix, hs_propagator_pade_scipy
 from .solver import Solver
 
 
@@ -19,7 +30,7 @@ class Solver4x4(Solver):
     @property
     def rho(self):
         rho = np.dot(self._S, self.jonesVector)
-        rho = rho[:, 0]/rho[:, 1]
+        rho = rho[:, 0] / rho[:, 1]
         return rho
 
     @property
@@ -48,10 +59,10 @@ class Solver4x4(Solver):
         if self._S is None:
             return None
 
-        A = np.array([[1,  0,    0,  1],
-                      [1,  0,    0, -1],
-                      [0,  1,    1,  0],
-                      [0,  1j, -1j,  0]])
+        A = np.array([[1, 0, 0, 1],
+                      [1, 0, 0, -1],
+                      [0, 1, 1, 0],
+                      [0, 1j, -1j, 0]])
 
         # Kroneker product of S and S*
         SxS_star = np.einsum('aij,akl->aikjl', self._S, np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
@@ -71,11 +82,11 @@ class Solver4x4(Solver):
 
     @property
     def R(self):
-        return np.abs(self._jones_matrix_r)**2
+        return np.abs(self._jones_matrix_r) ** 2
 
     @property
     def T(self):
-        return np.abs(self._jones_matrix_t)**2 * self.powerCorrection[:, None, None]
+        return np.abs(self._jones_matrix_t) ** 2 * self.powerCorrection[:, None, None]
 
     def calculate(self):
         """Simulates optical Experiment"""
@@ -163,7 +174,7 @@ def TransitionMatrixHalfspace(Kx, epsilon):
     nE = np.abs(E)
     c = np.ones_like(E)
     i = (nE != 0.0)
-    c[i] = E[i]/nE[i]
+    c[i] = E[i] / nE[i]
 
     Psi = Psi * c[:, np.newaxis, :]
 
@@ -188,8 +199,8 @@ def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
     Returns : transition matrix L
     """
     nx = sqrt(epsilon[:, 0, 0])
-    sin_Phi = Kx/nx
-    cos_Phi = sqrt(1 - sin_Phi**2)
+    sin_Phi = Kx / nx
+    cos_Phi = sqrt(1 - sin_Phi ** 2)
 
     i = np.shape(Kx)[0]
 
@@ -264,3 +275,82 @@ def getKz(material, lbda, Kx):
     nx = material.getRefractiveIndex(lbda)[:, 0, 0]
     Kz2 = nx ** 2 - Kx ** 2
     return sqrt(Kz2)
+
+
+def buildDeltaMatrix(Kx, eps):
+    """Returns Delta matrix for given permittivity and reduced wave number.
+
+    'Kx' : reduce wave number, Kx = kx/k0
+    'eps' : permittivity tensor
+
+    Returns : Delta 4x4 matrix, generator of infinitesimal translations
+    """
+    if np.shape(Kx) == ():
+        i = 1
+    else:
+        i = np.shape(Kx)[0]
+
+    Delta = np.array(
+        [[-Kx * eps[:, 2, 0] / eps[:, 2, 2], -Kx * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), np.tile(1, i) - Kx ** 2 / eps[:, 2, 2]],
+         [np.tile(0, i), np.tile(0, i), np.tile(-1, i), np.tile(0, i)],
+         [eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
+          Kx ** 2 - eps[:, 1, 1] + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), Kx * eps[:, 1, 2] / eps[:, 2, 2]],
+         [eps[:, 0, 0] - eps[:, 0, 2] * eps[:, 2, 0] / eps[:, 2, 2],
+          eps[:, 0, 1] - eps[:, 0, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+          np.tile(0, i), -Kx * eps[:, 0, 2] / eps[:, 2, 2]]], dtype=np.complex128)
+    Delta = np.moveaxis(Delta, 2, 0)
+    return Delta
+
+
+def hs_propagator_lin(Delta, h, lbda):
+    """Returns propagator with linear approximation."""
+    P_hs_lin = np.identity(4) + 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+    return P_hs_lin
+
+
+def hs_propagator_pade_scipy(Delta, h, lbda):
+    """Returns propagator with Padé approximation.
+
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
+    Such property may be suitable for use with Z. Lu's method.
+    """
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+
+    P_hs_Pade = np.asarray([scipy_expm(mat) for mat in mats])
+
+    return P_hs_Pade
+
+
+def hs_propagator_pade_torch(Delta, h, lbda):
+    """Returns propagator with Padé approximation.
+
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
+    Such property may be suitable for use with Z. Lu's method.
+    """
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+
+    t = torch.from_numpy(mats)
+    texp = torch.matrix_exp(t)
+    P_hs_Pade = np.asarray(texp.numpy(), dtype=np.complex128)
+
+    return P_hs_Pade
+
+
+def hs_propagator_pade_tf(Delta, h, lbda):
+    """Returns propagator with Padé approximation.
+
+    The diagonal Padé approximant of any order is symplectic, i.e.
+    P_hs_Pade(h)·P_hs_Pade(-h) = 1.
+    Such property may be suitable for use with Z. Lu's method.
+    """
+    mats = 1j * h * np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
+
+    t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
+    texp = tf.linalg.expm(t)
+    P_hs_Pade = np.array(texp, dtype=np.complex128)
+
+    return P_hs_Pade
