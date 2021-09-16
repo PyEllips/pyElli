@@ -1,8 +1,10 @@
 # Encoding: utf-8
 import numpy as np
+import numpy.typing as npt
 
 from .solver4x4 import Solver4x4
 from .solver import Solver
+from .result import Result
 
 
 class Experiment:
@@ -14,7 +16,7 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure: "Structure", lbda, theta_i: float, vector=[1, 0, 1, 0]):
+    def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, 1, 0]) -> None:
         """Creates an empty structure.
 
         'structure' : Structure object
@@ -27,14 +29,14 @@ class Experiment:
         self.setLbda(lbda)
         self.setVector(vector)
 
-    def setStructure(self, structure: "Structure"):
+    def setStructure(self, structure: "Structure") -> None:
         """Defines the Structure.
 
         'structure' : Structure object
         """
         self.structure = structure
 
-    def setVector(self, vector):
+    def setVector(self, vector: npt.ArrayLike) -> None:
         """Defines the Jones or Stokes vector of the incident Light.
 
         Jones:
@@ -80,14 +82,14 @@ class Experiment:
 
             self.jonesVector = np.array([a, b])
 
-    def setTheta(self, theta_i: float):
+    def setTheta(self, theta_i: float) -> None:
         """Set incident angle, or list of angles to evaluate.
 
         'theta_i' : incident angle in degrees
         """
         self.theta_i = theta_i
 
-    def setLbda(self, lbda):
+    def setLbda(self, lbda: npt.ArrayLike) -> None:
         """Set experiment wavelengths.
 
         'lbda' : single or list of wavelengths in nm
@@ -97,7 +99,7 @@ class Experiment:
             lbda_array = np.asarray([lbda])
         self.lbda = lbda_array
 
-    def evaluate(self, solver: Solver = Solver4x4, **solver_kwargs):
+    def evaluate(self, solver: Solver = Solver4x4, **solver_kwargs) -> Result:
         """Return the Evaluation of the structure for the given parameters"""
         if solver_kwargs == {}:
             solv = solver(self)

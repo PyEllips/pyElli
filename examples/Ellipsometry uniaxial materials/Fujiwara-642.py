@@ -39,7 +39,7 @@ Theta_E = 45    # 2nd Eulet angle
 # %%
 filmMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
                                       bm.DispersionLess(n_e))
-R = bm.rotation_Euler((Phi_E, Theta_E, 0))
+R = bm.rotation_Euler(Phi_E, Theta_E, 0)
 filmMaterial.setRotation(R)
 print(filmMaterial.getTensor(lbda))
 
@@ -154,7 +154,7 @@ Delta_ps = []
 # %%
 for Theta_E in Theta_E_list:
     for Phi_E in Phi_E_list:
-        R = bm.rotation_Euler((Phi_E, Theta_E, 0))
+        R = bm.rotation_Euler(Phi_E, Theta_E, 0)
         filmMaterial.setRotation(R)
         data = s.evaluate(np.array([lbda]), Phi_i)
         Psi_pp.append(data.psiMat[0,0,0])

@@ -62,7 +62,7 @@ class Solver2x2(Solver):
 
         return angles
 
-    def calculate(self):
+    def calculate(self) -> Result:
         """Calculates the transfer matrix for the given material stack"""
         if len(self.permProfile) > 2:
             d, eps = list(zip(*self.permProfile[1:-1]))

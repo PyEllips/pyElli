@@ -17,7 +17,7 @@ class TestUniaxial:
 
     filmMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
                                        bm.DispersionLess(n_e))
-    R = bm.rotation_Euler((Phi_E, Theta_E, 0))
+    R = bm.rotation_Euler(Phi_E, Theta_E, 0)
     filmMaterial.setRotation(R)
 
     air = bm.IsotropicMaterial(bm.DispersionLess(n_i))

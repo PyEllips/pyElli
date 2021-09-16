@@ -45,21 +45,11 @@ class Solver(ABC):
     def jones_matrix_r(self):
         pass
 
-    @property
-    def data(self):
-        return {
-            'T_ri': self.jones_matrix_r,
-            'T_ti': self.jones_matrix_t,
-            'Psi': self.psi,
-            'Delta': self.delta,
-            'Mueller': self.mueller_matrix
-        }
-
     @abstractmethod
     def calculate(self) -> Result:
         pass
 
-    def __init__(self, experiment: "Experiment"):
+    def __init__(self, experiment: "Experiment") -> None:
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i

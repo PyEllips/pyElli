@@ -1,9 +1,13 @@
 # Encoding: utf-8
 from .materials import Material
 import numpy as np
+import numpy.typing as npt
 from typing import List
 
 from .experiment import Experiment
+from .solver import Solver 
+from .solver4x4 import Solver4x4
+from .result import Result
 
 
 #########################################################
@@ -12,10 +16,7 @@ from .experiment import Experiment
 class Layer:
     """Homogeneous layer finite of dielectric material."""
 
-    material = None     # Material making the layer
-    d = None            # Thickness of the layer
-
-    def __init__(self, material, d):
+    def __init__(self, material: Material, d:float) -> None:
         """New layer of material 'material', with thickness 'd'
 
         'material' : Material object
@@ -24,15 +25,15 @@ class Layer:
         self.setMaterial(material)
         self.setThickness(d)
 
-    def setMaterial(self, material: Material):
+    def setMaterial(self, material: Material) -> None:
         """Defines the material for this layer. """
         self.material = material
 
-    def setThickness(self, d):
+    def setThickness(self, d:float) -> None:
         """Defines the thickness of this homogeneous layer in nm."""
         self.d = d
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
         """Returns permittivity tensor profile.
 
         Returns a list containing one tuple: [(d, epsilon)]
@@ -51,7 +52,7 @@ class RepeatedLayers(Layer):
     after = None    # additional layers after the last period
     layers = None   # layers to repeat
 
-    def __init__(self, layers: List[Layer], n: int = 2, before: int = 0, after: int = 0):
+    def __init__(self, layers: List[Layer], n: int = 2, before: int = 0, after: int = 0) -> None:
         """Repeated structure of layers
 
         'layers' : list of the repeated layers
@@ -61,7 +62,7 @@ class RepeatedLayers(Layer):
         self.setRepetition(n, before, after)
         self.setLayers(layers)
 
-    def setRepetition(self, n: int, before: int = 0, after: int = 0):
+    def setRepetition(self, n: int, before: int = 0, after: int = 0) -> None:
         """Defines the number of repetitions.
 
         'n' : number of repetitions
@@ -75,14 +76,14 @@ class RepeatedLayers(Layer):
         self.before = before
         self.after = after
 
-    def setLayers(self, layers: List[Layer]):
+    def setLayers(self, layers: List[Layer]) -> None:
         """Set list of layers.
 
         'layers' : list of layers, starting from z=0
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
         """Returns permittivity tensor profile.
 
         Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
@@ -132,7 +133,7 @@ class Structure:
     backMaterial = None
     layers = []  # list of layers
 
-    def __init__(self, front: Material, layers: List[Layer], back: Material):
+    def __init__(self, front: Material, layers: List[Layer], back: Material) -> None:
         """Creates an empty structure.
 
         'front' : front half space, see setFrontHalfSpace()
@@ -143,28 +144,28 @@ class Structure:
         self.setLayers(layers)
         self.setBackMaterial(back)
 
-    def setFrontMaterial(self, material: Material):
+    def setFrontMaterial(self, material: Material) -> None:
         """Defines the front half-space material.
 
         'material' : Material object
         """
         self.frontMaterial = material
 
-    def setBackMaterial(self, material: Material):
+    def setBackMaterial(self, material: Material) -> None:
         """Defines the back half-space material.
 
         'material' : Material object
         """
         self.backMaterial = material
 
-    def setLayers(self, layers: List[Layer]):
+    def setLayers(self, layers: List[Layer]) -> None:
         """Set list of layers.
 
         'layers' : list of layers, starting from z=0
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda):
+    def getPermittivityProfile(self, lbda) -> List:
         """Get permittivity profile of the complete structure for the wavelengths lbda.
         """
         permProfile = [self.frontMaterial.getTensor(lbda)]
@@ -175,7 +176,7 @@ class Structure:
         permProfile.extend([self.backMaterial.getTensor(lbda)])
         return permProfile
 
-    def evaluate(self, lbda, theta_i):
+    def evaluate(self, lbda, theta_i, solver: Solver = Solver4x4, **solver_kwargs) -> Result:
         """Return the Evaluation of the structure for the given parameters with standard settings"""
         exp = Experiment(self, lbda, theta_i)
-        return exp.evaluate()
+        return exp.evaluate(solver, **solver_kwargs)

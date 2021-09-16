@@ -1,5 +1,6 @@
 # Encoding: utf-8
 import numpy as np
+import numpy.typing as npt
 import scipy.linalg
 import scipy.constants as sc
 
@@ -12,7 +13,7 @@ e_z = np.array([0, 0, 1]).reshape((3,))
 CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
 
-def lambda2E(value):
+def lambda2E(value: npt.ArrayLike) -> npt.ArrayLike:
     """Returns the Energy in eV of the given wavelength in 'nm'"""
     return CONV_M_EV / value * 1e-9
 
@@ -20,10 +21,10 @@ def lambda2E(value):
 #########################################################
 # Rotations
 
-def rotation_Euler(angles):
+def rotation_Euler(p: float, n: float, r: float) -> npt.NDArray:
     """Returns rotation matrix defined by Euler angles (p,n,r)
 
-    'angles' : tuple (p,n,r)
+    'angles' : p,n,r
 
     Returns : rotation matrix M_R.
     If A is an initial vector,  B = M_R * A is the rotated vector
@@ -39,19 +40,23 @@ def rotation_Euler(angles):
 
     Note : The inverse rotation is (-r,-n,-p)
     """
-    (p, n, r) = np.deg2rad(angles)
+    p = np.deg2rad(p)
+    n = np.deg2rad(n)
+    r = np.deg2rad(r)
+
     c1 = np.cos(p)
     s1 = np.sin(p)
     c2 = np.cos(n)
     s2 = np.sin(n)
     c3 = np.cos(r)
     s3 = np.sin(r)
+
     return np.array([[c1*c3-s1*c2*s3, -c1*s3-s1*c2*c3,  s1*s2],
                      [s1*c3+c1*c2*s3, -s1*s3+c1*c2*c3, -c1*s2],
                      [s2*s3,           s2*c3,           c2]])
 
 
-def rotation_V(V):
+def rotation_V(V: npt.ArrayLike) -> npt.NDArray:
     """Returns rotation matrix defined by a rotation vector V
 
     'V' : rotation vector (list or array)
@@ -74,11 +79,11 @@ def rotation_V(V):
     return scipy.linalg.expm(W)
 
 
-def rotation_v_theta(v, theta):
+def rotation_v_theta(v: npt.ArrayLike, theta: float) -> npt.NDArray:
     """Returns rotation matrix defined by a unit rotation vector and an angle
 
     'v' : unit vector orienting the rotation (list or array)
-    'theta' : rotation angle around v in radians
+    'theta' : rotation angle around v in degrees
 
     Returns : rotation matrix M_R.
     If A is an initial vector,  B = M_R * A is the rotated vector

@@ -3,8 +3,6 @@
 
 class Result:
     """Record of a simulation result."""
-
-    __experiment = None       # Simulated experiment
     __result = None
 
     @property
@@ -51,7 +49,7 @@ class Result:
     def T(self):
         return self.__result.T
 
-    def __init__(self, solver):
+    def __init__(self, solver: "Solver") -> None:
         """
 
         """

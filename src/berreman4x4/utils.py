@@ -12,7 +12,7 @@ from numpy.lib.scimath import sqrt
 from .dispersions import DispersionTableEpsilon
 
 
-def calcPseudoDiel(rho, angle: float, output: str = 'eps'):
+def calcPseudoDiel(rho, angle: float, output: str = 'eps') -> pd.DataFrame:
     """Calculates the pseudo dielectric function of a measurement from rho.
 
     Args:
@@ -42,7 +42,7 @@ def calcPseudoDiel(rho, angle: float, output: str = 'eps'):
                       'ϵ2': eps.apply(lambda x: x.imag)}, axis=1)
 
 
-def calc_rho(psi_delta):
+def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
     """Calculate rho from a Psi-Delta DataFrame. The Psi-Delta DataFrame should be structured as follows:
         index: Wavelength
         column 'Ψ': Psi from measurement
@@ -193,10 +193,10 @@ def manual_parameters(exp_data, params, angle: float = 70):
 
 class SpectraRay():
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         self.spectraray_path = path
 
-    def loadDispersionTable(self, fname):
+    def loadDispersionTable(self, fname: str) -> DispersionTableEpsilon:
         start = 0
         stop = 0
         with open(self.spectraray_path + fname, 'r') as f:
@@ -225,7 +225,7 @@ class SpectraRay():
             return DispersionTableEpsilon(SpectraRay.eV2nm(df.index), df.loc[:, 'ϵ1'] + 1j * df.loc[:, 'ϵ2'])
 
     @staticmethod
-    def read_psi_delta_file(fname, decimal='.'):
+    def read_psi_delta_file(fname: str, decimal: str = '.') -> pd.DataFrame:
         return pd.read_csv(fname,
                            index_col=0,
                            sep=r'\s+',
@@ -235,7 +235,7 @@ class SpectraRay():
                            skiprows=1)
 
     @staticmethod
-    def read_rho(fname, decimal='.'):
+    def read_rho(fname: str, decimal: str = '.') -> pd.DataFrame:
         psi_delta = SpectraRay.read_psi_delta_file(fname, decimal)
         return calc_rho(psi_delta)
 
@@ -244,7 +244,7 @@ class SpectraRay():
         return sc.value('Planck constant in eV s') * sc.c * 1e9 / wlen
 
 
-def get_QWP_thickness(material, lbda):
+def get_QWP_thickness(material: "Material", lbda: float) -> float:
     """Return the thickness in nm of a Quater Wave Plate at wavelength 'lbda'."""
     nr = np.real(material.getRefractiveIndex(lbda)[0, 0, 0])
     return lbda / (4.*nr)

@@ -1,6 +1,7 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 import numpy as np
+import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 import scipy.constants as sc
@@ -22,12 +23,12 @@ from .result import Result
 
 class Propagator(ABC):
     @abstractmethod
-    def calculate_propagation(self, Delta, h, lbda):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
         pass
 
 
 class PropagatorLinear(Propagator):
-    def calculate_propagation(self, Delta, h, lbda):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns propagator with linear approximation."""
         P_hs_lin = np.identity(4) + 1j * h * \
             np.einsum('nij,n->nij', Delta, 2 * sc.pi / lbda)
@@ -35,7 +36,7 @@ class PropagatorLinear(Propagator):
 
 
 class PropagatorExpmScipy(Propagator):
-    def calculate_propagation(self, Delta, h, lbda):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns propagator with Padé approximation.
 
         The diagonal Padé approximant of any order is symplectic, i.e.
@@ -50,7 +51,7 @@ class PropagatorExpmScipy(Propagator):
 
 
 class PropagatorExpmTorch(Propagator):
-    def calculate_propagation(self, Delta, h, lbda):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns propagator with Padé approximation.
 
         The diagonal Padé approximant of any order is symplectic, i.e.
@@ -67,7 +68,7 @@ class PropagatorExpmTorch(Propagator):
 
 
 class PropagatorExpmTF(Propagator):
-    def calculate_propagation(self, Delta, h, lbda):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns propagator with Padé approximation.
 
         The diagonal Padé approximant of any order is symplectic, i.e.
@@ -93,7 +94,7 @@ class Solver4x4(Solver):
     _jones_matrix_r = None
 
     @staticmethod
-    def buildDeltaMatrix(Kx, eps):
+    def buildDeltaMatrix(Kx: npt.ArrayLike, eps: npt.NDArray) -> npt.NDArray:
         """Returns Delta matrix for given permittivity and reduced wave number.
 
         'Kx' : reduce wave number, Kx = kx/k0
@@ -120,7 +121,7 @@ class Solver4x4(Solver):
         return Delta
 
     @staticmethod
-    def TransitionMatrixHalfspace(Delta):
+    def TransitionMatrixHalfspace(Delta: npt.NDArray) -> npt.NDArray:
         """Returns transition matrix L.
 
         'Kx' : reduced wavenumber in the x direction, Kx = kx/k0
@@ -174,7 +175,7 @@ class Solver4x4(Solver):
         return Psi
 
     @staticmethod
-    def TransitionMatrixIsoHalfspace(Kx, epsilon, inv=False):
+    def TransitionMatrixIsoHalfspace(Kx: npt.ArrayLike, epsilon: npt.ArrayLike, inv: bool = False) -> npt.NDArray:
         """Returns transition matrix L.
 
         'Kx' : Reduced wavenumber
@@ -237,41 +238,41 @@ class Solver4x4(Solver):
             #  [0, 0, nx, -nx]])
 
     @staticmethod
-    def getKz(material, lbda, Kx):
+    def getKz(material: "Material", lbda: npt.ArrayLike, Kx: npt.ArrayLike) -> npt.NDArray:
         """Returns the value of Kz in the half-space"""
         nx = material.getRefractiveIndex(lbda)[:, 0, 0]
         Kz2 = nx ** 2 - Kx ** 2
         return sqrt(Kz2)
 
     @property
-    def rho(self):
+    def rho(self) -> npt.NDArray:
         rho = np.dot(self._S, self.jonesVector)
         rho = rho[:, 0] / rho[:, 1]
         return rho
 
     @property
-    def psi(self):
+    def psi(self) -> npt.NDArray:
         return np.rad2deg(np.arctan(np.abs(self.rho)))
 
     @property
-    def delta(self):
+    def delta(self) -> npt.NDArray:
         d = -np.angle(self.rho, deg=True)
         return np.where(d < 0, d + 360, d)
 
     @property
-    def rhoMat(self):
+    def rhoMat(self) -> npt.NDArray:
         return self._S
 
     @property
-    def psiMat(self):
+    def psiMat(self) -> npt.NDArray:
         return np.rad2deg(np.arctan(np.abs(self.rhoMat)))
 
     @property
-    def deltaMat(self):
+    def deltaMat(self) -> npt.NDArray:
         return -np.angle(self.rhoMat, deg=True)
 
     @property
-    def mueller_matrix(self):
+    def mueller_matrix(self) -> npt.NDArray:
         if self._S is None:
             return None
 
@@ -290,22 +291,22 @@ class Solver4x4(Solver):
         return mmatrix / m11[:, None, None]
 
     @property
-    def jones_matrix_t(self):
+    def jones_matrix_t(self) -> npt.NDArray:
         return self._jones_matrix_t
 
     @property
-    def jones_matrix_r(self):
+    def jones_matrix_r(self) -> npt.NDArray:
         return self._jones_matrix_r
 
     @property
-    def R(self):
+    def R(self) -> npt.NDArray:
         return np.abs(self._jones_matrix_r) ** 2
 
     @property
-    def T(self):
+    def T(self) -> npt.NDArray:
         return np.abs(self._jones_matrix_t) ** 2 * self.powerCorrection[:, None, None]
 
-    def __init__(self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()):
+    def __init__(self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()) -> None:
         super().__init__(experiment)
         self.propagator = propagator
 
@@ -313,7 +314,7 @@ class Solver4x4(Solver):
         nx = self.structure.frontMaterial.getRefractiveIndex(self.lbda)[:, 0, 0]
         self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
 
-    def calculate(self):
+    def calculate(self) -> Result:
         """Simulates optical Experiment"""
         layers = reversed(self.permProfile[1:-1])
 
