@@ -11,8 +11,6 @@ import berreman4x4.plotter as bmplot
 import matplotlib.pyplot as plt
 import numpy as np
 
-# %%
-bm.settings['ExpmBackend'] = 'scipy'
 np.set_printoptions(suppress=True, precision=3)
 
 # %% [markdown]

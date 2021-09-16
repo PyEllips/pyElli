@@ -18,7 +18,6 @@ import scipy.linalg
 
 # reduces the number of printed figures in numbers:
 np.set_printoptions(suppress=True, precision=4)
-bm.settings['ExpmBackend']='scipy'
 
 # %% [markdown]
 # ## Example: Air / anisotropic film / silicon substrate
@@ -66,28 +65,28 @@ print("Kx: {:.4f}".format(Kx))
 # %%
 film = bm.Layer(filmMaterial, d)
 epsilon = filmMaterial.getTensor(lbda)
-Delta = bm.math.buildDeltaMatrix(Kx, epsilon)[0]
+Delta = bm.Solver4x4.buildDeltaMatrix(Kx, epsilon)
 print("\nDelta matrix:")
 print(Delta)
 
-q, Psi = scipy.linalg.eig(Delta)
+q, Psi = scipy.linalg.eig(Delta[0])
 print("\nEigenvalues of the Delta matrix (eq 6.64, p.241):")
 print(np.real(q))
 
 # %% [markdown]
 # ```python
 # # Delta matrix:
-# [[-0.1459,  0.1459,  0.    ,  0.8277],
-#  [ 0.    ,  0.    , -1.    ,  0.    ],
-#  [ 0.439 , -3.556 ,  0.    , -0.1459],
-#  [ 4.439 , -0.439 ,  0.    , -0.1459]]
+# [[[-0.1459,  0.1459,  0.    ,  0.8277],
+#   [ 0.    ,  0.    , -1.    ,  0.    ],
+#   [ 0.439 , -3.556 ,  0.    , -0.1459],
+#   [ 4.439 , -0.439 ,  0.    , -0.1459]]]
 #
 # # Eigenvalues of Delta
 # [-2.174 , -1.7655,  1.7655,  1.8822]
 # ```
 
 # %%
-Tp = bm.math.hs_propagator_Pade(bm.math.buildDeltaMatrix(Kx, epsilon), -d, np.array([lbda]))
+Tp = bm.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
 print("\nPropagation matrix (eq 6.66, p. 242):")
 print(Tp)
 
