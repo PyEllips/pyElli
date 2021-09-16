@@ -7,7 +7,7 @@ from .math import e_x
 
 def getPermittivityProfile(structure, lbda):
     """Returns permittivity tensor profile."""
-    layers =[]
+    layers = []
     for L in structure.layers:
         layers.extend(L.getPermittivityProfile(lbda))
     front = (float('inf'), structure.frontMaterial.getTensor(lbda))

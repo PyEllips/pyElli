@@ -1,10 +1,11 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 import numpy as np
+import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
+from .dispersions import DispersionLaw
 from .math import rotation_v_theta
-from .settings import settings
 
 
 class Material(ABC):
@@ -20,18 +21,18 @@ class Material(ABC):
     rotationMatrix = np.identity(3)
 
     @abstractmethod
-    def setDispersion(self):
+    def setDispersion(self) -> None:
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def setRotation(self, R):
+    def setRotation(self, R: npt.NDArray) -> None:
         """Rotates the Material.
 
         'R' : rotation matrix (from rotation_Euler() or others)
         """
         self.rotationMatrix = R
 
-    def getTensor(self, lbda):
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for the desired wavelength."""
 
         # Check for shape of lbda
@@ -46,7 +47,7 @@ class Material(ABC):
             i = shape[0]
 
         # create empty tensor
-        epsilon = np.zeros((i, 3, 3), dtype=settings['dtype'])
+        epsilon = np.zeros((i, 3, 3), dtype=np.complex128)
 
         # get get dielectric functions from dispersion law
         epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
@@ -56,7 +57,7 @@ class Material(ABC):
         epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
         return epsilon
 
-    def getRefractiveIndex(self, lbda):
+    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns refractive index."""
         return sqrt(self.getTensor(lbda))
 
@@ -64,14 +65,14 @@ class Material(ABC):
 class IsotropicMaterial(Material):
     """Isotropic material."""
 
-    def __init__(self, law=None):
+    def __init__(self, law: DispersionLaw) -> None:
         """Creates isotropic material with dispersion law.
 
         'law' : Dispersion law object
         """
         self.setDispersion(law)
 
-    def setDispersion(self, law):
+    def setDispersion(self, law: DispersionLaw) -> None:
         self.law_x = law
         self.law_y = law
         self.law_z = law
@@ -80,7 +81,7 @@ class IsotropicMaterial(Material):
 class UniaxialMaterial(Material):
     """Uniaxial material."""
 
-    def __init__(self, law_o=None, law_e=None):
+    def __init__(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
         """Creates a uniaxial material with dispersion law.
 
         'law_o' : dispersion law for ordinary crystal axes (x and y direction)
@@ -88,7 +89,7 @@ class UniaxialMaterial(Material):
         """
         self.setDispersion(law_o, law_e)
 
-    def setDispersion(self, law_o=None, law_e=None):
+    def setDispersion(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
         self.law_x = law_o
         self.law_y = law_o
         self.law_z = law_e
@@ -97,7 +98,7 @@ class UniaxialMaterial(Material):
 class BiaxialMaterial(Material):
     """Biaxial material."""
 
-    def __init__(self, law_x=None, law_y=None, law_z=None):
+    def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
         """Creates a biaxial material with dispersion law.
 
         'law_x' : dispersion law for x axis
@@ -106,7 +107,7 @@ class BiaxialMaterial(Material):
         """
         self.setDispersion(law_x, law_y, law_z)
 
-    def setDispersion(self, law_x=None, law_y=None, law_z=None):
+    def setDispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
         self.law_x = law_x
         self.law_y = law_y
         self.law_z = law_z

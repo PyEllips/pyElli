@@ -5,8 +5,8 @@ from .experiment import Experiment
 from .materials import *
 from .math import lambda2E, rotation_Euler
 from .result import Result
-from .settings import *
-from .solver import *
+from .solver2x2 import Solver2x2
+from .solver4x4 import *
 from .structure import *
 from .utils import *
 from .materials_db import *

@@ -40,7 +40,7 @@ uniaxialMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
 Psi = []
 
 for θ_E in θ_E_list:
-    R = bm.math.rotation_Euler((Φ_E, θ_E, 0))
+    R = bm.math.rotation_Euler(Φ_E, θ_E, 0)
     uniaxialMaterial.setRotation(R)
     s = bm.Structure(air, [], uniaxialMaterial)
     for Φ_i in Φ_i_list:
@@ -73,7 +73,7 @@ Psi = []
 for θ_E in θ_E_list:
     evaluation_list = []
     for Φ_E in Φ_E_list:
-        R = bm.math.rotation_Euler((Φ_E, θ_E, 0))
+        R = bm.math.rotation_Euler(Φ_E, θ_E, 0)
         uniaxialMaterial.setRotation(R)
         s = bm.Structure(air, [], uniaxialMaterial)
         data = s.evaluate(500, Φ_i)

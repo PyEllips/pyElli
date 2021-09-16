@@ -53,7 +53,6 @@ class TestBragg:
     (lbda1, lbda2) = (1100, 2500)
     lbda_list = np.linspace(lbda1, lbda2, 200)
 
-
     def ReflectionCoeff(self, incidence_angle=0., polarisation='s'):
         """Returns the reflection coefficient in amplitude"""
         Kx = self.n[0] * np.sin(incidence_angle)
@@ -70,7 +69,7 @@ class TestBragg:
             r_ab = (-np.diff(kz, axis=0)) / (kz[:-1] + kz[1:])
         elif polarisation == 'p':
             r_ab = (kz[:-1] * (self.n[1:]) ** 2 - kz[1:] * (self.n[:-1]) ** 2) \
-                   / (kz[:-1] * (self.n[1:]) ** 2 + kz[1:] * (self.n[:-1]) ** 2)
+                / (kz[:-1] * (self.n[1:]) ** 2 + kz[1:] * (self.n[:-1]) ** 2)
 
         # Local function definition for recursive calculation
         def U(k):
@@ -83,7 +82,7 @@ class TestBragg:
                 res = r_ab[self.N - 1]
             else:
                 res = (r_ab[p - 1] + U(p) * np.exp(2j * kz[p] * self.d[p])) \
-                      / (1 + r_ab[p - 1] * U(p) * np.exp(2j * kz[p] * self.d[p]))
+                    / (1 + r_ab[p - 1] * U(p) * np.exp(2j * kz[p] * self.d[p]))
             return res
 
         return U(0)

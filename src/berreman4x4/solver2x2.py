@@ -3,6 +3,8 @@ import numpy as np
 from numpy.lib.scimath import arcsin, sqrt
 
 from .solver import Solver
+from .result import Result
+
 
 class Solver2x2(Solver):
     '''
@@ -53,14 +55,14 @@ class Solver2x2(Solver):
     def list_snell(self, n_list):
         angles = arcsin(n_list[0] * np.sin(np.deg2rad(self.theta_i)) / n_list)
 
-        angles[0] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[0], angles[0])), 
-                            np.pi - angles[0], angles[0])
-        angles[-1] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[-1], angles[-1])), 
-                            np.pi - angles[-1], angles[-1])
+        angles[0] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[0], angles[0])),
+                             np.pi - angles[0], angles[0])
+        angles[-1] = np.where(np.invert(Solver2x2.is_forward_angle(n_list[-1], angles[-1])),
+                              np.pi - angles[-1], angles[-1])
 
         return angles
 
-    def calculate(self):
+    def calculate(self) -> Result:
         """Calculates the transfer matrix for the given material stack"""
         if len(self.permProfile) > 2:
             d, eps = list(zip(*self.permProfile[1:-1]))
@@ -77,7 +79,7 @@ class Solver2x2(Solver):
         th_list = self.list_snell(n_list)
         kz_list = 2 * np.pi * n_list * np.cos(th_list) / self.lbda
 
-        delta = kz_list[1:-1] * (d_list if n_list.ndim == 1 else d_list[:,None])
+        delta = kz_list[1:-1] * (d_list if n_list.ndim == 1 else d_list[:, None])
 
         esum = 'ij...,jk...->ik...'
         ones = np.repeat(1, n_list.shape[1]) if n_list.ndim > 1 else 1
@@ -97,14 +99,15 @@ class Solver2x2(Solver):
                            np.array([[em, rs * em],
                                      [rs * ep, ep]], dtype=complex) / ts)
             Mp = np.einsum(esum, Mp,
-                            np.array([[em, rp * em],
-                                      [rp * ep, ep]], dtype=complex) / tp)
+                           np.array([[em, rp * em],
+                                     [rp * ep, ep]], dtype=complex) / tp)
 
-        self._rtots = Ms[1,0] / Ms[0,0]
-        self._ttots = 1 / Ms[0,0]
-        self._rtotp = Mp[1,0] / Mp[0,0]
-        self._ttotp = 1 / Mp[0,0]
+        self._rtots = Ms[1, 0] / Ms[0, 0]
+        self._ttots = 1 / Ms[0, 0]
+        self._rtotp = Mp[1, 0] / Mp[0, 0]
+        self._ttotp = 1 / Mp[0, 0]
 
+        return Result(self)
 
     @staticmethod
     def fresnel(n_i, n_t, th_i, th_t):
@@ -132,8 +135,8 @@ class Solver2x2(Solver):
         return r_s, r_p, t_s, t_p
 
     @staticmethod
-    def is_forward_angle(n, theta): 
+    def is_forward_angle(n, theta):
         ncostheta = n * np.cos(theta)
         return np.where(abs(ncostheta.imag) > 1e-10,
-                        ncostheta.imag > 0, 
+                        ncostheta.imag > 0,
                         ncostheta.real > 0)

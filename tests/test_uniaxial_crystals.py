@@ -17,16 +17,16 @@ class TestUniaxial:
 
     filmMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
                                        bm.DispersionLess(n_e))
-    R = bm.rotation_Euler((Phi_E, Theta_E, 0))
+    R = bm.rotation_Euler(Phi_E, Theta_E, 0)
     filmMaterial.setRotation(R)
 
     air = bm.IsotropicMaterial(bm.DispersionLess(n_i))
     Kx = n_i * np.sin(np.deg2rad(Phi_i))
     film = bm.Layer(filmMaterial, d)
     epsilon = filmMaterial.getTensor(lbda)
-    Delta = bm.math.buildDeltaMatrix(Kx, epsilon)[0]
+    Delta = bm.Solver4x4.buildDeltaMatrix(Kx, epsilon)
 
-    Tp = bm.math.hs_propagator_Pade(bm.math.buildDeltaMatrix(Kx, epsilon), -d, np.array([lbda]))
+    Tp = bm.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
 
     n_t = 3.898 + 0.016j  # refractive index of substrate
     silicon = bm.IsotropicMaterial(bm.DispersionLess(n_t))
@@ -46,7 +46,7 @@ class TestUniaxial:
                                  [0.439, -3.556, 0., -0.1459],
                                  [4.439, -0.439, 0., -0.1459]], dtype=np.complex128)
 
-        np.testing.assert_allclose(self.Delta, delta_matrix, 1e-3, 0)
+        np.testing.assert_allclose(self.Delta[0], delta_matrix, 1e-3, 0)
 
     def test_transition_matrix(self):
         transition_matrix = np.array([[[-0.353 - 0.057j, 0.091 - 0.001j, 0.033 + 0.044j, 0.056 - 0.397j],
@@ -70,4 +70,4 @@ class TestUniaxial:
         delta = np.array([[[-42.734, -16.4123],
                            [-155.024, 0.]]])
 
-        np.testing.assert_allclose(self.data.deltaMat, delta, 1e-2, 0)
+        np.testing.assert_allclose(self.data.deltaMat, delta, 1e-3, 1e-1)
