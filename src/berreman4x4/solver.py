@@ -1,7 +1,7 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 
-from .experiment import Experiment
+from .result import Result
 
 
 class Solver(ABC):
@@ -56,14 +56,10 @@ class Solver(ABC):
         }
 
     @abstractmethod
-    def calculate(self):
+    def calculate(self) -> Result:
         pass
 
-    def __init__(self, experiment: Experiment):
-        self.unpackData(experiment)
-        self.calculate()
-
-    def unpackData(self, experiment):
+    def __init__(self, experiment: "Experiment"):
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i

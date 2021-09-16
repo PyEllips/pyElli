@@ -102,7 +102,7 @@ class RepeatedLayers(Layer):
 class InhomogeneousLayer(Layer):
     """Inhomogeneous layer.
 
-    Must be fabricated with an InhomogemeousMaterial object.
+    Must be fabricated with an InhomogeneousMaterial object.
     """
 
     def getPermittivityProfile(self, lbda):
@@ -165,18 +165,17 @@ class Structure:
         self.layers = layers
 
     def getPermittivityProfile(self, lbda):
-        """Get permitivity profile of the complete structure for the wavelenghts lbda.
+        """Get permittivity profile of the complete structure for the wavelengths lbda.
         """
-        permProfile = []
-        permProfile.append(self.frontMaterial.getTensor(lbda))
+        permProfile = [self.frontMaterial.getTensor(lbda)]
 
         for L in self.layers:
-            permProfile.append(L.getPermittivityProfile(lbda))
+            permProfile.extend(L.getPermittivityProfile(lbda))
 
-        permProfile.append(self.backMaterial.getTensor(lbda))
+        permProfile.extend([self.backMaterial.getTensor(lbda)])
         return permProfile
 
-    def evaluate(self, lbda, theta_i, vector=[1, 0, 1, 0]):
-        """Return the Evaluation of the structure for the given parameters"""
-        exp = Experiment(self, lbda, theta_i, vector)
+    def evaluate(self, lbda, theta_i):
+        """Return the Evaluation of the structure for the given parameters with standard settings"""
+        exp = Experiment(self, lbda, theta_i)
         return exp.evaluate()

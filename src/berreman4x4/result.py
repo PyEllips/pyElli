@@ -31,7 +31,6 @@ class Result:
     def deltaMat(self):
         return self.__result.deltaMat
 
-
     @property
     def mueller_matrix(self):
         return self.__result.mueller_matrix
@@ -52,11 +51,10 @@ class Result:
     def T(self):
         return self.__result.T
 
-    def __init__(self, experiment, solver):
+    def __init__(self, solver):
         """
 
         """
-        self.__experiment = experiment
         self.__result = solver
 
     # def get(self, name):

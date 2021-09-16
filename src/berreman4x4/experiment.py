@@ -1,24 +1,20 @@
 # Encoding: utf-8
 import numpy as np
 
-from .result import Result
 from .solver4x4 import Solver4x4
-from .solver2x2 import Solver2x2
-from .structure import Structure
+from .solver import Solver
 
 
 class Experiment:
-    """Description of an experiment.
+    """Description of an experiment."""
 
-
-    """
     structure = None
     jonesVector = None
     stokesVector = None
     theta_i = None
     lbda = None
 
-    def __init__(self, structure: Structure, lbda, theta_i: float, vector=None):
+    def __init__(self, structure: "Structure", lbda, theta_i: float, vector=[1, 0, 1, 0]):
         """Creates an empty structure.
 
         'structure' : Structure object
@@ -31,7 +27,7 @@ class Experiment:
         self.setLbda(lbda)
         self.setVector(vector)
 
-    def setStructure(self, structure: Structure):
+    def setStructure(self, structure: "Structure"):
         """Defines the Structure.
 
         'structure' : Structure object
@@ -101,15 +97,10 @@ class Experiment:
             lbda_array = np.asarray([lbda])
         self.lbda = lbda_array
 
-    def evaluate(self, solver='berreman4x4'):
+    def evaluate(self, solver: Solver = Solver4x4, **solver_kwargs):
         """Return the Evaluation of the structure for the given parameters"""
-
-        solvers = ['berreman4x4', 'simple2x2']
-        if solver not in solvers:
-            raise ValueError("Invalid solver type {:}. Expected one of: {:}"
-                             .format(solver, solvers))
+        if solver_kwargs == {}:
+            solv = solver(self)
         else:
-            if solver == 'berreman4x4':
-                return Result(self, Solver4x4(self))
-            elif solver == 'simple2x2':
-                return Result(self, Solver2x2(self))
+            solv = solver(self, solver_kwargs)
+        return solv.calculate()
