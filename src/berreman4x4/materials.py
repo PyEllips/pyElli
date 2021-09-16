@@ -6,6 +6,7 @@ from numpy.lib.scimath import sqrt
 from .dispersions import DispersionLaw
 from .math import rotation_v_theta
 
+
 class Material(ABC):
     """Base class for materials (abstract class).
 

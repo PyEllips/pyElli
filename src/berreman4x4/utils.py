@@ -57,8 +57,8 @@ def calc_rho(psi_delta):
         pandas.DataFrame: Frame containing rho as an imaginary number.
     """
     return psi_delta.apply(lambda x: np.tan(np.deg2rad(x['Ψ'])) *
-                               np.exp(-1j * np.deg2rad(x['Δ'])),
-                               axis=1)
+                           np.exp(-1j * np.deg2rad(x['Δ'])),
+                           axis=1)
 
 
 def manual_parameters(exp_data, params, angle: float = 70):
@@ -67,7 +67,7 @@ def manual_parameters(exp_data, params, angle: float = 70):
         fig = go.FigureWidget(pd.concat([exp_data,
                                         pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
                                                       'Δ_tmm': model(exp_data.index, params).delta},
-                                                      index=exp_data.index)]).plot())
+                                                     index=exp_data.index)]).plot())
 
         def update_params(v, fig, selected):
             params[v.owner.description].value = v.new
@@ -82,18 +82,18 @@ def manual_parameters(exp_data, params, angle: float = 70):
                     fig.data[2].y = data.rho.real
                     fig.data[3].y = data.rho.imag
                 elif selected.value == 'Pseudo Diel.':
-                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:,0], 
+                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:, 0],
                                           angle)
-                    fig.data[2].y = peps.loc[:,'ϵ1']
-                    fig.data[3].y = peps.loc[:,'ϵ2']
+                    fig.data[2].y = peps.loc[:, 'ϵ1']
+                    fig.data[3].y = peps.loc[:, 'ϵ2']
 
         def update_selection(v, fig):
             with fig.batch_update():
                 data = model(exp_data.index, params)
 
                 if v.new == 'Psi/Delta':
-                    fig.data[0].y = exp_data.loc[:,'Ψ']
-                    fig.data[1].y = exp_data.loc[:,'Δ']
+                    fig.data[0].y = exp_data.loc[:, 'Ψ']
+                    fig.data[1].y = exp_data.loc[:, 'Δ']
                     fig.data[2].y = data.psi
                     fig.data[3].y = data.delta
                     fig.data[0].name = 'Ψ'
@@ -113,12 +113,12 @@ def manual_parameters(exp_data, params, angle: float = 70):
                     fig.data[3].name = 'ρi_tmm'
                 elif v.new == 'Pseudo Diel.':
                     exp_peps = calcPseudoDiel(calc_rho(exp_data), angle)
-                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:,0], 
+                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:, 0],
                                           angle)
-                    fig.data[0].y = exp_peps.loc[:,'ϵ1']
-                    fig.data[1].y = exp_peps.loc[:,'ϵ2']
-                    fig.data[2].y = peps.loc[:,'ϵ1']
-                    fig.data[3].y = peps.loc[:,'ϵ2']
+                    fig.data[0].y = exp_peps.loc[:, 'ϵ1']
+                    fig.data[1].y = exp_peps.loc[:, 'ϵ2']
+                    fig.data[2].y = peps.loc[:, 'ϵ1']
+                    fig.data[3].y = peps.loc[:, 'ϵ2']
                     fig.data[0].name = 'ϵ1'
                     fig.data[1].name = 'ϵ2'
                     fig.data[2].name = 'ϵ1_tmm'
@@ -146,7 +146,7 @@ def manual_parameters(exp_data, params, angle: float = 70):
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')),
-                            fig]))
+                              fig]))
 
         def fit_function(params, lbda, rhor, rhoi):
             result = model(lbda, params)
@@ -167,10 +167,10 @@ def manual_parameters(exp_data, params, angle: float = 70):
             fit_result = model(exp_data.index.to_numpy(), params)
 
             return go.FigureWidget(pd.concat([exp_data,
-                                            pd.DataFrame({'Ψ_fit': fit_result.psi,
-                                                          'Δ_fit': fit_result.delta},
-                                                          index=exp_data.index)]
-                                    ).plot())
+                                              pd.DataFrame({'Ψ_fit': fit_result.psi,
+                                                            'Δ_fit': fit_result.delta},
+                                                           index=exp_data.index)]
+                                             ).plot())
 
         def fit_result_rho(params):
             rho = calc_rho(exp_data)
@@ -180,7 +180,7 @@ def manual_parameters(exp_data, params, angle: float = 70):
                                                  'ρi': rho.apply(lambda x: x.imag),
                                                  'ρcr': fit_result.rho.real,
                                                  'ρci': fit_result.rho.imag},
-                                                 index=rho.index).plot())
+                                                index=rho.index).plot())
 
         return SimpleNamespace(**{'value': model,
                                   'residual': fit_function,

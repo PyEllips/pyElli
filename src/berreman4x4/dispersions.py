@@ -254,7 +254,8 @@ class DispersionGauss(DispersionLaw):
         E = lambda2E(lbda)
         ftos = 2 * sqrt(np.log(2))
         return self.eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                  1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) - Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                  1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) -
+                                        Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
                                   for Ai, Ei, gami in self.coeffs)
 
 
@@ -290,7 +291,8 @@ class DispersionTaucLorentz(DispersionLaw):
             Ai*aA/np.pi/zeta4/Ei*(np.pi - np.arctan((2.0*Eg + alpha)/Ci) + np.arctan((alpha - 2.0*Eg)/Ci)) + \
             2.0*Ai*Ei*Eg/np.pi/zeta4/alpha*(E**2 - gamma2)*(np.pi + 2.0*np.arctan(2.0/alpha/Ci*(gamma2 - Eg**2))) - \
             Ai*Ei*Ci*(E**2 + Eg**2)/np.pi/zeta4/E*np.log(abs(E - Eg)/(E + Eg)) + \
-            2.0*Ai*Ei*Ci*Eg/np.pi/zeta4*np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
+            2.0*Ai*Ei*Ci*Eg/np.pi/zeta4 * \
+            np.log(abs(E - Eg) * (E + Eg) / sqrt((Ei**2 - Eg**2)**2 + Eg**2 * Ci**2))
 
     def dielectricFunction(self, lbda):
         E = lambda2E(lbda)
@@ -317,7 +319,8 @@ class DispersionHighEnergyBands(DispersionLaw):
                                                  b * np.log(np.abs(1 + E / self.E_xsi))
                                                  - 2 / 3 / self.E_xsi
                                                  - 2 * self.E_xsi / E**2)
-        eps_i = 3 * self.E_xsi * (np.abs(E) - self.E_xsi)**2 / E**5 * np.heaviside(np.abs(E) - self.E_xsi, 0)
+        eps_i = 3 * self.E_xsi * (np.abs(E) - self.E_xsi)**2 / E**5 * \
+            np.heaviside(np.abs(E) - self.E_xsi, 0)
 
         return self.A * (eps_r - 1j * eps_i)
 
