@@ -15,7 +15,7 @@ CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
 
 def lambda2E(value: npt.ArrayLike) -> npt.ArrayLike:
     """Returns the Energy in eV of the given wavelength in 'nm'"""
-    return CONV_M_EV / value * 1e-9
+    return CONV_M_EV / (value * 1e-9)
 
 
 #########################################################
