@@ -73,7 +73,7 @@ class DispersionSum(DispersionLaw):
         self.disp2 = disp2
 
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        return lambda lbda: self.disp1.dielectricFunction(lbda) + self.disp2.dielectricFunction(lbda)
+        return self.disp1.dielectricFunction(lbda) + self.disp2.dielectricFunction(lbda)
 
 
 class DispersionLess(DispersionLaw):
