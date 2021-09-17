@@ -19,6 +19,10 @@ class Material(ABC):
     law_y = None
     law_z = None
     rotated = False
+    last_lbda_n = None
+    last_lbda_e = None
+    last_n = None
+    last_e = None
 
     @abstractmethod
     def setDispersion(self) -> None:
@@ -35,6 +39,11 @@ class Material(ABC):
 
     def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for the desired wavelength."""
+        if np.array_equal(self.last_lbda_e, lbda):
+            if isinstance(self.last_e, np.ndarray):
+                return self.last_e
+
+        self.last_lbda_e = lbda
 
         # Check for shape of lbda
         if type(lbda) == tuple:
@@ -57,11 +66,19 @@ class Material(ABC):
 
         if self.rotated:
             epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
+
+        self.last_e = epsilon
         return epsilon
 
     def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns refractive index."""
-        return sqrt(self.getTensor(lbda))
+        if np.array_equal(self.last_lbda_n, lbda):
+            if isinstance(self.last_n, np.ndarray):
+                return self.last_n
+
+        self.last_lbda_n = lbda
+        self.last_n = sqrt(self.getTensor(lbda))
+        return self.last_n
 
 
 class IsotropicMaterial(Material):
