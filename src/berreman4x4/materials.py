@@ -18,7 +18,7 @@ class Material(ABC):
     law_x = None
     law_y = None
     law_z = None
-    rotationMatrix = np.identity(3)
+    rotated = False
 
     @abstractmethod
     def setDispersion(self) -> None:
@@ -30,6 +30,7 @@ class Material(ABC):
 
         'R' : rotation matrix (from rotation_Euler() or others)
         """
+        self.rotated = True
         self.rotationMatrix = R
 
     def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -54,7 +55,8 @@ class Material(ABC):
         epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
         epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
 
-        epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
+        if self.rotated:
+            epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
         return epsilon
 
     def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
