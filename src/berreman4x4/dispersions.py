@@ -253,10 +253,10 @@ class DispersionGauss(DispersionLaw):
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
         E = lambda2E(lbda)
         ftos = 2 * sqrt(np.log(2))
-        return self.eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                  1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) -
-                                        Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
-                                  for Ai, Ei, gami in self.coeffs)
+        return np.conjugate(self.eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
+                                               1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) -
+                                                     Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                                               for Ai, Ei, gami in self.coeffs))
 
 
 class DispersionTaucLorentz(DispersionLaw):
