@@ -134,8 +134,12 @@ class Solver4x4(Solver):
         """
         q, Psi = np.linalg.eig(Delta)
 
+        # Round to remove numerical noise
+        q = q.round(16)
+
         # Sort according to z propagation direction, highest Re(q) first
-        i = np.argsort(-np.real(q))
+        # if Re(q) is zero, sort by Im(q)
+        i = np.where(q.real == 0, np.argsort(-np.imag(q)), np.argsort(-np.real(q)))
 
         q = np.take_along_axis(q, i, axis=-1)
         Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)
