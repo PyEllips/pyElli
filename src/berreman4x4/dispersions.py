@@ -68,12 +68,12 @@ class DispersionLaw(ABC):
 class DispersionSum(DispersionLaw):
     """Representation for a sum of two dispersions"""
 
-    def __init__(self, disp1: DispersionLaw, disp2: DispersionLaw) -> None:
-        self.disp1 = disp1
-        self.disp2 = disp2
+    def __init__(self, *dispersions: DispersionLaw) -> None:
+        self.dispersions = dispersions
 
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        return self.disp1.dielectricFunction(lbda) + self.disp2.dielectricFunction(lbda)
+        dielectricFunction = np.sum(disp.dielectricFunction(lbda) for disp in self.dispersions)
+        return dielectricFunction
 
 
 class DispersionLess(DispersionLaw):
