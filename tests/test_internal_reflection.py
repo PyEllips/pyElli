@@ -250,7 +250,7 @@ def test_transition_matrix_halfspace():
         R.append(data.R[0])
 
         data2 = s2.evaluate(lbda, Phi_i)
-        R_uni.append(data.R[0])
+        R_uni.append(data2.R[0])
 
     R = np.array(R)
     R_uni = np.array(R_uni)
