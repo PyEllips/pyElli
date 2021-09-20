@@ -104,5 +104,5 @@ class Experiment:
         if solver_kwargs == {}:
             solv = solver(self)
         else:
-            solv = solver(self, solver_kwargs)
+            solv = solver(self, **solver_kwargs)
         return solv.calculate()
