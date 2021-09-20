@@ -217,3 +217,42 @@ def test_tir_angle():
     np.testing.assert_allclose(T_s, T_th_s)
     np.testing.assert_allclose(t2_p, t2_th_p)
     np.testing.assert_allclose(t2_s, t2_th_s)
+
+
+def test_transition_matrix_halfspace():
+    # Refractive indices
+    n_glass = 1.5
+    n_air = 1.0
+
+    # Materials:
+    glass = bm.IsotropicMaterial(bm.DispersionLess(n_glass))
+    air = bm.IsotropicMaterial(bm.DispersionLess(n_air))
+
+    # Pseudo uniaxial Backhalfspace, to force different algorithm
+    air_uniaxial = bm.UniaxialMaterial(
+        bm.DispersionLess(n_air), bm.DispersionLess(n_air))
+
+    # Structure:
+    s = bm.Structure(glass, [], air)
+    s2 = bm.Structure(glass, [], air_uniaxial)
+
+    # Wavelength
+    lbda = 1000      # nm
+
+    # Variation of incidence angle
+    Phi_list = np.linspace(0, 89, 90)
+
+    R = []
+    R_uni = []
+
+    for Phi_i in Phi_list:
+        data = s.evaluate(lbda, Phi_i)
+        R.append(data.R[0])
+
+        data2 = s2.evaluate(lbda, Phi_i)
+        R_uni.append(data2.R[0])
+
+    R = np.array(R)
+    R_uni = np.array(R_uni)
+
+    np.testing.assert_allclose(R, R_uni)
