@@ -5,6 +5,7 @@ import numpy.typing as npt
 from typing import List
 
 from .experiment import Experiment
+from .math import rotation_v_theta
 from .solver import Solver
 from .solver4x4 import Solver4x4
 from .result import Result
@@ -100,13 +101,49 @@ class RepeatedLayers(Layer):
 #########################################################
 # Inhomogeneous layers...
 
-class InhomogeneousLayer(Layer):
-    """Inhomogeneous layer.
+class TwistedLayer(Layer):
+    """Twisted layer."""
 
-    Must be fabricated with an InhomogeneousMaterial object.
-    """
+    def __init__(self, material: Material, d: float, angle: float, div: int) -> None:
+        """Creates a layer with a twisted material.
 
-    def getPermittivityProfile(self, lbda):
+        'material' : Material object
+        'd'        : Thickness of layer in nm or tuple (thickness, unit)
+        'angle' : rotation angle for distance 'd'
+        'div' : number of slices
+        """
+        self.setMaterial(material)
+        self.setThickness(d)
+        self.setAngle(angle)
+        self.setDivision(div)
+
+    def setDivision(self, div: int) -> None:
+        """Defines the number of slices to simmulate this TwistedLayer"""
+        self.div = div
+    
+    def setAngle(self, angle: float) -> None:
+        """Defines the total twist angle of this TwistedLayer."""
+        self.angle = angle
+
+    def getSlices(self) -> npt.NDArray:
+        """Returns z slicing.
+        
+        Returns : array of 'z' positions [z0, z1,... , zmax], 
+                  with z0 = 0 and zmax = z{d+1}
+        
+        Notes:
+        * The number of divisions is 'div' (see constructor)
+        * Position is relative to this material, not to the whole structure.
+        """
+        return np.linspace(0, self.d, self.div+1)
+
+    def getTensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Returns permittivity tensor matrix for position 'z'."""
+        epsilon = self.material.getTensor(lbda)
+        R = rotation_v_theta([0,0,1], self.angle * z /self.d)
+        return R @ epsilon @ R.T
+
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
         """Returns permittivity tensor profile.
 
         Tensor is evaluated in the middle of each slice.
