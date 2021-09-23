@@ -84,6 +84,32 @@ class PropagatorExpmTF(Propagator):
         return P_hs_Pade
 
 
+class PropagatorEig(Propagator):
+    def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Calculates propagator with eigenvalue decomposition."""
+        q, W = np.linalg.eig(Delta)
+
+        # Round to remove numerical noise
+        q = q.round(16)
+
+        # Sort according to z propagation direction, highest Re(q) first
+        # if Re(q) is zero, sort by Im(q)
+        i = np.where(q.real == 0, np.argsort(-np.imag(q)), np.argsort(-np.real(q)))
+
+        q = np.take_along_axis(q, i, axis=-1)
+        W = np.take_along_axis(W, i[:, np.newaxis, :], axis=-1)
+
+        Wi = np.linalg.inv(W)
+
+        q = np.exp(q * -2j * h * sc.pi / lbda[:, None])
+
+        P = np.zeros((lbda.shape[0], 4, 4), dtype=np.complex128)
+        for i in range(4):
+            P[:, i, i] = q[:, i]
+
+        return W @ P @ Wi
+
+
 class Solver4x4(Solver):
     """
     Solver class to evaluate Experiment objects.
