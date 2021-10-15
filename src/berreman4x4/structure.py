@@ -1,8 +1,9 @@
 # Encoding: utf-8
 from .materials import Material
+from abc import ABC, abstractmethod
 import numpy as np
 import numpy.typing as npt
-from typing import List
+from typing import List, Tuple, Callable
 
 from .experiment import Experiment
 from .math import rotation_v_theta
@@ -11,41 +12,18 @@ from .solver4x4 import Solver4x4
 from .result import Result
 
 
-#########################################################
-# Layer Class...
-
-class Layer:
-    """Homogeneous layer finite of dielectric material."""
-
-    def __init__(self, material: Material, d: float) -> None:
-        """New layer of material 'material', with thickness 'd'
-
-        'material' : Material object
-        'd'        : Thickness of layer in nm or tuple (thickness, unit)
-        """
-        self.setMaterial(material)
-        self.setThickness(d)
-
-    def setMaterial(self, material: Material) -> None:
-        """Defines the material for this layer. """
-        self.material = material
+class AbstractLayer(ABC):
 
     def setThickness(self, d: float) -> None:
         """Defines the thickness of this homogeneous layer in nm."""
         self.d = d
 
-    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
-        """Returns permittivity tensor profile.
-
-        Returns a list containing one tuple: [(d, epsilon)]
-        """
-        return [(self.d, self.material.getTensor(lbda))]
+    @abstractmethod
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+        pass
 
 
-#########################################################
-# Repeated layers...
-
-class RepeatedLayers(Layer):
+class RepeatedLayers(AbstractLayer):
     """Repetition of a structure."""
 
     n = None        # Number of repetitions
@@ -53,7 +31,7 @@ class RepeatedLayers(Layer):
     after = None    # additional layers after the last period
     layers = None   # layers to repeat
 
-    def __init__(self, layers: List[Layer], n: int = 2, before: int = 0, after: int = 0) -> None:
+    def __init__(self, layers: List[AbstractLayer], n: int = 2, before: int = 0, after: int = 0) -> None:
         """Repeated structure of layers
 
         'layers' : list of the repeated layers
@@ -77,14 +55,14 @@ class RepeatedLayers(Layer):
         self.before = before
         self.after = after
 
-    def setLayers(self, layers: List[Layer]) -> None:
+    def setLayers(self, layers: List[AbstractLayer]) -> None:
         """Set list of layers.
 
         'layers' : list of layers, starting from z=0
         """
         self.layers = layers
 
-    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
         """Returns permittivity tensor profile.
 
         Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
@@ -98,24 +76,29 @@ class RepeatedLayers(Layer):
         return before + self.n * layers + layers[:self.after]
 
 
-#########################################################
-# Inhomogeneous layers...
+class Layer(AbstractLayer):
+    """Homogeneous layer finite of dielectric material."""
 
-class TwistedLayer(Layer):
-    """Twisted layer."""
-
-    def __init__(self, material: Material, d: float, angle: float, div: int) -> None:
-        """Creates a layer with a twisted material.
+    def __init__(self, material: Material, d: float) -> None:
+        """New layer of material 'material', with thickness 'd'
 
         'material' : Material object
-        'd'        : Thickness of layer in nm or tuple (thickness, unit)
-        'angle' : rotation angle for distance 'd'
-        'div' : number of slices
+        'd'        : Thickness of layer in nm
         """
         self.setMaterial(material)
         self.setThickness(d)
-        self.setAngle(angle)
-        self.setDivision(div)
+
+    def setMaterial(self, material: Material) -> None:
+        """Defines the material for this layer. """
+        self.material = material
+
+    def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+        """Returns permittivity tensor profile.
+
+        Returns a list containing one tuple: [(d, epsilon)]
+        """
+        return [(self.d, self.material.getTensor(lbda))]
+
 
     def setDivision(self, div: int) -> None:
         """Defines the number of slices to simmulate this TwistedLayer"""
@@ -157,7 +140,8 @@ class TwistedLayer(Layer):
 
 
 #########################################################
-# Structure Class...
+# Structure Class
+
 
 class Structure:
     """Description of the whole structure.
