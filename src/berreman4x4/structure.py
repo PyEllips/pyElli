@@ -1,6 +1,6 @@
 # Encoding: utf-8
-from .materials import Material
 from abc import ABC, abstractmethod
+from .materials import Material, MixtureMaterial
 import numpy as np
 import numpy.typing as npt
 from typing import List, Tuple, Callable
@@ -167,9 +167,33 @@ class TwistedLayer(InhomogeneousLayer):
         R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
         return R @ epsilon @ R.T
 
+
+class VaryingMixtureLayer(InhomogeneousLayer):
+    """Mixture layer, with varying fraction."""
+
+    def __init__(self, material: MixtureMaterial, d: float, div: int, fraction_modulation: Callable[[float], float]) -> None:
+        """Creates a layer with a twisted material.
+
+        'material' : MixtureMaterial object
+        'd'        : Thickness of layer in nm
+        'div'      : number of slices
+        'fraction_modulation' : function to modify the fraction amount, 
+                                takes float from 0 to 1 (top to bottom of layer), returns fraction at that level
+        """
+        self.setMaterial(material)
+        self.setThickness(d)
+        self.setDivision(div)
+        self.fraction_modulation = fraction_modulation
+
+    def getTensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Returns permittivity tensor matrix for position 'z'."""
+        self.material.setFraction(self.fraction_modulation(z / self.d))
+        epsilon = self.material.getTensor(lbda)
+        return epsilon
+
+
 #########################################################
 # Structure Class
-
 
 class Structure:
     """Description of the whole structure.
