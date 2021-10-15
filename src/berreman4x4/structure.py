@@ -100,31 +100,33 @@ class Layer(AbstractLayer):
         return [(self.d, self.material.getTensor(lbda))]
 
 
+#########################################################
+# Inhomogeneous Layers
+
+class InhomogeneousLayer(Layer):
+    """Abstract base class for 
+    inhomogeneous layers with varying properties in z-direction."""
+
     def setDivision(self, div: int) -> None:
-        """Defines the number of slices to simmulate this TwistedLayer"""
+        """Defines the number of slices to simulate this TwistedLayer"""
         self.div = div
-    
-    def setAngle(self, angle: float) -> None:
-        """Defines the total twist angle of this TwistedLayer."""
-        self.angle = angle
 
     def getSlices(self) -> npt.NDArray:
         """Returns z slicing.
-        
+
         Returns : array of 'z' positions [z0, z1,... , zmax], 
                   with z0 = 0 and zmax = z{d+1}
-        
+
         Notes:
         * The number of divisions is 'div' (see constructor)
         * Position is relative to this material, not to the whole structure.
         """
         return np.linspace(0, self.d, self.div+1)
 
+    @abstractmethod
     def getTensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for position 'z'."""
-        epsilon = self.material.getTensor(lbda)
-        R = rotation_v_theta([0,0,1], self.angle * z /self.d)
-        return R @ epsilon @ R.T
+        pass
 
     def getPermittivityProfile(self, lbda: npt.ArrayLike) -> List:
         """Returns permittivity tensor profile.
@@ -132,12 +134,38 @@ class Layer(AbstractLayer):
         Tensor is evaluated in the middle of each slice.
         Returns list [(d1, epsilon1), (d2, epsilon2), ... ]
         """
-        z = self.material.getSlices()
+        z = self.getSlices()
         h = np.diff(z)
         zmid = (z[:-1] + z[1:]) / 2.
-        tensor = [self.material.getTensor(z, lbda) for z in zmid]
+        tensor = [self.getTensor(z, lbda) for z in zmid]
         return list(zip(h, tensor))
 
+
+class TwistedLayer(InhomogeneousLayer):
+    """Twisted layer."""
+
+    def __init__(self, material: Material, d: float, div: int, angle: float) -> None:
+        """Creates a layer with a twisted material.
+
+        'material' : Material object
+        'd'        : Thickness of layer in nm
+        'angle' : rotation angle for distance 'd'
+        'div' : number of slices
+        """
+        self.setMaterial(material)
+        self.setThickness(d)
+        self.setDivision(div)
+        self.setAngle(angle)
+
+    def setAngle(self, angle: float) -> None:
+        """Defines the total twist angle of this TwistedLayer."""
+        self.angle = angle
+
+    def getTensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Returns permittivity tensor matrix for position 'z'."""
+        epsilon = self.material.getTensor(lbda)
+        R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
+        return R @ epsilon @ R.T
 
 #########################################################
 # Structure Class
