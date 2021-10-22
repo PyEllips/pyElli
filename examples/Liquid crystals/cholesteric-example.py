@@ -1,64 +1,65 @@
 #!/usr/bin/python
 # encoding: utf-8
+# %% [markdown]
+# # Example of a cholesteric liquid crystal
+#
+# Author: O. Castany, C. Molinaro, M. Müller
 
-# Berreman4x4 example
-# Authors: O. Castany, C. Molinaro
-
-# Example of a cholesteric liquid crystal
-
-import numpy
-import Berreman4x4
-from numpy import sin, sqrt, abs
-from Berreman4x4 import e_y
+# %%
+import numpy as np
+import berreman4x4 as bm
+import berreman4x4.plotter as bmplot
 from scipy.constants import c, pi
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
+# %% [markdown]
+# ## Set parameters
+
+# %%
 # Materials
-glass = Berreman4x4.IsotropicMaterial(Berreman4x4.DispersionLess(1.55))
-front = back = Berreman4x4.IsotropicHalfSpace(glass)
+glass = bm.IsotropicMaterial(bm.DispersionLess(1.55))
+front = back = glass
 
 # Liquid crystal oriented along the x direction
 (no, ne) = (1.5, 1.7)
 Dn = ne-no
 n_med = (ne + no)/2
-LC = Berreman4x4.UniaxialMaterial(Berreman4x4.DispersionLess(no),
-                                  Berreman4x4.DispersionLess(ne))  # ne along z
-R = Berreman4x4.rotation_v_theta(e_y, pi/2)  # rotation of pi/2 along y
+LC = bm.UniaxialMaterial(bm.DispersionLess(no),
+                         bm.DispersionLess(ne))  # ne along z
+R = bm.rotation_v_theta(bm.e_y, 90)  # rotation of pi/2 along y
 LC.setRotation(R)                          # apply rotation from z to x
-# Cholesteric pitch (m):
-p = 0.65e-6
+# Cholesteric pitch (nm):
+p = 650
 # One half turn of a right-handed helix:
-TN = Berreman4x4.TwistedMaterial(LC, p/2, angle=+pi, div=35)
+TN = bm.TwistedLayer(LC, p/2, angle=180, div=35)
 
 # Inhomogeneous layer, repeated layer, and structure
-IL = Berreman4x4.InhomogeneousLayer(TN)
 N = 15      # number half pitch repetitions
 h = N * p/2
-L = Berreman4x4.RepeatedLayers([IL], N)
-s = Berreman4x4.Structure(front, [L], back)
-
-# Normal incidence:
-Kx = 0.0
+L = bm.RepeatedLayers([TN], N)
+s = bm.Structure(front, [L], back)
 
 # Calculation parameters
-lbda_min, lbda_max = 0.8e-6, 1.2e-6   # (m)
+lbda_min, lbda_max = 800, 1200   # (nm)
 lbda_B = p * n_med
-lbda_list = numpy.linspace(lbda_min, lbda_max, 100)
+lbda_list = np.linspace(lbda_min, lbda_max, 100)
 k0_list = 2*pi/lbda_list
 
-############################################################################
-# Analytical calculation for the maximal reflection
-R_th = numpy.tanh(Dn/n_med*pi*h/p)**2
+# %% [markdown]
+# ## Analytical calculation for the maximal reflection
+# %%
+R_th = np.tanh(Dn/n_med*pi*h/p)**2
 lbda_B1, lbda_B2 = p*no, p*ne
 
-############################################################################
-# Calculation with Berreman4x4
-data = Berreman4x4.DataList([s.evaluate(Kx, k0) for k0 in k0_list])
+# %% [markdown]
+# ## Calculation with Berreman4x4
+# %%
+data = s.evaluate(lbda_list, 0)
 
-T_pp = data.get('T_pp')
-T_ps = data.get('T_ps')
-T_ss = data.get('T_ss')
-T_sp = data.get('T_sp')
+T_pp = data.T[:, 0, 0]
+T_ps = data.T[:, 0, 1]
+T_ss = data.T[:, 1, 1]
+T_sp = data.T[:, 1, 0]
 
 # Transmission coefficients for incident unpolarized light:
 T_pn = 0.5 * (T_pp + T_ps)
@@ -70,18 +71,32 @@ T_nn = T_sn + T_pn
 T_ns = T_ps + T_ss
 T_np = T_pp + T_sp
 
-###########################################################################
-# Text output: eigenvalues and eigenvectors of the transmission matrix for
+# Right-circular wave is reflected in the stop-band.
+# R_LR, T_LR close to zero.
+R_RR = data.Rc[:, 1, 1]
+R_LR = data.Rc[:, 0, 1]
+T_RR = data.Tc[:, 1, 1]
+T_LR = data.Tc[:, 0, 1]
+
+# Left-circular wave is transmitted in the full spectrum.
+# T_RL, R_RL, R_LL close to zero, T_LL close to 1.
+T_LL = data.Tc[:, 0, 0]
+R_LL = data.Rc[:, 0, 0]
+
+# %% [markdown]
+# ## Text output: 
+# eigenvalues and eigenvectors of the transmission matrix for
 # a wavelength in the middle of the stop-band.
-i = numpy.argmin(abs(lbda_list-lbda_B))  #  index for stop-band center
-T = data[i].T_ti  #  transmission matrix
-eigenvalues, eigenvectors = numpy.linalg.eig(T)
-numpy.set_printoptions(precision=3)
+# %%
+i = np.argmin(np.abs(lbda_list-lbda_B))  #  index for stop-band center
+T = data.jones_matrix_t[i]  #  transmission matrix
+eigenvalues, eigenvectors = np.linalg.eig(T)
+np.set_printoptions(precision=3)
 print("\nTransmission in the middle of the stop-band...\n")
 print("Eigenvalues of the Jones transmission matrix:")
 print(eigenvalues)
 print("Corresponding power transmission:")
-print(abs(eigenvalues)**2)
+print(np.abs(eigenvalues)**2)
 print("Corresponding eigenvectors:")
 print(eigenvectors)
 # Note: the transformation matrix to the eigenvector basis is
@@ -89,34 +104,19 @@ print(eigenvectors)
 print("Normalization to the 'p' componant:")
 print(eigenvectors/eigenvectors[0, :])
 print("Ratio 's'/'p':")
-print(abs(eigenvectors[1, :]/eigenvectors[0, :]))
+print(np.abs(eigenvectors[1, :]/eigenvectors[0, :]))
 print("Complex angle (°) (+90°: L, -90°: R)")
-print(180/pi*numpy.angle(eigenvectors[1, :]/eigenvectors[0, :]))
+print(180/pi*np.angle(eigenvectors[1, :]/eigenvectors[0, :]))
 # We observe that the eigenvectors are nearly perfectly polarized circular waves
 
-###########################################################################
-# Jones matrices for the circular wave basis
-
-# Right-circular wave is reflected in the stop-band.
-# R_LR, T_LR close to zero.
-R_RR = data.get('R_RR')
-R_LR = data.get('R_LR')
-T_RR = data.get('T_RR')
-T_LR = data.get('T_LR')
-
-# Left-circular wave is transmitted in the full spectrum.
-# T_RL, R_RL, R_LL close to zero, T_LL close to 1.
-T_LL = data.get('T_LL')
-R_LL = data.get('R_LL')
-
-
-############################################################################
-# Plotting
-fig = pyplot.figure()
+# %% [markdown]
+# ## Plotting
+# %%
+fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
 # Draw rectangle for λ ∈ [p·no, p·ne], and T ∈ [0, R_th]
-rectangle = pyplot.Rectangle((lbda_B1, 0), lbda_B2-lbda_B1, R_th, color='cyan')
+rectangle = plt.Rectangle((lbda_B1, 0), lbda_B2-lbda_B1, R_th, color='cyan')
 ax.add_patch(rectangle)
 
 ax.plot(lbda_list, R_RR, '--', label='R_RR')
@@ -133,6 +133,9 @@ ax.set_xlabel(r"Wavelength $\lambda_0$ (m)")
 ax.set_ylabel(r"Power transmission $T$ and reflexion $R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3, 3))
+plt.show()
 
-s.drawStructure()
-pyplot.show()
+# %%
+bmplot.drawStructure(s)
+
+# %%
