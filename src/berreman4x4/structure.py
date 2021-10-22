@@ -69,7 +69,7 @@ class RepeatedLayers(AbstractLayer):
         """
         layers = []
         for L in self.layers:
-            layers += L.getPermittivityProfile(lbda) 
+            layers += L.getPermittivityProfile(lbda)
 
         if self.before > 0:
             before = layers[-self.before:]

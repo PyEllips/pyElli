@@ -61,6 +61,10 @@ lbda_list = (2*pi)/k0_list*1e9
 u = 2*d*Dn/lbda_list
 GT = np.sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
 
+# %% [markdown]
+# ## Simulate with Berreman4x4
+
+# %%
 TN.setDivision(7)
 data = s.evaluate(lbda_list, 0)
 T7 = np.real(data.T[:, 0, 0])
