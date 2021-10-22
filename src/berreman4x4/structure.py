@@ -31,7 +31,7 @@ class RepeatedLayers(AbstractLayer):
     after = None    # additional layers after the last period
     layers = None   # layers to repeat
 
-    def __init__(self, layers: List[AbstractLayer], n: int = 2, before: int = 0, after: int = 0) -> None:
+    def __init__(self, layers: List[AbstractLayer], n: int, before: int = 0, after: int = 0) -> None:
         """Repeated structure of layers
 
         'layers' : list of the repeated layers
@@ -67,7 +67,9 @@ class RepeatedLayers(AbstractLayer):
 
         Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ... ]
         """
-        layers = [L.getPermittivityProfile(lbda)[0] for L in self.layers]
+        layers = []
+        for L in self.layers:
+            layers += L.getPermittivityProfile(lbda) 
 
         if self.before > 0:
             before = layers[-self.before:]
