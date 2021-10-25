@@ -329,12 +329,31 @@ class Solver4x4(Solver):
         return self._jones_matrix_r
 
     @property
+    def jones_matrix_tc(self) -> npt.NDArray:
+        C = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(C), self._jones_matrix_t, C)
+
+    @property
+    def jones_matrix_rc(self) -> npt.NDArray:
+        C = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        D = 1 / sqrt(2) * np.array([[1, 1], [-1j, 1j]])
+        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(D), self._jones_matrix_r, C)
+
+    @property
     def R(self) -> npt.NDArray:
         return np.abs(self._jones_matrix_r) ** 2
 
     @property
     def T(self) -> npt.NDArray:
         return np.abs(self._jones_matrix_t) ** 2 * self.powerCorrection[:, None, None]
+
+    @property
+    def Rc(self) -> npt.NDArray:
+        return np.abs(self.jones_matrix_rc) ** 2
+
+    @property
+    def Tc(self) -> npt.NDArray:
+        return np.abs(self.jones_matrix_tc) ** 2 * self.powerCorrection[:, None, None]
 
     def __init__(self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()) -> None:
         super().__init__(experiment)

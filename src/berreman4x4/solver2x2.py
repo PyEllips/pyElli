@@ -37,18 +37,6 @@ class Solver2x2(Solver):
         return 180 - np.angle(-self._rtotp / self._rtots, deg=True)
 
     @property
-    def mueller_matrix(self):
-        return None
-
-    @property
-    def jones_matrix_t(self):
-        return None
-
-    @property
-    def jones_matrix_r(self):
-        return None
-
-    @property
     def R(self):
         return np.abs(self._rtotp + self._rtots)
 

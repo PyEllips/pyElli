@@ -21,29 +21,64 @@ class Solver(ABC):
     permProfile = None
 
     @property
-    @abstractmethod
+    def rho(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
     def psi(self):
-        pass
+        raise ValueError('Value not calculated by solver')
 
     @property
-    @abstractmethod
     def delta(self):
-        pass
+        raise ValueError('Value not calculated by solver')
 
     @property
-    @abstractmethod
+    def rhoMat(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def psiMat(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def deltaMat(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
     def mueller_matrix(self):
-        pass
+        raise ValueError('Value not calculated by solver')
 
     @property
-    @abstractmethod
     def jones_matrix_t(self):
-        pass
+        raise ValueError('Value not calculated by solver')
 
     @property
-    @abstractmethod
     def jones_matrix_r(self):
-        pass
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def jones_matrix_tc(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def jones_matrix_rc(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def R(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def T(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def Rc(self):
+        raise ValueError('Value not calculated by solver')
+
+    @property
+    def Tc(self):
+        raise ValueError('Value not calculated by solver')
 
     @abstractmethod
     def calculate(self) -> Result:

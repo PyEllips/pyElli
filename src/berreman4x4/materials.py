@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
+from typing import List, Tuple
 
 from .dispersions import DispersionLaw
 from .math import rotation_v_theta
@@ -46,11 +47,7 @@ class Material(ABC):
         self.last_lbda_e = lbda
 
         # Check for shape of lbda
-        if type(lbda) == tuple:
-            shape = np.shape(lbda[0])
-        else:
-            shape = np.shape(lbda)
-
+        shape = np.shape(lbda)
         if shape == ():
             i = 1
         else:
@@ -132,100 +129,71 @@ class BiaxialMaterial(Material):
         self.law_z = law_z
 
 
-#########################################################
-# Inhomogeneous materials...
+class MixtureMaterial(Material):
+    """Abstract Class for mixed materials"""
+
+    def __init__(self, host_material: Material, guest_material: Material, fraction: float) -> None:
+        """Creates a material mixture from two materials
+
+        'host_material': Host Material
+        'guest_material': Material incorporated in the host
+        'fraction' : Fraction of the guest material (Range 0 - 1) 
+        """
+        self.setConstituents(host_material, guest_material)
+        self.setFraction(fraction)
+
+    def setConstituents(self, host_material: Material, guest_material: Material) -> None:
+        """ Sets Materials in the mixture
+        'host_material': Host Material
+        'guest_material': Material incorporated in the host
+        """
+        self.host_material = host_material
+        self.guest_material = guest_material
+
+    def setFraction(self, fraction: float) -> None:
+        """ Sets fraction and checks if fraction is in range from 0 to 1.
+        'fraction' : Fraction of the guest material (Range 0 - 1)
+        """
+        if not 0 <= fraction <= 1:
+            raise ValueError('Fractions not in range from 0 to 1')
+
+        self.fraction = fraction
+
+    @abstractmethod
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        pass
 
 
-class InhomogeneousMaterial:
-    """Base class for inhomogeneous materials (abstract class).
+class VCAMaterial(MixtureMaterial):
+    """Mixture Material approximated with a simple virtual crystal like average."""
 
-    Method that should be implemented in derived classes:
-    * getTensor(z, lbda) : permittivity tensor at position z
-    * getSlices() : returns z_i, position of the slices
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        if np.array_equal(self.last_lbda_e, lbda):
+            if isinstance(self.last_e, np.ndarray):
+                return self.last_e
+
+        epsilon = self.host_material.getTensor(lbda) * (1 - self.fraction) \
+            + self.guest_material.getTensor(lbda) * self.fraction
+
+        self.last_e = epsilon
+        return epsilon
+
+
+class MaxwellGarnetEMA(MixtureMaterial):
+    """Mixture Material approximated with the Maxwell Garnet formula.
+       It is valid for spherical inclusions with small volume fraction.
     """
 
-    def __init__(self):
-        """Creates a new inhomogeneous material -- abstract class"""
-        raise NotImplementedError("Should be implemented in derived classes")
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        if np.array_equal(self.last_lbda_e, lbda):
+            if isinstance(self.last_e, np.ndarray):
+                return self.last_e
 
-    def getTensor(self, z, lbda):
-        """Returns permittivity tensor for position 'z' and wavelength 'lbda'.
+        e_h = self.host_material.getTensor(lbda)
+        e_g = self.guest_material.getTensor(lbda)
 
-        'z' : position where the tensor is evaluated
-        'lbda' : wavelength
-        """
-        raise NotImplementedError("Should be implemented in derived classes")
+        epsilon = e_h * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
+            / (2 * e_h + e_g - self.fraction * (e_g - e_h))
 
-    def getSlices(self):
-        """Returns z slicing (including z0 and zmax).
-
-        Origin of 'z' is not important, only relative positions matter.
-        """
-        raise NotImplementedError("Should be implemented in derived classes")
-
-
-class TwistedMaterial(InhomogeneousMaterial):
-    """Twisted material.
-
-    Used to describe twisted nematic or cholesteric liquid crystal for example.
-    """
-
-    material = None  # Material for the twisted layer
-    d = None  # Thickness of the layer
-    angle = None  # Angle of the twist
-    div = None  # Number of slices
-
-    def __init__(self, material, d, angle=90, div=25):
-        """Creates a layer with a twisted material.
-
-        'material' : material for the twisted layer
-        'd' : thickness of the layer in nm or tuple (thickness, unit)
-        'angle' : rotation angle for distance 'd'
-        'div' : number of slices
-
-        Note: Let us call h = d / div. It is useful to assess whether k0·h is
-        greater or smaller than 1. If it is greater than 1, evaluation of the
-        exponential for the propagator will not be possible with linear
-        expansion, and may require a Taylor expansion with a very high order
-        for convergence. In this case, use the Padé approximation or the
-        exact result with eigenvector decomposition. On the other hand, if
-        k0·h is small, a linear or Taylor approximation may suffice.
-        """
-        self.setThickness(d)
-        self.setMaterial(material)
-        self.setAngle(np.deg2rad(angle))
-        self.setDivision(div)
-
-    def setDivision(self, div):
-        """Defines the number of slices in this TwistedMaterial."""
-        self.div = div
-
-    def setAngle(self, angle):
-        """Defines the total twist angle of this TwistedMaterial."""
-        self.angle = angle
-
-    def setMaterial(self, material):
-        """Defines the material making this TwistedMaterial."""
-        self.material = material
-
-    def setThickness(self, d):
-        """Defines the thickness of this TwistedMaterial."""
-        self.d = d
-
-    def getTensor(self, z, lbda):
-        """Returns permittivity tensor matrix for position 'z'."""
-        epsilon = self.material.getTensor(lbda)
-        R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
-        return R @ epsilon @ R.T
-
-    def getSlices(self):
-        """Returns z slicing.
-
-        Returns : array of 'z' positions [z0, z1,... , zmax],
-                  with z0 = 0 and zmax = z{d+1}
-
-        Notes:
-        * The number of divisions is 'div' (see constructor)
-        * Position is relative to this material, not to the whole structure.
-        """
-        return np.linspace(0, self.d, self.div+1)
+        self.last_e = epsilon
+        return epsilon

@@ -10,12 +10,9 @@ e_x = np.array([1, 0, 0]).reshape((3,))
 e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
-CONV_M_EV = sc.speed_of_light * sc.value('Planck constant in eV/Hz')
-
-
-def lambda2E(value: npt.ArrayLike) -> npt.ArrayLike:
+def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
     """Returns the Energy in eV of the given wavelength in 'nm'"""
-    return CONV_M_EV / (value * 1e-9)
+    return sc.speed_of_light * sc.value('Planck constant in eV/Hz') / (lbda * 1e-9)
 
 
 #########################################################

@@ -1,94 +1,106 @@
 #!/usr/bin/python
 # encoding: utf-8
+# %% [markdown]
+# # Example of a 90° twisted nematic liquid crystal
+#
+# Author: O. Castany, M. Müller
+# %% [markdown]
+# Consider the following situation:
+# - twisted liquid crystal with 90° twist between z=0 and z=d
+# - liquid crystal aligned along x at z=0.
+# - input and output polarizers aligned parallel to x
+#
+# Gooch-Tarry law gives: T_pp = sin²(pi/2·√(1+u²)) / (1+u²),
+# with u = 2dΔn/λ.
+# The transmission minima are given by u = ((2m)²-1)^{-1/2} = √(3),√(15),√(35),…
+#
+# We consider a birefringence Δn = 0.10 and a thickness d = 4.33 µm. The first
+# minimum should be at λ = 500 nm, or k0 = 1.257e7 m⁻¹.
+#
+# Note: Gooch-Tarry law does not take into account interferences between the two
+# glass substrates. A glass with n = 1.55 minimizes the interferences.
 
-# Berreman4x4 example
-# Author: O. Castany
-
-# Example of a 90° twisted nematic liquid crystal
-
-import numpy
-import Berreman4x4
-from numpy import sin, sqrt
-from Berreman4x4 import e_y
+# %%
+import numpy as np
+from numpy.lib.scimath import sqrt
+import berreman4x4 as bm
+import berreman4x4.plotter as bmplot
 from scipy.constants import c, pi
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
-"""
-Consider the following situation:
-- twisted liquid crystal with 90° twist between z=0 and z=d
-- liquid crystal aligned along x at z=0.
-- input and output polarizers aligned parallel to x
+# %% [markdown]
+# ## Set parameters
 
-Gooch-Tarry law gives: T_pp = sin²(pi/2·√(1+u²)) / (1+u²),
-with u = 2dΔn/λ.
-The transmission minima are given by u = ((2m)²-1)^{-1/2} = √(3),√(15),√(35),…
-
-We consider a birefringence Δn = 0.10 and a thickness d = 4.33 µm. The first
-minimum should be at λ = 500 nm, or k0 = 1.257e7 m⁻¹.
-
-Note: Gooch-Tarry law does not take into account interferences between the two
-glass substrates. A glass with n = 1.55 minimizes the interferences.
-"""
-
+# %%
 # Materials
-glass = Berreman4x4.IsotropicMaterial(Berreman4x4.DispersionLess(1.55))
-front = back = Berreman4x4.IsotropicHalfSpace(glass)
+glass = bm.IsotropicMaterial(bm.DispersionLess(1.55))
+front = back = glass
 
 # Liquid crystal oriented along the x direction
 (no, ne) = (1.5, 1.6)
 Dn = ne-no
-LC = Berreman4x4.UniaxialMaterial(Berreman4x4.DispersionLess(no),
-                                  Berreman4x4.DispersionLess(ne))
-R = Berreman4x4.rotation_v_theta(e_y, pi/2)
+LC = bm.UniaxialMaterial(bm.DispersionLess(no),
+                         bm.DispersionLess(ne))
+R = bm.rotation_v_theta(bm.e_y, 90)
 LC.setRotation(R)
-d = 4.33e-6
-TN = Berreman4x4.TwistedMaterial(LC, d)
-
-# Inhomogeneous layer
-IL = Berreman4x4.InhomogeneousLayer(TN)
+d = 4330
+TN = bm.TwistedLayer(LC, d, 7, 90)
 
 # Structure
-s = Berreman4x4.Structure(front, [IL], back)
-
-# Normal incidence:
-Kx = 0.0
+s = bm.Structure(front, [TN], back)
 
 # Calculation parameters
 (lbda_min, lbda_max) = (200e-9, 1)  #  (m)
-k0_list = numpy.linspace(2*pi/lbda_max, 2*pi/lbda_min)
+k0_list = np.linspace(2*pi/lbda_max, 2*pi/lbda_min)
+lbda_list = (2*pi)/k0_list*1e9
 
-# Plot setup
-fig = pyplot.figure()
+# %% [markdown]
+# ## Calculate theoretical curve with Gooch-Tarry law
+
+# %%
+u = 2*d*Dn/lbda_list
+GT = np.sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
+
+# %% [markdown]
+# ## Simulate with Berreman4x4
+
+# %%
+TN.setDivision(7)
+data = s.evaluate(lbda_list, 0)
+T7 = np.real(data.T[:, 0, 0])
+
+TN.setDivision(18)
+data2 = s.evaluate(lbda_list, 0)
+T18 = np.real(data2.T[:, 0, 0])
+
+# %% [markdown]
+# ## Plot 
+
+# %%
+fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
 # Plot Gooch-Tarry law, for comparison
-u = 2*d*Dn*k0_list/(2*pi)
-T = sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
-ax.plot(k0_list, T, label="Gooch-Tarry law")
-
-# Calulation with Berreman4x4 and plotting
-
-
-def plotTransmission(label):
-    """Plots power transmission vs. wavenumber."""
-    data = Berreman4x4.DataList([s.evaluate(Kx, k0) for k0 in k0_list])
-    T = data.get('T_pp')
-    ax.plot(k0_list, T, 'x', label=label)
-
+ax.plot(k0_list, GT, label="Gooch-Tarry law")
 
 # Two plots are made, with 7 or 18 divisions in the TwistedMaterial
-TN.setDivision(7)
-plotTransmission("Berreman4x4, 7 div")
-TN.setDivision(18)
-plotTransmission("Berreman4x4, 18 div")
+ax.plot(k0_list, T7, 'x', label="Berreman4x4, 7 Divisions")
+ax.plot(k0_list, T18, 'x', label="Berreman4x4, 18 Divisions")
 
-# Titles
 ax.set_title(u"90° Twisted Nematic Liquid Crystal, " +
-             u"d = {:.2f} µm".format(d*1e6))
+             u"d = {:.2f} µm".format(d*1e-3))
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission $T$")
 ax.legend()
+plt.show()
 
-ax = s.drawStructure()
-ax.set_title("Index profile along e_x")
-pyplot.show()
+# %% [markdown]
+# ## Plot Structure
+
+# %%
+TN.setDivision(7)
+bmplot.drawStructure(s)
+TN.setDivision(18)
+bmplot.drawStructure(s)
+
+# %%

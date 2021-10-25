@@ -42,12 +42,28 @@ class Result:
         return self.__result.jones_matrix_t
 
     @property
+    def jones_matrix_rc(self):
+        return self.__result.jones_matrix_rc
+
+    @property
+    def jones_matrix_tc(self):
+        return self.__result.jones_matrix_tc
+
+    @property
     def R(self):
         return self.__result.R
 
     @property
     def T(self):
         return self.__result.T
+
+    @property
+    def Rc(self):
+        return self.__result.Rc
+
+    @property
+    def Tc(self):
+        return self.__result.Tc
 
     def __init__(self, solver: "Solver") -> None:
         """
