@@ -16,14 +16,37 @@ class Material(ABC):
     * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
 
+    last_lbda_e = None
+    last_e = None
+    last_lbda_n = None
+    last_n = None
+
+    @abstractmethod
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        pass
+
+    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Returns refractive index for wavelength 'lbda'."""
+        if np.array_equal(self.last_lbda_n, lbda):
+            if isinstance(self.last_n, np.ndarray):
+                return self.last_n
+
+        self.last_lbda_n = lbda
+        self.last_n = sqrt(self.getTensor(lbda))
+        return self.last_n
+
+
+class SingleMaterial(Material):
+    """Base class for single materials (abstract class).
+
+    Method that should be implemented in derived classes:
+    * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    """
+
     law_x = None
     law_y = None
     law_z = None
     rotated = False
-    last_lbda_n = None
-    last_lbda_e = None
-    last_n = None
-    last_e = None
 
     @abstractmethod
     def setDispersion(self) -> None:
@@ -67,18 +90,8 @@ class Material(ABC):
         self.last_e = epsilon
         return epsilon
 
-    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns refractive index."""
-        if np.array_equal(self.last_lbda_n, lbda):
-            if isinstance(self.last_n, np.ndarray):
-                return self.last_n
 
-        self.last_lbda_n = lbda
-        self.last_n = sqrt(self.getTensor(lbda))
-        return self.last_n
-
-
-class IsotropicMaterial(Material):
+class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
     def __init__(self, law: DispersionLaw) -> None:
@@ -94,7 +107,7 @@ class IsotropicMaterial(Material):
         self.law_z = law
 
 
-class UniaxialMaterial(Material):
+class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
     def __init__(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
@@ -111,7 +124,7 @@ class UniaxialMaterial(Material):
         self.law_z = law_e
 
 
-class BiaxialMaterial(Material):
+class BiaxialMaterial(SingleMaterial):
     """Biaxial material."""
 
     def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
