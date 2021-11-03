@@ -8,15 +8,13 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.11.4
   kernelspec:
-    display_name: Python 3
+    display_name: Python 3 (ipykernel)
     language: python
     name: python3
 ---
 
 ```python
 import berreman4x4 as bm
-bm.settings['ExpmBackend'] = 'tensorflow'
-bm.settings['solver'] = 'berreman4x4'
 ```
 
 # Load data
@@ -73,7 +71,7 @@ def model(lbda, params):
     Layer = [bm.Layer(TiO2, params['TiO2_d']), 
              bm.Layer(SiO2, params['SiO2_d'])]
 
-    return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70)
+    return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver2x2)
 ```
 
 # Fit to experimental data
