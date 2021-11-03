@@ -16,14 +16,26 @@ class Material(ABC):
     * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
 
+    @abstractmethod
+    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        pass
+
+    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Returns refractive index for wavelength 'lbda'."""
+        return sqrt(self.getTensor(lbda))
+
+
+class SingleMaterial(Material):
+    """Base class for single materials (abstract class).
+
+    Method that should be implemented in derived classes:
+    * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    """
+
     law_x = None
     law_y = None
     law_z = None
     rotated = False
-    last_lbda_n = None
-    last_lbda_e = None
-    last_n = None
-    last_e = None
 
     @abstractmethod
     def setDispersion(self) -> None:
@@ -40,12 +52,6 @@ class Material(ABC):
 
     def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for the desired wavelength."""
-        if np.array_equal(self.last_lbda_e, lbda):
-            if isinstance(self.last_e, np.ndarray):
-                return self.last_e
-
-        self.last_lbda_e = lbda
-
         # Check for shape of lbda
         shape = np.shape(lbda)
         if shape == ():
@@ -64,21 +70,10 @@ class Material(ABC):
         if self.rotated:
             epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
 
-        self.last_e = epsilon
         return epsilon
 
-    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns refractive index."""
-        if np.array_equal(self.last_lbda_n, lbda):
-            if isinstance(self.last_n, np.ndarray):
-                return self.last_n
 
-        self.last_lbda_n = lbda
-        self.last_n = sqrt(self.getTensor(lbda))
-        return self.last_n
-
-
-class IsotropicMaterial(Material):
+class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
     def __init__(self, law: DispersionLaw) -> None:
@@ -94,7 +89,7 @@ class IsotropicMaterial(Material):
         self.law_z = law
 
 
-class UniaxialMaterial(Material):
+class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
     def __init__(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
@@ -111,7 +106,7 @@ class UniaxialMaterial(Material):
         self.law_z = law_e
 
 
-class BiaxialMaterial(Material):
+class BiaxialMaterial(SingleMaterial):
     """Biaxial material."""
 
     def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
@@ -168,14 +163,8 @@ class VCAMaterial(MixtureMaterial):
     """Mixture Material approximated with a simple virtual crystal like average."""
 
     def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        if np.array_equal(self.last_lbda_e, lbda):
-            if isinstance(self.last_e, np.ndarray):
-                return self.last_e
-
         epsilon = self.host_material.getTensor(lbda) * (1 - self.fraction) \
             + self.guest_material.getTensor(lbda) * self.fraction
-
-        self.last_e = epsilon
         return epsilon
 
 
@@ -185,15 +174,9 @@ class MaxwellGarnetEMA(MixtureMaterial):
     """
 
     def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        if np.array_equal(self.last_lbda_e, lbda):
-            if isinstance(self.last_e, np.ndarray):
-                return self.last_e
-
         e_h = self.host_material.getTensor(lbda)
         e_g = self.guest_material.getTensor(lbda)
 
         epsilon = e_h * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
             / (2 * e_h + e_g - self.fraction * (e_g - e_h))
-
-        self.last_e = epsilon
         return epsilon
