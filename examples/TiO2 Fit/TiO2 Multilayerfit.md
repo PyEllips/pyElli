@@ -70,8 +70,13 @@ def model(lbda, params):
     
     Layer = [bm.Layer(TiO2, params['TiO2_d']), 
              bm.Layer(SiO2, params['SiO2_d'])]
-
+    
     return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver2x2)
+    # Alternative: Use 4x4 Solver with scipy propagator
+    # return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver4x4, propagator=bm.PropagatorExpmScipy())
+
+    # Alternative: Use 4x4 Solver with faster PyTorch propagator (needs Pytorch to be installed)
+    # return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver4x4, propagator=bm.PropagatorExpmTorch())
 ```
 
 # Fit to experimental data
@@ -88,7 +93,7 @@ model.plot(out.params)
 ```
 
 ```python
-model.plot_rho(ρ, out.params)
+model.plot_rho(out.params)
 ```
 
 ```python
