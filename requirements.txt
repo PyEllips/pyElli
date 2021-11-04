@@ -1,7 +1,7 @@
 scipy
 numpy
 matplotlib
-pandas
+pandas>=1.0.0
 ipywidgets
-plotly>=1.0.0
+plotly
 lmfit
