@@ -3,5 +3,5 @@ numpy
 matplotlib
 pandas
 ipywidgets
-plotly
+plotly>=1.0.0
 lmfit

@@ -67,7 +67,7 @@ def manual_parameters(exp_data, params, angle: float = 70):
         fig = go.FigureWidget(pd.concat([exp_data,
                                         pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
                                                       'Δ_tmm': model(exp_data.index, params).delta},
-                                                     index=exp_data.index)]).plot())
+                                                     index=exp_data.index)]).plot(backend='plotly'))
 
         def update_params(v, fig, selected):
             params[v.owner.description].value = v.new
