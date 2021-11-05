@@ -315,7 +315,7 @@ class Solver4x4(Solver):
         SxS_star = np.einsum('aij,akl->aikjl', self._S,
                              np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
 
-        mmatrix = np.real(A @ SxS_star @ A.T)
+        mmatrix = np.real(A @ SxS_star @ np.linalg.inv(A))
         m11 = mmatrix[:, 0, 0]
 
         return mmatrix / m11[:, None, None]
