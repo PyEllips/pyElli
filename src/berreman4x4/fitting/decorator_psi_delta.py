@@ -170,6 +170,6 @@ class FitRho():
 
         self.create_widgets()
 
-def manual_parameters(exp_data, params, angle: float = 70):
+def fit(exp_data, params, angle: float = 70):
     """A manual parameters decorator for providing convenient fitting functions"""
     return lambda model: FitRho(exp_data, params, model, angle)
