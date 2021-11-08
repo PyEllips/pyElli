@@ -1,5 +1,5 @@
 scipy
-numpy
+numpy>=1.20
 matplotlib
 pandas>=1.0.0
 ipywidgets

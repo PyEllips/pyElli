@@ -1,5 +1,4 @@
 """Decorator functions for convenient fitting"""
-from types import SimpleNamespace
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -8,131 +7,169 @@ from ipywidgets import widgets
 from IPython.display import display
 from ..utils import calcPseudoDiel, calc_rho
 
-def manual_parameters(exp_data, params, angle: float = 70):
+class FitRho():
+    """A class to fit psi/delta or rho based ellipsometry data with two degress of freedom"""
 
-    def decorator_func(model):
-        fig = go.FigureWidget(pd.concat([exp_data,
-                                        pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
-                                                      'Δ_tmm': model(exp_data.index, params).delta},
-                                                     index=exp_data.index)]).plot(backend='plotly'))
+    def set_psi_delta(self, update_exp:bool=False, update_names:bool=False) -> None:
+        """Sets Plot to Psi/Delta values
+            :update_exp: Flag to change the experimental data as well
+            :update_names: Flag to change the label names"""
+        data = self.model(self.exp_data.index, self.params)
+        self.fig.data[2].y = data.psi
+        self.fig.data[3].y = data.delta
 
-        def update_params(v, fig, selected):
-            params[v.owner.description].value = v.new
+        if update_exp:
+            self.fig.data[0].y = self.exp_data.loc[:, 'Ψ']
+            self.fig.data[1].y = self.exp_data.loc[:, 'Δ']
 
-            with fig.batch_update():
-                data = model(exp_data.index, params)
+        if update_names:
+            self.fig.data[0].name = 'Ψ'
+            self.fig.data[1].name = 'Δ'
+            self.fig.data[2].name = 'Ψ_tmm'
+            self.fig.data[3].name = 'Δ_tmm'
 
-                if selected.value == 'Psi/Delta':
-                    fig.data[2].y = data.psi
-                    fig.data[3].y = data.delta
-                elif selected.value == 'Rho':
-                    fig.data[2].y = data.rho.real
-                    fig.data[3].y = data.rho.imag
-                elif selected.value == 'Pseudo Diel.':
-                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:, 0],
-                                          angle)
-                    fig.data[2].y = peps.loc[:, 'ϵ1']
-                    fig.data[3].y = peps.loc[:, 'ϵ2']
+    def set_rho(self, update_exp:bool=False, update_names:bool=False) -> None:
+        """Sets Plot to Rho values
+            :update_exp: Flag to change the experimental data as well
+            :update_names: Flag to change the label names"""
+        data = self.model(self.exp_data.index, self.params)
+        self.fig.data[2].y = data.rho.real
+        self.fig.data[3].y = data.rho.imag
 
-        def update_selection(v, fig):
-            with fig.batch_update():
-                data = model(exp_data.index, params)
+        if update_exp:
+            exp_rho = calc_rho(self.exp_data)
+            self.fig.data[0].y = exp_rho.apply(lambda x: x.real).values
+            self.fig.data[1].y = exp_rho.apply(lambda x: x.imag).values
 
-                if v.new == 'Psi/Delta':
-                    fig.data[0].y = exp_data.loc[:, 'Ψ']
-                    fig.data[1].y = exp_data.loc[:, 'Δ']
-                    fig.data[2].y = data.psi
-                    fig.data[3].y = data.delta
-                    fig.data[0].name = 'Ψ'
-                    fig.data[1].name = 'Δ'
-                    fig.data[2].name = 'Ψ_tmm'
-                    fig.data[3].name = 'Δ_tmm'
-                elif v.new == 'Rho':
-                    exp_rho = calc_rho(exp_data)
+        if update_names:
+            self.fig.data[0].name = 'ρr'
+            self.fig.data[1].name = 'ρi'
+            self.fig.data[2].name = 'ρr_tmm'
+            self.fig.data[3].name = 'ρi_tmm'
 
-                    fig.data[0].y = exp_rho.apply(lambda x: x.real).values
-                    fig.data[1].y = exp_rho.apply(lambda x: x.imag).values
-                    fig.data[2].y = data.rho.real
-                    fig.data[3].y = data.rho.imag
-                    fig.data[0].name = 'ρr'
-                    fig.data[1].name = 'ρi'
-                    fig.data[2].name = 'ρr_tmm'
-                    fig.data[3].name = 'ρi_tmm'
-                elif v.new == 'Pseudo Diel.':
-                    exp_peps = calcPseudoDiel(calc_rho(exp_data), angle)
-                    peps = calcPseudoDiel(pd.DataFrame(data.rho, index=exp_data.index).iloc[:, 0],
-                                          angle)
-                    fig.data[0].y = exp_peps.loc[:, 'ϵ1']
-                    fig.data[1].y = exp_peps.loc[:, 'ϵ2']
-                    fig.data[2].y = peps.loc[:, 'ϵ1']
-                    fig.data[3].y = peps.loc[:, 'ϵ2']
-                    fig.data[0].name = 'ϵ1'
-                    fig.data[1].name = 'ϵ2'
-                    fig.data[2].name = 'ϵ1_tmm'
-                    fig.data[3].name = 'ϵ2_tmm'
+    def set_pseudo_diel(self, update_exp:bool=False, update_names:bool=False) -> None:
+        """Sets Plot to Pseudo Dielectric function values
+            :update_exp: Flag to change the experimental data as well
+            :update_names: Flag to change the label names"""
+        data = self.model(self.exp_data.index, self.params)
+        peps = calcPseudoDiel(pd.DataFrame(data.rho, index=self.exp_data.index).iloc[:, 0],
+                                          self.angle)
+        self.fig.data[2].y = peps.loc[:, 'ϵ1']
+        self.fig.data[3].y = peps.loc[:, 'ϵ2']
 
+        if update_exp:
+            exp_peps = calcPseudoDiel(calc_rho(self.exp_data), self.angle)
+            self.fig.data[0].y = exp_peps.loc[:, 'ϵ1']
+            self.fig.data[1].y = exp_peps.loc[:, 'ϵ2']
+
+        if update_names:
+            self.fig.data[0].name = 'ϵ1'
+            self.fig.data[1].name = 'ϵ2'
+            self.fig.data[2].name = 'ϵ1_tmm'
+            self.fig.data[3].name = 'ϵ2_tmm'
+
+    def update_params(self, change, selected):
+        """Update plot after a change of fitting parameters"""
+        self.params[change.owner.description].value = change.new
+
+        with self.fig.batch_update():
+            update = self.update_dict.get(selected.value)
+            if update is not None:
+                update()
+
+    def update_selection(self, change):
+        """Update plot after selection of displayed data"""
+
+        with self.fig.batch_update():
+            update = self.update_dict.get(change.new)
+            if update is not None:
+                update(update_exp=True, update_names=True)
+
+    def create_widgets(self):
+        """Create ipywidgets for parameter estimation"""
         widget_list = []
+        for param in self.params.valuesdict():
+            curr_widget = widgets.BoundedFloatText(self.params[param],
+                                                   min=self.params[param].min,
+                                                   max=self.params[param].max,
+                                                   description=param,
+                                                   continuous_update=False)
+            curr_widget.observe(lambda x: self.update_params(x, selector), names=('value', 'owner'))
+            widget_list.append(curr_widget)
+
         selector = widgets.Dropdown(
             options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
             value='Psi/Delta',
             description='Display: ',
             disabled=False
         )
-        for param in params.valuesdict():
-            curr_widget = widgets.BoundedFloatText(params[param],
-                                                   min=params[param].min,
-                                                   max=params[param].max,
-                                                   description=param,
-                                                   continuous_update=False)
-            curr_widget.observe(lambda x: update_params(x, fig, selector), names=('value', 'owner'))
-            widget_list.append(curr_widget)
-        selector.observe(lambda x: update_selection(x, fig), names='value')
+        selector.observe(self.update_selection, names='value')
         widget_list.append(selector)
 
         display(widgets.VBox([widgets.HBox(widget_list,
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')),
-                              fig]))
+                              self.fig]))
 
-        def fit_function(params, lbda, rhor, rhoi):
-            result = model(lbda, params)
+    def fit_function(self, params, lbda, rhor, rhoi):
+        """The fit function to minimize the fitting problem"""
+        result = self.model(lbda, params)
 
-            resid_rhor = rhor - result.rho.real
-            resid_rhoi = rhoi - result.rho.imag
+        resid_rhor = rhor - result.rho.real
+        resid_rhoi = rhoi - result.rho.imag
 
-            return np.concatenate((resid_rhor, resid_rhoi))
+        return np.concatenate((resid_rhor, resid_rhoi))
 
-        def execute_fit(method='leastsq'):
-            rho = calc_rho(exp_data)
-            return minimize(fit_function,
-                            params,
-                            args=(rho.index.to_numpy(), rho.values.real, rho.values.imag),
-                            method=method)
+    def fit(self, method='leastsq'):
+        """Execute the lmfit with the current fitting parameters"""
+        rho = calc_rho(self.exp_data)
+        res = minimize(self.fit_function,
+                       self.params,
+                       args=(rho.index.to_numpy(), rho.values.real, rho.values.imag),
+                       method=method)
 
-        def fit_result(params):
-            fit_result = model(exp_data.index.to_numpy(), params)
+        self.fitted_params = res.params
+        return res
 
-            return go.FigureWidget(pd.concat([exp_data,
-                                              pd.DataFrame({'Ψ_fit': fit_result.psi,
-                                                            'Δ_fit': fit_result.delta},
-                                                           index=exp_data.index)]
-                                             ).plot())
+    def plot(self):
+        """Plot the fit results as Psi/Delta"""
+        fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
 
-        def fit_result_rho(params):
-            rho = calc_rho(exp_data)
-            fit_result = model(rho.index.to_numpy(), params)
+        return go.FigureWidget(pd.concat([self.exp_data,
+                                            pd.DataFrame({'Ψ_fit': fit_result.psi,
+                                                        'Δ_fit': fit_result.delta},
+                                                        index=self.exp_data.index)]
+                                            ).plot())
 
-            return go.FigureWidget(pd.DataFrame({'ρr': rho.apply(lambda x: x.real),
-                                                 'ρi': rho.apply(lambda x: x.imag),
-                                                 'ρcr': fit_result.rho.real,
-                                                 'ρci': fit_result.rho.imag},
-                                                index=rho.index).plot())
+    def plot_rho(self):
+        """Plot the fit results as Rho"""
+        rho = calc_rho(self.exp_data)
+        fit_result = self.model(rho.index.to_numpy(), self.fitted_params)
 
-        return SimpleNamespace(**{'value': model,
-                                  'residual': fit_function,
-                                  'fit': execute_fit,
-                                  'plot': fit_result,
-                                  'plot_rho': fit_result_rho})
+        return go.FigureWidget(pd.DataFrame({'ρr': rho.apply(lambda x: x.real),
+                                             'ρi': rho.apply(lambda x: x.imag),
+                                             'ρcr': fit_result.rho.real,
+                                             'ρci': fit_result.rho.imag},
+                                             index=rho.index).plot())
 
-    return decorator_func
+    def __init__(self, exp_data, params, model, angle:float = 70):
+        self.model = model
+        self.exp_data = exp_data
+        self.params = params
+        self.fitted_params = params.copy()
+        self.angle = angle
+        self.fig = go.FigureWidget(pd.concat([exp_data,
+                    pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
+                                 'Δ_tmm': model(exp_data.index, params).delta},
+                                 index=exp_data.index)]).plot(backend='plotly'))
+
+        self.update_dict = {'Psi/Delta': self.set_psi_delta,
+                            'Rho': self.set_rho,
+                            'Pseudo Diel.': self.set_pseudo_diel}
+
+        self.create_widgets()
+
+def manual_parameters(exp_data, params, angle: float = 70):
+    """A manual parameters decorator for providing convenient fitting functions"""
+    return lambda model: FitRho(exp_data, params, model, angle)
