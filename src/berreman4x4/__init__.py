@@ -11,6 +11,7 @@ from .structure import *
 from .utils import *
 from .materials_db import *
 from .fitting.params_hist import ParamsHist
+from .fitting.decorators import *
 from .plot.mueller_matrix import plot_mmatrix
 
 if sys.version_info.major >= 3 and sys.version_info.minor > 7:
