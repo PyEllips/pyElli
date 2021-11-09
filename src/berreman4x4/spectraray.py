@@ -55,7 +55,7 @@ class SpectraRay():
         mueller_matrix = pd.read_csv(fname,
                                      sep=r'\s+',
                                      decimal=decimal,
-                                     index_col=0).iloc[:, 36:-1]
+                                     index_col=0).iloc[:, -17:-1]
         mueller_matrix.index.name = 'Wavelength'
         mueller_matrix.columns = ['M11', 'M12', 'M13', 'M14',
                                  'M21', 'M22', 'M23', 'M24',

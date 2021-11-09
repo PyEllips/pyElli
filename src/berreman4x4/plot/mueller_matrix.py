@@ -1,5 +1,6 @@
 """Plotting functions for Mueller matrices"""
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import pandas as pd
 COLORS = ['#636EFA', '#EF553B', '#00CC96',
           '#AB63FA', '#FFA15A', '#19D3F3',
@@ -9,7 +10,8 @@ COLORS = ['#636EFA', '#EF553B', '#00CC96',
 def plot_mmatrix(dataframes: pd.DataFrame,
                  colors:list=None,
                  dashes:list=None,
-                 names:list=None) -> go.Figure:
+                 names:list=None,
+                 single:bool=True) -> go.Figure:
     """Takes multiple Mueller matrix dataframes with columns Mxy for matrix postion x,y
     and plots them together."""
     if colors is None:
@@ -19,16 +21,27 @@ def plot_mmatrix(dataframes: pd.DataFrame,
     if names is None:
         names = ['', 'theory']
 
-    fig = go.FigureWidget()
+    if single:
+        fig = go.Figure()
+        fig.update_layout(yaxis_title='Müller Matrix Elements', xaxis_title='Wavelength (nm)')
+    else:
+        fig = make_subplots(rows=4, cols=4)
+
     for i, melem in enumerate(dataframes[0]):
         coli = colors[i % len(colors)]
         for j, mueller_df in enumerate(dataframes):
             dashi = dashes[j % len(dashes)]
             namesi = names[j % len(names)]
-            fig.add_trace(go.Scatter(x=mueller_df.index,
-                                     y=mueller_df[melem],
-                                     name=f'{melem} {namesi}',
-                                     line=dict(color=coli, dash=dashi)))
+            if single:
+                fig.add_trace(go.Scatter(x=mueller_df.index,
+                                        y=mueller_df[melem],
+                                        name=f'{melem} {namesi}',
+                                        line=dict(color=coli, dash=dashi)))
+            else:
+                fig.add_trace(go.Scatter(x=mueller_df.index,
+                                        y=mueller_df[melem],
+                                        name=f'{melem} {namesi}',
+                                        line=dict(color=coli, dash=dashi)),
+                                        row=1 if single else i//4 + 1, col=1 if single else i%4 + 1)
 
-    fig.update_layout(yaxis_title='Müller Matrix Elements', xaxis_title='Wavelength (nm)')
-    return fig
+    return go.FigureWidget(fig)
