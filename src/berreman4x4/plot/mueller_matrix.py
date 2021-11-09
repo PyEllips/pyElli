@@ -19,7 +19,7 @@ def plot_mmatrix(dataframes: pd.DataFrame,
     if names is None:
         names = ['', 'theory']
 
-    fig = go.Figure()
+    fig = go.FigureWidget()
     for i, melem in enumerate(dataframes[0]):
         coli = colors[i % len(colors)]
         for j, mueller_df in enumerate(dataframes):

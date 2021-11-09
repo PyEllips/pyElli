@@ -50,7 +50,7 @@ params.add('TiO2_d', value=20, min=0, max=40000, vary=True)
 ```
 
 ```python
-@bm.manual_parameters(tss, params)
+@bm.fit(tss, params)
 def model(lbda, params):
     sr = bm.SpectraRay('./')
     Si = bm.IsotropicMaterial(sr.loadDispersionTable('Si_Aspnes.mat'))
@@ -82,18 +82,18 @@ def model(lbda, params):
 # Fit to experimental data
 
 ```python
-out = model.fit(method='leastsq')
+out = model.fit()
 out
 ```
 
 # Show fits
 
 ```python
-model.plot(out.params)
+model.plot()
 ```
 
 ```python
-model.plot_rho(out.params)
+model.plot_rho()
 ```
 
 ```python

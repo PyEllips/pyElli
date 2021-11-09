@@ -9,6 +9,7 @@ from .solver2x2 import Solver2x2
 from .solver4x4 import *
 from .structure import *
 from .utils import *
+from .spectraray import *
 from .materials_db import *
 from .fitting.params_hist import ParamsHist
 from .fitting.decorator_psi_delta import fit

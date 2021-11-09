@@ -15,6 +15,7 @@ class FitRho():
             :update_exp: Flag to change the experimental data as well
             :update_names: Flag to change the label names"""
         data = self.model(self.exp_data.index, self.params)
+        self.fig.update_layout(yaxis_title="Ψ/Δ (°)")
         self.fig.data[2].y = data.psi
         self.fig.data[3].y = data.delta
 
@@ -33,6 +34,7 @@ class FitRho():
             :update_exp: Flag to change the experimental data as well
             :update_names: Flag to change the label names"""
         data = self.model(self.exp_data.index, self.params)
+        self.fig.update_layout(yaxis_title="ρ")
         self.fig.data[2].y = data.rho.real
         self.fig.data[3].y = data.rho.imag
 
@@ -54,6 +56,7 @@ class FitRho():
         data = self.model(self.exp_data.index, self.params)
         peps = calcPseudoDiel(pd.DataFrame(data.rho, index=self.exp_data.index).iloc[:, 0],
                                           self.angle)
+        self.fig.update_layout(yaxis_title="ϵ")
         self.fig.data[2].y = peps.loc[:, 'ϵ1']
         self.fig.data[3].y = peps.loc[:, 'ϵ2']
 
@@ -163,6 +166,7 @@ class FitRho():
                     pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
                                  'Δ_tmm': model(exp_data.index, params).delta},
                                  index=exp_data.index)]).plot(backend='plotly'))
+        self.fig.update_layout(yaxis_title="Ψ/Δ (°)", xaxis_title="Wavelength (nm)")
 
         self.update_dict = {'Psi/Delta': self.set_psi_delta,
                             'Rho': self.set_rho,
