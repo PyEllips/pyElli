@@ -312,8 +312,9 @@ class Solver4x4(Solver):
                       [0, 1j, -1j, 0]])
 
         # Kroneker product of S and S*
-        SxS_star = np.einsum('aij,akl->aikjl', self._S,
-                             np.conjugate(self._S)).reshape(self._S.shape[0], 4, 4)
+        #SxS_star = [np.kron(np.conjugate(self._S[i]), self._S[i]) for i in range(self._S.shape[0])]
+        SxS_star = np.einsum('aij,akl->aikjl', np.conjugate(self._S),
+                             self._S).reshape(self._S.shape[0], 4, 4)
 
         mmatrix = np.real(A @ SxS_star @ np.linalg.inv(A))
         m11 = mmatrix[:, 0, 0]
