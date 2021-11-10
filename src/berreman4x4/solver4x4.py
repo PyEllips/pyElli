@@ -215,7 +215,7 @@ class Solver4x4(Solver):
         """
         n_x = sqrt(epsilon[:, 0, 0])
         sin_phi = k_x / n_x
-        cos_phi = sqrt(1 - sin_phi ** 2)
+        cos_phi = sqrt(1 - sin_phi**2)
 
         i = np.shape(k_x)[0]
         zeros = np.tile(0, i)
@@ -229,10 +229,10 @@ class Solver4x4(Solver):
                                  dtype=np.complex128)
             return np.moveaxis(0.5 * sp_to_xy, 2, 0)
 
-        sp_to_xy = np.array([[zeros,         zeros,          cos_phi, -cos_phi],
-                             [ones,          ones,           zeros,   zeros],
-                             [-n_x / cos_phi, n_x / cos_phi, zeros,   zeros],
-                             [zeros,         zeros,          n_x,     n_x]],
+        sp_to_xy = np.array([[zeros,          zeros,          cos_phi, -cos_phi],
+                             [ones,           ones,           zeros,   zeros],
+                             [-n_x / cos_phi, n_x / cos_phi,  zeros,   zeros],
+                             [zeros,          zeros,          n_x,     n_x]],
                              dtype=np.complex128)
         return np.moveaxis(sp_to_xy, 2, 0)
 
