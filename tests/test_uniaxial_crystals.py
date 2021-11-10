@@ -49,12 +49,12 @@ class TestUniaxial:
         np.testing.assert_allclose(self.Delta[0], delta_matrix, 1e-3, 0)
 
     def test_transition_matrix(self):
-        transition_matrix = np.array([[[-0.353 - 0.057j, 0.091 - 0.001j, 0.033 + 0.044j, 0.056 - 0.397j],
-                                       [0.104 + 0.08j, -0.327 - 0.011j, 0.004 + 0.502j, -0.033 - 0.044j],
-                                       [0.162 - 0.014j, -0.017 + 1.753j, -0.327 - 0.011j, -0.091 + 0.001j],
-                                       [0.300 - 2.12j, -0.162 + 0.014j, -0.104 - 0.08j, -0.353 - 0.057j]]])
+        transition_matrix = np.array([[[-0.352 - 0.057j, 0.091 - 0.001j, 0.033 + 0.044j, 0.056 - 0.397j],
+                                       [0.104 + 0.08j, -0.326 - 0.011j, 0.004 + 0.502j, -0.033 - 0.044j],
+                                       [0.162 - 0.014j, -0.017 + 1.753j, -0.326 - 0.011j, -0.091 + 0.001j],
+                                       [0.300 - 2.12j, -0.162 + 0.014j, -0.104 - 0.08j, -0.352 - 0.057j]]])
 
-        np.testing.assert_allclose(self.Tp, transition_matrix, 1e-2, 0)
+        np.testing.assert_array_almost_equal(self.Tp, transition_matrix, decimal=3)
 
     def test_jones_calculation(self):
         jones_matrix = np.array([[[-0.310 - 0.161j, -0.107 - 0.002j],
