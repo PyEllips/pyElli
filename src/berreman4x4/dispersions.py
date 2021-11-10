@@ -30,16 +30,6 @@ class DispersionLaw(ABC):
         """Add up the dielectric function of multiple models"""
         return DispersionSum(self, other)
 
-    def getDielectricConj(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns the conjugated dielectric constant for wavelength 'lbda' default unit (nm)
-        in the convention ε1 - iε2."""
-        return np.conjugate(self.dielectricFunction(lbda))
-
-    def getRefractiveIndexConj(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns the conjugated refractive index for wavelength 'lbda' default unit (nm)
-        in the convention n - ik."""
-        return sqrt(np.conjugate(self.dielectricFunction(lbda)))
-
     def getDielectric(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 + iε2."""
@@ -253,10 +243,11 @@ class DispersionGauss(DispersionLaw):
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
         E = lambda2E(lbda)
         ftos = 2 * sqrt(np.log(2))
-        return np.conjugate(self.eps_inf + sum(2 * Ai / sqrt(np.pi) * (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) -
-                                               1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) -
-                                                     Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
-                                               for Ai, Ei, gami in self.coeffs))
+        return self.eps_inf + sum(2 * Ai / sqrt(np.pi) *
+                            (dawsn(ftos * (E + Ei) / gami) - dawsn(ftos * (E - Ei) / gami)) +
+                            1j * (Ai * np.exp(-(ftos * (E - Ei) / gami)**2) -
+                                    Ai * np.exp(-(ftos * (E + Ei) / gami)**2))
+                            for Ai, Ei, gami in self.coeffs)
 
 
 class DispersionTaucLorentz(DispersionLaw):
@@ -298,9 +289,9 @@ class DispersionTaucLorentz(DispersionLaw):
         E = lambda2E(lbda)
         Eg = self.coeffs[0]
         eps_inf = self.coeffs[1]
-        return eps_inf + np.conjugate(sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
-                                          self.eps2(E, Eg, Ai, Ei, Ci)
-                                          for Ai, Ei, Ci in self.coeffs[2:]))
+        return eps_inf + sum(1j * (Ai * Ei * Ci * (E - Eg)**2 / ((E**2 - Ei**2)**2 + Ci**2 * E**2) / E) * np.heaviside(E - Eg, 0) +
+                             self.eps2(E, Eg, Ai, Ei, Ci)
+                             for Ai, Ei, Ci in self.coeffs[2:])
 
 
 class DispersionHighEnergyBands(DispersionLaw):
@@ -322,7 +313,7 @@ class DispersionHighEnergyBands(DispersionLaw):
         eps_i = 3 * self.E_xsi * (np.abs(E) - self.E_xsi)**2 / E**5 * \
             np.heaviside(np.abs(E) - self.E_xsi, 0)
 
-        return self.A * (eps_r - 1j * eps_i)
+        return self.A * (eps_r + 1j * eps_i)
 
 
 class DispersionTanguy(DispersionLaw):
@@ -350,11 +341,11 @@ class DispersionTanguy(DispersionLaw):
 
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
         E = lambda2E(lbda)
-        return np.conjugate(1 + self.a / (self.b - E**2) +
-                            self.A * self.R**(self.d/2 - 1) / (E + 1j * self.gam)**2 *
-                            (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * self.gam, self.R, self.Eg), self.d) +
-                             DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * self.gam, self.R, self.Eg), self.d) -
-                             2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, self.R, self.Eg), self.d)))
+        return (1 + self.a / (self.b - E**2) +
+                self.A * self.R**(self.d/2 - 1) / (E + 1j * self.gam)**2 *
+                (DispersionTanguy.g(DispersionTanguy.xsi(E + 1j * self.gam, self.R, self.Eg), self.d) +
+                    DispersionTanguy.g(DispersionTanguy.xsi(-E - 1j * self.gam, self.R, self.Eg), self.d) -
+                    2 * DispersionTanguy.g(DispersionTanguy.xsi(E*0, self.R, self.Eg), self.d)))
 
     @staticmethod
     def xsi(z, R, Eg):

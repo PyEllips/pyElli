@@ -228,44 +228,44 @@ class Solver4x4(Solver):
             L += np.tile(np.array([[0, 0, 0, 0],
                                    [0, 0, 0, 0],
                                    [1, 0, 0, 0],
-                                   [1, 0, 0, 0]]), (i, 1, 1)) / cos_Phi[:, None, None]
+                                   [-1, 0, 0, 0]]), (i, 1, 1)) / cos_Phi[:, None, None]
             L += np.tile(np.array([[0, 0, 0, 0],
                                    [0, 0, 0, 0],
                                    [0, 0, 0, 1],
-                                   [0, 0, 0, -1]]), (i, 1, 1)) / nx[:, None, None]
+                                   [0, 0, 0, 1]]), (i, 1, 1)) / nx[:, None, None]
             L += np.tile(np.array([[0, 0, -1, 0],
                                    [0, 0, 1, 0],
                                    [0, 0, 0, 0],
                                    [0, 0, 0, 0]]), (i, 1, 1)) / cos_Phi[:, None, None] / nx[:, None, None]
             return 0.5 * L
-            #   np.array(
+            #   0.5 * np.array(
             # [[0, 1, -1/(nx*cos_Phi),  0],
             #  [0, 1,  1/(nx*cos_Phi),  0],
             #  [1/cos_Phi, 0,  0,  1/nx],
-            #  [1/cos_Phi, 0,  0, -1/nx]])
-        else:
-            L = np.tile(np.array([[0, 0, 0, 0],
-                                  [1, 1, 0, 0],
-                                  [0, 0, 0, 0],
-                                  [0, 0, 0, 0]], dtype=np.complex128), (i, 1, 1))
-            L += np.tile(np.array([[0, 0, 1, 1],
-                                   [0, 0, 0, 0],
-                                   [0, 0, 0, 0],
-                                   [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None]
-            L += np.tile(np.array([[0, 0, 0, 0],
-                                   [0, 0, 0, 0],
-                                   [0, 0, 0, 0],
-                                   [0, 0, 1, -1]]), (i, 1, 1)) * nx[:, None, None]
-            L += np.tile(np.array([[0, 0, 0, 0],
-                                   [0, 0, 0, 0],
-                                   [-1, 1, 0, 0],
-                                   [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None] * nx[:, None, None]
-            return L
+            #  [-1/cos_Phi, 0,  0, 1/nx]])
+
+        L = np.tile(np.array([[0, 0, 0, 0],
+                                [1, 1, 0, 0],
+                                [0, 0, 0, 0],
+                                [0, 0, 0, 0]], dtype=np.complex128), (i, 1, 1))
+        L += np.tile(np.array([[0, 0, 1, -1],
+                                [0, 0, 0, 0],
+                                [0, 0, 0, 0],
+                                [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None]
+        L += np.tile(np.array([[0, 0, 0, 0],
+                                [0, 0, 0, 0],
+                                [0, 0, 0, 0],
+                                [0, 0, 1, 1]]), (i, 1, 1)) * nx[:, None, None]
+        L += np.tile(np.array([[0, 0, 0, 0],
+                                [0, 0, 0, 0],
+                                [-1, 1, 0, 0],
+                                [0, 0, 0, 0]]), (i, 1, 1)) * cos_Phi[:, None, None] * nx[:, None, None]
+        return L
             # np.array(
-            # [[0, 0, cos_Phi, cos_Phi],
+            # [[0, 0, cos_Phi, -cos_Phi],
             #  [1, 1, 0, 0],
             #  [-nx*cos_Phi, nx*cos_Phi, 0, 0],
-            #  [0, 0, nx, -nx]])
+            #  [0, 0, nx, nx]])
 
     @staticmethod
     def getKz(material: "Material", lbda: npt.ArrayLike, Kx: npt.ArrayLike) -> npt.NDArray:
@@ -286,7 +286,7 @@ class Solver4x4(Solver):
 
     @property
     def delta(self) -> npt.NDArray:
-        d = -np.angle(self.rho, deg=True)
+        d = np.angle(self.rho, deg=True)
         return np.where(d < 0, d + 360, d)
 
     @property
@@ -299,7 +299,7 @@ class Solver4x4(Solver):
 
     @property
     def deltaMat(self) -> npt.NDArray:
-        return -np.angle(self.rhoMat, deg=True)
+        return np.angle(self.rhoMat, deg=True)
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
@@ -368,21 +368,19 @@ class Solver4x4(Solver):
         """Simulates optical Experiment"""
         layers = reversed(self.permProfile[1:-1])
 
-        ILf = self.TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[0], inv=True)
+        if isinstance(self.structure.backMaterial, IsotropicMaterial):
+            T = self.TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
+        else:
+            T = self.TransitionMatrixHalfspace(
+                self.buildDeltaMatrix(self.Kx, self.permProfile[-1]))
 
-        P_tot = np.identity(4)
         for d, epsilon in layers:
             P = self.propagator.calculate_propagation(
                 self.buildDeltaMatrix(self.Kx, epsilon), -d, self.lbda)
-            P_tot = P @ P_tot
+            T = P @ T
 
-        if isinstance(self.structure.backMaterial, IsotropicMaterial):
-            Lb = self.TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[-1])
-        else:
-            Lb = self.TransitionMatrixHalfspace(
-                self.buildDeltaMatrix(self.Kx, self.permProfile[-1]))
-
-        T = ILf @ P_tot @ Lb
+        Lf = self.TransitionMatrixIsoHalfspace(self.Kx, self.permProfile[0], inv=True)
+        T = Lf @ T
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
         T_it = T[:, 2::-2, 2::-2]
@@ -397,7 +395,6 @@ class Solver4x4(Solver):
 
         r_ss = T_ri[..., 1, 1]
         S = T_ri / r_ss[:, None, None]
-        S[..., 0, :] = -S[..., 0, :]
 
         Kzf = self.getKz(self.structure.frontMaterial, self.lbda, self.Kx)
         if isinstance(self.structure.backMaterial, IsotropicMaterial):

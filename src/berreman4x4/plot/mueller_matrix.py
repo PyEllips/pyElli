@@ -11,7 +11,9 @@ def plot_mmatrix(dataframes: pd.DataFrame,
                  colors:list=None,
                  dashes:list=None,
                  names:list=None,
-                 single:bool=True) -> go.Figure:
+                 single:bool=True,
+                 full_scale:bool=False,
+                 sharex:bool=False) -> go.Figure:
     """Takes multiple Mueller matrix dataframes with columns Mxy for matrix postion x,y
     and plots them together."""
     if colors is None:
@@ -26,6 +28,8 @@ def plot_mmatrix(dataframes: pd.DataFrame,
         fig.update_layout(yaxis_title='Müller Matrix Elements', xaxis_title='Wavelength (nm)')
     else:
         fig = make_subplots(rows=4, cols=4)
+        if full_scale:
+            fig.update_yaxes(range=[-1, 1])
 
     for i, melem in enumerate(dataframes[0]):
         coli = colors[i % len(colors)]
@@ -43,5 +47,6 @@ def plot_mmatrix(dataframes: pd.DataFrame,
                                         name=f'{melem} {namesi}',
                                         line=dict(color=coli, dash=dashi)),
                                         row=1 if single else i//4 + 1, col=1 if single else i%4 + 1)
-
+    if sharex:
+        fig.update_xaxes(matches='x')
     return go.FigureWidget(fig)
