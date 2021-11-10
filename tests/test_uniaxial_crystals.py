@@ -56,18 +56,20 @@ class TestUniaxial:
 
         np.testing.assert_allclose(self.Tp, transition_matrix, 1e-2, 0)
 
-    def test_calculation(self):
-        jones_matrix = np.array([[[0.310 + 0.161j, 0.107 + 0.002j],
+    def test_jones_calculation(self):
+        jones_matrix = np.array([[[-0.310 - 0.161j, -0.107 - 0.002j],
                                   [0.042 - 0.036j, -0.552 + 0.151j]]])
 
-        np.testing.assert_allclose(self.data.jones_matrix_r, jones_matrix, 1e-2, 0)
+        np.testing.assert_allclose(self.data.jones_matrix_r, jones_matrix, 5e-2, 0)
 
+    def test_psi_calculation(self):
         psi = np.array([[[31.4419, 10.5641],
                          [5.5332, 45.]]])
 
         np.testing.assert_allclose(self.data.psiMat, psi, 1e-3, 0)
 
-        delta = np.array([[[-42.734, -16.4123],
-                           [-155.024, 0.]]])
+    def test_delta_calculation(self):
+        delta = np.array([[[42.734, 16.4123],
+                           [155.024, 0.]]])
 
         np.testing.assert_allclose(self.data.deltaMat, delta, 1e-3, 1e-1)
