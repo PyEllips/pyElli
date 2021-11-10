@@ -68,29 +68,38 @@ class FitMuellerMatrix():
                                     self.model(self.exp_mm.index.values,
                                                 self.fitted_params).mueller_matrix)
 
-    def plot(self, display_single:bool=None):
+    def plot(self, **kwargs):
         """Plot the fit results"""
-        if display_single is None:
-            display_single = self.display_single
         fit_result = mmatrix_to_dataframe(self.exp_mm,
                                           self.model(self.exp_mm.index.values,
                                                      self.fitted_params).mueller_matrix)
 
-        return plot_mmatrix([self.exp_mm, fit_result], single=display_single)
+        return plot_mmatrix([self.exp_mm, fit_result],
+                single=self.display_single
+                    if kwargs.get('display_single') is None else kwargs.get('display_single'),
+                sharex=self.sharex
+                    if kwargs.get('sharex') is None else kwargs.get('sharex'),
+                full_scale=self.full_scale
+                    if kwargs.get('full_scale') is None else kwargs.get('full_scale'))
 
-    def __init__(self, exp_mm, params, model, display_single):
+    def __init__(self, exp_mm, params, model, **kwargs):
         self.exp_mm = exp_mm
         self.params = params
         self.fitted_params = params.copy()
         self.model = model
-        self.display_single = display_single
+        self.display_single = kwargs.get('display_single')
+        self.sharex = kwargs.get('sharex')
+        self.full_scale = kwargs.get('full_scale')
 
         model_df = mmatrix_to_dataframe(exp_mm, model(exp_mm.index.values, params).mueller_matrix)
         self.fig = plot_mmatrix([exp_mm,
-                                 model_df], single=display_single)
+                                 model_df],
+                                 single=self.display_single,
+                                 sharex=self.sharex,
+                                 full_scale=self.full_scale)
 
         self.create_widgets()
 
-def fit_mueller_matrix(exp_mm, params, display_single=True):
+def fit_mueller_matrix(exp_mm, params, **kwargs):
     """A parameters decorator for fitting mueller matrices"""
-    return lambda model: FitMuellerMatrix(exp_mm, params, model, display_single)
+    return lambda model: FitMuellerMatrix(exp_mm, params, model, **kwargs)
