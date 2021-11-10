@@ -24,7 +24,7 @@ class TestUniaxial:
     Kx = n_i * np.sin(np.deg2rad(Phi_i))
     film = bm.Layer(filmMaterial, d)
     epsilon = filmMaterial.getTensor(lbda)
-    Delta = bm.Solver4x4.buildDeltaMatrix(Kx, epsilon)
+    Delta = bm.Solver4x4.build_delta_matrix(Kx, epsilon)
 
     Tp = bm.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
 
