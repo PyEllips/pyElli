@@ -56,7 +56,7 @@ def test_cholesteric_lc():
     R_RR = data.Rc[:, 1, 1]
 
     # Checks positions of local extrema
-    np.testing.assert_allclose(argrelmax(R_RR)[0], argrelmax(R_th)[0], atol=2)
+    np.testing.assert_allclose(argrelmax(R_RR)[0], argrelmax(R_th)[0], atol=3)
     np.testing.assert_allclose(argrelmin(R_RR)[0], argrelmin(R_th)[0])
 
 
@@ -92,4 +92,4 @@ def test_twisted_nematic_lc():
     T_bm = np.real(data.T[:, 0, 0])
 
     # Compare results
-    np.testing.assert_allclose(T_bm, T_gt, rtol=1)
+    np.testing.assert_array_almost_equal(T_bm, T_gt, decimal=2)

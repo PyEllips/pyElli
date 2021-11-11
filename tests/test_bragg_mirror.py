@@ -105,5 +105,5 @@ class TestBragg:
         R_ss = data2.R[:, 1, 1]
         R_pp = data2.R[:, 0, 0]
 
-        np.testing.assert_allclose(R_ss, R_th_ss, 1e-10, 0)
-        np.testing.assert_allclose(R_pp, R_th_pp, 1e-10, 0)
+        np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
+        np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)

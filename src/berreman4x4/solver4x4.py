@@ -231,7 +231,7 @@ class Solver4x4(Solver):
 
         sp_to_xy = np.array([[zeros,          zeros,          cos_phi, -cos_phi],
                              [ones,           ones,           zeros,   zeros],
-                             [-n_x / cos_phi, n_x / cos_phi,  zeros,   zeros],
+                             [-n_x * cos_phi, n_x * cos_phi,  zeros,   zeros],
                              [zeros,          zeros,          n_x,     n_x]],
                              dtype=np.complex128)
         return np.moveaxis(sp_to_xy, 2, 0)
@@ -255,7 +255,7 @@ class Solver4x4(Solver):
 
     @property
     def delta(self) -> npt.NDArray:
-        d = np.angle(self.rho, deg=True)
+        d = -np.angle(self.rho, deg=True)
         return np.where(d < 0, d + 360, d)
 
     @property
@@ -268,7 +268,7 @@ class Solver4x4(Solver):
 
     @property
     def deltaMat(self) -> npt.NDArray:
-        return np.angle(self.rhoMat, deg=True)
+        return -np.angle(self.rhoMat, deg=True)
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
