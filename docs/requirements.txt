@@ -3,6 +3,10 @@
 # under `install_requires` in `setup.cfg` is also listed here!
 sphinx>=3.2.1
 # sphinx_rtd_theme
-numpy
 scipy
+numpy>=1.20
 matplotlib
+pandas>=1.0.0
+ipywidgets
+plotly
+lmfit

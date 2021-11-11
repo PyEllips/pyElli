@@ -1,8 +1,16 @@
+"""
+    Setup file for pyElli.
+    Use setup.cfg to configure your project.
+
+    This file was generated with PyScaffold 4.1.1.
+    PyScaffold helps you to put up the scaffold of your new Python project.
+    Learn more under: https://pyscaffold.org/
+"""
 from setuptools import setup
 
 if __name__ == "__main__":
     try:
-        setup()
+        setup(use_scm_version={"version_scheme": "no-guess-dev"})
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "

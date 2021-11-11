@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import numpy as np
-import berreman4x4 as bm
+import elli
 from scipy.constants import pi
 
 
@@ -13,15 +13,15 @@ def test_tir_thickness():
     n_b = 1.7
 
     # Materials:
-    glass1 = bm.IsotropicMaterial(bm.DispersionLess(n_f))
-    air = bm.IsotropicMaterial(bm.DispersionLess(n_s))
-    glass2 = bm.IsotropicMaterial(bm.DispersionLess(n_b))
+    glass1 = elli.IsotropicMaterial(elli.DispersionLess(n_f))
+    air = elli.IsotropicMaterial(elli.DispersionLess(n_s))
+    glass2 = elli.IsotropicMaterial(elli.DispersionLess(n_b))
 
     # Layer:
-    layer = bm.Layer(air, 0)
+    layer = elli.Layer(air, 0)
 
     # Structure:
-    s = bm.Structure(glass1, [layer], glass2)
+    s = elli.Structure(glass1, [layer], glass2)
 
     # Wavelength and wavenumber:
     lbda = 1000
@@ -119,15 +119,15 @@ def test_tir_angle():
     n_b = 1.7
 
     # Materials:
-    glass1 = bm.IsotropicMaterial(bm.DispersionLess(n_f))
-    air = bm.IsotropicMaterial(bm.DispersionLess(n_s))
-    glass2 = bm.IsotropicMaterial(bm.DispersionLess(n_b))
+    glass1 = elli.IsotropicMaterial(elli.DispersionLess(n_f))
+    air = elli.IsotropicMaterial(elli.DispersionLess(n_s))
+    glass2 = elli.IsotropicMaterial(elli.DispersionLess(n_b))
 
     # Layer:
-    layer = bm.Layer(air, 0)
+    layer = elli.Layer(air, 0)
 
     # Structure:
-    s = bm.Structure(glass1, [layer], glass2)
+    s = elli.Structure(glass1, [layer], glass2)
 
     # Wavelength and wavenumber:
     lbda = 1000
@@ -225,16 +225,16 @@ def test_transition_matrix_halfspace():
     n_air = 1.0
 
     # Materials:
-    glass = bm.IsotropicMaterial(bm.DispersionLess(n_glass))
-    air = bm.IsotropicMaterial(bm.DispersionLess(n_air))
+    glass = elli.IsotropicMaterial(elli.DispersionLess(n_glass))
+    air = elli.IsotropicMaterial(elli.DispersionLess(n_air))
 
     # Pseudo uniaxial Backhalfspace, to force different algorithm
-    air_uniaxial = bm.UniaxialMaterial(
-        bm.DispersionLess(n_air), bm.DispersionLess(n_air))
+    air_uniaxial = elli.UniaxialMaterial(
+        elli.DispersionLess(n_air), elli.DispersionLess(n_air))
 
     # Structure:
-    s = bm.Structure(glass, [], air)
-    s2 = bm.Structure(glass, [], air_uniaxial)
+    s = elli.Structure(glass, [], air)
+    s2 = elli.Structure(glass, [], air_uniaxial)
 
     # Wavelength
     lbda = 1000      # nm

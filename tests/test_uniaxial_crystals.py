@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import numpy as np
-import berreman4x4 as bm
+import elli
 
 
 class TestUniaxial:
@@ -15,28 +15,28 @@ class TestUniaxial:
     Phi_E = 45  # 1st Euler angle
     Theta_E = 45  # 2nd Euler angle
 
-    filmMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
-                                       bm.DispersionLess(n_e))
-    R = bm.rotation_Euler(Phi_E, Theta_E, 0)
+    filmMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
+                                       elli.DispersionLess(n_e))
+    R = elli.rotation_Euler(Phi_E, Theta_E, 0)
     filmMaterial.setRotation(R)
 
-    air = bm.IsotropicMaterial(bm.DispersionLess(n_i))
+    air = elli.IsotropicMaterial(elli.DispersionLess(n_i))
     Kx = n_i * np.sin(np.deg2rad(Phi_i))
-    film = bm.Layer(filmMaterial, d)
+    film = elli.Layer(filmMaterial, d)
     epsilon = filmMaterial.getTensor(lbda)
-    Delta = bm.Solver4x4.build_delta_matrix(Kx, epsilon)
+    Delta = elli.Solver4x4.build_delta_matrix(Kx, epsilon)
 
-    air = bm.AIR
+    air = elli.AIR
     epsilon_air = air.getTensor(lbda)
 
-    Tp = bm.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
-    Li = bm.Solver4x4.transition_matrix_iso_halfspace(np.array([Kx]), epsilon_air, inv=True)
+    Tp = elli.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
+    Li = elli.Solver4x4.transition_matrix_iso_halfspace(np.array([Kx]), epsilon_air, inv=True)
 
     n_t = 3.898 + 0.016j  # refractive index of substrate
-    silicon = bm.IsotropicMaterial(bm.DispersionLess(n_t))
+    silicon = elli.IsotropicMaterial(elli.DispersionLess(n_t))
     epsilon_silicon = silicon.getTensor(lbda)
-    Lt = bm.Solver4x4.transition_matrix_iso_halfspace(np.array([Kx]), epsilon_silicon, inv=False)
-    s = bm.Structure(air, [film], silicon)
+    Lt = elli.Solver4x4.transition_matrix_iso_halfspace(np.array([Kx]), epsilon_silicon, inv=False)
+    s = elli.Structure(air, [film], silicon)
     data = s.evaluate(np.array([lbda]), Phi_i)
 
     def test_rotated_tensor(self):

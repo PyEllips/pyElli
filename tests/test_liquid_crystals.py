@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # encoding: utf-8
 
-import berreman4x4 as bm
+import elli
 import numpy as np
 from numpy.lib.scimath import sqrt
 from scipy.constants import pi
@@ -10,25 +10,25 @@ from scipy.signal import argrelmax, argrelmin
 
 def test_cholesteric_lc():
     # Materials
-    front = back = bm.IsotropicMaterial(bm.DispersionLess(1.6))
+    front = back = elli.IsotropicMaterial(elli.DispersionLess(1.6))
 
     # Liquid crystal oriented along the x direction
     (no, ne) = (1.5, 1.7)
     Dn = ne-no
     n_med = (ne + no)/2
-    LC = bm.UniaxialMaterial(bm.DispersionLess(no), bm.DispersionLess(ne))  # ne along z
-    R = bm.rotation_v_theta(bm.e_y, 90)  # rotation round y
+    LC = elli.UniaxialMaterial(elli.DispersionLess(no), elli.DispersionLess(ne))  # ne along z
+    R = elli.rotation_v_theta(elli.e_y, 90)  # rotation round y
     LC.setRotation(R)  # apply rotation from z to x
     # Cholesteric pitch:
     p = 650
     # One half turn of a right-handed helix:
-    TN = bm.TwistedLayer(LC, p/2, 25, 180)
+    TN = elli.TwistedLayer(LC, p/2, 25, 180)
 
     # Inhomogeneous layer, repeated layer, and structure
     N = 5  # number half pitch repetitions
     h = N * p/2
-    L = bm.RepeatedLayers([TN], N)
-    s = bm.Structure(front, [L], back)
+    L = elli.RepeatedLayers([TN], N)
+    s = elli.Structure(front, [L], back)
 
     # Normal incidence:
     Kx = 0.0
@@ -62,21 +62,21 @@ def test_cholesteric_lc():
 
 def test_twisted_nematic_lc():
     # Materials
-    glass = bm.IsotropicMaterial(bm.DispersionLess(1.55))
+    glass = elli.IsotropicMaterial(elli.DispersionLess(1.55))
     front = back = glass
 
     # Liquid crystal oriented along the x direction
     (no, ne) = (1.5, 1.6)
     Dn = ne-no
-    LC = bm.UniaxialMaterial(bm.DispersionLess(no),
-                             bm.DispersionLess(ne))
-    R = bm.rotation_v_theta(bm.e_y, 90)
+    LC = elli.UniaxialMaterial(elli.DispersionLess(no),
+                             elli.DispersionLess(ne))
+    R = elli.rotation_v_theta(elli.e_y, 90)
     LC.setRotation(R)
     d = 4330
-    TN = bm.TwistedLayer(LC, d, 18, 90)
+    TN = elli.TwistedLayer(LC, d, 18, 90)
 
     # Structure
-    s = bm.Structure(front, [TN], back)
+    s = elli.Structure(front, [TN], back)
 
     # Calculation parameters
     (lbda_min, lbda_max) = (200e-9, 1)  # (m)

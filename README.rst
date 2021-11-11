@@ -1,41 +1,49 @@
-===========
-berreman4x4
-===========
+.. These are examples of badges you might want to add to your README:
+   please update the URLs accordingly
+
+    .. image:: https://api.cirrus-ci.com/github/<USER>/pyElli.svg?branch=main
+        :alt: Built Status
+        :target: https://cirrus-ci.com/github/<USER>/pyElli
+    .. image:: https://readthedocs.org/projects/pyElli/badge/?version=latest
+        :alt: ReadTheDocs
+        :target: https://pyElli.readthedocs.io/en/stable/
+    .. image:: https://img.shields.io/coveralls/github/<USER>/pyElli/main.svg
+        :alt: Coveralls
+        :target: https://coveralls.io/r/<USER>/pyElli
+    .. image:: https://img.shields.io/pypi/v/pyElli.svg
+        :alt: PyPI-Server
+        :target: https://pypi.org/project/pyElli/
+    .. image:: https://img.shields.io/conda/vn/conda-forge/pyElli.svg
+        :alt: Conda-Forge
+        :target: https://anaconda.org/conda-forge/pyElli
+    .. image:: https://pepy.tech/badge/pyElli/month
+        :alt: Monthly Downloads
+        :target: https://pepy.tech/project/pyElli
+    .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
+        :alt: Twitter
+        :target: https://twitter.com/pyElli
+
+.. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
+    :alt: Project generated with PyScaffold
+    :target: https://pyscaffold.org/
+
+|
+
+======
+pyElli
+======
 
 
-Berreman's 4x4 matrix method for optical simulation.
+    Python implementation of Berremans 4x4 matrix method
 
 
-Description
-===========
+A longer description of your project goes here...
 
 
-
-
-
-Copyright
-===========
-
-Copyright (C) 2012-2020 Olivier Castany
-
-Copyright (C) 2021-2021 Marius Müller
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-A copy of the GNU General Public License is available in file LICENCE.
-
+.. _pyscaffold-notes:
 
 Note
 ====
 
-This project has been set up using PyScaffold 4.0.1. For details and usage
+This project has been set up using PyScaffold 4.1.1. For details and usage
 information on PyScaffold see https://pyscaffold.org/.

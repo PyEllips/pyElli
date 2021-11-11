@@ -14,7 +14,7 @@ jupyter:
 ---
 
 ```python
-import elli
+import berreman4x4 as bm
 ```
 
 # Load data
@@ -23,14 +23,14 @@ Load data collected with Sentech Ellipsometer and cut the spectral range (to use
 The sample is an ALD grown TiO2 sample (with 400 cycles) on commercially available SiO2 / Si substrate.
 
 ```python
-tss = elli.SpectraRay.read_psi_delta_file('TiO2_400cycles.txt').loc[400:800]
-ρ = elli.SpectraRay.read_rho('TiO2_400cycles.txt').loc[400:800]
+tss = bm.SpectraRay.read_psi_delta_file('TiO2_400cycles.txt').loc[400:800]
+ρ = bm.SpectraRay.read_rho('TiO2_400cycles.txt').loc[400:800]
 ```
 
 # Estimate Parameters and build model
 
 ```python
-params = elli.ParamsHist()
+params = bm.ParamsHist()
 params.add('SiO2_n0', value=1.452, min=-100, max=100, vary=False)
 params.add('SiO2_n1', value=36.0, min=-40000, max=40000, vary=False)
 params.add('SiO2_n2', value=0, min=-40000, max=40000, vary=False)
@@ -50,28 +50,28 @@ params.add('TiO2_d', value=20, min=0, max=40000, vary=True)
 ```
 
 ```python
-@elli.fit(tss, params)
+@bm.fit(tss, params)
 def model(lbda, params):
-    sr = elli.SpectraRay('./')
-    Si = elli.IsotropicMaterial(sr.loadDispersionTable('Si_Aspnes.mat'))
+    sr = bm.SpectraRay('./')
+    Si = bm.IsotropicMaterial(sr.loadDispersionTable('Si_Aspnes.mat'))
 
-    SiO2 = elli.IsotropicMaterial(elli.DispersionCauchy(params['SiO2_n0'], 
+    SiO2 = bm.IsotropicMaterial(bm.DispersionCauchy(params['SiO2_n0'], 
                                                     params['SiO2_n1'], 
                                                     params['SiO2_n2'], 
                                                     params['SiO2_k0'], 
                                                     params['SiO2_k1'], 
                                                     params['SiO2_k2']))
-    TiO2 = elli.IsotropicMaterial(elli.DispersionCauchy(params['TiO2_n0'], 
+    TiO2 = bm.IsotropicMaterial(bm.DispersionCauchy(params['TiO2_n0'], 
                                                     params['TiO2_n1'], 
                                                     params['TiO2_n2'], 
                                                     params['TiO2_k0'], 
                                                     params['TiO2_k1'], 
                                                     params['TiO2_k2']))
     
-    Layer = [elli.Layer(TiO2, params['TiO2_d']), 
-             elli.Layer(SiO2, params['SiO2_d'])]
+    Layer = [bm.Layer(TiO2, params['TiO2_d']), 
+             bm.Layer(SiO2, params['SiO2_d'])]
     
-    return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver2x2)
+    return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver2x2)
     # Alternative: Use 4x4 Solver with scipy propagator
     # return bm.Structure(bm.AIR, Layer, Si).evaluate(lbda, 70, solver=bm.Solver4x4, propagator=bm.PropagatorExpmScipy())
 
