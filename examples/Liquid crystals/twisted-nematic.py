@@ -23,8 +23,8 @@
 # %%
 import numpy as np
 from numpy.lib.scimath import sqrt
-import berreman4x4 as bm
-import berreman4x4.plotter as bmplot
+import elli
+import elli.plotter as elliplot
 from scipy.constants import c, pi
 import matplotlib.pyplot as plt
 
@@ -33,21 +33,21 @@ import matplotlib.pyplot as plt
 
 # %%
 # Materials
-glass = bm.IsotropicMaterial(bm.DispersionLess(1.55))
+glass = elli.IsotropicMaterial(elli.DispersionLess(1.55))
 front = back = glass
 
 # Liquid crystal oriented along the x direction
 (no, ne) = (1.5, 1.6)
 Dn = ne-no
-LC = bm.UniaxialMaterial(bm.DispersionLess(no),
-                         bm.DispersionLess(ne))
-R = bm.rotation_v_theta(bm.e_y, 90)
+LC = elli.UniaxialMaterial(elli.DispersionLess(no),
+                         elli.DispersionLess(ne))
+R = elli.rotation_v_theta(elli.e_y, 90)
 LC.setRotation(R)
 d = 4330
-TN = bm.TwistedLayer(LC, d, 7, 90)
+TN = elli.TwistedLayer(LC, d, 7, 90)
 
 # Structure
-s = bm.Structure(front, [TN], back)
+s = elli.Structure(front, [TN], back)
 
 # Calculation parameters
 (lbda_min, lbda_max) = (200e-9, 1)  #  (m)
@@ -99,8 +99,8 @@ plt.show()
 
 # %%
 TN.setDivision(7)
-bmplot.drawStructure(s)
+elliplot.drawStructure(s)
 TN.setDivision(18)
-bmplot.drawStructure(s)
+elliplot.drawStructure(s)
 
 # %%

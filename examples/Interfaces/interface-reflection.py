@@ -9,7 +9,7 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
+import elli
 from scipy.constants import c, pi
 import matplotlib.pyplot as plt
 
@@ -20,11 +20,11 @@ import matplotlib.pyplot as plt
 # Materials
 n1 = 1
 n2 = 1.5
-front = bm.IsotropicMaterial(bm.DispersionLess(n1))
-back = bm.IsotropicMaterial(bm.DispersionLess(n2))
+front = elli.IsotropicMaterial(elli.DispersionLess(n1))
+back = elli.IsotropicMaterial(elli.DispersionLess(n2))
 
 # Structure
-s = bm.Structure(front, [], back)
+s = elli.Structure(front, [], back)
 
 # Parameters for the calculation
 lbda = 1000

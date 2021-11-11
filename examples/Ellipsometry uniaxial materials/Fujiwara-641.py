@@ -10,7 +10,7 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
+import elli
 import matplotlib.pyplot as plt
 
 # %% [markdown]
@@ -18,14 +18,14 @@ import matplotlib.pyplot as plt
 
 # %%
 # Front half-space (air)
-air = bm.IsotropicMaterial(bm.DispersionLess(1))
+air = elli.IsotropicMaterial(elli.DispersionLess(1))
 
 # Anisotropic substrate
 n_o = 2.0  #  ordinary index of thin layer
 n_e = 2.5  #  extraordinary index of thin layer
 
-uniaxialMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
-                                       bm.DispersionLess(n_e))
+uniaxialMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
+                                       elli.DispersionLess(n_e))
 
 # %% [markdown]
 # ## We reproduce figure 6.16 (p. 238)
@@ -40,9 +40,9 @@ uniaxialMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
 Psi = []
 
 for θ_E in θ_E_list:
-    R = bm.math.rotation_Euler(Φ_E, θ_E, 0)
+    R = elli.math.rotation_Euler(Φ_E, θ_E, 0)
     uniaxialMaterial.setRotation(R)
-    s = bm.Structure(air, [], uniaxialMaterial)
+    s = elli.Structure(air, [], uniaxialMaterial)
     for Φ_i in Φ_i_list:
         data = s.evaluate(500, Φ_i)
         Psi.append(data.psi)
@@ -73,9 +73,9 @@ Psi = []
 for θ_E in θ_E_list:
     evaluation_list = []
     for Φ_E in Φ_E_list:
-        R = bm.math.rotation_Euler(Φ_E, θ_E, 0)
+        R = elli.math.rotation_Euler(Φ_E, θ_E, 0)
         uniaxialMaterial.setRotation(R)
-        s = bm.Structure(air, [], uniaxialMaterial)
+        s = elli.Structure(air, [], uniaxialMaterial)
         data = s.evaluate(500, Φ_i)
         evaluation_list.append(data.psiMat[0,0,0])
     Psi.append(evaluation_list)

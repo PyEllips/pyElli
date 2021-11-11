@@ -7,20 +7,20 @@
 # Author: O. Castany, M. Müller
 # %%
 import numpy as np
-import berreman4x4 as bm
+import elli
 import matplotlib.pyplot as plt
 
 # %%
 # Materials:
-air = bm.IsotropicMaterial(bm.DispersionLess(1.0))
-glass = bm.IsotropicMaterial(bm.DispersionLess(1.5))
+air = elli.IsotropicMaterial(elli.DispersionLess(1.0))
+glass = elli.IsotropicMaterial(elli.DispersionLess(1.5))
 
 # Layer and half-spaces:
-layer = bm.Layer(glass, 1)
+layer = elli.Layer(glass, 1)
 front = back = air
 
 # Structure:
-s = bm.Structure(front, [layer], back)
+s = elli.Structure(front, [layer], back)
 
 # %%
 # Wavelength and wavenumber:

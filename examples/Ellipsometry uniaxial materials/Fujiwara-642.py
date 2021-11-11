@@ -11,7 +11,7 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
+import elli
 from scipy.constants import pi
 import matplotlib.pyplot as pyplot
 import scipy.linalg
@@ -37,9 +37,9 @@ Theta_E = 45    # 2nd Eulet angle
 # ## Permittivity tensor of the anisotropic film (eq 6.63, p. 241):
 
 # %%
-filmMaterial = bm.UniaxialMaterial(bm.DispersionLess(n_o),
-                                      bm.DispersionLess(n_e))
-R = bm.rotation_Euler(Phi_E, Theta_E, 0)
+filmMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
+                                      elli.DispersionLess(n_e))
+R = elli.rotation_Euler(Phi_E, Theta_E, 0)
 filmMaterial.setRotation(R)
 print(filmMaterial.getTensor(lbda))
 
@@ -52,7 +52,7 @@ print(filmMaterial.getTensor(lbda))
 # ```
 
 # %%
-air = bm.IsotropicMaterial(bm.DispersionLess(n_i))
+air = elli.IsotropicMaterial(elli.DispersionLess(n_i))
 Kx = n_i * np.sin(np.deg2rad(Phi_i))
 
 print("Kx: {:.4f}".format(Kx))
@@ -63,9 +63,9 @@ print("Kx: {:.4f}".format(Kx))
 # ```
 
 # %%
-film = bm.Layer(filmMaterial, d)
+film = elli.Layer(filmMaterial, d)
 epsilon = filmMaterial.getTensor(lbda)
-Delta = bm.Solver4x4.buildDeltaMatrix(Kx, epsilon)
+Delta = elli.Solver4x4.buildDeltaMatrix(Kx, epsilon)
 print("\nDelta matrix:")
 print(Delta)
 
@@ -86,7 +86,7 @@ print(np.real(q))
 # ```
 
 # %%
-Tp = bm.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
+Tp = elli.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
 print("\nPropagation matrix (eq 6.66, p. 242):")
 print(Tp)
 
@@ -100,8 +100,8 @@ print(Tp)
 
 # %%
 n_t = 3.898 + 0.016j  #  refractive index of substrate
-silicon = bm.IsotropicMaterial(bm.DispersionLess(n_t))
-s = bm.Structure(air, [film], silicon)
+silicon = elli.IsotropicMaterial(elli.DispersionLess(n_t))
+s = elli.Structure(air, [film], silicon)
 result = s.evaluate(np.array([lbda]), Phi_i)
 #T = s.getStructureMatrix(Kx, k0)
 #print("\nTransfer matrix T (eq 6.67, p. 242):")
@@ -154,7 +154,7 @@ Delta_ps = []
 # %%
 for Theta_E in Theta_E_list:
     for Phi_E in Phi_E_list:
-        R = bm.rotation_Euler(Phi_E, Theta_E, 0)
+        R = elli.rotation_Euler(Phi_E, Theta_E, 0)
         filmMaterial.setRotation(R)
         data = s.evaluate(np.array([lbda]), Phi_i)
         Psi_pp.append(data.psiMat[0,0,0])

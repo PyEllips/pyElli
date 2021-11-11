@@ -7,7 +7,7 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
+import elli
 from scipy.constants import pi
 import matplotlib.pyplot as plt
 
@@ -21,15 +21,15 @@ n_s = 1.0
 n_b = 1.7
 
 # Materials:
-glass1 = bm.IsotropicMaterial(bm.DispersionLess(n_f))
-air = bm.IsotropicMaterial(bm.DispersionLess(n_s))
-glass2 = bm.IsotropicMaterial(bm.DispersionLess(n_b))
+glass1 = elli.IsotropicMaterial(elli.DispersionLess(n_f))
+air = elli.IsotropicMaterial(elli.DispersionLess(n_s))
+glass2 = elli.IsotropicMaterial(elli.DispersionLess(n_b))
 
 # Layer:
-layer = bm.Layer(air, 0)
+layer = elli.Layer(air, 0)
 
 # Structure:
-s = bm.Structure(glass1, [layer], glass2)
+s = elli.Structure(glass1, [layer], glass2)
 
 # Wavelength and wavenumber:
 lbda = 1000

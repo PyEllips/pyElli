@@ -7,8 +7,8 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
-import berreman4x4.plotter as bmplot
+import elli
+import elli.plotter as elliplot
 import matplotlib.pyplot as plt
 from scipy.constants import pi
 
@@ -20,8 +20,8 @@ from scipy.constants import pi
 # %%
 n_a = 1.0
 n_g = 1.5
-air = bm.IsotropicMaterial(bm.DispersionLess(n_a))
-glass = bm.IsotropicMaterial(bm.DispersionLess(n_g))
+air = elli.IsotropicMaterial(elli.DispersionLess(n_a))
+glass = elli.IsotropicMaterial(elli.DispersionLess(n_g))
 
 # %% [markdown]
 # ### Materials for a SiO2/TiO2 Bragg mirror
@@ -32,30 +32,30 @@ k0 = 2*pi/lbda0
 n_SiO2 = 1.47
 n_TiO2 = 2.23 + 1j * 5.2e-4
 
-SiO2 = bm.IsotropicMaterial(bm.DispersionLess(n_SiO2))
-TiO2 = bm.IsotropicMaterial(bm.DispersionLess(n_TiO2))
+SiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_SiO2))
+TiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_TiO2))
 
 # %% [markdown]
 # ### Layers and Structure
 
 # %%
-d_SiO2 = bm.get_QWP_thickness(SiO2, lbda0)
-d_TiO2 = bm.get_QWP_thickness(TiO2, lbda0)
+d_SiO2 = elli.get_QWP_thickness(SiO2, lbda0)
+d_TiO2 = elli.get_QWP_thickness(TiO2, lbda0)
 
-L_SiO2 = bm.Layer(SiO2, d_SiO2)
-L_TiO2 = bm.Layer(TiO2, d_TiO2)
+L_SiO2 = elli.Layer(SiO2, d_SiO2)
+L_TiO2 = elli.Layer(TiO2, d_TiO2)
 
 # print("Thickness of the SiO2 QWP: {:.1f} nm".format(L_SiO2.h*1e9))
 # print("Thickness of the TiO2 QWP: {:.1f} nm".format(L_TiO2.h*1e9))
 
 # Repeated layers: n periods
-Layerstack = bm.RepeatedLayers([L_TiO2, L_SiO2], 4, 0, 0)
+Layerstack = elli.RepeatedLayers([L_TiO2, L_SiO2], 4, 0, 0)
 
 # Number of interfaces
 N = 2 * Layerstack.n + 1
 
 # Structure
-s = bm.Structure(air, [Layerstack], glass)
+s = elli.Structure(air, [Layerstack], glass)
 
 # %% [markdown]
 # ## Analytical calculation
@@ -155,5 +155,5 @@ ax.set_ylabel(r"$R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3, 3))
 
-bmplot.drawStructure(s)
+elliplot.drawStructure(s)
 plt.show()

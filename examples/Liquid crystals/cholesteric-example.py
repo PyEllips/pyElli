@@ -7,8 +7,8 @@
 
 # %%
 import numpy as np
-import berreman4x4 as bm
-import berreman4x4.plotter as bmplot
+import elli
+import elli.plotter as elliplot
 from scipy.constants import c, pi
 import matplotlib.pyplot as plt
 
@@ -17,27 +17,27 @@ import matplotlib.pyplot as plt
 
 # %%
 # Materials
-glass = bm.IsotropicMaterial(bm.DispersionLess(1.55))
+glass = elli.IsotropicMaterial(elli.DispersionLess(1.55))
 front = back = glass
 
 # Liquid crystal oriented along the x direction
 (no, ne) = (1.5, 1.7)
 Dn = ne-no
 n_med = (ne + no)/2
-LC = bm.UniaxialMaterial(bm.DispersionLess(no),
-                         bm.DispersionLess(ne))  # ne along z
-R = bm.rotation_v_theta(bm.e_y, 90)  # rotation of pi/2 along y
+LC = elli.UniaxialMaterial(elli.DispersionLess(no),
+                         elli.DispersionLess(ne))  # ne along z
+R = elli.rotation_v_theta(elli.e_y, 90)  # rotation of pi/2 along y
 LC.setRotation(R)                          # apply rotation from z to x
 # Cholesteric pitch (nm):
 p = 650
 # One half turn of a right-handed helix:
-TN = bm.TwistedLayer(LC, p/2, angle=180, div=35)
+TN = elli.TwistedLayer(LC, p/2, angle=180, div=35)
 
 # Inhomogeneous layer, repeated layer, and structure
 N = 15      # number half pitch repetitions
 h = N * p/2
-L = bm.RepeatedLayers([TN], N)
-s = bm.Structure(front, [L], back)
+L = elli.RepeatedLayers([TN], N)
+s = elli.Structure(front, [L], back)
 
 # Calculation parameters
 lbda_min, lbda_max = 800, 1200   # (nm)
@@ -136,6 +136,6 @@ fmt.set_powerlimits((-3, 3))
 plt.show()
 
 # %%
-bmplot.drawStructure(s)
+elliplot.drawStructure(s)
 
 # %%
