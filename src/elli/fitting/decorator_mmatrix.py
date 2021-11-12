@@ -3,7 +3,8 @@ from ipywidgets import widgets
 from IPython.display import display
 import pandas as pd
 import numpy.typing as npt
-from lmfit import minimize, Parameters, Results
+from lmfit import minimize, Parameters
+from lmfit.minimizer import MinimizerResult
 import plotly.graph_objects as go
 from typing import Callable
 from ..result import Result
@@ -80,7 +81,7 @@ class FitMuellerMatrix():
         """
         return mueller_matrix.values.reshape(-1, 4, 4) - self.model(lbda, params).mueller_matrix
 
-    def fit(self, method:str='leastsq') -> Results:
+    def fit(self, method:str='leastsq') -> MinimizerResult:
         """Execute lmfit with the current fitting parameters
 
         Args:
