@@ -2,13 +2,14 @@
 # Encoding: utf-8
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from typing import List
 import pandas as pd
 COLORS = ['#636EFA', '#EF553B', '#00CC96',
           '#AB63FA', '#FFA15A', '#19D3F3',
           '#FF6692', '#B6E880', '#FF97FF',
           '#FECB52']
 
-def plot_mmatrix(dataframes:list[pd.DataFrame],
+def plot_mmatrix(dataframes:List[pd.DataFrame],
                  colors:list=None,
                  dashes:list=None,
                  names:list=None,
@@ -19,7 +20,7 @@ def plot_mmatrix(dataframes:list[pd.DataFrame],
     and plots them together. Needs plotly as additional requirement to work.
 
     Args:
-        dataframes (list[pd.DataFrame]): A list of dataframes containing data of the same index.
+        dataframes (List[pd.DataFrame]): A list of dataframes containing data of the same index.
         colors (list, optional): A list of colors which are cycled for each dataframes index. Defaults to None.
         dashes (list, optional): A list of dash line styles which are cycled for each dataframes index. Defaults to None.
         names (list, optional): A name for each dataframe index. Defaults to None.
