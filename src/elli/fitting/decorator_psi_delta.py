@@ -139,19 +139,19 @@ class FitRho():
 
     def fit_function(self,
                      params:Parameters,
-                     lbda:npt.ndarray,
-                     rhor:npt.ndarray,
-                     rhoi:npt.ndarray) -> npt.ndarray:
+                     lbda:npt.NDArray,
+                     rhor:npt.NDArray,
+                     rhoi:npt.NDArray) -> npt.NDArray:
         """The fit function to minimize the fitting problem
 
         Args:
             params (Parameters): The lmfit fitting Parameters to construct the simulation
-            lbda (npt.ndarray): Wavelengths in nm
-            rhor (npt.ndarray): The real part of the experimental rho
-            rhoi (npt.ndarray): The imaginary part of the experimental rho
+            lbda (npt.NDArray): Wavelengths in nm
+            rhor (npt.NDArray): The real part of the experimental rho
+            rhoi (npt.NDArray): The imaginary part of the experimental rho
 
         Returns:
-            npt.ndarray: Residual between the calculation with current parameters and experimental data
+            npt.NDArray: Residual between the calculation with current parameters and experimental data
         """                
         result = self.model(lbda, params)
 
@@ -203,7 +203,7 @@ class FitRho():
     def __init__(self,
                  exp_data:pd.DataFrame,
                  params:Parameters,
-                 model:Callable[[npt.ndarray, Parameters], Result],
+                 model:Callable[[npt.NDArray, Parameters], Result],
                  angle:float = 70):
         """Intialize the psi/delta fitting class
 
@@ -211,7 +211,7 @@ class FitRho():
             exp_data (pd.DataFrame): The dataframe containing an experimental mueller matrix.
                                      It should contain 2 columns with labels Ψ and Δ.
             params (Parameters): Fitting start parameters
-            model (Callable[[npt.ndarray, Parameters], Result]): A function taking wavelengths as first parameter and fitting parameters as second,
+            model (Callable[[npt.NDArray, Parameters], Result]): A function taking wavelengths as first parameter and fitting parameters as second,
                                                      which returns a pyEllis Result object.
                                                      This function contains the actual model which should be fitted.
             angle (float, optional): The angle of incident of the measurement. 
@@ -237,7 +237,7 @@ class FitRho():
 
 def fit(exp_data:pd.DataFrame,
         params:Parameters,
-        angle:float = 70) -> Callable[[npt.ndarray, Parameters], Result]:
+        angle:float = 70) -> Callable[[npt.NDArray, Parameters], Result]:
     """A parameters decorator for fitting psi/delta valus. Displays an ipywidget float box for
     each fitting parameter and an interactive plot to estimate parameters.
 
@@ -250,7 +250,7 @@ def fit(exp_data:pd.DataFrame,
                                  Defaults to 70.
 
     Returns:
-        Callable[[npt.ndarray, Parameters], Result]: A function taking wavelengths as first parameter and fitting parameters as second,
+        Callable[[npt.NDArray, Parameters], Result]: A function taking wavelengths as first parameter and fitting parameters as second,
                                                      which returns a pyEllis Result object.
                                                      This function contains the actual model which should be fitted and is automatically
                                                      provided when used as a decorator.
