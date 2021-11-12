@@ -23,7 +23,7 @@ from .result import Result
 
 class Propagator(ABC):
     """Propergator case class.
-    
+
     :meta private
     """
     @abstractmethod
@@ -107,7 +107,8 @@ class PropagatorEig(Propagator):
 
         # Sort according to z propagation direction, highest Re(q) first
         # if Re(q) is zero, sort by Im(q)
-        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q)))
+        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)),
+                     np.argsort(-np.real(q)))
 
         q = np.take_along_axis(q, i, axis=-1)
         W = np.take_along_axis(W, i[:, np.newaxis, :], axis=-1)
@@ -178,7 +179,8 @@ class Solver4x4(Solver):
 
         # Sort according to z propagation direction, highest Re(q) first
         # if Re(q) is zero, sort by Im(q)
-        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q)))
+        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)),
+                     np.argsort(-np.real(q)))
 
         q = np.take_along_axis(q, i, axis=-1)
         Psi = np.take_along_axis(Psi, i[:, np.newaxis, :], axis=-1)
@@ -242,14 +244,14 @@ class Solver4x4(Solver):
                                  [zeros,           ones,   ones / cos_phi / n_x,  zeros],
                                  [ones / cos_phi,  zeros,  zeros,                 ones / n_x],
                                  [-ones / cos_phi, zeros,  zeros,                 ones / n_x]],
-                                 dtype=np.complex128)
+                                dtype=np.complex128)
             return np.moveaxis(0.5 * sp_to_xy, 2, 0)
 
         sp_to_xy = np.array([[zeros,          zeros,          cos_phi, -cos_phi],
                              [ones,           ones,           zeros,   zeros],
                              [-n_x * cos_phi, n_x * cos_phi,  zeros,   zeros],
                              [zeros,          zeros,          n_x,     n_x]],
-                             dtype=np.complex128)
+                            dtype=np.complex128)
         return np.moveaxis(sp_to_xy, 2, 0)
 
     @staticmethod
@@ -322,7 +324,7 @@ class Solver4x4(Solver):
     @property
     def jones_matrix_rc(self) -> npt.NDArray:
         C = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        D = 1 / sqrt(2) * np.array([[1, 1], [-1j, 1j]])
+        D = 1 / sqrt(2) * np.array([[-1, -1], [1j, -1j]])
         return np.einsum('ij,...jk,kl->...il', np.linalg.inv(D), self._jones_matrix_r, C)
 
     @property
@@ -364,7 +366,8 @@ class Solver4x4(Solver):
                 self.build_delta_matrix(self.Kx, epsilon), -d, self.lbda)
             T = P @ T
 
-        Lf = self.transition_matrix_iso_halfspace(self.Kx, self.permProfile[0], inv=True)
+        Lf = self.transition_matrix_iso_halfspace(
+            self.Kx, self.permProfile[0], inv=True)
         T = Lf @ T
 
         # Extraction of T_it out of T. "2::-2" means integers {2,0}.
@@ -381,8 +384,8 @@ class Solver4x4(Solver):
         r_ss = T_ri[..., 1, 1]
         S = T_ri / r_ss[:, None, None]
 
-        Kzf = self.getKz(self.structure.frontMaterial, self.lbda, self.Kx)
         if isinstance(self.structure.backMaterial, IsotropicMaterial):
+            Kzf = self.getKz(self.structure.frontMaterial, self.lbda, self.Kx)
             Kzb = self.getKz(self.structure.backMaterial, self.lbda, self.Kx)
             self.power_correction = Kzb.real / Kzf.real
         else:
