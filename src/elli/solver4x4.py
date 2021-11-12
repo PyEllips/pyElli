@@ -273,8 +273,7 @@ class Solver4x4(Solver):
 
     @property
     def delta(self) -> npt.NDArray:
-        d = -np.angle(self.rho, deg=True)
-        return np.where(d < 0, d + 360, d)
+        return -np.angle(self.rho, deg=True)
 
     @property
     def rhoMat(self) -> npt.NDArray:
