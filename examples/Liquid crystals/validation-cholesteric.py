@@ -9,7 +9,7 @@
 import numpy as np
 from numpy.lib.scimath import sqrt
 import elli
-import elli.plotter as elliplot
+import elli.plot.structure as elliplot
 from scipy.constants import c, pi
 import matplotlib.pyplot as plt
 

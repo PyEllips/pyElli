@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.lib.scimath import sqrt
-from .math import e_x
+from ..math import e_x
 
 
 def getPermittivityProfile(structure, lbda):

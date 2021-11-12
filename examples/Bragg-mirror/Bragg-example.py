@@ -7,7 +7,7 @@
 
 # %%
 import elli
-import elli.plotter as elliplot
+import elli.plot.structure as elliplot
 import matplotlib.pyplot as plt
 import numpy as np
 

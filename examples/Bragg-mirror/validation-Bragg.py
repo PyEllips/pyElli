@@ -8,7 +8,7 @@
 # %%
 import numpy as np
 import elli
-import elli.plotter as elliplot
+import elli.plot.structure as elliplot
 import matplotlib.pyplot as plt
 from scipy.constants import pi
 
