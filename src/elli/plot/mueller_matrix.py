@@ -7,7 +7,7 @@ COLORS = ['#636EFA', '#EF553B', '#00CC96',
           '#FF6692', '#B6E880', '#FF97FF',
           '#FECB52']
 
-def plot_mmatrix(dataframes: pd.DataFrame,
+def plot_mmatrix(dataframes:list[pd.DataFrame],
                  colors:list=None,
                  dashes:list=None,
                  names:list=None,
@@ -15,7 +15,20 @@ def plot_mmatrix(dataframes: pd.DataFrame,
                  full_scale:bool=False,
                  sharex:bool=False) -> go.Figure:
     """Takes multiple Mueller matrix dataframes with columns Mxy for matrix postion x,y
-    and plots them together."""
+    and plots them together. Needs plotly as additional requirement to work.
+
+    Args:
+        dataframes (list[pd.DataFrame]): A list of dataframes containing data of the same index.
+        colors (list, optional): A list of colors which are cycled for each dataframes index. Defaults to None.
+        dashes (list, optional): A list of dash line styles which are cycled for each dataframes index. Defaults to None.
+        names (list, optional): A name for each dataframe index. Defaults to None.
+        single (bool, optional): Uses a single plot if set and a grid if not set. Defaults to True.
+        full_scale (bool, optional): Sets the y-axis limits to [-1, 1] if set. Defaults to False.
+        sharex (bool, optional): Ties the zooming of the x-axis together for each plot in grid view. Defaults to False.
+
+    Returns:
+        go.Figure: A plotly figure containing the data from dataframes as a grid or single view.
+    """
     if colors is None:
         colors = COLORS
     if dashes is None:
