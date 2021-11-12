@@ -2,6 +2,7 @@
 to keep track of the changes made to the parameters."""
 # Encoding: utf-8
 import copy
+from typing import List
 from lmfit import Parameters
 
 class ParamsHist(Parameters):
@@ -16,11 +17,11 @@ class ParamsHist(Parameters):
         self.history.append(clone)
 
     @property
-    def history(self) -> list:
+    def history(self) -> List[Parameters]:
         """Gets the entire history
 
         Returns:
-            list[Parameters]: The history
+            List[Parameters]: The history
         """
         return self._history
 

@@ -1,4 +1,5 @@
 """Decorator functions for convenient fitting of Mueller matrices"""
+# Encoding: utf-8
 from ipywidgets import widgets
 from IPython.display import display
 import pandas as pd
