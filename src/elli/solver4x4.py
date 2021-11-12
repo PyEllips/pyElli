@@ -22,8 +22,24 @@ from .result import Result
 
 
 class Propagator(ABC):
+    """Propergator case class.
+    
+    :meta private
+    """
     @abstractmethod
     def calculate_propagation(self, Delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Calculates propagation for a given Delta matrix and layer thickness.
+
+        Args:
+            Delta (npt.NDArray): Delta Matrix
+            h (float): Thickness of layer (nm)
+            lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
+
+        Returns:
+            npt.NDArray: Propagator for the given layer
+
+        :meta private
+        """
         pass
 
 
