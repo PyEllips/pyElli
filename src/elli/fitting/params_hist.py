@@ -16,11 +16,11 @@ class ParamsHist(Parameters):
         self.history.append(clone)
 
     @property
-    def history(self) -> list[Parameters]:
+    def history(self) -> list:
         """Gets the entire history
 
         Returns:
-            list(Parameters): The history
+            list[Parameters]: The history
         """
         return self._history
 
