@@ -4,6 +4,9 @@
 .. image:: https://readthedocs.org/projects/pyelli/badge/?version=latest
    :target: https://pyelli.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+.. image:: https://img.shields.io/pypi/v/pyElli   
+   :target: https://pypi.org/project/pyElli/
+   :alt: PyPI
 
 |
 
