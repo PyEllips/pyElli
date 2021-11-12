@@ -148,6 +148,8 @@ pygments_style = "sphinx"
 # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_emit_warnings = True
 
+# Typehint settings
+autodoc_typehints = "none"
 
 # -- Options for HTML output -------------------------------------------------
 
