@@ -17,11 +17,16 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Run benchmark
+      - name: Install deps
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-benchmark pytest-coverage
           pip install torch
+      - name: Install module
+        run: |
+          pip install .
+      - name: Run benchmark
+        run: |
           pytest tests/benchmark*.py --benchmark-json output.json
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
