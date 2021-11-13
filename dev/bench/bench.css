@@ -1,0 +1,39 @@
+ 
+  button {
+    color: #fff;
+    background-color: #3298dc;
+    border-color: transparent;
+    cursor: pointer;
+    text-align: center;
+  }
+  button:hover {
+    background-color: #2793da;
+    flex: none;
+  }
+  .spacer {
+    flex: auto;
+  }
+
+  .benchmark-set {
+    margin: 0px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .benchmark-title {
+    font-size: 2rem;
+    font-weight: 600;
+    word-break: break-word;
+    text-align: center;
+  }
+  .benchmark-graphs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .benchmark-chart {
+    max-width: 100%;
+  }
