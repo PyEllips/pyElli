@@ -20,6 +20,8 @@ jobs:
       - name: Run benchmark
         run: |
           pip install -r requirements.txt
+          pip install pytest pytest-benchmark
+          pip install torch
           pytest tests/benchmark*.py --benchmark-json output.json
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
