@@ -27,7 +27,7 @@ def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
 #########################################################
 # Rotations
 
-def rotation_Euler(p: float, n: float, r: float) -> npt.NDArray:
+def rotation_euler(p: float, n: float, r: float) -> npt.NDArray:
     """Returns rotation matrix defined by Euler angles p, n, r.
 
     Successive rotations : z,x',z'
@@ -57,7 +57,7 @@ def rotation_Euler(p: float, n: float, r: float) -> npt.NDArray:
                      [s2*s3,           s2*c3,           c2]])
 
 
-def rotation_V(V: npt.ArrayLike) -> npt.NDArray:
+def rotation_v(V: npt.ArrayLike) -> npt.NDArray:
     """Returns rotation matrix defined by a rotation vector V.
 
     The calculation is made with the matrix exponential

@@ -13,23 +13,23 @@ class Material(ABC):
     """Base class for materials (abstract class).
 
     Method that should be implemented in derived classes:
-    * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    * get_tensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
 
     @abstractmethod
-    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         pass
 
-    def getRefractiveIndex(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns refractive index for wavelength 'lbda'."""
-        return sqrt(self.getTensor(lbda))
+        return sqrt(self.get_tensor(lbda))
 
 
 class SingleMaterial(Material):
     """Base class for single materials (abstract class).
 
     Method that should be implemented in derived classes:
-    * getTensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    * get_tensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
     """
 
     law_x = None
@@ -38,19 +38,19 @@ class SingleMaterial(Material):
     rotated = False
 
     @abstractmethod
-    def setDispersion(self) -> None:
+    def set_dispersion(self) -> None:
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def setRotation(self, R: npt.NDArray) -> None:
+    def set_rotation(self, R: npt.NDArray) -> None:
         """Rotates the Material.
 
         'R' : rotation matrix (from rotation_Euler() or others)
         """
         self.rotated = True
-        self.rotationMatrix = R
+        self.rotation_matrix = R
 
-    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for the desired wavelength."""
         # Check for shape of lbda
         shape = np.shape(lbda)
@@ -68,7 +68,7 @@ class SingleMaterial(Material):
         epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
 
         if self.rotated:
-            epsilon = self.rotationMatrix @ epsilon @ self.rotationMatrix.T
+            epsilon = self.rotation_matrix @ epsilon @ self.rotation_matrix.T
 
         return epsilon
 
@@ -81,9 +81,9 @@ class IsotropicMaterial(SingleMaterial):
 
         'law' : Dispersion law object
         """
-        self.setDispersion(law)
+        self.set_dispersion(law)
 
-    def setDispersion(self, law: DispersionLaw) -> None:
+    def set_dispersion(self, law: DispersionLaw) -> None:
         self.law_x = law
         self.law_y = law
         self.law_z = law
@@ -98,9 +98,9 @@ class UniaxialMaterial(SingleMaterial):
         'law_o' : dispersion law for ordinary crystal axes (x and y direction)
         'law_o' : dispersion law for extraordinary crystal axis (z direction)
         """
-        self.setDispersion(law_o, law_e)
+        self.set_dispersion(law_o, law_e)
 
-    def setDispersion(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
+    def set_dispersion(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
         self.law_x = law_o
         self.law_y = law_o
         self.law_z = law_e
@@ -116,9 +116,9 @@ class BiaxialMaterial(SingleMaterial):
         'law_y' : dispersion law for y axis
         'law_z' : dispersion law for z axis
         """
-        self.setDispersion(law_x, law_y, law_z)
+        self.set_dispersion(law_x, law_y, law_z)
 
-    def setDispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
+    def set_dispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
         self.law_x = law_x
         self.law_y = law_y
         self.law_z = law_z
@@ -134,10 +134,10 @@ class MixtureMaterial(Material):
         'guest_material': Material incorporated in the host
         'fraction' : Fraction of the guest material (Range 0 - 1) 
         """
-        self.setConstituents(host_material, guest_material)
-        self.setFraction(fraction)
+        self.set_constituents(host_material, guest_material)
+        self.set_fraction(fraction)
 
-    def setConstituents(self, host_material: Material, guest_material: Material) -> None:
+    def set_constituents(self, host_material: Material, guest_material: Material) -> None:
         """ Sets Materials in the mixture
         'host_material': Host Material
         'guest_material': Material incorporated in the host
@@ -145,7 +145,7 @@ class MixtureMaterial(Material):
         self.host_material = host_material
         self.guest_material = guest_material
 
-    def setFraction(self, fraction: float) -> None:
+    def set_fraction(self, fraction: float) -> None:
         """ Sets fraction and checks if fraction is in range from 0 to 1.
         'fraction' : Fraction of the guest material (Range 0 - 1)
         """
@@ -155,16 +155,16 @@ class MixtureMaterial(Material):
         self.fraction = fraction
 
     @abstractmethod
-    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         pass
 
 
 class VCAMaterial(MixtureMaterial):
     """Mixture Material approximated with a simple virtual crystal like average."""
 
-    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        epsilon = self.host_material.getTensor(lbda) * (1 - self.fraction) \
-            + self.guest_material.getTensor(lbda) * self.fraction
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        epsilon = self.host_material.get_tensor(lbda) * (1 - self.fraction) \
+            + self.guest_material.get_tensor(lbda) * self.fraction
         return epsilon
 
 
@@ -173,9 +173,9 @@ class MaxwellGarnetEMA(MixtureMaterial):
        It is valid for spherical inclusions with small volume fraction.
     """
 
-    def getTensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        e_h = self.host_material.getTensor(lbda)
-        e_g = self.guest_material.getTensor(lbda)
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        e_h = self.host_material.get_tensor(lbda)
+        e_g = self.guest_material.get_tensor(lbda)
 
         epsilon = e_h * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
             / (2 * e_h + e_g - self.fraction * (e_g - e_h))

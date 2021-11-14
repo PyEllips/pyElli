@@ -312,13 +312,13 @@ class Solver4x4(Solver):
         Returns:
             npt.NDArray: value of Kz in the material
         """
-        nx = material.getRefractiveIndex(lbda)[:, 0, 0]
+        nx = material.get_refractive_index(lbda)[:, 0, 0]
         k_z2 = nx ** 2 - k_x ** 2
         return sqrt(k_z2)
 
     @property
     def rho(self) -> npt.NDArray:
-        rho = np.dot(self._s, self.jonesVector)
+        rho = np.dot(self._s, self.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
         return rho
 
@@ -331,16 +331,16 @@ class Solver4x4(Solver):
         return -np.angle(self.rho, deg=True)
 
     @property
-    def rhoMat(self) -> npt.NDArray:
+    def rho_matrix(self) -> npt.NDArray:
         return self._s
 
     @property
-    def psiMat(self) -> npt.NDArray:
-        return np.rad2deg(np.arctan(np.abs(self.rhoMat)))
+    def psi_matrix(self) -> npt.NDArray:
+        return np.rad2deg(np.arctan(np.abs(self.rho_matrix)))
 
     @property
-    def deltaMat(self) -> npt.NDArray:
-        return -np.angle(self.rhoMat, deg=True)
+    def delta_matrix(self) -> npt.NDArray:
+        return -np.angle(self.rho_matrix, deg=True)
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
@@ -397,23 +397,23 @@ class Solver4x4(Solver):
         super().__init__(experiment)
         self.propagator = propagator
 
-        # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
-        nx = self.structure.frontMaterial.getRefractiveIndex(self.lbda)[:, 0, 0]
-        self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
-
     def calculate(self) -> Result:
         """Calculates transition matrices for every element in the structure and resulting Jones matrices.
 
         Returns:
             Result: Result object with calculation results
         """
-        layers = reversed(self.permProfile[1:-1])
+        # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
+        nx = self.structure.front_material.get_refractive_index(self.lbda)[:, 0, 0]
+        self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
 
-        if isinstance(self.structure.backMaterial, IsotropicMaterial):
-            t = self.transition_matrix_iso_halfspace(self.Kx, self.permProfile[-1])
+        layers = reversed(self.permittivity_profile[1:-1])
+
+        if isinstance(self.structure.back_material, IsotropicMaterial):
+            t = self.transition_matrix_iso_halfspace(self.Kx, self.permittivity_profile[-1][1])
         else:
             t = self.transition_matrix_halfspace(
-                self.build_delta_matrix(self.Kx, self.permProfile[-1]))
+                self.build_delta_matrix(self.Kx, self.permittivity_profile[-1][1]))
 
         for d, epsilon in layers:
             p = self.propagator.calculate_propagation(
@@ -421,7 +421,7 @@ class Solver4x4(Solver):
             t = p @ t
 
         lf = self.transition_matrix_iso_halfspace(
-            self.Kx, self.permProfile[0], inv=True)
+            self.Kx, self.permittivity_profile[0][1], inv=True)
         t = lf @ t
 
         # Extraction of t_it out of t. "2::-2" means integers {2,0}.
@@ -438,9 +438,9 @@ class Solver4x4(Solver):
         r_ss = t_ri[..., 1, 1]
         s = t_ri / r_ss[:, None, None]
 
-        if isinstance(self.structure.backMaterial, IsotropicMaterial):
-            k_z_f = self.get_k_z(self.structure.frontMaterial, self.lbda, self.Kx)
-            k_z_b = self.get_k_z(self.structure.backMaterial, self.lbda, self.Kx)
+        if isinstance(self.structure.back_material, IsotropicMaterial):
+            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, self.Kx)
+            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, self.Kx)
             self.power_correction = k_z_b.real / k_z_f.real
         else:
             self.power_correction = np.ones_like(self.lbda)

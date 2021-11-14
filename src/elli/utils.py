@@ -62,5 +62,5 @@ def get_qwp_thickness(material: "Material", lbda: float) -> float:
     Returns:
         float: Thickness (in nm) of quarter wave plate
     """
-    nr = np.real(material.getRefractiveIndex(lbda)[0, 0, 0])
+    nr = np.real(material.get_refractive_index(lbda)[0, 0, 0])
     return lbda / (4.*nr)

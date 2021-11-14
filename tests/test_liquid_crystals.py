@@ -18,7 +18,7 @@ def test_cholesteric_lc():
     n_med = (ne + no)/2
     LC = elli.UniaxialMaterial(elli.DispersionLess(no), elli.DispersionLess(ne))  # ne along z
     R = elli.rotation_v_theta(elli.e_y, 90)  # rotation round y
-    LC.setRotation(R)  # apply rotation from z to x
+    LC.set_rotation(R)  # apply rotation from z to x
     # Cholesteric pitch:
     p = 650
     # One half turn of a right-handed helix:
@@ -71,7 +71,7 @@ def test_twisted_nematic_lc():
     LC = elli.UniaxialMaterial(elli.DispersionLess(no),
                              elli.DispersionLess(ne))
     R = elli.rotation_v_theta(elli.e_y, 90)
-    LC.setRotation(R)
+    LC.set_rotation(R)
     d = 4330
     TN = elli.TwistedLayer(LC, d, 18, 90)
 

@@ -87,7 +87,7 @@ def test_tir_thickness():
     jt = []
 
     for dd in d:
-        layer.setThickness(dd)
+        layer.set_thickness(dd)
         data = s.evaluate(lbda, np.rad2deg(Phi_i))
         R.append(data.R[0])
         T.append(data.T[0])
@@ -135,7 +135,7 @@ def test_tir_angle():
 
     # Layer thickness
     d = lbda * 0.347
-    layer.setThickness(d)
+    layer.set_thickness(d)
 
     # Variation of incidence angle
     Phi_list = np.deg2rad(np.linspace(0, 89, 90))

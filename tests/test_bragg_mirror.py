@@ -32,7 +32,7 @@ class TestBragg:
     Layerstack = elli.RepeatedLayers([L_TiO2, L_SiO2], 4, 0, 0)
 
     # Number of interfaces
-    N = 2 * Layerstack.n + 1
+    N = 2 * Layerstack.repetitions + 1
 
     # Structure
     s = elli.Structure(air, [Layerstack], glass)

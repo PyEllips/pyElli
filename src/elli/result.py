@@ -18,16 +18,16 @@ class Result:
         return self.__result.rho
 
     @property
-    def rhoMat(self):
-        return self.__result.rhoMat
+    def rho_matrix(self):
+        return self.__result.rho_matrix
 
     @property
-    def psiMat(self):
-        return self.__result.psiMat
+    def psi_matrix(self):
+        return self.__result.psi_matrix
 
     @property
-    def deltaMat(self):
-        return self.__result.deltaMat
+    def delta_matrix(self):
+        return self.__result.delta_matrix
 
     @property
     def mueller_matrix(self):

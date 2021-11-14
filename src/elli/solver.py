@@ -17,8 +17,8 @@ class Solver(ABC):
     structure = None
     lbda = None
     theta_i = None
-    jonesVector = None
-    permProfile = None
+    jones_vector = None
+    permittivity_profile = None
 
     @property
     def rho(self):
@@ -33,15 +33,15 @@ class Solver(ABC):
         raise ValueError('Value not calculated by solver')
 
     @property
-    def rhoMat(self):
+    def rho_matrix(self):
         raise ValueError('Value not calculated by solver')
 
     @property
-    def psiMat(self):
+    def psi_matrix(self):
         raise ValueError('Value not calculated by solver')
 
     @property
-    def deltaMat(self):
+    def delta_matrix(self):
         raise ValueError('Value not calculated by solver')
 
     @property
@@ -88,5 +88,5 @@ class Solver(ABC):
         self.structure = experiment.structure
         self.lbda = experiment.lbda
         self.theta_i = experiment.theta_i
-        self.jonesVector = experiment.jonesVector
-        self.permProfile = self.structure.getPermittivityProfile(self.lbda)
+        self.jones_vector = experiment.jones_vector
+        self.permittivity_profile = self.structure.get_permittivity_profile(self.lbda)

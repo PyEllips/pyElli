@@ -11,8 +11,8 @@ class Experiment:
     """Description of an experiment."""
 
     structure = None
-    jonesVector = None
-    stokesVector = None
+    jones_vector = None
+    stokes_vector = None
     theta_i = None
     lbda = None
 
@@ -24,19 +24,19 @@ class Experiment:
         'theta_i' : incident angle in degrees
         'vector' : Jones or Stokes vector of incident light
         """
-        self.setStructure(structure)
-        self.setTheta(theta_i)
-        self.setLbda(lbda)
-        self.setVector(vector)
+        self.set_structure(structure)
+        self.set_theta(theta_i)
+        self.set_lbda(lbda)
+        self.set_vector(vector)
 
-    def setStructure(self, structure: "Structure") -> None:
         """Defines the Structure.
+    def set_structure(self, structure: "Structure") -> None:
 
         'structure' : Structure object
         """
         self.structure = structure
 
-    def setVector(self, vector: npt.ArrayLike) -> None:
+    def set_vector(self, vector: npt.ArrayLike) -> None:
         """Defines the Jones or Stokes vector of the incident Light.
 
         Jones:
@@ -52,26 +52,26 @@ class Experiment:
         [1,0,1,0]: diagonal polarized
         [1,0,-1,0]: anti-diagonal polarized
         """
-        vectorArray = np.asarray(vector)
+        vector = np.asarray(vector)
 
-        if vectorArray.shape == (2,):
-            self.jonesVector = vectorArray
+        if vector.shape == (2,):
+            self.jones_vector = vector
 
-            self.stokesVector = np.array([
-                np.abs(self.jonesVector[0])**2 + np.abs(self.jonesVector[1])**2,
-                np.abs(self.jonesVector[0])**2 - np.abs(self.jonesVector[1])**2,
-                2 * np.real(self.jonesVector[0] * np.conjugate(self.jonesVector[1])),
-                -2 * np.imag(self.jonesVector[0] * np.conjugate(self.jonesVector[1]))])
+            self.stokes_vector = np.array([
+                np.abs(self.jones_vector[0])**2 + np.abs(self.jones_vector[1])**2,
+                np.abs(self.jones_vector[0])**2 - np.abs(self.jones_vector[1])**2,
+                2 * np.real(self.jones_vector[0] * np.conjugate(self.jones_vector[1])),
+                -2 * np.imag(self.jones_vector[0] * np.conjugate(self.jones_vector[1]))])
 
-        elif vectorArray.shape == (4,):
-            self.stokesVector = vectorArray
+        elif vector.shape == (4,):
+            self.stokes_vector = vector
 
-            p = np.sqrt(self.stokesVector[1]**2 +
-                        self.stokesVector[2]**2 +
-                        self.stokesVector[3]**2) / self.stokesVector[0]
-            Q = self.stokesVector[1] / (self.stokesVector[0] * p)
-            U = self.stokesVector[2] / (self.stokesVector[0] * p)
-            V = self.stokesVector[3] / (self.stokesVector[0] * p)
+            p = np.sqrt(self.stokes_vector[1]**2 +
+                        self.stokes_vector[2]**2 +
+                        self.stokes_vector[3]**2) / self.stokes_vector[0]
+            Q = self.stokes_vector[1] / (self.stokes_vector[0] * p)
+            U = self.stokes_vector[2] / (self.stokes_vector[0] * p)
+            V = self.stokes_vector[3] / (self.stokes_vector[0] * p)
 
             if Q == -1:
                 a = 0
@@ -80,16 +80,16 @@ class Experiment:
                 a = np.sqrt((1 + Q) / 2)
                 b = U / (2 * a) - 1j * V / (2 * a)
 
-            self.jonesVector = np.array([a, b])
+            self.jones_vector = np.array([a, b])
 
-    def setTheta(self, theta_i: float) -> None:
         """Set incident angle, or list of angles to evaluate.
+    def set_theta(self, theta_i: float) -> None:
 
         'theta_i' : incident angle in degrees
         """
         self.theta_i = theta_i
 
-    def setLbda(self, lbda: npt.ArrayLike) -> None:
+    def set_lbda(self, lbda: npt.ArrayLike) -> None:
         """Set experiment wavelengths.
 
         'lbda' : single or list of wavelengths in nm
