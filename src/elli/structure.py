@@ -13,13 +13,26 @@ from .result import Result
 
 
 class AbstractLayer(ABC):
+    """Abstract class for a layer.
+    """
     def set_thickness(self, d: float) -> None:
+        """Defines the thickness of the layer in nm.
 
-        """Defines the thickness of this homogeneous layer in nm."""
+        Args:
+            d (float): Thickness of the layer in nm.
+        """
         self.d = d
 
     @abstractmethod
     def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+        """Returns the permitivity profile of the layer for the given wavelengths. 
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            List[Tuple[float, npt.NDArray]]: Returns list of tuples [(thickness, dielectric tensor), ...]
+        """
         pass
 
 
@@ -31,7 +44,7 @@ class RepeatedLayers(AbstractLayer):
     after = None        # additional layers after the last period
     layers = None       # layers to repeat
 
-    def __init__(self, layers: List[AbstractLayer], n: int, before: int = 0, after: int = 0) -> None:
+    def __init__(self, layers: List[AbstractLayer], repetitions: int, before: int = 0, after: int = 0) -> None:
         """Repeated structure of layers
 
         'layers' : list of the repeated layers

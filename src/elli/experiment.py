@@ -8,7 +8,7 @@ from .result import Result
 
 
 class Experiment:
-    """Description of an experiment."""
+    """Description of a virtual experiment to simmulate the behavior of a structure."""
 
     structure = None
     jones_vector = None
@@ -17,22 +17,24 @@ class Experiment:
     lbda = None
 
     def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, -1, 0]) -> None:
-        """Creates an empty structure.
+        """Creates a virtual experiment to simmulate the behavior of a structure. 
 
-        'structure' : Structure object
-        'lbda' : single or list of wavelengths in nm or tuple (wavelength, unit)
-        'theta_i' : incident angle in degrees
-        'vector' : Jones or Stokes vector of incident light
+        Args:
+            structure (Structure): Structure object to evaluate.
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            theta_i (float): Incident angle (in degrees).
+            vector (npt.ArrayLike, optional): Jones or Stokes vector of incident light. Defaults to [1, 0, -1, 0].
         """
         self.set_structure(structure)
         self.set_theta(theta_i)
         self.set_lbda(lbda)
         self.set_vector(vector)
 
-        """Defines the Structure.
     def set_structure(self, structure: "Structure") -> None:
+        """Defines the Structure to evaluate.
 
-        'structure' : Structure object
+        Args:
+            structure (Structure): Structure object to evaluate.
         """
         self.structure = structure
 
@@ -51,6 +53,9 @@ class Experiment:
         [1,-1,0,0]: vertical polarized
         [1,0,1,0]: diagonal polarized
         [1,0,-1,0]: anti-diagonal polarized
+
+        Args:
+            vector (npt.ArrayLike): Jones or Stokes vector of incident light.
         """
         vector = np.asarray(vector)
 
@@ -82,17 +87,19 @@ class Experiment:
 
             self.jones_vector = np.array([a, b])
 
-        """Set incident angle, or list of angles to evaluate.
     def set_theta(self, theta_i: float) -> None:
+        """Set incident angle to evaluate.
 
-        'theta_i' : incident angle in degrees
+        Args:
+            theta_i (float): Incident angle (in degrees).
         """
         self.theta_i = theta_i
 
     def set_lbda(self, lbda: npt.ArrayLike) -> None:
         """Set experiment wavelengths.
 
-        'lbda' : single or list of wavelengths in nm
+        Args:
+            lbda (npt.ArrayLike): single value or array of wavelengths (in nm).
         """
         lbda_array = np.asarray(lbda)
         if np.shape(lbda_array) == ():
@@ -100,7 +107,15 @@ class Experiment:
         self.lbda = lbda_array
 
     def evaluate(self, solver: Solver = Solver4x4, **solver_kwargs) -> Result:
-        """Return the Evaluation of the structure for the given parameters"""
+        """Evaluates the experiment with the given solver.
+
+        Args:
+            solver (Solver, optional): Choose which solver class is used. Defaults to Solver4x4.
+            solver_kwargs (optional): Keyword arguments for the Solver can be appended as arguments.
+
+        Returns:
+            Result: Result of the experiment.
+        """
         if solver_kwargs == {}:
             solv = solver(self)
         else:
