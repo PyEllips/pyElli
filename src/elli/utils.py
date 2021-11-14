@@ -52,7 +52,15 @@ def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
                            np.exp(-1j * np.deg2rad(x['Δ'])),
                            axis=1)
 
-def get_QWP_thickness(material: "Material", lbda: float) -> float:
-    """Return the thickness in nm of a Quater Wave Plate at wavelength 'lbda'."""
+def get_qwp_thickness(material: "Material", lbda: float) -> float:
+    """Return the thickness of a material in nm for a quater wave plate at wavelength 'lbda'.
+
+    Args:
+        material (Material): Material object of the quarter wave plate
+        lbda (float): Wavelength (in nm) at which the quarter wave plate is calculated
+
+    Returns:
+        float: Thickness (in nm) of quarter wave plate
+    """
     nr = np.real(material.getRefractiveIndex(lbda)[0, 0, 0])
     return lbda / (4.*nr)

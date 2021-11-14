@@ -36,8 +36,8 @@ TiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_TiO2))
 # %%
 lbda0 = 1550
 
-d_SiO2 = elli.get_QWP_thickness(SiO2, lbda0)
-d_TiO2 = elli.get_QWP_thickness(TiO2, lbda0)
+d_SiO2 = elli.get_qwp_thickness(SiO2, lbda0)
+d_TiO2 = elli.get_qwp_thickness(TiO2, lbda0)
 
 print("Thickness of the SiO2 QWP: {} nm".format(d_SiO2))
 print("Thickness of the TiO2 QWP: {} nm".format(d_TiO2))

@@ -39,8 +39,8 @@ TiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_TiO2))
 # ### Layers and Structure
 
 # %%
-d_SiO2 = elli.get_QWP_thickness(SiO2, lbda0)
-d_TiO2 = elli.get_QWP_thickness(TiO2, lbda0)
+d_SiO2 = elli.get_qwp_thickness(SiO2, lbda0)
+d_TiO2 = elli.get_qwp_thickness(TiO2, lbda0)
 
 L_SiO2 = elli.Layer(SiO2, d_SiO2)
 L_TiO2 = elli.Layer(TiO2, d_TiO2)

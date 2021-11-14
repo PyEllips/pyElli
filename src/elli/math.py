@@ -11,7 +11,16 @@ e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
 def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
-    """Returns the Energy in eV of the given wavelength in 'nm'"""
+    """Converts wavelength values to energy values.
+    E = c * h_bar / lambda
+
+    Args:
+        lbda (npt.ArrayLike): Single value or array of wavelengths in 'nm'
+
+    Returns:
+        npt.ArrayLike: Energy in eV
+    """
+    
     return sc.speed_of_light * sc.value('Planck constant in eV/Hz') / (lbda * 1e-9)
 
 
@@ -19,23 +28,18 @@ def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
 # Rotations
 
 def rotation_Euler(p: float, n: float, r: float) -> npt.NDArray:
-    """Returns rotation matrix defined by Euler angles (p,n,r)
-
-    'angles' : p,n,r
-
-    Returns : rotation matrix M_R.
-    If A is an initial vector,  B = M_R * A is the rotated vector
+    """Returns rotation matrix defined by Euler angles p, n, r.
 
     Successive rotations : z,x',z'
-        p = precession angle, 1st rotation, around z (0..2π)
-        n = nutation angle, 2nd rotation, around x' (0..π)
-        r = 3rd rotation, around z' (0..2π)
+    Note : The inverse rotation is -r, -n, -p
 
-    Euler rotation for the coordinates is Rz(p)·Rx(n)·Rz(r),
-    where Rj(θ) is the matrix rotation for the coordinates.
-    (see for example Fujiwara, p. 217)
+    Args:
+        p (float): precession angle, 1st rotation, around z (0..360°)
+        n (float): nutation angle, 2nd rotation, around x' (0..180°)
+        r (float): 3rd rotation, around z' (0..360°)
 
-    Note : The inverse rotation is (-r,-n,-p)
+    Returns:
+        npt.NDArray: rotation matrix M_R
     """
     p = np.deg2rad(p)
     n = np.deg2rad(n)
@@ -54,12 +58,7 @@ def rotation_Euler(p: float, n: float, r: float) -> npt.NDArray:
 
 
 def rotation_V(V: npt.ArrayLike) -> npt.NDArray:
-    """Returns rotation matrix defined by a rotation vector V
-
-    'V' : rotation vector (list or array)
-
-    Returns : rotation matrix M_R
-    If A is an initial vector,  B = M_R * A is the rotated vector
+    """Returns rotation matrix defined by a rotation vector V.
 
     The calculation is made with the matrix exponential
     M_R = exp(W), with W_{ij} = - ε_{ijk} V_{k},
@@ -69,7 +68,13 @@ def rotation_V(V: npt.ArrayLike) -> npt.NDArray:
     sin(θ) and cos(θ) are needed instead.
 
     Note : The inverse rotation is -V
-    """
+
+    Args:
+        V (npt.ArrayLike): rotation vector (list or array)
+
+    Returns:
+        npt.NDArray: rotation matrix M_R
+    """ 
     W = np.array([[0,      -V[2],  V[1]],
                   [V[2],   0,      -V[0]],
                   [-V[1],  V[0],   0]])
@@ -77,16 +82,17 @@ def rotation_V(V: npt.ArrayLike) -> npt.NDArray:
 
 
 def rotation_v_theta(v: npt.ArrayLike, theta: float) -> npt.NDArray:
-    """Returns rotation matrix defined by a unit rotation vector and an angle
-
-    'v' : unit vector orienting the rotation (list or array)
-    'theta' : rotation angle around v in degrees
-
-    Returns : rotation matrix M_R.
-    If A is an initial vector,  B = M_R * A is the rotated vector
+    """Returns rotation matrix defined by a unit rotation vector and an angle.
 
     Notes : The inverse rotation is (v,-theta)
-    """
+
+    Args:
+        v (npt.ArrayLike): unit vector orienting the rotation (list or array)
+        theta (float): rotation angle around v in degrees
+
+    Returns:
+        npt.NDArray: rotation matrix M_R
+    """   
     w = np.array([[0,      -v[2],  v[1]],
                   [v[2],   0,      -v[0]],
                   [-v[1],  v[0],   0]])
