@@ -27,7 +27,12 @@ From a running Docker installation simply run:
 docker pull domna/pyelli
 ```
 
-The source code is hosted on [GitHub](https://github.com/PyEllips/pyElli), to install from source run:
+To install the latest development version use:
+```sh
+pip install git+https://github.com/PyEllips/pyElli.git
+```
+
+The source code is hosted on [GitHub](https://github.com/PyEllips/pyElli), to manually install from source, download and run inside the downloaded folder:
 ```sh
 python setup.py install
 ```
