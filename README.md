@@ -34,3 +34,4 @@ python setup.py install
 
 ## Acknowledgements
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
+- Solver2x2 based on Steve Byrnes's [tmm](https://github.com/sbyrnes321/tmm)
