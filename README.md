@@ -9,9 +9,9 @@ It serves as a system for the day to day ellipsometry task at hand and makes fit
 ## Features
 - A multitude of models to approximate the dielectric function of your material.
 - Build up your structure easily from materials and layers.
-- Simulate reflectiona and transmission spectra, ellipsometric parameters and Mueller matrices.
+- Simulate reflection and transmission spectra, ellipsometric parameters and Mueller matrices.
 - Utilities to quickly convert, plot and fit your measurement data.
-- Powerfull when necessary, editable and expandeble.
+- Powerful when necessary, editable and expandable.
 
 ## How to get it
 The installers for all releases are available at the [Python Package Index (PyPI)](https://pypi.org/project/pyElli/).
