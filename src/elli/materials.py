@@ -1,12 +1,11 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
-from typing import List, Tuple
 
 from .dispersions import DispersionLaw
-from .math import rotation_v_theta
 
 
 class Material(ABC):
@@ -36,19 +35,20 @@ class SingleMaterial(Material):
     law_y = None
     law_z = None
     rotated = False
+    rotation_matrix = None
 
     @abstractmethod
     def set_dispersion(self) -> None:
         """Creates a new material -- abstract class"""
         raise NotImplementedError("Should be implemented in derived classes")
 
-    def set_rotation(self, R: npt.NDArray) -> None:
+    def set_rotation(self, r: npt.NDArray) -> None:
         """Rotates the Material.
 
-        'R' : rotation matrix (from rotation_Euler() or others)
+        'r' : rotation matrix (from rotation_Euler() or others)
         """
         self.rotated = True
-        self.rotation_matrix = R
+        self.rotation_matrix = r
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for the desired wavelength."""
@@ -126,6 +126,10 @@ class BiaxialMaterial(SingleMaterial):
 
 class MixtureMaterial(Material):
     """Abstract Class for mixed materials"""
+
+    host_material = None
+    guest_material = None
+    fraction = None
 
     def __init__(self, host_material: Material, guest_material: Material, fraction: float) -> None:
         """Creates a material mixture from two materials

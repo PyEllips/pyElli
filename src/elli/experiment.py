@@ -8,7 +8,7 @@ from .result import Result
 
 
 class Experiment:
-    """Description of a virtual experiment to simmulate the behavior of a structure."""
+    """Description of a virtual experiment to simulate the behavior of a structure."""
 
     structure = None
     jones_vector = None
@@ -17,8 +17,8 @@ class Experiment:
     lbda = None
 
     def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, -1, 0]) -> None:
-        """Creates a virtual experiment to simmulate the behavior of a structure. 
-
+        """Creates a virtual experiment to simulate the behavior of a structure.
+        
         Args:
             structure (Structure): Structure object to evaluate.
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).

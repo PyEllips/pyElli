@@ -40,7 +40,7 @@ class Propagator(ABC):
 
 
 class PropagatorLinear(Propagator):
-    """Propagator class using a simple linear approximation of the matrixy exponential.
+    """Propagator class using a simple linear approximation of the matrix exponential.
     """
 
     def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -82,11 +82,11 @@ class PropagatorExpmScipy(Propagator):
 
 
 class PropagatorExpmTorch(Propagator):
-    """Propagator class using a vectorized polynomal approximation of the matrix exponential.
+    """Propagator class using a vectorized polynomial approximation of the matrix exponential.
     """
 
     def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Calculates propagation for a given Delta matrix and layer thickness with the polynomal approximation of the matrix exponential.
+        """Calculates propagation for a given Delta matrix and layer thickness with the polynomial approximation of the matrix exponential.
 
         Args:
             delta (npt.NDArray): Delta Matrix
@@ -206,7 +206,7 @@ class Solver4x4(Solver):
 
     @staticmethod
     def transition_matrix_halfspace(delta: npt.NDArray) -> npt.NDArray:
-        """Returns transition exit matrix L for any halfspace.
+        """Returns transition exit matrix L for any half-space.
 
         Sort eigenvectors of the Delta matrix according to propagation
         direction first, then according to $y$ component.
@@ -217,7 +217,7 @@ class Solver4x4(Solver):
             delta (npt.NDArray): Delta 4x4 matrix: infinitesimal propagation matrix
 
         Returns:
-            npt.NDArray: Translation matrix for semiinfinite halfspaces
+            npt.NDArray: Translation matrix for semi-infinite half-spaces
         """
         q, p = np.linalg.eig(delta)
 
@@ -267,7 +267,7 @@ class Solver4x4(Solver):
     def transition_matrix_iso_halfspace(k_x: npt.ArrayLike,
                                         epsilon: npt.ArrayLike,
                                         inv: bool = False) -> npt.NDArray:
-        """Returns transition incident or exit matrix L for isotropic halfspaces.
+        """Returns transition incident or exit matrix L for isotropic half-spaces.
 
         Args:
             k_x (npt.ArrayLike): Reduced wavenumber, Kx = kx/k0
@@ -305,7 +305,7 @@ class Solver4x4(Solver):
         """Calculates Kz in a material
 
         Args:
-            material (Material): Material of the halfspace
+            material (Material): Material of the half-space
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
             k_x (npt.ArrayLike): Reduced wavenumber, Kx = kx/k0
 
@@ -349,14 +349,14 @@ class Solver4x4(Solver):
                       [0, 1, 1, 0],
                       [0, 1j, -1j, 0]])
 
-        # Kroneker product of S and S*
+        # Kronecker product of S and S*
         s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self._s),
                                   self._s).reshape([self._s.shape[0], 4, 4])
 
-        mmatrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
-        mm11 = mmatrix[:, 0, 0]
+        mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
+        mm11 = mueller_matrix[:, 0, 0]
 
-        return mmatrix / mm11[:, None, None]
+        return mueller_matrix / mm11[:, None, None]
 
     @property
     def jones_matrix_t(self) -> npt.NDArray:
@@ -405,23 +405,23 @@ class Solver4x4(Solver):
         """
         # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         nx = self.structure.front_material.get_refractive_index(self.lbda)[:, 0, 0]
-        self.Kx = nx * np.sin(np.deg2rad(self.theta_i))
+        self.k_x = nx * np.sin(np.deg2rad(self.theta_i))
 
         layers = reversed(self.permittivity_profile[1:-1])
 
         if isinstance(self.structure.back_material, IsotropicMaterial):
-            t = self.transition_matrix_iso_halfspace(self.Kx, self.permittivity_profile[-1][1])
+            t = self.transition_matrix_iso_halfspace(self.k_x, self.permittivity_profile[-1][1])
         else:
             t = self.transition_matrix_halfspace(
-                self.build_delta_matrix(self.Kx, self.permittivity_profile[-1][1]))
+                self.build_delta_matrix(self.k_x, self.permittivity_profile[-1][1]))
 
         for d, epsilon in layers:
             p = self.propagator.calculate_propagation(
-                self.build_delta_matrix(self.Kx, epsilon), -d, self.lbda)
+                self.build_delta_matrix(self.k_x, epsilon), -d, self.lbda)
             t = p @ t
 
         lf = self.transition_matrix_iso_halfspace(
-            self.Kx, self.permittivity_profile[0][1], inv=True)
+            self.k_x, self.permittivity_profile[0][1], inv=True)
         t = lf @ t
 
         # Extraction of t_it out of t. "2::-2" means integers {2,0}.
@@ -439,8 +439,8 @@ class Solver4x4(Solver):
         s = t_ri / r_ss[:, None, None]
 
         if isinstance(self.structure.back_material, IsotropicMaterial):
-            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, self.Kx)
-            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, self.Kx)
+            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, self.k_x)
+            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, self.k_x)
             self.power_correction = k_z_b.real / k_z_f.real
         else:
             self.power_correction = np.ones_like(self.lbda)
