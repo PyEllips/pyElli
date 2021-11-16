@@ -7,14 +7,11 @@ from lmfit import Parameters
 
 class ParamsHist(Parameters):
     """A wrapper around lmfit.Parameters to keep track of the changes made to the parameters."""
-    _history = []
-    _max_length = 50
 
-    def _clone_and_append(self):
-        if len(self._history) >= self._max_length:
-            self._history = self._history[1:]
-        clone = copy.deepcopy(self)
-        self.history.append(clone)
+    def __init__(self):
+        super().__init__()
+        self._history = []
+        self._max_length = 50
 
     @property
     def history(self) -> List[Parameters]:
@@ -69,12 +66,23 @@ class ParamsHist(Parameters):
         self._max_length = history_len
 
     def revert(self, hist_pos:int):
-        """Reverts to an older history version
+        """Reverts to an older history version and keeps the entire history.
 
         Args:
             hist_pos (int): The history position to revert to.
         """
-        self.update(self._history[hist_pos])
+        if len(self._history) > (hist_pos % len(self._history)):
+            self.update(self._history[hist_pos])
+
+    def pop(self):
+        """Gets to the previous history version and deletes the current element."""
+        if len(self._history) > 0:
+            curr_params = self._history[-1]
+            self.update(self._history[-1])
+            self._history = self._history[:-1]
+
+            return curr_params
+        return None
 
     def update_value(self, key:str, value:float):
         """Updates a parameter and keeps track of the change in history
@@ -83,14 +91,27 @@ class ParamsHist(Parameters):
             key (str): The key to be updated
             value (float): The value the key should be updated to
         """
-        self._clone_and_append()
-        super(ParamsHist, self).__getitem__(key).value = value
+        self.commit()
+        super().__getitem__(key).value = value
+
+    def update_params(self, parameters):
+        """Updates the current paramters from a lmfit parameters object.
+
+        Args:
+            parameters (lmfit.Parameters):
+                The lmfit paramters object to update the values from.
+        """
+        self.commit()
+        self.update(parameters)
 
     def tracked_add(self, *args, **kwargs):
         """Adds a parameter and keeps track of the change in history"""
-        self._clone_and_append()
-        super(ParamsHist, self).add(*args, **kwargs)
+        self.commit()
+        super().add(*args, **kwargs)
 
     def commit(self):
         """Saves the current parameter set to history."""
-        self._clone_and_append()
+        if len(self._history) >= self._max_length:
+            self._history = self._history[1:]
+        clone = copy.deepcopy(self)
+        self.history.append(clone)

@@ -91,19 +91,17 @@ class FitRho():
             self.fig.data[2].name = 'ϵ1_tmm'
             self.fig.data[3].name = 'ϵ2_tmm'
 
-    def update_params(self, change:dict, selected:dict):
+    def update_params(self, change:dict):
         """Update plot after a change of fitting parameters
 
         Args:
             change (dict): A dictionary containing the ipywidgets change event
             selected (dict): The selected value of the data display dropdown widget
         """
-        if isinstance(self.params, ParamsHist):
-            self.params.commit()
         self.params[change.owner.description].value = change.new
 
         with self.fig.batch_update():
-            update = self.update_dict.get(selected.value)
+            update = self.update_dict.get(self.selector.value)
             if update is not None:
                 update()
 
@@ -118,7 +116,7 @@ class FitRho():
             if update is not None:
                 update(update_exp=True, update_names=True)
 
-    def fit_button_clicked(self, selected:dict):
+    def fit_button_clicked(self):
         """Fit and update plot after the fit button has been clicked
 
         Args:
@@ -128,23 +126,46 @@ class FitRho():
         self.fit()
         if isinstance(self.params, ParamsHist):
             self.params.commit()
-        self.params = self.fitted_params
+        self.params.update_params(self.fitted_params)
+        self.update_widgets()
 
         with self.fig.batch_update():
-            update = self.update_dict.get(selected.value)
+            update = self.update_dict.get(self.selector.value)
             if update is not None:
                 update()
 
+    def re_undo_button_clicked(self, button:widgets.Button):
+        """Redo or undo an operation on the paramters history object
+
+        Args:
+            button (widgets.Button):
+                The button instance, which triggered the event.
+        """
+        if button.description == 'Undo':
+            self.last_params = self.params.pop()
+            self.update_widgets()
+        elif self.last_params is not None:
+            self.params.update_params(self.last_params)
+            self.update_widgets()
+            self.last_params = None
+
+    def update_widgets(self):
+        """Updates the widget values according to the current parameters."""
+        for param in self.params:
+            widget = self.param_widgets.get(param)
+            if widget is not None:
+                widget.value = self.params[param].value
+
     def create_widgets(self):
         """Create ipywidgets for parameter estimation"""
-        widget_list = []
-        selector = widgets.Dropdown(
+        self.param_widgets = {}
+        self.selector = widgets.Dropdown(
             options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
             value='Psi/Delta',
             description='Display: ',
             disabled=False
         )
-        selector.observe(self.update_selection, names='value')
+        self.selector.observe(self.update_selection, names='value')
 
         for param in self.params.valuesdict():
             curr_widget = widgets.BoundedFloatText(self.params[param],
@@ -152,24 +173,18 @@ class FitRho():
                                                    max=self.params[param].max,
                                                    description=param,
                                                    continuous_update=False)
-            curr_widget.observe(lambda x: self.update_params(x, selector), names=('value', 'owner'))
-            widget_list.append(curr_widget)
-
-        widget_list.append(selector)
+            curr_widget.observe(self.update_params, names='value')
+            self.param_widgets[param] = curr_widget
 
         fit_button = widgets.Button(description='Fit')
-        fit_button.on_click(lambda _: self.fit_button_clicked(selector))
-        widget_list.append(fit_button)
+        fit_button.on_click(lambda _: self.fit_button_clicked())
+        undo_button = widgets.Button(description='Undo')
+        undo_button.on_click(self.re_undo_button_clicked)
+        redo_button = widgets.Button(description='Redo')
+        redo_button.on_click(self.re_undo_button_clicked)
 
-        revert_button = widgets.Button(description='Undo')
-        revert_button.on_click(lambda _: ...)
-        widget_list.append(revert_button)
-
-        revert_button = widgets.Button(description='Redo')
-        revert_button.on_click(lambda _: ...)
-        widget_list.append(revert_button)
-
-        display(widgets.VBox([widgets.HBox(widget_list,
+        display(widgets.VBox([widgets.HBox(list(self.param_widgets.values()) +
+                                           [self.selector, fit_button, undo_button, redo_button],
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')),
@@ -264,6 +279,9 @@ class FitRho():
         self.params = params
         self.fitted_params = params.copy()
         self.angle = angle
+        self.param_widgets = {}
+        self.selector = widgets.Dropdown()
+        self.last_params = None
         self.fig = go.FigureWidget(pd.concat([exp_data,
                     pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
                                  'Δ_tmm': model(exp_data.index, params).delta},
@@ -286,7 +304,7 @@ def fit(exp_data:pd.DataFrame,
         exp_data (pd.DataFrame): The dataframe containing an experimental mueller matrix.
                                  It should contain 2 columns with labels Ψ and Δ.
         params (Parameters): Fitting start parameters
-        angle (float, optional): The angle of incident of the measurement. 
+        angle (float, optional): The angle of incident of the measurement.
                                  Used to calculate the Pseudo-Dielectric function.
                                  Defaults to 70.
 
