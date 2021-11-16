@@ -1,15 +1,16 @@
 """Decorator functions for convenient fitting"""
 # Encoding: utf-8
+from typing import Callable
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import plotly.graph_objects as go
 from lmfit import minimize, Parameters
 from ipywidgets import widgets
 from IPython.display import display
-import numpy.typing as npt
-from typing import Callable
 from ..result import Result
 from ..utils import calcPseudoDiel, calc_rho
+from .params_hist import ParamsHist
 
 class FitRho():
     """A class to fit psi/delta or rho based ellipsometry data with two degress of freedom"""
@@ -18,8 +19,10 @@ class FitRho():
         """Sets Plot to Psi/Delta values
 
         Args:
-            update_exp (bool, optional): Flag to change the experimental data as well. Defaults to False.
-            update_names (bool, optional): Flag to change the label names. Defaults to False.
+            update_exp (bool, optional):
+                Flag to change the experimental data as well. Defaults to False.
+            update_names (bool, optional):
+                Flag to change the label names. Defaults to False.
         """
         data = self.model(self.exp_data.index, self.params)
         self.fig.update_layout(yaxis_title="Ψ/Δ (°)")
@@ -40,8 +43,10 @@ class FitRho():
         """Sets Plot to Rho values
 
         Args:
-            update_exp (bool, optional): Flag to change the experimental data as well. Defaults to False.
-            update_names (bool, optional): Flag to change the label names. Defaults to False.
+            update_exp (bool, optional):
+                Flag to change the experimental data as well. Defaults to False.
+            update_names (bool, optional):
+                Flag to change the label names. Defaults to False.
         """
         data = self.model(self.exp_data.index, self.params)
         self.fig.update_layout(yaxis_title="ρ")
@@ -92,7 +97,9 @@ class FitRho():
         Args:
             change (dict): A dictionary containing the ipywidgets change event
             selected (dict): The selected value of the data display dropdown widget
-        """        
+        """
+        if isinstance(self.params, ParamsHist):
+            self.params.commit()
         self.params[change.owner.description].value = change.new
 
         with self.fig.batch_update():
@@ -111,9 +118,34 @@ class FitRho():
             if update is not None:
                 update(update_exp=True, update_names=True)
 
+    def fit_button_clicked(self, selected:dict):
+        """Fit and update plot after the fit button has been clicked
+
+        Args:
+            selected (dict): Dict containing the current widget information
+                of the selection dropdown.
+        """
+        self.fit()
+        if isinstance(self.params, ParamsHist):
+            self.params.commit()
+        self.params = self.fitted_params
+
+        with self.fig.batch_update():
+            update = self.update_dict.get(selected.value)
+            if update is not None:
+                update()
+
     def create_widgets(self):
         """Create ipywidgets for parameter estimation"""
         widget_list = []
+        selector = widgets.Dropdown(
+            options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
+            value='Psi/Delta',
+            description='Display: ',
+            disabled=False
+        )
+        selector.observe(self.update_selection, names='value')
+
         for param in self.params.valuesdict():
             curr_widget = widgets.BoundedFloatText(self.params[param],
                                                    min=self.params[param].min,
@@ -123,14 +155,19 @@ class FitRho():
             curr_widget.observe(lambda x: self.update_params(x, selector), names=('value', 'owner'))
             widget_list.append(curr_widget)
 
-        selector = widgets.Dropdown(
-            options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
-            value='Psi/Delta',
-            description='Display: ',
-            disabled=False
-        )
-        selector.observe(self.update_selection, names='value')
         widget_list.append(selector)
+
+        fit_button = widgets.Button(description='Fit')
+        fit_button.on_click(lambda _: self.fit_button_clicked(selector))
+        widget_list.append(fit_button)
+
+        revert_button = widgets.Button(description='Undo')
+        revert_button.on_click(lambda _: ...)
+        widget_list.append(revert_button)
+
+        revert_button = widgets.Button(description='Redo')
+        revert_button.on_click(lambda _: ...)
+        widget_list.append(revert_button)
 
         display(widgets.VBox([widgets.HBox(widget_list,
                                            layout=widgets.Layout(width='100%',
@@ -152,8 +189,9 @@ class FitRho():
             rhoi (npt.NDArray): The imaginary part of the experimental rho
 
         Returns:
-            npt.NDArray: Residual between the calculation with current parameters and experimental data
-        """                
+            npt.NDArray:
+                Residual between the calculation with current parameters and experimental data
+        """
         result = self.model(lbda, params)
 
         resid_rhor = rhor - result.rho.real
@@ -165,7 +203,8 @@ class FitRho():
         """Execute lmfit with the current fitting parameters
 
         Args:
-            method (str, optional): The fitting method to use. Any method supported by scipys curve_fit is allowed.
+            method (str, optional): The fitting method to use.
+                                    Any method supported by scipys curve_fit is allowed.
                                     Defaults to 'leastsq'.
 
         Returns:
@@ -212,13 +251,14 @@ class FitRho():
             exp_data (pd.DataFrame): The dataframe containing an experimental mueller matrix.
                                      It should contain 2 columns with labels Ψ and Δ.
             params (Parameters): Fitting start parameters
-            model (Callable[[npt.NDArray, Parameters], Result]): A function taking wavelengths as first parameter and fitting parameters as second,
-                                                     which returns a pyEllis Result object.
-                                                     This function contains the actual model which should be fitted.
-            angle (float, optional): The angle of incident of the measurement. 
+            model (Callable[[npt.NDArray, Parameters], Result]):
+                A function taking wavelengths as first parameter and fitting parameters as second,
+                which returns a pyEllis Result object.
+                This function contains the actual model which should be fitted.
+            angle (float, optional): The angle of incident of the measurement.
                                      Used to calculate the Pseudo-Dielectric function.
                                      Defaults to 70.
-        """        
+        """
         self.model = model
         self.exp_data = exp_data
         self.params = params
@@ -251,9 +291,10 @@ def fit(exp_data:pd.DataFrame,
                                  Defaults to 70.
 
     Returns:
-        Callable[[npt.NDArray, Parameters], Result]: A function taking wavelengths as first parameter and fitting parameters as second,
-                                                     which returns a pyEllis Result object.
-                                                     This function contains the actual model which should be fitted and is automatically
-                                                     provided when used as a decorator.
-    """        
+        Callable[[npt.NDArray, Parameters], Result]:
+            fitting parameters as second,
+            which returns a pyEllis Result object.
+            This function contains the actual model which should be fitted and is automatically
+            provided when used as a decorator.
+    """
     return lambda model: FitRho(exp_data, params, model, angle)

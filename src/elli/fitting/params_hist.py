@@ -92,5 +92,5 @@ class ParamsHist(Parameters):
         super(ParamsHist, self).add(*args, **kwargs)
 
     def commit(self):
-        """Saves the current parameter set to history."""        
+        """Saves the current parameter set to history."""
         self._clone_and_append()
