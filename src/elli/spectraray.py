@@ -13,15 +13,15 @@ class SpectraRay():
     def loadDispersionTable(self, fname: str) -> DispersionTableEpsilon:
         start = 0
         stop = 0
-        with open(self.spectraray_path + fname, 'r') as f:
-            line = f.readline()
+        with open(self.spectraray_path + fname, 'r', encoding='utf8') as file:
+            line = file.readline()
             cnt = 0
             while line:
                 if line.strip() == 'Begin of array':
                     start = cnt + 1
                 if line.strip() == 'End of array':
                     stop = cnt
-                line = f.readline()
+                line = file.readline()
                 cnt += 1
 
                 if line.startswith('Units='):
@@ -35,18 +35,23 @@ class SpectraRay():
 
         if x_unit == 'Wavelength':
             return DispersionTableEpsilon(df.index, df.loc[:, 'ϵ1'] + 1j * df.iloc[:, 'ϵ2'])
-        elif x_unit == 'eV':
-            return DispersionTableEpsilon(SpectraRay.eV2nm(df.index), df.loc[:, 'ϵ1'] + 1j * df.loc[:, 'ϵ2'])
+        return DispersionTableEpsilon(SpectraRay.eV2nm(df.index), df.loc[:, 'ϵ1'] + 1j * df.loc[:, 'ϵ2'])
 
     @staticmethod
     def read_psi_delta_file(fname: str, decimal: str = '.') -> pd.DataFrame:
-        return pd.read_csv(fname,
-                           index_col=0,
-                           sep=r'\s+',
-                           decimal=decimal,
-                           usecols=[0, 1, 2],
-                           names=['Wavelength', 'Ψ', 'Δ'],
-                           skiprows=1)
+        psi_delta = pd.read_csv(fname,
+                                index_col=0,
+                                sep=r'\s+',
+                                decimal=decimal,
+                                usecols=[0, 1, 2],
+                                names=['Wavelength', 'Ψ', 'Δ'],
+                                skiprows=1)
+
+        psi_delta.loc[:,'Δ'] = psi_delta.loc[:,'Δ'].where(
+            psi_delta.loc[:,'Δ'] <= 180, psi_delta.loc[:,'Δ'] - 360
+        )
+
+        return psi_delta
 
     @staticmethod
     def read_mmatrix(fname: str, decimal: str = '.') -> pd.DataFrame:

@@ -34,7 +34,7 @@ class Solver2x2(Solver):
     def delta(self):
         if self._rtotp is None or self._rtots is None:
             return None
-        return -np.angle(-self._rtotp / self._rtots, deg=True)
+        return -np.angle(self._rtotp / self._rtots, deg=True)
 
     @property
     def R(self):

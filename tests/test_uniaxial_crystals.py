@@ -92,12 +92,14 @@ class TestUniaxial:
 
     def test_transition_matrix_with_halfspace(self):
         # Fujiwara Original
-        tmatrix = np.array([[[-1.946 - 1j*3.588, 1.668 - 1j*1.548, 0.273 + 1j * 0.03, 0.63 - 1j*0.148],
+        tmatrix = np.array([[[-1.946 - 1j*3.588, 1.668 - 1j*1.548,
+                                0.273 + 1j * 0.03, 0.63 - 1j*0.148],
                             [1.614 + 1j*1.679, -1.989 + 1j*3.435, -
                                 0.301 - 1j*0.064, -0.861 - 1j*0.101],
                             [0.065 - 1j*0.086, 0.039 + 1j*0.097, -
                                 0.71 - 1j*3.486, -0.003 - 1j*1.266],
-                            [0.167 + 1j*0.403, -0.593 - 1j*0.386, -0.369 + 1j*1.199, -1.66 + 1j * 3.094]]])
+                            [0.167 + 1j*0.403, -0.593 - 1j*0.386,
+                                -0.369 + 1j*1.199, -1.66 + 1j * 3.094]]])
 
         np.testing.assert_array_almost_equal(
             self.Li @ self.Tp @ self.Lt, tmatrix, decimal=1)
