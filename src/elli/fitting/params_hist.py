@@ -77,7 +77,7 @@ class ParamsHist(Parameters):
     def pop(self):
         """Gets to the previous history version and deletes the current element."""
         if len(self._history) > 0:
-            curr_params = self._history[-1]
+            curr_params = self.copy()
             self.update(self._history[-1])
             self._history = self._history[:-1]
 

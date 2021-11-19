@@ -1,5 +1,6 @@
 """Decorator functions for convenient fitting of Mueller matrices"""
 # Encoding: utf-8
+from typing import Callable
 from ipywidgets import widgets
 from IPython.display import display
 import pandas as pd
@@ -7,9 +8,10 @@ import numpy.typing as npt
 from lmfit import minimize, Parameters
 from lmfit.minimizer import MinimizerResult
 import plotly.graph_objects as go
-from typing import Callable
 from ..result import Result
 from ..plot.mueller_matrix import plot_mmatrix
+from .params_hist import ParamsHist
+from .decorator import FitDecorator
 
 def mmatrix_to_dataframe(exp_df:pd.DataFrame, mueller_matrix:npt.NDArray) -> pd.DataFrame:
     """Reshape a numpy 4x4 array containing mueller matrix elements
@@ -29,17 +31,15 @@ def mmatrix_to_dataframe(exp_df:pd.DataFrame, mueller_matrix:npt.NDArray) -> pd.
 
     return mueller_df
 
-class FitMuellerMatrix():
+class FitMuellerMatrix(FitDecorator):
     """A class to fit mueller matrices to experimental data"""
 
-    def update_params(self, change:dict):
-        """Update plot after a change of fitting parameters
+    def update_selection(self, _:dict=None):
+        """Update plot after selection of displayed data
 
         Args:
-            change (dict): A dictionary containing the ipywidgets change event
+            _ (dict, optional): No function. Just for compliance with ABC.
         """
-        self.params[change.owner.description].value = change.new
-
         with self.fig.batch_update():
             model_df = mmatrix_to_dataframe(self.exp_mm,
                                             self.model(self.exp_mm.index.values,
@@ -50,7 +50,7 @@ class FitMuellerMatrix():
 
     def create_widgets(self):
         """Create ipywidgets for parameter estimation"""
-        widget_list = []
+        self.param_widgets = {}
         for param in self.params.valuesdict():
             curr_widget = widgets.BoundedFloatText(self.params[param],
                                                    min=self.params[param].min,
@@ -58,9 +58,23 @@ class FitMuellerMatrix():
                                                    description=param,
                                                    continuous_update=False)
             curr_widget.observe(self.update_params, names=('value', 'owner'))
-            widget_list.append(curr_widget)
+            self.param_widgets[param] = curr_widget
 
-        display(widgets.VBox([widgets.HBox(widget_list,
+        fit_button = widgets.Button(description='Fit')
+        fit_button.on_click(lambda _: self.fit_button_clicked())
+        button_list = [fit_button]
+
+        if isinstance(self.params, ParamsHist):
+            undo_button = widgets.Button(description='Undo')
+            undo_button.on_click(self.re_undo_button_clicked)
+            redo_button = widgets.Button(description='Redo')
+            redo_button.on_click(self.re_undo_button_clicked)
+
+            button_list.append(undo_button)
+            button_list.append(redo_button)
+
+        display(widgets.VBox([widgets.HBox(list(self.param_widgets.values()) +
+                                           button_list,
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')),
@@ -78,7 +92,8 @@ class FitMuellerMatrix():
             mueller_matrix (pd.DataFrame): The experimental data to compare to the fitted model
 
         Returns:
-            npt.NDArray: Residual between the calculation with current parameters and experimental data
+            npt.NDArray: Residual between the calculation
+                with current parameters and experimental data
         """
         return mueller_matrix.values.reshape(-1, 4, 4) - self.model(lbda, params).mueller_matrix
 
@@ -86,12 +101,13 @@ class FitMuellerMatrix():
         """Execute lmfit with the current fitting parameters
 
         Args:
-            method (str, optional): The fitting method to use. Any method supported by scipys curve_fit is allowed.
-                                    Defaults to 'leastsq'.
+            method (str, optional): The fitting method to use.
+                Any method supported by scipys curve_fit is allowed.
+                Defaults to 'leastsq'.
 
         Returns:
             Result: The fitting result
-        """        
+        """
         res = minimize(self.fit_function,
                        self.params,
                        args=(self.exp_mm.index.values, self.exp_mm),
@@ -105,7 +121,7 @@ class FitMuellerMatrix():
 
         Returns:
             pd.DataFrame: The fit results
-        """        
+        """
         return mmatrix_to_dataframe(self.exp_mm,
                                     self.model(self.exp_mm.index.values,
                                                 self.fitted_params).mueller_matrix)
@@ -114,13 +130,15 @@ class FitMuellerMatrix():
         """Plot the fit results
 
         Args:
-            **display_single (bool): Returns a figure containing a single graph, if set to true. Returns a grid of figures otherwise.
+            **display_single (bool):
+                Returns a figure containing a single graph, if set to true.
+                Returns a grid of figures otherwise.
             **sharex (bool): Ties the zoom of the x-axes together for grid view.
             **full_scale (bool): Sets the y-axis scale to [-1, 1] if set to True.
 
         Returns:
             go.Figure: The figure containing the data
-        """        
+        """
         fit_result = mmatrix_to_dataframe(self.exp_mm,
                                           self.model(self.exp_mm.index.values,
                                                      self.fitted_params).mueller_matrix)
@@ -145,15 +163,19 @@ class FitMuellerMatrix():
                                    It should contain 16 columns with labels Mxy,
                                    where xy are the matrix positions.
             params (Parameters): Fitting start parameters
-            model (Callable[[npt.NDArray, Parameters], Result]): A function taking wavelengths as first parameter
-                                                                 and fitting parameters as second,
-                                                                 which returns a pyEllis Result object.
-                                                                 This function contains the actual model which should be fitted
+            model (Callable[[npt.NDArray, Parameters], Result]):
+                A function taking wavelengths as first parameter
+                and fitting parameters as second,
+                which returns a pyEllis Result object.
+                This function contains the actual model which should be fitted
 
-            **display_single (bool): Returns a figure containing a single graph, if set to true. Returns a grid of figures otherwise.
+            **display_single (bool):
+                Returns a figure containing a single graph, if set to true.
+                Returns a grid of figures otherwise.
             **sharex (bool): Ties the zoom of the x-axes together for grid view.
             **full_scale (bool): Sets the y-axis scale to [-1, 1] if set to True.
-        """        
+        """
+        super().__init__()
         self.exp_mm = exp_mm
         self.params = params
         self.fitted_params = params.copy()
@@ -161,6 +183,7 @@ class FitMuellerMatrix():
         self.display_single = kwargs.get('display_single')
         self.sharex = kwargs.get('sharex')
         self.full_scale = kwargs.get('full_scale')
+        self.param_widgets = {}
 
         model_df = mmatrix_to_dataframe(exp_mm, model(exp_mm.index.values, params).mueller_matrix)
         self.fig = plot_mmatrix([exp_mm,
@@ -182,14 +205,17 @@ def fit_mueller_matrix(exp_mm:pd.DataFrame,
                                It should contain 16 columns with labels Mxy,
                                where xy are the matrix positions.
         params (Parameters): Fitting start parameters
-        **display_single (bool): Returns a figure containing a single graph, if set to true. Returns a grid of figures otherwise.
+        **display_single (bool):
+            Returns a figure containing a single graph, if set to true.
+            Returns a grid of figures otherwise.
         **sharex (bool): Ties the zoom of the x-axes together for grid view.
         **full_scale (bool): Sets the y-axis scale to [-1, 1] if set to True.
 
     Returns:
-        Callable[[npt.NDArray, Parameters], Result]: A function taking wavelengths as first parameter and fitting parameters as second,
-                                                     which returns a pyEllis Result object.
-                                                     This function contains the actual model which should be fitted and is automatically
-                                                     provided when used as a decorator.
-    """    
+        Callable[[npt.NDArray, Parameters], Result]:
+            A function taking wavelengths as first parameter and fitting parameters as second,
+            which returns a pyEllis Result object.
+            This function contains the actual model which should be fitted and is automatically
+            provided when used as a decorator.
+    """
     return lambda model: FitMuellerMatrix(exp_mm, params, model, **kwargs)
