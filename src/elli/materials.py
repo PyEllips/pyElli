@@ -9,26 +9,35 @@ from .dispersions import DispersionLaw
 
 
 class Material(ABC):
-    """Base class for materials (abstract class).
-
-    Method that should be implemented in derived classes:
-    * get_tensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    """Base class for materials (abstract).
     """
 
     @abstractmethod
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
         pass
 
     def get_refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns refractive index for wavelength 'lbda'."""
+        """Gets the refractive index tensor for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Refractive index tensor.
+        """
         return sqrt(self.get_tensor(lbda))
 
 
 class SingleMaterial(Material):
-    """Base class for single materials (abstract class).
-
-    Method that should be implemented in derived classes:
-    * get_tensor(lbda) : returns the permittivity tensor for wavelength 'lbda'.
+    """Base class for non mixed materials (abstract).
     """
 
     law_x = None
@@ -39,19 +48,28 @@ class SingleMaterial(Material):
 
     @abstractmethod
     def set_dispersion(self) -> None:
-        """Creates a new material -- abstract class"""
-        raise NotImplementedError("Should be implemented in derived classes")
+        """Sets dipsersion relation of the material.
+        """
+        pass
 
     def set_rotation(self, r: npt.NDArray) -> None:
-        """Rotates the Material.
+        """Sets rotation of the Material.
 
-        'r' : rotation matrix (from rotation_Euler() or others)
-        """
+        Args:
+            r (npt.NDArray): rotation matrix (from rotation_Euler() or others)
+        """       
         self.rotated = True
         self.rotation_matrix = r
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Returns permittivity tensor matrix for the desired wavelength."""
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
         # Check for shape of lbda
         shape = np.shape(lbda)
         if shape == ():
@@ -77,13 +95,19 @@ class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
     def __init__(self, law: DispersionLaw) -> None:
-        """Creates isotropic material with dispersion law.
+        """Creates isotropic material with a dispersion law.
 
-        'law' : Dispersion law object
+        Args:
+            law (DispersionLaw): Dispersion relation of all three crystal directions.
         """
         self.set_dispersion(law)
 
     def set_dispersion(self, law: DispersionLaw) -> None:
+        """Sets dipsersion relation of the isotropic material.
+
+        Args:
+            law (DispersionLaw): Dispersion relation of all three crystal directions.
+        """
         self.law_x = law
         self.law_y = law
         self.law_z = law
@@ -93,14 +117,21 @@ class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
     def __init__(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
-        """Creates a uniaxial material with dispersion law.
+        """Creates a uniaxial material with two dispersion laws.
 
-        'law_o' : dispersion law for ordinary crystal axes (x and y direction)
-        'law_o' : dispersion law for extraordinary crystal axis (z direction)
+        Args:
+            law_o (DispersionLaw): Dispersion relation for ordinary crystal axes (x and y direction).
+            law_e (DispersionLaw): Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.set_dispersion(law_o, law_e)
 
     def set_dispersion(self, law_o: DispersionLaw, law_e: DispersionLaw) -> None:
+        """Sets dipsersion relations of the uniaxial material.
+
+        Args:
+            law_o (DispersionLaw): Dispersion relation for ordinary crystal axes (x and y direction).
+            law_e (DispersionLaw): Dispersion relation for extraordinary crystal axis (z direction).
+        """
         self.law_x = law_o
         self.law_y = law_o
         self.law_z = law_e
@@ -110,48 +141,61 @@ class BiaxialMaterial(SingleMaterial):
     """Biaxial material."""
 
     def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
-        """Creates a biaxial material with dispersion law.
+        """Creates a biaxial material with three dispersion laws.
 
-        'law_x' : dispersion law for x axis
-        'law_y' : dispersion law for y axis
-        'law_z' : dispersion law for z axis
+        Args:
+            law_x (DispersionLaw): Dispersion relation for x crystal axes.
+            law_y (DispersionLaw): Dispersion relation for y crystal axes.
+            law_z (DispersionLaw): Dispersion relation for z crystal axes.
         """
         self.set_dispersion(law_x, law_y, law_z)
 
     def set_dispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
+        """Sets dipsersion relations of the biaxial material.
+
+        Args:
+            law_x (DispersionLaw): Dispersion relation for x crystal axes.
+            law_y (DispersionLaw): Dispersion relation for y crystal axes.
+            law_z (DispersionLaw): Dispersion relation for z crystal axes.
+        """
         self.law_x = law_x
         self.law_y = law_y
         self.law_z = law_z
 
 
 class MixtureMaterial(Material):
-    """Abstract Class for mixed materials"""
+    """Abstract Class for mixed materials."""
 
     host_material = None
     guest_material = None
     fraction = None
 
     def __init__(self, host_material: Material, guest_material: Material, fraction: float) -> None:
-        """Creates a material mixture from two materials
+        """Creates a material mixture from two materials.
 
-        'host_material': Host Material
-        'guest_material': Material incorporated in the host
-        'fraction' : Fraction of the guest material (Range 0 - 1) 
+        Args:
+            host_material (Material): Host Material.
+            guest_material (Material): Material incorporated in the host.
+            fraction (float): Fraction of the guest material (Range 0 - 1).
         """
         self.set_constituents(host_material, guest_material)
         self.set_fraction(fraction)
 
     def set_constituents(self, host_material: Material, guest_material: Material) -> None:
-        """ Sets Materials in the mixture
-        'host_material': Host Material
-        'guest_material': Material incorporated in the host
+        """Sets Materials in the mixture.
+
+        Args:
+            host_material (Material): Host Material.
+            guest_material (Material): Material incorporated in the host.
         """
         self.host_material = host_material
         self.guest_material = guest_material
 
     def set_fraction(self, fraction: float) -> None:
-        """ Sets fraction and checks if fraction is in range from 0 to 1.
-        'fraction' : Fraction of the guest material (Range 0 - 1)
+        """Sets fraction and checks if fraction is in range from 0 to 1.
+
+        Args:
+            fraction (float): Fraction of the guest material (Range 0 - 1).
         """
         if not 0 <= fraction <= 1:
             raise ValueError('Fractions not in range from 0 to 1')
@@ -160,6 +204,14 @@ class MixtureMaterial(Material):
 
     @abstractmethod
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
         pass
 
 
@@ -167,6 +219,14 @@ class VCAMaterial(MixtureMaterial):
     """Mixture Material approximated with a simple virtual crystal like average."""
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
         epsilon = self.host_material.get_tensor(lbda) * (1 - self.fraction) \
             + self.guest_material.get_tensor(lbda) * self.fraction
         return epsilon
@@ -178,6 +238,14 @@ class MaxwellGarnetEMA(MixtureMaterial):
     """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
 
