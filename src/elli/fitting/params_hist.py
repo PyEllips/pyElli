@@ -5,16 +5,14 @@ import copy
 from typing import List
 from lmfit import Parameters
 
+
 class ParamsHist(Parameters):
     """A wrapper around lmfit.Parameters to keep track of the changes made to the parameters."""
-    _history = []
-    _max_length = 50
 
-    def _clone_and_append(self):
-        if len(self._history) >= self._max_length:
-            self._history = self._history[1:]
-        clone = copy.deepcopy(self)
-        self.history.append(clone)
+    def __init__(self) -> None:
+        super().__init__()
+        self._history = []
+        self._max_length = 50
 
     @property
     def history(self) -> List[Parameters]:
@@ -25,7 +23,7 @@ class ParamsHist(Parameters):
         """
         return self._history
 
-    def clear_history(self):
+    def clear_history(self) -> None:
         """Clears the parameters history"""
         self._history = []
 
@@ -48,7 +46,7 @@ class ParamsHist(Parameters):
         return self._max_length
 
     @max_history_len.setter
-    def max_history_len(self, history_len:int):
+    def max_history_len(self, history_len: int) -> None:
         """Sets the maximum history length. If the current
         history length is greater than the new history length the history
         gets truncated.
@@ -68,29 +66,53 @@ class ParamsHist(Parameters):
         self._history = self._history[-history_len:]
         self._max_length = history_len
 
-    def revert(self, hist_pos:int):
-        """Reverts to an older history version
+    def revert(self, hist_pos: int) -> None:
+        """Reverts to an older history version and keeps the entire history.
 
         Args:
             hist_pos (int): The history position to revert to.
         """
-        self.update(self._history[hist_pos])
+        if len(self._history) > (hist_pos % len(self._history)):
+            self.update(self._history[hist_pos])
 
-    def update_value(self, key:str, value:float):
+    def pop(self):
+        """Gets to the previous history version and deletes the current element."""
+        if len(self._history) > 0:
+            curr_params = self.copy()
+            self.update(self._history[-1])
+            self._history = self._history[:-1]
+
+            return curr_params
+        return None
+
+    def update_value(self, key: str, value: float) -> None:
         """Updates a parameter and keeps track of the change in history
 
         Args:
             key (str): The key to be updated
             value (float): The value the key should be updated to
         """
-        self._clone_and_append()
-        super(ParamsHist, self).__getitem__(key).value = value
+        self.commit()
+        super().__getitem__(key).value = value
 
-    def tracked_add(self, *args, **kwargs):
+    def update_params(self, parameters) -> None:
+        """Updates the current paramters from a lmfit parameters object.
+
+        Args:
+            parameters (lmfit.Parameters):
+                The lmfit paramters object to update the values from.
+        """
+        self.commit()
+        self.update(parameters)
+
+    def tracked_add(self, *args, **kwargs) -> None:
         """Adds a parameter and keeps track of the change in history"""
-        self._clone_and_append()
-        super(ParamsHist, self).add(*args, **kwargs)
+        self.commit()
+        super().add(*args, **kwargs)
 
-    def commit(self):
-        """Saves the current parameter set to history."""        
-        self._clone_and_append()
+    def commit(self) -> None:
+        """Saves the current parameter set to history."""
+        if len(self._history) >= self._max_length:
+            self._history = self._history[1:]
+        clone = copy.deepcopy(self)
+        self.history.append(clone)

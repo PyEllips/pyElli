@@ -16,7 +16,7 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, -1, 0]) -> None:
+    def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, 1, 0]) -> None:
         """Creates a virtual experiment to simulate the behavior of a structure.
         
         Args:

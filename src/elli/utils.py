@@ -4,11 +4,12 @@ import numpy as np
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 
-def calcPseudoDiel(rho, angle: float, output: str = 'eps') -> pd.DataFrame:
+def calc_pseudo_diel(rho, angle: float, output: str = 'eps') -> pd.DataFrame:
     """Calculates the pseudo dielectric function of a measurement from rho.
 
     Args:
-        rho (pandas.DataFrame): Measurement DataFrame containing rho as complex number as column and wavelength as index
+        rho (pandas.DataFrame):
+            Measurement DataFrame containing rho as complex number as column and wavelength as index
         angle (float): Angle of measurement in degree
         output (str, optional): Output format for dielectric function.
             'n': refractive index,
@@ -35,7 +36,8 @@ def calcPseudoDiel(rho, angle: float, output: str = 'eps') -> pd.DataFrame:
 
 
 def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
-    """Calculate rho from a Psi-Delta DataFrame. The Psi-Delta DataFrame should be structured as follows:
+    """Calculate rho from a Psi-Delta DataFrame.
+            The Psi-Delta DataFrame should be structured as follows:
         index: Wavelength
         column 'Ψ': Psi from measurement
         column 'Δ': Delta from measurement
