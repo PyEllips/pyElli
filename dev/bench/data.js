@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1637578534647,
+  "lastUpdate": 1637589145883,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -1003,6 +1003,65 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00024553502995825453",
             "extra": "mean: 5.966380599997478 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "79f52e24a467887ddf70a5c771e1b6294869a937",
+          "message": "Merge pull request #35 from PyEllips/decorators\n\n- Added Fit, Undo and Redo Button for fitting decorators\r\n- Added decorators base class\r\n- Refactored Psi/Delta convention to -pi/pi for SpectraRay files",
+          "timestamp": "2021-11-22T14:50:18+01:00",
+          "tree_id": "5fd31972775557c67b51ddc68a905b0a18bf0f70",
+          "url": "https://github.com/PyEllips/pyElli/commit/79f52e24a467887ddf70a5c771e1b6294869a937"
+        },
+        "date": 1637589144845,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 25.177389944484148,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008431719311804359",
+            "extra": "mean: 39.718175799993105 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "value": 1.089300690312564,
+            "unit": "iter/sec",
+            "range": "stddev: 0.025651833295619708",
+            "extra": "mean: 918.0201654999962 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_torch",
+            "value": 9.46961087335771,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02494439749394592",
+            "extra": "mean: 105.6009601000028 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 187.28447770502277,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00022999931083580614",
+            "extra": "mean: 5.339470800004165 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 249.45895470993082,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009312048343392859",
+            "extra": "mean: 4.008675499994752 msec\nrounds: 10"
           }
         ]
       }
