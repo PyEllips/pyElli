@@ -5,10 +5,11 @@ import copy
 from typing import List
 from lmfit import Parameters
 
+
 class ParamsHist(Parameters):
     """A wrapper around lmfit.Parameters to keep track of the changes made to the parameters."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._history = []
         self._max_length = 50
@@ -22,7 +23,7 @@ class ParamsHist(Parameters):
         """
         return self._history
 
-    def clear_history(self):
+    def clear_history(self) -> None:
         """Clears the parameters history"""
         self._history = []
 
@@ -45,7 +46,7 @@ class ParamsHist(Parameters):
         return self._max_length
 
     @max_history_len.setter
-    def max_history_len(self, history_len:int):
+    def max_history_len(self, history_len: int) -> None:
         """Sets the maximum history length. If the current
         history length is greater than the new history length the history
         gets truncated.
@@ -65,7 +66,7 @@ class ParamsHist(Parameters):
         self._history = self._history[-history_len:]
         self._max_length = history_len
 
-    def revert(self, hist_pos:int):
+    def revert(self, hist_pos: int) -> None:
         """Reverts to an older history version and keeps the entire history.
 
         Args:
@@ -84,7 +85,7 @@ class ParamsHist(Parameters):
             return curr_params
         return None
 
-    def update_value(self, key:str, value:float):
+    def update_value(self, key: str, value: float) -> None:
         """Updates a parameter and keeps track of the change in history
 
         Args:
@@ -94,7 +95,7 @@ class ParamsHist(Parameters):
         self.commit()
         super().__getitem__(key).value = value
 
-    def update_params(self, parameters):
+    def update_params(self, parameters) -> None:
         """Updates the current paramters from a lmfit parameters object.
 
         Args:
@@ -104,12 +105,12 @@ class ParamsHist(Parameters):
         self.commit()
         self.update(parameters)
 
-    def tracked_add(self, *args, **kwargs):
+    def tracked_add(self, *args, **kwargs) -> None:
         """Adds a parameter and keeps track of the change in history"""
         self.commit()
         super().add(*args, **kwargs)
 
-    def commit(self):
+    def commit(self) -> None:
         """Saves the current parameter set to history."""
         if len(self._history) >= self._max_length:
             self._history = self._history[1:]

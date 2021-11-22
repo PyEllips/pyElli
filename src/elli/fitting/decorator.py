@@ -4,17 +4,19 @@ from abc import ABC, abstractmethod
 from ipywidgets import widgets
 from .params_hist import ParamsHist
 
+
 class FitDecorator(ABC):
     """The abstract base class for fitting decorators.
     Providing features for fit, undo and redo buttons."""
-    def __init__(self):
+
+    def __init__(self) -> None:
         self.params = ParamsHist()
         self.fitted_params = ParamsHist()
         self.last_params = ParamsHist()
         self.param_widgets = {}
 
     @abstractmethod
-    def fit(self, method:str=''):
+    def fit(self, method: str = '') -> None:
         """Execute lmfit with the current fitting parameters
 
         Args:
@@ -28,7 +30,7 @@ class FitDecorator(ABC):
         ...
 
     @abstractmethod
-    def update_selection(self, change:dict=None):
+    def update_selection(self, change: dict = None) -> None:
         """Update plot after selection of displayed data
 
         Args:
@@ -36,7 +38,7 @@ class FitDecorator(ABC):
         """
         ...
 
-    def fit_button_clicked(self):
+    def fit_button_clicked(self) -> None:
         """Fit and update plot after the fit button has been clicked
 
         Args:
@@ -51,7 +53,7 @@ class FitDecorator(ABC):
 
         self.update_selection()
 
-    def re_undo_button_clicked(self, button:widgets.Button):
+    def re_undo_button_clicked(self, button: widgets.Button) -> None:
         """Redo or undo an operation on the paramters history object
 
         Args:
@@ -71,7 +73,7 @@ class FitDecorator(ABC):
 
         self.update_selection()
 
-    def update_params(self, change:dict):
+    def update_params(self, change: dict) -> None:
         """Update plot after a change of fitting parameters
 
         Args:
@@ -84,7 +86,7 @@ class FitDecorator(ABC):
 
         self.update_selection()
 
-    def update_widgets(self):
+    def update_widgets(self) -> None:
         """Updates the widget values according to the current parameters."""
         for param in self.params:
             widget = self.param_widgets.get(param)

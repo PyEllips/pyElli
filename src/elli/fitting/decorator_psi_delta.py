@@ -13,10 +13,11 @@ from ..utils import calc_pseudo_diel, calc_rho
 from .params_hist import ParamsHist
 from .decorator import FitDecorator
 
+
 class FitRho(FitDecorator):
     """A class to fit psi/delta or rho based ellipsometry data with two degress of freedom"""
 
-    def set_psi_delta(self, update_exp:bool=False, update_names:bool=False) -> None:
+    def set_psi_delta(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Psi/Delta values
 
         Args:
@@ -40,7 +41,7 @@ class FitRho(FitDecorator):
             self.fig.data[2].name = 'Ψ_tmm'
             self.fig.data[3].name = 'Δ_tmm'
 
-    def set_rho(self, update_exp:bool=False, update_names:bool=False) -> None:
+    def set_rho(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Rho values
 
         Args:
@@ -65,7 +66,7 @@ class FitRho(FitDecorator):
             self.fig.data[2].name = 'ρr_tmm'
             self.fig.data[3].name = 'ρi_tmm'
 
-    def set_pseudo_diel(self, update_exp:bool=False, update_names:bool=False):
+    def set_pseudo_diel(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Pseudo Dielectric function values
 
         Args:
@@ -76,7 +77,7 @@ class FitRho(FitDecorator):
         """
         data = self.model(self.exp_data.index, self.params)
         peps = calc_pseudo_diel(pd.DataFrame(data.rho, index=self.exp_data.index).iloc[:, 0],
-                                          self.angle)
+                                self.angle)
         self.fig.update_layout(yaxis_title="ϵ")
         self.fig.data[2].y = peps.loc[:, 'ϵ1']
         self.fig.data[3].y = peps.loc[:, 'ϵ2']
@@ -92,7 +93,7 @@ class FitRho(FitDecorator):
             self.fig.data[2].name = 'ϵ1_tmm'
             self.fig.data[3].name = 'ϵ2_tmm'
 
-    def update_selection(self, change:dict=None):
+    def update_selection(self, change: dict = None) -> None:
         """Update plot after selection of displayed data
 
         Args:
@@ -105,7 +106,7 @@ class FitRho(FitDecorator):
             if update is not None:
                 update(update_exp=True, update_names=True)
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         """Create ipywidgets for parameter estimation"""
         self.param_widgets = {}
         self.selector = widgets.Dropdown(
@@ -124,7 +125,6 @@ class FitRho(FitDecorator):
                                                    continuous_update=False)
             curr_widget.observe(self.update_params, names='value')
             self.param_widgets[param] = curr_widget
-
 
         fit_button = widgets.Button(description='Fit')
         fit_button.on_click(lambda _: self.fit_button_clicked())
@@ -147,10 +147,10 @@ class FitRho(FitDecorator):
                               self.fig]))
 
     def fit_function(self,
-                     params:Parameters,
-                     lbda:npt.NDArray,
-                     rhor:npt.NDArray,
-                     rhoi:npt.NDArray) -> npt.NDArray:
+                     params: Parameters,
+                     lbda: npt.NDArray,
+                     rhor: npt.NDArray,
+                     rhoi: npt.NDArray) -> npt.NDArray:
         """The fit function to minimize the fitting problem
 
         Args:
@@ -190,17 +190,17 @@ class FitRho(FitDecorator):
         self.fitted_params = res.params
         return res
 
-    def plot(self):
+    def plot(self) -> go.Figure:
         """Plot the fit results as Psi/Delta"""
         fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
 
         return go.FigureWidget(pd.concat([self.exp_data,
-                                            pd.DataFrame({'Ψ_fit': fit_result.psi,
+                                          pd.DataFrame({'Ψ_fit': fit_result.psi,
                                                         'Δ_fit': fit_result.delta},
-                                                        index=self.exp_data.index)]
-                                            ).plot())
+                                                       index=self.exp_data.index)]
+                                         ).plot())
 
-    def plot_rho(self):
+    def plot_rho(self) -> go.Figure:
         """Plot the fit results as Rho"""
         rho = calc_rho(self.exp_data)
         fit_result = self.model(rho.index.to_numpy(), self.fitted_params)
@@ -209,13 +209,13 @@ class FitRho(FitDecorator):
                                              'ρi': rho.apply(lambda x: x.imag),
                                              'ρcr': fit_result.rho.real,
                                              'ρci': fit_result.rho.imag},
-                                             index=rho.index).plot())
+                                            index=rho.index).plot())
 
     def __init__(self,
-                 exp_data:pd.DataFrame,
-                 params:Parameters,
-                 model:Callable[[npt.NDArray, Parameters], Result],
-                 angle:float = 70):
+                 exp_data: pd.DataFrame,
+                 params: Parameters,
+                 model: Callable[[npt.NDArray, Parameters], Result],
+                 angle: float = 70) -> None:
         """Intialize the psi/delta fitting class
 
         Args:
@@ -240,9 +240,9 @@ class FitRho(FitDecorator):
         self.selector = widgets.Dropdown()
         self.last_params = None
         self.fig = go.FigureWidget(pd.concat([exp_data,
-                    pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
-                                 'Δ_tmm': model(exp_data.index, params).delta},
-                                 index=exp_data.index)]).plot(backend='plotly'))
+                                              pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
+                                                            'Δ_tmm': model(exp_data.index, params).delta},
+                                                           index=exp_data.index)]).plot(backend='plotly'))
         self.fig.update_layout(yaxis_title="Ψ/Δ (°)", xaxis_title="Wavelength (nm)")
 
         self.update_dict = {'Psi/Delta': self.set_psi_delta,
@@ -251,9 +251,10 @@ class FitRho(FitDecorator):
 
         self.create_widgets()
 
-def fit(exp_data:pd.DataFrame,
-        params:Parameters,
-        angle:float = 70) -> Callable[[npt.NDArray, Parameters], Result]:
+
+def fit(exp_data: pd.DataFrame,
+        params: Parameters,
+        angle: float = 70) -> Callable[[npt.NDArray, Parameters], Result]:
     """A parameters decorator for fitting psi/delta valus. Displays an ipywidget float box for
     each fitting parameter and an interactive plot to estimate parameters.
 

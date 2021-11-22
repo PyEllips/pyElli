@@ -13,7 +13,8 @@ from ..plot.mueller_matrix import plot_mmatrix
 from .params_hist import ParamsHist
 from .decorator import FitDecorator
 
-def mmatrix_to_dataframe(exp_df:pd.DataFrame, mueller_matrix:npt.NDArray) -> pd.DataFrame:
+
+def mmatrix_to_dataframe(exp_df: pd.DataFrame, mueller_matrix: npt.NDArray) -> pd.DataFrame:
     """Reshape a numpy 4x4 array containing mueller matrix elements
     to a dataframe with columns Mxy. The index labels for each column
     are taken from the provided exp_df.
@@ -26,15 +27,17 @@ def mmatrix_to_dataframe(exp_df:pd.DataFrame, mueller_matrix:npt.NDArray) -> pd.
     Returns:
         pd.DataFrame: Contains the data from mueller_matrix in the shape of exp_df
     """
-    mueller_df = pd.DataFrame(index=exp_df.index, columns=exp_df.columns, dtype='float64')
+    mueller_df = pd.DataFrame(
+        index=exp_df.index, columns=exp_df.columns, dtype='float64')
     mueller_df.values[:] = mueller_matrix.reshape(-1, 16)
 
     return mueller_df
 
+
 class FitMuellerMatrix(FitDecorator):
     """A class to fit mueller matrices to experimental data"""
 
-    def update_selection(self, _:dict=None):
+    def update_selection(self, _: dict = None) -> None:
         """Update plot after selection of displayed data
 
         Args:
@@ -48,7 +51,7 @@ class FitMuellerMatrix(FitDecorator):
             for i, melem in enumerate(model_df):
                 self.fig.data[2*i+1].y = model_df[melem]
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         """Create ipywidgets for parameter estimation"""
         self.param_widgets = {}
         for param in self.params.valuesdict():
@@ -81,8 +84,8 @@ class FitMuellerMatrix(FitDecorator):
                               self.fig]))
 
     def fit_function(self,
-                     params:Parameters,
-                     lbda:npt.NDArray,
+                     params: Parameters,
+                     lbda: npt.NDArray,
                      mueller_matrix: pd.DataFrame) -> npt.NDArray:
         """The fit function to minimize the fitting problem
 
@@ -97,7 +100,7 @@ class FitMuellerMatrix(FitDecorator):
         """
         return mueller_matrix.values.reshape(-1, 4, 4) - self.model(lbda, params).mueller_matrix
 
-    def fit(self, method:str='leastsq') -> MinimizerResult:
+    def fit(self, method: str = 'leastsq') -> MinimizerResult:
         """Execute lmfit with the current fitting parameters
 
         Args:
@@ -124,7 +127,7 @@ class FitMuellerMatrix(FitDecorator):
         """
         return mmatrix_to_dataframe(self.exp_mm,
                                     self.model(self.exp_mm.index.values,
-                                                self.fitted_params).mueller_matrix)
+                                               self.fitted_params).mueller_matrix)
 
     def plot(self, **kwargs) -> go.Figure:
         """Plot the fit results
@@ -144,18 +147,18 @@ class FitMuellerMatrix(FitDecorator):
                                                      self.fitted_params).mueller_matrix)
 
         return plot_mmatrix([self.exp_mm, fit_result],
-                single=self.display_single
-                    if kwargs.get('display_single') is None else kwargs.get('display_single'),
-                sharex=self.sharex
-                    if kwargs.get('sharex') is None else kwargs.get('sharex'),
-                full_scale=self.full_scale
-                    if kwargs.get('full_scale') is None else kwargs.get('full_scale'))
+                            single=self.display_single
+                            if kwargs.get('display_single') is None else kwargs.get('display_single'),
+                            sharex=self.sharex
+                            if kwargs.get('sharex') is None else kwargs.get('sharex'),
+                            full_scale=self.full_scale
+                            if kwargs.get('full_scale') is None else kwargs.get('full_scale'))
 
     def __init__(self,
-                 exp_mm:pd.DataFrame,
-                 params:Parameters,
-                 model:Callable[[npt.NDArray, Parameters], Result],
-                 **kwargs):
+                 exp_mm: pd.DataFrame,
+                 params: Parameters,
+                 model: Callable[[npt.NDArray, Parameters], Result],
+                 **kwargs) -> None:
         """Intialize the mueller matrix fitting class
 
         Args:
@@ -185,17 +188,19 @@ class FitMuellerMatrix(FitDecorator):
         self.full_scale = kwargs.get('full_scale')
         self.param_widgets = {}
 
-        model_df = mmatrix_to_dataframe(exp_mm, model(exp_mm.index.values, params).mueller_matrix)
+        model_df = mmatrix_to_dataframe(exp_mm, model(
+            exp_mm.index.values, params).mueller_matrix)
         self.fig = plot_mmatrix([exp_mm,
                                  model_df],
-                                 single=self.display_single,
-                                 sharex=self.sharex,
-                                 full_scale=self.full_scale)
+                                single=self.display_single,
+                                sharex=self.sharex,
+                                full_scale=self.full_scale)
 
         self.create_widgets()
 
-def fit_mueller_matrix(exp_mm:pd.DataFrame,
-                       params:Parameters,
+
+def fit_mueller_matrix(exp_mm: pd.DataFrame,
+                       params: Parameters,
                        **kwargs) -> Callable[[npt.NDArray, Parameters], Result]:
     """A parameters decorator for fitting mueller matrices. Displays an ipywidget float box for
     each fitting parameter and an interactive plot to estimate parameters.
