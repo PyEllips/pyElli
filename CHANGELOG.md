@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.9.2
+- Fitting decorator buttons (fit, undo, redo)
+- Data export for decorators
+- Changed file loading to -pi, pi delta convention
+- Fixed Jones vector default
+- Included more documentation
+
 ## Version 0.9.1
 - Automated build of Docker images
 - Benchmarking setup

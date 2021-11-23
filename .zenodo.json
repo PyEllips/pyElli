@@ -1,4 +1,5 @@
 {
+    "title": "pyElli",
     "description": "A matrix solver for 1D layered structures with an emphasis on day to day spectral ellipsometry tasks.",
     "license": "GPL-3.0-or-later", 
     "upload_type": "software", 
