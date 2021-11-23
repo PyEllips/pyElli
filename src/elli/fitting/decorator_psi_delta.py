@@ -211,6 +211,42 @@ class FitRho(FitDecorator):
                                              'ρci': fit_result.rho.imag},
                                             index=rho.index).plot())
 
+    def get_model_data(self,
+                       params:Parameters=None,
+                       append_exp_data=False) -> pd.DataFrame:     
+        """Gets the data from the provided modle with the provided parameters.
+        If no parameters are provided, the fitted parameters are used
+        (which default to the initial parameters if no fit has been triggered).
+
+        Args:
+            params (Parameters, optional): 
+                The parameters to calculate the model with. 
+                If not provided, the fitted parameters are used.
+                Defaults to None.
+            append_exp_data (bool, optional):
+                Appends the experimental data if set to True.
+                Defaults to False.
+
+        Returns:
+            pd.DataFrame: The model results
+        """
+        if params is None:
+            fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
+            desc = 'fit'
+        else:
+            fit_result = self.model(self.exp_data.index.to_numpy(), params)
+            desc = 'model'
+
+        if append_exp_data:
+            return pd.concat([self.exp_data,
+                              pd.DataFrame({f'Ψ_{desc}': fit_result.psi,
+                                            f'Δ_{desc}': fit_result.delta},
+                                            index=self.exp_data.index)], axis=1)
+
+        return pd.DataFrame({f'Ψ_{desc}': fit_result.psi,
+                             f'Δ_{desc}': fit_result.delta},
+                             index=self.exp_data.index)
+
     def __init__(self,
                  exp_data: pd.DataFrame,
                  params: Parameters,

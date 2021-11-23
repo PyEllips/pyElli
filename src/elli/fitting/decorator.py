@@ -2,6 +2,8 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 from ipywidgets import widgets
+from lmfit import Parameters
+import pandas as pd
 from .params_hist import ParamsHist
 
 
@@ -14,6 +16,50 @@ class FitDecorator(ABC):
         self.fitted_params = ParamsHist()
         self.last_params = ParamsHist()
         self.param_widgets = {}
+
+    @abstractmethod
+    def get_model_data(self,
+                       params:Parameters=None,
+                       append_exp_data=False) -> pd.DataFrame:     
+        """Gets the data from the provided model with the provided parameters.
+        If no parameters are provided, the fitted parameters are used
+        (which default to the initial parameters if no fit has been triggered).
+
+        Args:
+            params (Parameters, optional): 
+                The parameters to calculate the model with. 
+                If not provided, the fitted parameters are used.
+                Defaults to None.
+            append_exp_data (bool, optional):
+                Appends the experimental data if set to True.
+                Defaults to False.
+
+        Returns:
+            pd.DataFrame: The model results
+        """
+        ...
+
+    def to_csv(self,
+              fname:str,
+              params:Parameters=None,
+              append_exp_data:bool=False,
+              *args,
+              **kwargs) -> None:
+        """Saves the current model to csv. This is just a wrapper to
+        pandas Dataframe and any argument to pandas to_csv may be passed
+        as function arguments.
+
+        Args:
+            fname (str): The file name to save the data to.
+            params (Parameters, optional): 
+                The parameters to calculate the model with.
+                If not provided, the fitted parameters are used.
+                Defaults to None.
+            append_exp_data (bool, optional):
+                Appends the experimental data if set to True.
+                Defaults to False.
+        """
+        self.get_model_data(params, append_exp_data).to_csv(fname, *args, **kwargs)
 
     @abstractmethod
     def fit(self, method: str = '') -> None:

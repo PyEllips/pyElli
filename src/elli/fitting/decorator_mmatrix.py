@@ -14,7 +14,9 @@ from .params_hist import ParamsHist
 from .decorator import FitDecorator
 
 
-def mmatrix_to_dataframe(exp_df: pd.DataFrame, mueller_matrix: npt.NDArray) -> pd.DataFrame:
+def mmatrix_to_dataframe(exp_df: pd.DataFrame,
+                         mueller_matrix: npt.NDArray,
+                         identifier:str=None) -> pd.DataFrame:
     """Reshape a numpy 4x4 array containing mueller matrix elements
     to a dataframe with columns Mxy. The index labels for each column
     are taken from the provided exp_df.
@@ -23,12 +25,20 @@ def mmatrix_to_dataframe(exp_df: pd.DataFrame, mueller_matrix: npt.NDArray) -> p
         exp_df (pd.DataFrame): The experimental dataframe providing the index and columns for
                                the newly generated dataframe.
         mueller_matrix (npt.NDArray): Data to be reshaped into a dataframe
+        identifier (str, optional):
+            An identifier to append to each column name, in the form
+            Mxy_<identifier>, where Mxy is the old column name.
+            Defaults to None.
 
     Returns:
         pd.DataFrame: Contains the data from mueller_matrix in the shape of exp_df
     """
+    if identifier is not None:
+        columns = [f'{c}_{identifier}' for c in exp_df.columns]
+    else:
+        columns = exp_df.columns
     mueller_df = pd.DataFrame(
-        index=exp_df.index, columns=exp_df.columns, dtype='float64')
+        index=exp_df.index, columns=columns, dtype='float64')
     mueller_df.values[:] = mueller_matrix.reshape(-1, 16)
 
     return mueller_df
@@ -119,15 +129,41 @@ class FitMuellerMatrix(FitDecorator):
         self.fitted_params = res.params
         return res
 
-    def get_fit_data(self) -> pd.DataFrame:
-        """Gets the fit results as dataframe
+    def get_model_data(self,
+                       params:Parameters=None,
+                       append_exp_data=False) -> pd.DataFrame:
+        """Gets the data from the provided model with the provided parameters.
+        If no parameters are provided, the fitted parameters are used
+        (which default to the initial parameters if no fit has been triggered).
+
+        Args:
+            params (Parameters, optional): 
+                The parameters to calculate the model with. 
+                If not provided, the fitted parameters are used.
+                Defaults to None.
+            append_exp_data (bool, optional):
+                Appends the experimental data if set to True.
+                Defaults to False.
 
         Returns:
-            pd.DataFrame: The fit results
+            pd.DataFrame: The model results
         """
+        if params is None:
+            fit_result = self.model(self.exp_mm.index.values, self.fitted_params)
+            desc = 'fit'
+        else:
+            fit_result = self.model(self.exp_mm.index.values, params)
+            desc = 'model'
+
+        if append_exp_data:
+            return pd.concat([self.exp_mm,
+                              mmatrix_to_dataframe(self.exp_mm,
+                                                   fit_result.mueller_matrix,
+                                                   identifier=desc)], axis=1)
+
         return mmatrix_to_dataframe(self.exp_mm,
-                                    self.model(self.exp_mm.index.values,
-                                               self.fitted_params).mueller_matrix)
+                                    fit_result.mueller_matrix,
+                                    identifier=desc)
 
     def plot(self, **kwargs) -> go.Figure:
         """Plot the fit results
