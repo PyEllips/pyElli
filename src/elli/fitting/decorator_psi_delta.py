@@ -117,13 +117,20 @@ class FitRho(FitDecorator):
         )
         self.selector.observe(self.update_selection, names='value')
 
+        checkboxes = []
         for param in self.params.valuesdict():
+            curr_checkbox = widgets.Checkbox(value=self.params[param].vary,
+                                             description_tooltip=param,
+                                             layout=widgets.Layout(width='15px'),
+                                             indent=False)
+            curr_checkbox.observe(self.set_vary_param, names='value')
             curr_widget = widgets.BoundedFloatText(self.params[param],
                                                    min=self.params[param].min,
                                                    max=self.params[param].max,
                                                    description=param,
                                                    continuous_update=False)
             curr_widget.observe(self.update_params, names='value')
+            checkboxes.append(curr_checkbox)
             self.param_widgets[param] = curr_widget
 
         fit_button = widgets.Button(description='Fit')
@@ -135,11 +142,15 @@ class FitRho(FitDecorator):
             undo_button.on_click(self.re_undo_button_clicked)
             redo_button = widgets.Button(description='Redo')
             redo_button.on_click(self.re_undo_button_clicked)
+            init_button = widgets.Button(description='Set initial')
+            init_button.on_click(lambda _: self.reset_to_init_params())
 
             button_list.append(undo_button)
             button_list.append(redo_button)
+            button_list.append(init_button)
 
-        display(widgets.VBox([widgets.HBox(list(self.param_widgets.values()) +
+        combo_widget = [widgets.HBox([v, w]) for v, w in zip(list(self.param_widgets.values()), checkboxes)]
+        display(widgets.VBox([widgets.HBox(combo_widget +
                                            button_list,
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
@@ -275,6 +286,7 @@ class FitRho(FitDecorator):
         self.param_widgets = {}
         self.selector = widgets.Dropdown()
         self.last_params = None
+        self.initial_params = params.copy()
         self.fig = go.FigureWidget(pd.concat([exp_data,
                                               pd.DataFrame({'Ψ_tmm': model(exp_data.index, params).psi,
                                                             'Δ_tmm': model(exp_data.index, params).delta},

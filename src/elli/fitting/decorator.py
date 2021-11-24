@@ -15,6 +15,7 @@ class FitDecorator(ABC):
         self.params = ParamsHist()
         self.fitted_params = ParamsHist()
         self.last_params = ParamsHist()
+        self.initial_params = ParamsHist()
         self.param_widgets = {}
 
     @abstractmethod
@@ -84,6 +85,10 @@ class FitDecorator(ABC):
         """
         ...
 
+    def set_vary_param(self, change:dict) -> None:
+        self.initial_params[change.owner.description_tooltip].vary = change.new
+        self.params[change.owner.description_tooltip].vary = change.new
+
     def fit_button_clicked(self) -> None:
         """Fit and update plot after the fit button has been clicked
 
@@ -117,6 +122,17 @@ class FitDecorator(ABC):
             self.update_widgets()
             self.last_params = None
 
+        self.update_selection()
+
+    def reset_to_init_params(self) -> None:
+        """Resets the parameters to the initial values"""
+
+        if not isinstance(self.params, ParamsHist):
+            return
+
+        self.last_params = self.params.pop()
+        self.params = self.initial_params.copy()
+        self.update_widgets()
         self.update_selection()
 
     def update_params(self, change: dict) -> None:

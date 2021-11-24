@@ -64,7 +64,13 @@ class FitMuellerMatrix(FitDecorator):
     def create_widgets(self) -> None:
         """Create ipywidgets for parameter estimation"""
         self.param_widgets = {}
+        checkboxes = []
         for param in self.params.valuesdict():
+            curr_checkbox = widgets.Checkbox(value=self.params[param].vary,
+                                             description_tooltip=param,
+                                             layout=widgets.Layout(width='15px'),
+                                             indent=False)
+            curr_checkbox.observe(self.set_vary_param, names='value')
             curr_widget = widgets.BoundedFloatText(self.params[param],
                                                    min=self.params[param].min,
                                                    max=self.params[param].max,
@@ -72,6 +78,7 @@ class FitMuellerMatrix(FitDecorator):
                                                    continuous_update=False)
             curr_widget.observe(self.update_params, names=('value', 'owner'))
             self.param_widgets[param] = curr_widget
+            checkboxes.append(curr_checkbox)
 
         fit_button = widgets.Button(description='Fit')
         fit_button.on_click(lambda _: self.fit_button_clicked())
@@ -82,11 +89,15 @@ class FitMuellerMatrix(FitDecorator):
             undo_button.on_click(self.re_undo_button_clicked)
             redo_button = widgets.Button(description='Redo')
             redo_button.on_click(self.re_undo_button_clicked)
+            init_button = widgets.Button(description='Set initial')
+            init_button.on_click(lambda _: self.reset_to_init_params())
 
             button_list.append(undo_button)
             button_list.append(redo_button)
+            button_list.append(init_button)
 
-        display(widgets.VBox([widgets.HBox(list(self.param_widgets.values()) +
+        combo_widget = [widgets.HBox([v, w]) for v, w in zip(list(self.param_widgets.values()), checkboxes)]
+        display(widgets.VBox([widgets.HBox(combo_widget +
                                            button_list,
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
@@ -218,6 +229,7 @@ class FitMuellerMatrix(FitDecorator):
         self.exp_mm = exp_mm
         self.params = params
         self.fitted_params = params.copy()
+        self.initial_params = params.copy()
         self.model = model
         self.display_single = kwargs.get('display_single')
         self.sharex = kwargs.get('sharex')
