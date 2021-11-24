@@ -66,6 +66,30 @@ class FitRho(FitDecorator):
             self.fig.data[2].name = 'ρr_tmm'
             self.fig.data[3].name = 'ρi_tmm'
 
+    def set_residual(self, update_exp: bool = False, update_names: bool = False) -> None:
+        """Sets plots to residual values
+
+        Args:
+            update_exp (bool, optional):
+                Flag to change the experimental data as well. Defaults to False.
+            update_names (bool, optional):
+                Flag to change the label names. Defaults to False.
+        """
+        data = self.model(self.exp_data.index, self.params)
+        self.fig.update_layout(yaxis_title="Residual")
+
+        exp_rho = calc_rho(self.exp_data)
+        self.fig.data[0].y = self.exp_data.loc[:, 'Ψ'] - data.psi
+        self.fig.data[1].y = self.exp_data.loc[:, 'Δ'] - data.delta
+        self.fig.data[2].y = exp_rho.apply(lambda x: x.real).values - data.rho.real
+        self.fig.data[3].y = exp_rho.apply(lambda x: x.imag).values - data.rho.imag
+
+        if update_names:
+            self.fig.data[0].name = 'Psi Res.'
+            self.fig.data[1].name = 'Delta Res.'
+            self.fig.data[2].name = 'ρr Res.'
+            self.fig.data[3].name = 'ρi Res.'
+
     def set_pseudo_diel(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Pseudo Dielectric function values
 
@@ -110,7 +134,7 @@ class FitRho(FitDecorator):
         """Create ipywidgets for parameter estimation"""
         self.param_widgets = {}
         self.selector = widgets.Dropdown(
-            options=['Psi/Delta', 'Rho', 'Pseudo Diel.'],
+            options=['Psi/Delta', 'Rho', 'Pseudo Diel.', 'Residual'],
             value='Psi/Delta',
             description='Display: ',
             disabled=False
@@ -295,7 +319,8 @@ class FitRho(FitDecorator):
 
         self.update_dict = {'Psi/Delta': self.set_psi_delta,
                             'Rho': self.set_rho,
-                            'Pseudo Diel.': self.set_pseudo_diel}
+                            'Pseudo Diel.': self.set_pseudo_diel,
+                            'Residual': self.set_residual}
 
         self.create_widgets()
 

@@ -54,12 +54,26 @@ class FitMuellerMatrix(FitDecorator):
             _ (dict, optional): No function. Just for compliance with ABC.
         """
         with self.fig.batch_update():
-            model_df = mmatrix_to_dataframe(self.exp_mm,
-                                            self.model(self.exp_mm.index.values,
-                                                       self.params).mueller_matrix)
+            if self.show_residual:
+                model_df = mmatrix_to_dataframe(self.exp_mm,
+                                                self.model(self.exp_mm.index.values,
+                                                        self.params).mueller_matrix)\
+                                                - self.exp_mm
+            else:
+                model_df = mmatrix_to_dataframe(self.exp_mm,
+                                                self.model(self.exp_mm.index.values,
+                                                        self.params).mueller_matrix)
 
             for i, melem in enumerate(model_df):
                 self.fig.data[2*i+1].y = model_df[melem]
+                if self.show_residual:
+                    self.fig.data[2*i+1].name = f'{melem} Residual'
+                else:
+                    self.fig.data[2*i+1].name = f'{melem} theory'
+
+    def update_residual(self, change:dict) -> None:
+        self.show_residual = change.new
+        self.update_selection()
 
     def create_widgets(self) -> None:
         """Create ipywidgets for parameter estimation"""
@@ -96,9 +110,12 @@ class FitMuellerMatrix(FitDecorator):
             button_list.append(redo_button)
             button_list.append(init_button)
 
+        residual_checkbox = widgets.Checkbox(value=self.show_residual, description='Display Residual')
+        residual_checkbox.observe(self.update_residual, names='value')
+
         combo_widget = [widgets.HBox([v, w]) for v, w in zip(list(self.param_widgets.values()), checkboxes)]
         display(widgets.VBox([widgets.HBox(combo_widget +
-                                           button_list,
+                                           button_list + [residual_checkbox],
                                            layout=widgets.Layout(width='100%',
                                                                  display='inline-flex',
                                                                  flex_flow='row wrap')),
@@ -201,6 +218,31 @@ class FitMuellerMatrix(FitDecorator):
                             full_scale=self.full_scale
                             if kwargs.get('full_scale') is None else kwargs.get('full_scale'))
 
+    def plot_residual(self, **kwargs) -> go.Figure:
+        """Plots the residual between the fit and the experimental data
+
+        Args:
+            **display_single (bool):
+                Returns a figure containing a single graph, if set to true.
+                Returns a grid of figures otherwise.
+            **sharex (bool): Ties the zoom of the x-axes together for grid view.
+            **full_scale (bool): Sets the y-axis scale to [-1, 1] if set to True.
+
+        Returns:
+            go.Figure: The figure containing the data
+        """
+        fit_result = mmatrix_to_dataframe(self.exp_mm,
+                                          self.model(self.exp_mm.index.values,
+                                                     self.fitted_params).mueller_matrix)
+
+        return plot_mmatrix([fit_result - self.exp_mm],
+                            single=self.display_single
+                            if kwargs.get('display_single') is None else kwargs.get('display_single'),
+                            sharex=self.sharex
+                            if kwargs.get('sharex') is None else kwargs.get('sharex'),
+                            full_scale=self.full_scale
+                            if kwargs.get('full_scale') is None else kwargs.get('full_scale'))
+
     def __init__(self,
                  exp_mm: pd.DataFrame,
                  params: Parameters,
@@ -235,6 +277,7 @@ class FitMuellerMatrix(FitDecorator):
         self.sharex = kwargs.get('sharex')
         self.full_scale = kwargs.get('full_scale')
         self.param_widgets = {}
+        self.show_residual = False
 
         model_df = mmatrix_to_dataframe(exp_mm, model(
             exp_mm.index.values, params).mueller_matrix)
