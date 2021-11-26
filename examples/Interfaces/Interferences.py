@@ -38,7 +38,7 @@ R = []
 T = []
 
 for h in h_list:
-    layer.setThickness(h)
+    layer.set_thickness(h)
     data = s.evaluate(lbda, angle)
     R.append(data.R[0])
     T.append(data.T[0])

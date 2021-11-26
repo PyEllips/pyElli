@@ -84,4 +84,4 @@ plt.show()
 # ## Structure Graph
 
 # %%
-elliplot.drawStructure(s)
+elliplot.draw_structure(s)

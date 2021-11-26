@@ -52,7 +52,7 @@ L_TiO2 = elli.Layer(TiO2, d_TiO2)
 Layerstack = elli.RepeatedLayers([L_TiO2, L_SiO2], 4, 0, 0)
 
 # Number of interfaces
-N = 2 * Layerstack.n + 1
+N = 2 * Layerstack.repetitions + 1
 
 # Structure
 s = elli.Structure(air, [Layerstack], glass)
@@ -149,11 +149,13 @@ legend2 = ("R_th_ss (0$^\circ$)", "R_th_ss (45$^\circ$)",
 ax.legend(lines1 + lines2, legend1 + legend2,
           loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 
-ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x" + str(Layerstack.n) + "/Glass")
+ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x" + str(Layerstack.repetitions) + "/Glass")
 ax.set_xlabel(r"Wavelength $\lambda$ (m)")
 ax.set_ylabel(r"$R$")
 fmt = ax.xaxis.get_major_formatter()
 fmt.set_powerlimits((-3, 3))
 
-elliplot.drawStructure(s)
+elliplot.draw_structure(s)
 plt.show()
+
+# %%

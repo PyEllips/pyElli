@@ -39,9 +39,9 @@ Theta_E = 45    # 2nd Eulet angle
 # %%
 filmMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
                                       elli.DispersionLess(n_e))
-R = elli.rotation_Euler(Phi_E, Theta_E, 0)
-filmMaterial.setRotation(R)
-print(filmMaterial.getTensor(lbda))
+R = elli.rotation_euler(Phi_E, Theta_E, 0)
+filmMaterial.set_rotation(R)
+print(filmMaterial.get_tensor(lbda))
 
 # %% [markdown]
 # Should yield:
@@ -64,8 +64,8 @@ print("Kx: {:.4f}".format(Kx))
 
 # %%
 film = elli.Layer(filmMaterial, d)
-epsilon = filmMaterial.getTensor(lbda)
-Delta = elli.Solver4x4.buildDeltaMatrix(Kx, epsilon)
+epsilon = filmMaterial.get_tensor(lbda)
+Delta = elli.Solver4x4.build_delta_matrix(Kx, epsilon)
 print("\nDelta matrix:")
 print(Delta)
 
@@ -122,7 +122,7 @@ print("\nJones reflexion matrix (p. 243):")
 print(Jr)
 
 print("\nEllipsometry parameters (p. 243):")
-(Psi, Delta) = (result.psiMat, result.deltaMat)
+(Psi, Delta) = (result.psi_matrix, result.delta_matrix)
 print("Psi\n" + str(Psi))
 print("Delta\n" + str(Delta))
 
@@ -154,13 +154,13 @@ Delta_ps = []
 # %%
 for Theta_E in Theta_E_list:
     for Phi_E in Phi_E_list:
-        R = elli.rotation_Euler(Phi_E, Theta_E, 0)
-        filmMaterial.setRotation(R)
+        R = elli.rotation_euler(Phi_E, Theta_E, 0)
+        filmMaterial.set_rotation(R)
         data = s.evaluate(np.array([lbda]), Phi_i)
-        Psi_pp.append(data.psiMat[0,0,0])
-        Delta_pp.append(data.deltaMat[0,0,0])
-        Psi_ps.append(data.psiMat[0,0,1])
-        Delta_ps.append(data.deltaMat[0,0,1])
+        Psi_pp.append(data.psi_matrix[0,0,0])
+        Delta_pp.append(data.delta_matrix[0,0,0])
+        Psi_ps.append(data.psi_matrix[0,0,1])
+        Delta_ps.append(data.delta_matrix[0,0,1])
 
 # %%
 Psi_pp = np.array(Psi_pp)

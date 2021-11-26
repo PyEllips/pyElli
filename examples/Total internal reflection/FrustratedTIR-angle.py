@@ -37,7 +37,7 @@ k0 = 2*pi/lbda
 
 # Layer thickness
 d = lbda*0.347
-layer.setThickness(d)
+layer.set_thickness(d)
 
 # Variation of incidence angle
 Phi_list = np.deg2rad(np.linspace(0, 89, 90))

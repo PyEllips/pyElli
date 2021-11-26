@@ -40,8 +40,8 @@ uniaxialMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
 Psi = []
 
 for θ_E in θ_E_list:
-    R = elli.math.rotation_Euler(Φ_E, θ_E, 0)
-    uniaxialMaterial.setRotation(R)
+    R = elli.rotation_euler(Φ_E, θ_E, 0)
+    uniaxialMaterial.set_rotation(R)
     s = elli.Structure(air, [], uniaxialMaterial)
     for Φ_i in Φ_i_list:
         data = s.evaluate(500, Φ_i)
@@ -73,11 +73,11 @@ Psi = []
 for θ_E in θ_E_list:
     evaluation_list = []
     for Φ_E in Φ_E_list:
-        R = elli.math.rotation_Euler(Φ_E, θ_E, 0)
-        uniaxialMaterial.setRotation(R)
+        R = elli.rotation_euler(Φ_E, θ_E, 0)
+        uniaxialMaterial.set_rotation(R)
         s = elli.Structure(air, [], uniaxialMaterial)
         data = s.evaluate(500, Φ_i)
-        evaluation_list.append(data.psiMat[0,0,0])
+        evaluation_list.append(data.psi_matrix[0,0,0])
     Psi.append(evaluation_list)
 
 Psi = np.array(Psi).T

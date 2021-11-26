@@ -95,7 +95,7 @@ T = []
 jt = []
 
 for dd in d:
-    layer.setThickness(dd)
+    layer.set_thickness(dd)
     data = s.evaluate(lbda, np.rad2deg(Phi_i))
     R.append(data.R[0])
     T.append(data.T[0])

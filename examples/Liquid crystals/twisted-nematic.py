@@ -42,7 +42,7 @@ Dn = ne-no
 LC = elli.UniaxialMaterial(elli.DispersionLess(no),
                          elli.DispersionLess(ne))
 R = elli.rotation_v_theta(elli.e_y, 90)
-LC.setRotation(R)
+LC.set_rotation(R)
 d = 4330
 TN = elli.TwistedLayer(LC, d, 7, 90)
 
@@ -65,11 +65,11 @@ GT = np.sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
 # ## Simulate with Berreman4x4
 
 # %%
-TN.setDivision(7)
+TN.set_divisions(7)
 data = s.evaluate(lbda_list, 0)
 T7 = np.real(data.T[:, 0, 0])
 
-TN.setDivision(18)
+TN.set_divisions(18)
 data2 = s.evaluate(lbda_list, 0)
 T18 = np.real(data2.T[:, 0, 0])
 
@@ -98,9 +98,9 @@ plt.show()
 # ## Plot Structure
 
 # %%
-TN.setDivision(7)
-elliplot.drawStructure(s)
-TN.setDivision(18)
-elliplot.drawStructure(s)
+TN.set_divisions(7)
+elliplot.draw_structure(s)
+TN.set_divisions(18)
+elliplot.draw_structure(s)
 
 # %%

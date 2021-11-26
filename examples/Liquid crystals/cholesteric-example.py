@@ -27,7 +27,7 @@ n_med = (ne + no)/2
 LC = elli.UniaxialMaterial(elli.DispersionLess(no),
                          elli.DispersionLess(ne))  # ne along z
 R = elli.rotation_v_theta(elli.e_y, 90)  # rotation of pi/2 along y
-LC.setRotation(R)                          # apply rotation from z to x
+LC.set_rotation(R)                          # apply rotation from z to x
 # Cholesteric pitch (nm):
 p = 650
 # One half turn of a right-handed helix:
@@ -136,6 +136,6 @@ fmt.set_powerlimits((-3, 3))
 plt.show()
 
 # %%
-elliplot.drawStructure(s)
+elliplot.draw_structure(s)
 
 # %%
