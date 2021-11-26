@@ -1,75 +1,102 @@
 # Encoding: utf-8
-
+import numpy as np
+import numpy.typing as npt
+from numpy.lib.scimath import sqrt
 
 class Result:
     """Record of a simulation result."""
-    __result = None
+    experiment = None
 
     @property
-    def psi(self):
-        return self.__result.psi
+    def rho(self) -> npt.NDArray:
+        rho = np.dot(self._s, self.experiment.jones_vector)
+        rho = rho[:, 0] / rho[:, 1]
+        return rho
 
     @property
-    def delta(self):
-        return self.__result.delta
+    def psi(self) -> npt.NDArray:
+        return np.rad2deg(np.arctan(np.abs(self.rho)))
 
     @property
-    def rho(self):
-        return self.__result.rho
+    def delta(self) -> npt.NDArray:
+        return -np.angle(self.rho, deg=True)
 
     @property
-    def rho_matrix(self):
-        return self.__result.rho_matrix
+    def rho_matrix(self) -> npt.NDArray:
+        return self._s
 
     @property
-    def psi_matrix(self):
-        return self.__result.psi_matrix
+    def psi_matrix(self) -> npt.NDArray:
+        return np.rad2deg(np.arctan(np.abs(self.rho_matrix)))
 
     @property
-    def delta_matrix(self):
-        return self.__result.delta_matrix
+    def delta_matrix(self) -> npt.NDArray:
+        return -np.angle(self.rho_matrix, deg=True)
 
     @property
-    def mueller_matrix(self):
-        return self.__result.mueller_matrix
+    def mueller_matrix(self) -> npt.NDArray:
+        a = np.array([[1, 0, 0, 1],
+                      [1, 0, 0, -1],
+                      [0, 1, 1, 0],
+                      [0, 1j, -1j, 0]])
+
+        # Kronecker product of S and S*
+        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self._s),
+                                  self._s).reshape([self._s.shape[0], 4, 4])
+
+        mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
+        mm11 = mueller_matrix[:, 0, 0]
+
+        return mueller_matrix / mm11[:, None, None]
 
     @property
-    def jones_matrix_r(self):
-        return self.__result.jones_matrix_r
+    def jones_matrix_t(self) -> npt.NDArray:
+        return self._jones_matrix_t
 
     @property
-    def jones_matrix_t(self):
-        return self.__result.jones_matrix_t
+    def jones_matrix_r(self) -> npt.NDArray:
+        return self._jones_matrix_r
 
     @property
-    def jones_matrix_rc(self):
-        return self.__result.jones_matrix_rc
+    def _s(self) -> npt.NDArray:
+        r_ss = self.jones_matrix_r[..., 1, 1]
+        return self.jones_matrix_r / r_ss[:, None, None]
 
     @property
-    def jones_matrix_tc(self):
-        return self.__result.jones_matrix_tc
+    def jones_matrix_tc(self) -> npt.NDArray:
+        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(c), self._jones_matrix_t, c)
 
     @property
-    def R(self):
-        return self.__result.R
+    def jones_matrix_rc(self) -> npt.NDArray:
+        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        d = 1 / sqrt(2) * np.array([[-1, -1], [1j, -1j]])
+        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(d), self._jones_matrix_r, c)
 
     @property
-    def T(self):
-        return self.__result.T
+    def R(self) -> npt.NDArray:
+        return np.abs(self._jones_matrix_r) ** 2
 
     @property
-    def Rc(self):
-        return self.__result.Rc
+    def T(self) -> npt.NDArray:
+        return np.abs(self._jones_matrix_t) ** 2 * self._power_correction[:, None, None]
 
     @property
-    def Tc(self):
-        return self.__result.Tc
+    def Rc(self) -> npt.NDArray:
+        return np.abs(self.jones_matrix_rc) ** 2
 
-    def __init__(self, solver: "Solver") -> None:
+    @property
+    def Tc(self) -> npt.NDArray:
+        return np.abs(self.jones_matrix_tc) ** 2 * self._power_correction[:, None, None]
+
+    def __init__(self, experiment: "Experiment", jones_matrix_r, jones_matrix_t, power_correction) -> None:
         """
 
         """
-        self.__result = solver
+        self.experiment = experiment
+        self._jones_matrix_r = jones_matrix_r
+        self._jones_matrix_t = jones_matrix_t
+        self._power_correction = power_correction
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.
