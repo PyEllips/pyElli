@@ -102,7 +102,7 @@ class Solver2x2(Solver):
         r_s = (n_i * cos_i - n_t * cos_t) / (n_i * cos_i + n_t * cos_t)
         r_p = (n_t * cos_i - n_i * cos_t) / (n_t * cos_i + n_i * cos_t)
         t_s = 2 * n_i * cos_i / (n_i * cos_i + n_t * cos_t)
-        t_p = 2 * n_i * cos_i / (n_i * cos_i + n_i * cos_t)
+        t_p = 2 * n_i * cos_i / (n_t * cos_i + n_i * cos_t)
 
         return r_s, r_p, t_s, t_p
 
