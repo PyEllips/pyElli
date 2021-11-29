@@ -355,19 +355,18 @@ class Solver4x4(Solver):
         # Then we have t_ri = t_rt * t_ti
         t_ri = t_rt @ t_ti
 
-        if isinstance(self.structure.back_material, IsotropicMaterial):
-            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, k_x)
-            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, k_x)
-            power_correction = k_z_b.real / k_z_f.real
-        else:
-            power_correction = np.ones_like(self.lbda)
+        jones_matrix_t = t_ti
+        jones_matrix_r = t_ri
+        
         # The power transmission coefficient is the ratio of the 'z' components
         # of the Poynting vector:       t = P_t_z / P_i_z
         # For isotropic media, we have: t = kb'/kf' |t_bf|^2
         # The correction coefficient is kb'/kf'
         # Note : For the moment it is only meaningful for isotropic half spaces.
+        if isinstance(self.structure.back_material, IsotropicMaterial):
+            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, k_x)
+            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, k_x)
+            power_correction = k_z_b.real / k_z_f.real
+            return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
 
-        jones_matrix_t = t_ti
-        jones_matrix_r = t_ri
-
-        return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
+        return Result(self.experiment, jones_matrix_r, jones_matrix_t)

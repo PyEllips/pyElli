@@ -89,14 +89,21 @@ class Result:
     def Tc(self) -> npt.NDArray:
         return np.abs(self.jones_matrix_tc) ** 2 * self._power_correction[:, None, None]
 
-    def __init__(self, experiment: "Experiment", jones_matrix_r, jones_matrix_t, power_correction) -> None:
-        """
+    def __init__(self, experiment: "Experiment",
+                 jones_matrix_r: npt.NDArray,
+                 jones_matrix_t: npt.NDArray,
+                 power_correction: npt.NDArray = None) -> None:
+        """Creates result object, to store simulation data. Gets called by solvers.
 
+        Args:
+            experiment (Experiment): Evalatued experiment, with structure and experimental parameters.
+            jones_matrix_r (npt.NDArray): Jones matrix for the reflection direction.
+            jones_matrix_t (npt.NDArray): Jones matrix for the transmission direction.
+            power_correction (npt.NDArray): Correction factors, to get the power transmission values.
         """
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
         self._jones_matrix_t = jones_matrix_t
-        self._power_correction = power_correction
 
     # def get(self, name):
     #     """Return the data for the requested coefficient 'name'.
@@ -148,3 +155,7 @@ class Result:
     #         return 0
     #     elif char in ['s', 'R']:
     #         return 1
+        if power_correction is None:
+            self._power_correction = np.ones_like(self.experiment.lbda)
+        else:
+            self._power_correction = power_correction
