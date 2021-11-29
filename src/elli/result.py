@@ -3,13 +3,13 @@ import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
+
 class Result:
     """Record of a simulation result."""
-    experiment = None
 
     @property
     def rho(self) -> npt.NDArray:
-        rho = np.dot(self._s, self.experiment.jones_vector)
+        rho = np.dot(self.rho_matrix, self.experiment.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
         return rho
 
@@ -23,7 +23,8 @@ class Result:
 
     @property
     def rho_matrix(self) -> npt.NDArray:
-        return self._s
+        r_ss = self.jones_matrix_r[..., 1, 1]
+        return self.jones_matrix_r / r_ss[:, None, None]
 
     @property
     def psi_matrix(self) -> npt.NDArray:
@@ -41,8 +42,8 @@ class Result:
                       [0, 1j, -1j, 0]])
 
         # Kronecker product of S and S*
-        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self._s),
-                                  self._s).reshape([self._s.shape[0], 4, 4])
+        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self.rho),
+                                  self.rho).reshape([self.rho.shape[0], 4, 4])
 
         mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
         mm11 = mueller_matrix[:, 0, 0]
@@ -56,11 +57,6 @@ class Result:
     @property
     def jones_matrix_r(self) -> npt.NDArray:
         return self._jones_matrix_r
-
-    @property
-    def _s(self) -> npt.NDArray:
-        r_ss = self.jones_matrix_r[..., 1, 1]
-        return self.jones_matrix_r / r_ss[:, None, None]
 
     @property
     def jones_matrix_tc(self) -> npt.NDArray:
@@ -104,58 +100,60 @@ class Result:
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
         self._jones_matrix_t = jones_matrix_t
-
-    # def get(self, name):
-    #     """Return the data for the requested coefficient 'name'.
-    #
-    #     Examples for 'name'...
-    #     'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
-    #     'r_LR' : Reflection from circular right to circular left polarization.
-    #     'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
-    #     'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
-    #
-    #     Note : 'Ψ', 'Δ' are shortcuts for 'Ψ_pp' and 'Δ_pp', which are the only
-    #     non zero parameters for samples with isotropic layers.
-    #
-    #     For more information about the definition of the...
-    #     * ellipsomtery parameters see getEllipsometryParameters()
-    #     * circular polarization, see getCircularJones()
-    #
-    #     Returns : array of values
-    #     """
-    #     param = name[0]
-    #
-    #     # Read the requested indices...
-    #     (i, j) = map(self._polarIndex, name[2:4]) if len(name) > 1 else (0, 0)
-    #
-    #     # Select the requested array...
-    #     if param == 'r':
-    #         M = self.Tc_ri if self.circular else self.T_ri
-    #     elif param == 't':
-    #         M = self.Tc_ti if self.circular else self.T_ti
-    #     elif param == 'R':
-    #         M = self.Rc if self.circular else self.R
-    #     elif param == 'T':
-    #         M = self.Tc if self.circular else self.T
-    #     elif param == 'Ψ' or param == 'psi':
-    #         M = self.Psi
-    #     elif param == 'Δ' or param == 'delta':
-    #         M = self.Delta
-    #
-    #     # Return the requested data...
-    #     return M[..., i, j]
-    #
-    # def _polarIndex(self, char):
-    #     """Return polarization index for character 'char'.
-    #
-    #     Returned value : 'p', 'L' -> 0
-    #                      's', 'R' -> 1
-    #     """
-    #     if char in ['p', 'L']:
-    #         return 0
-    #     elif char in ['s', 'R']:
-    #         return 1
         if power_correction is None:
             self._power_correction = np.ones_like(self.experiment.lbda)
         else:
             self._power_correction = power_correction
+
+    def get(self, name: str) -> npt.NDArray:
+        """Return the data for the requested variable 'name'.
+
+        Args:
+            name (str): Variable name to return.
+                Examples for 'name'...
+                'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
+                'r_LR' : Reflection from circular right to circular left polarization.
+                'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
+                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters. 
+                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+
+        Returns:
+            npt.NDArray: Array of data.
+        """
+        names = name.split('_', 1)
+
+        if names[0] == 'Ψ':
+            names[0] = 'psi'
+        elif names[0] == 'Δ':
+            names[0] = 'delta'
+        elif names[0] == 'ρ':
+            names[0] = 'rho'
+
+        if len(names) == 1:
+            return getattr(self, names[0])
+
+        if names[0] in ['psi', 'delta', 'rho', 'mueller']:
+            if names[1] == 'matrix':
+                return getattr(self, names[0] + '_matrix')
+
+            (i, j) = map(self._polar_index, names[1])
+            return getattr(self, names[0] + '_matrix')[:, i, j]
+
+        (i, j) = map(self._polar_index, names[1])
+        return getattr(self, names[0])[:, i, j]
+
+    def _polar_index(self, index: str) -> int:
+        """Return polarization index for character 'index'.
+
+        Args:
+            index (str): Polarisation index, valid are: 'p', 's', 'R', 'L'.
+        Returns:
+            int: 'p', 'L' -> 0 
+                 's', 'R' -> 1
+        """
+        if index in ['p', 'L']:
+            return 0
+        if index in ['s', 'R']:
+            return 1
+
+        return ValueError('Wrong index given for variable.')
