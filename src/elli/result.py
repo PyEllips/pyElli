@@ -148,7 +148,7 @@ class Result:
 
         if names[0] not in ['psi', 'delta', 'rho', 'mueller', 
                             'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc']:
-            raise AttributeError()
+            raise AttributeError(f"'Result' object has no attribute '{name}'")
 
         if len(names) == 1:
             return self.__getattribute__(names[0])
