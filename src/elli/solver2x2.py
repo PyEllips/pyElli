@@ -76,7 +76,7 @@ class Solver2x2(Solver):
         jones_matrix_t = np.moveaxis(np.array([[ttotp, zeros],
                                                [zeros, ttots]]), 2, 0)
 
-        # Calculate power correction factor
+        # TODO: Test if p and s correction formulas are needed.
         power_correction = (((n_list[-1] * np.cos(th_list[-1])).real) / (n_list[0] * np.cos(th_list[0])).real)
 
         return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
