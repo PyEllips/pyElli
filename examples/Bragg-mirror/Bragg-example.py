@@ -63,8 +63,8 @@ lbda_list = np.linspace(lbda1, lbda2, 200)
 
 data = s.evaluate(lbda_list, 0)
 
-R = data.R[:, 1, 1]
-T = data.T[:, 1, 1]
+R = data.get('R_ss')
+T = data.get('T_ss')
 
 # %% [markdown]
 # ## Plotting

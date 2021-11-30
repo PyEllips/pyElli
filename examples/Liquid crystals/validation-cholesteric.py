@@ -69,7 +69,7 @@ data = s.evaluate(lbda, 0)
 # Jones matrices for the circular wave basis
 # Right-circular wave is reflected in the stop-band
 # R_LR, T_LR close to zero
-R_RR = data.Rc[:, 1, 1]
+R_RR = data.get('Rc_RR')
 
 # %% [markdown]
 # ## Plotting
