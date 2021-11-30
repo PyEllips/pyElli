@@ -66,7 +66,7 @@ class Result:
     @property
     def jones_matrix_rc(self) -> npt.NDArray:
         c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        d = 1 / sqrt(2) * np.array([[-1, -1], [1j, -1j]])
+        d = 1 / sqrt(2) * np.array([[-1, -1], [-1j, 1j]])
         return np.einsum('ij,...jk,kl->...il', np.linalg.inv(d), self._jones_matrix_r, c)
 
     @property
