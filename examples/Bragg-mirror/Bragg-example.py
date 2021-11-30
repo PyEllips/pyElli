@@ -63,8 +63,8 @@ lbda_list = np.linspace(lbda1, lbda2, 200)
 
 data = s.evaluate(lbda_list, 0)
 
-R = data.get('R_ss')
-T = data.get('T_ss')
+R = data.R_ss
+T = data.T_ss
 
 # %% [markdown]
 # ## Plotting
@@ -72,8 +72,8 @@ T = data.get('T_ss')
 # %%
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-ax.plot(lbda_list, R, label="$R$")
-ax.plot(lbda_list, T, label="$T$")
+ax.plot(lbda_list, R, label="$R_{ss}$")
+ax.plot(lbda_list, T, label="$T_{ss}$")
 ax.legend(loc='center right')
 ax.set_xlabel(r"Wavelength $\lambda$ (nm)")
 ax.set_ylabel(r"Power reflection $R$ or transmission $T$")

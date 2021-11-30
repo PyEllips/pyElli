@@ -53,7 +53,7 @@ def test_cholesteric_lc():
 
     # Berreman simulation
     data = s.evaluate(lbda, 0)
-    R_RR = data.get('Rc_RR')
+    R_RR = data.Rc_RR
 
     # Checks positions of local extrema
     np.testing.assert_allclose(argrelmax(R_RR)[0], argrelmax(R_th)[0], atol=3)
@@ -90,7 +90,7 @@ def test_twisted_nematic_lc():
 
     # Berreman simulation
     data = s.evaluate(lbda_list, 0)
-    T_bm = np.real(data.get('T_pp'))
+    T_bm = np.real(data.T_pp)
 
     # Compare results
     np.testing.assert_array_almost_equal(T_bm, T_gt, decimal=2)

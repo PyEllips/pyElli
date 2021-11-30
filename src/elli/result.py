@@ -110,6 +110,23 @@ class Result:
 
         Args:
             name (str): Variable name to return.
+                Examples for 'name':
+                'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
+                'r_LR' : Reflection from circular right to circular left polarization.
+                'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
+                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
+                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+
+        Returns:
+            npt.NDArray: Array of data.
+        """
+        return self.__getattr__(name)
+
+    def __getattr__(self, name: str) -> npt.NDArray:
+        """Return the data for the requested variable 'name'.
+
+        Args:
+            name (str): Variable name to return.
                 Examples for 'name'...
                 'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
                 'r_LR' : Reflection from circular right to circular left polarization.
@@ -129,18 +146,22 @@ class Result:
         elif names[0] == 'ρ':
             names[0] = 'rho'
 
+        if names[0] not in ['psi', 'delta', 'rho', 'mueller', 
+                            'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc']:
+            raise AttributeError()
+
         if len(names) == 1:
-            return getattr(self, names[0])
+            return self.__getattribute__(names[0])
 
         if names[0] in ['psi', 'delta', 'rho', 'mueller']:
             if names[1] == 'matrix':
-                return getattr(self, names[0] + '_matrix')
+                return self.__getattribute__(names[0] + '_matrix')
 
             (i, j) = map(self._polar_index, names[1])
-            return getattr(self, names[0] + '_matrix')[:, i, j]
+            return self.__getattribute__(names[0] + '_matrix')[:, i, j]
 
         (i, j) = map(self._polar_index, names[1])
-        return getattr(self, names[0])[:, i, j]
+        return self.__getattribute__(names[0])[:, i, j]
 
     def _polar_index(self, index: str) -> int:
         """Return polarization index for character 'index'.

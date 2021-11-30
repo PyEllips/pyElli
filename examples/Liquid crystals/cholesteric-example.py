@@ -56,10 +56,10 @@ lbda_B1, lbda_B2 = p*no, p*ne
 # %%
 data = s.evaluate(lbda_list, 0)
 
-T_pp = data.get('T_pp')
-T_ps = data.get('T_ps')
-T_ss = data.get('T_ss')
-T_sp = data.get('T_sp')
+T_pp = data.T_pp
+T_ps = data.T_ps
+T_ss = data.T_ss
+T_sp = data.T_sp
 
 # Transmission coefficients for incident unpolarized light:
 T_pn = 0.5 * (T_pp + T_ps)
@@ -73,15 +73,15 @@ T_np = T_pp + T_sp
 
 # Right-circular wave is reflected in the stop-band.
 # R_LR, T_LR close to zero.
-R_RR = data.get('Rc_RR')
-R_LR = data.get('Rc_LR')
-T_RR = data.get('Tc_RR')
-T_LR = data.get('Tc_LR')
+R_RR = data.Rc_RR
+R_LR = data.Rc_LR
+T_RR = data.Tc_RR
+T_LR = data.Tc_LR
 
 # Left-circular wave is transmitted in the full spectrum.
 # T_RL, R_RL, R_LL close to zero, T_LL close to 1.
-T_LL = data.get('Tc_LL')
-R_LL = data.get('Rc_LL')
+T_LL = data.Tc_LL
+R_LL = data.Rc_LL
 
 # %% [markdown]
 # ## Text output: 

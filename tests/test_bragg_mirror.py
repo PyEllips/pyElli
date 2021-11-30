@@ -89,7 +89,7 @@ class TestBragg:
 
     def test_normal_incidence(self):
         data = self.s.evaluate(self.lbda_list, 0)
-        R_ss_0 = data.get('R_ss')
+        R_ss_0 = data.R_ss
         R_th_ss_0 = (np.abs(self.ReflectionCoeff(0, 's'))) ** 2  # Phi_i = 0
         np.testing.assert_allclose(R_ss_0, R_th_ss_0, 1e-10, 0)
 
@@ -102,15 +102,15 @@ class TestBragg:
         # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
         data2 = self.s.evaluate(self.lbda_list, np.rad2deg(pi / 4))
 
-        R_ss = data2.get('R_ss')
-        R_pp = data2.get('R_pp')
+        R_ss = data2.R_ss
+        R_pp = data2.R_pp
 
         np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
         np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)
 
     def test_normal_incidence_4x4_scipy(self):
         data = self.s.evaluate(self.lbda_list, 0)
-        R_ss_0 = data.get('R_ss')
+        R_ss_0 = data.R_ss
         R_th_ss_0 = (np.abs(self.ReflectionCoeff(0, 's'))) ** 2  # Phi_i = 0
         np.testing.assert_allclose(R_ss_0, R_th_ss_0, 1e-10, 0)
 
@@ -123,15 +123,15 @@ class TestBragg:
         # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
         data2 = self.s.evaluate(self.lbda_list, np.rad2deg(pi / 4))
 
-        R_ss = data2.get('R_ss')
-        R_pp = data2.get('R_pp')
+        R_ss = data2.R_ss
+        R_pp = data2.R_pp
 
         np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
         np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)
 
     def test_normal_incidence_4x4_eig(self):
         data = self.s.evaluate(self.lbda_list, 0, solver=elli.Solver4x4, propagator=elli.PropagatorEig())
-        R_ss_0 = data.get('R_ss')
+        R_ss_0 = data.R_ss
         R_th_ss_0 = (np.abs(self.ReflectionCoeff(0, 's'))) ** 2  # Phi_i = 0
         np.testing.assert_allclose(R_ss_0, R_th_ss_0, 1e-10, 0)
 
@@ -144,15 +144,15 @@ class TestBragg:
         # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
         data2 = self.s.evaluate(self.lbda_list, np.rad2deg(pi / 4), solver=elli.Solver4x4, propagator=elli.PropagatorEig())
 
-        R_ss = data2.get('R_ss')
-        R_pp = data2.get('R_pp')
+        R_ss = data2.R_ss
+        R_pp = data2.R_pp
 
         np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
         np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)
 
     def test_normal_incidence_4x4_torch(self):
         data = self.s.evaluate(self.lbda_list, 0, solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
-        R_ss_0 = data.get('R_ss')
+        R_ss_0 = data.R_ss
         R_th_ss_0 = (np.abs(self.ReflectionCoeff(0, 's'))) ** 2  # Phi_i = 0
         np.testing.assert_allclose(R_ss_0, R_th_ss_0, 1e-10, 0)
 
@@ -165,15 +165,15 @@ class TestBragg:
         # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
         data2 = self.s.evaluate(self.lbda_list, np.rad2deg(pi / 4), solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
 
-        R_ss = data2.get('R_ss')
-        R_pp = data2.get('R_pp')
+        R_ss = data2.R_ss
+        R_pp = data2.R_pp
 
         np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
         np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)
 
     def test_normal_incidence_2x2(self):
         data = self.s.evaluate(self.lbda_list, 0, solver=elli.Solver2x2)
-        R_ss_0 = data.get('R_ss')
+        R_ss_0 = data.R_ss
         R_th_ss_0 = (np.abs(self.ReflectionCoeff(0, 's'))) ** 2  # Phi_i = 0
         np.testing.assert_allclose(R_ss_0, R_th_ss_0, 1e-10, 0)
 
@@ -186,8 +186,8 @@ class TestBragg:
         # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
         data2 = self.s.evaluate(self.lbda_list, np.rad2deg(pi / 4), solver=elli.Solver2x2)
 
-        R_ss = data2.get('R_ss')
-        R_pp = data2.get('R_pp')
+        R_ss = data2.R_ss
+        R_pp = data2.R_pp
 
         np.testing.assert_array_almost_equal(R_ss, R_th_ss, decimal=1)
         np.testing.assert_array_almost_equal(R_pp, R_th_pp, decimal=1)
