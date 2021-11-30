@@ -168,9 +168,6 @@ class PropagatorEig(Propagator):
 class Solver4x4(Solver):
     """Solver class to evaluate Experiment objects. Based on Berreman's 4x4 method.
     """
-    _s = None
-    _jones_matrix_t = None
-    _jones_matrix_r = None
 
     @staticmethod
     def build_delta_matrix(k_x: npt.ArrayLike, eps: npt.NDArray) -> npt.NDArray:
@@ -316,83 +313,6 @@ class Solver4x4(Solver):
         k_z2 = nx ** 2 - k_x ** 2
         return sqrt(k_z2)
 
-    @property
-    def rho(self) -> npt.NDArray:
-        rho = np.dot(self._s, self.jones_vector)
-        rho = rho[:, 0] / rho[:, 1]
-        return rho
-
-    @property
-    def psi(self) -> npt.NDArray:
-        return np.rad2deg(np.arctan(np.abs(self.rho)))
-
-    @property
-    def delta(self) -> npt.NDArray:
-        return -np.angle(self.rho, deg=True)
-
-    @property
-    def rho_matrix(self) -> npt.NDArray:
-        return self._s
-
-    @property
-    def psi_matrix(self) -> npt.NDArray:
-        return np.rad2deg(np.arctan(np.abs(self.rho_matrix)))
-
-    @property
-    def delta_matrix(self) -> npt.NDArray:
-        return -np.angle(self.rho_matrix, deg=True)
-
-    @property
-    def mueller_matrix(self) -> npt.NDArray:
-        a = np.array([[1, 0, 0, 1],
-                      [1, 0, 0, -1],
-                      [0, 1, 1, 0],
-                      [0, 1j, -1j, 0]])
-
-        # Kronecker product of S and S*
-        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self._s),
-                                  self._s).reshape([self._s.shape[0], 4, 4])
-
-        mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
-        mm11 = mueller_matrix[:, 0, 0]
-
-        return mueller_matrix / mm11[:, None, None]
-
-    @property
-    def jones_matrix_t(self) -> npt.NDArray:
-        return self._jones_matrix_t
-
-    @property
-    def jones_matrix_r(self) -> npt.NDArray:
-        return self._jones_matrix_r
-
-    @property
-    def jones_matrix_tc(self) -> npt.NDArray:
-        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(c), self._jones_matrix_t, c)
-
-    @property
-    def jones_matrix_rc(self) -> npt.NDArray:
-        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        d = 1 / sqrt(2) * np.array([[-1, -1], [1j, -1j]])
-        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(d), self._jones_matrix_r, c)
-
-    @property
-    def R(self) -> npt.NDArray:
-        return np.abs(self._jones_matrix_r) ** 2
-
-    @property
-    def T(self) -> npt.NDArray:
-        return np.abs(self._jones_matrix_t) ** 2 * self.power_correction[:, None, None]
-
-    @property
-    def Rc(self) -> npt.NDArray:
-        return np.abs(self.jones_matrix_rc) ** 2
-
-    @property
-    def Tc(self) -> npt.NDArray:
-        return np.abs(self.jones_matrix_tc) ** 2 * self.power_correction[:, None, None]
-
     def __init__(self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()) -> None:
         super().__init__(experiment)
         self.propagator = propagator
@@ -405,23 +325,23 @@ class Solver4x4(Solver):
         """
         # Kx = kx/k0 = n sin(Φ) : Reduced wavenumber.
         nx = self.structure.front_material.get_refractive_index(self.lbda)[:, 0, 0]
-        self.k_x = nx * np.sin(np.deg2rad(self.theta_i))
+        k_x = nx * np.sin(np.deg2rad(self.theta_i))
 
         layers = reversed(self.permittivity_profile[1:-1])
 
         if isinstance(self.structure.back_material, IsotropicMaterial):
-            t = self.transition_matrix_iso_halfspace(self.k_x, self.permittivity_profile[-1][1])
+            t = self.transition_matrix_iso_halfspace(k_x, self.permittivity_profile[-1][1])
         else:
             t = self.transition_matrix_halfspace(
-                self.build_delta_matrix(self.k_x, self.permittivity_profile[-1][1]))
+                self.build_delta_matrix(k_x, self.permittivity_profile[-1][1]))
 
         for d, epsilon in layers:
             p = self.propagator.calculate_propagation(
-                self.build_delta_matrix(self.k_x, epsilon), -d, self.lbda)
+                self.build_delta_matrix(k_x, epsilon), -d, self.lbda)
             t = p @ t
 
         lf = self.transition_matrix_iso_halfspace(
-            self.k_x, self.permittivity_profile[0][1], inv=True)
+            k_x, self.permittivity_profile[0][1], inv=True)
         t = lf @ t
 
         # Extraction of t_it out of t. "2::-2" means integers {2,0}.
@@ -435,23 +355,18 @@ class Solver4x4(Solver):
         # Then we have t_ri = t_rt * t_ti
         t_ri = t_rt @ t_ti
 
-        r_ss = t_ri[..., 1, 1]
-        s = t_ri / r_ss[:, None, None]
-
-        if isinstance(self.structure.back_material, IsotropicMaterial):
-            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, self.k_x)
-            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, self.k_x)
-            self.power_correction = k_z_b.real / k_z_f.real
-        else:
-            self.power_correction = np.ones_like(self.lbda)
+        jones_matrix_t = t_ti
+        jones_matrix_r = t_ri
+        
         # The power transmission coefficient is the ratio of the 'z' components
         # of the Poynting vector:       t = P_t_z / P_i_z
         # For isotropic media, we have: t = kb'/kf' |t_bf|^2
         # The correction coefficient is kb'/kf'
         # Note : For the moment it is only meaningful for isotropic half spaces.
+        if isinstance(self.structure.back_material, IsotropicMaterial):
+            k_z_f = self.get_k_z(self.structure.front_material, self.lbda, k_x)
+            k_z_b = self.get_k_z(self.structure.back_material, self.lbda, k_x)
+            power_correction = k_z_b.real / k_z_f.real
+            return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
 
-        self._jones_matrix_t = t_ti
-        self._jones_matrix_r = t_ri
-        self._s = s
-
-        return Result(self)
+        return Result(self.experiment, jones_matrix_r, jones_matrix_t)

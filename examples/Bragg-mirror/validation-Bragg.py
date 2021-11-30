@@ -122,13 +122,13 @@ R_th_pp = (np.abs(ReflectionCoeff(pi/4, 'p')))**2
 # Incidence angle Phi_i = 0, 's' polarization
 data = s.evaluate(lbda_list, 0)
 
-R_ss_0 = data.R[:, 1, 1]
+R_ss_0 = data.R_ss
 
 # Incidence angle Phi_i = pi/4, 's' and 'p' polarizations
 data2 = s.evaluate(lbda_list, np.rad2deg(pi/4))
 
-R_ss = data2.R[:, 1, 1]
-R_pp = data2.R[:, 0, 0]
+R_ss = data2.R_ss
+R_pp = data2.R_pp
 
 # %% [markdown]
 # ## Plotting

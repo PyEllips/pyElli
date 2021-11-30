@@ -13,32 +13,6 @@ class Solver2x2(Solver):
     Cannot handle anisotropy or anything fancy,
     thus Jonas and Mueller matrices cannot be calculated (respective functions return None).
     '''
-    _rtots = None
-    _ttots = None
-    _rtotp = None
-    _ttotp = None
-
-    @property
-    def psi(self):
-        if self._rtotp is None or self._rtots is None:
-            return None
-        return np.rad2deg(np.arctan(np.abs(self._rtotp / self._rtots)))
-
-    @property
-    def rho(self):
-        if self._rtotp is None or self._rtots is None:
-            return None
-        return self._rtotp / self._rtots
-
-    @property
-    def delta(self):
-        if self._rtotp is None or self._rtots is None:
-            return None
-        return -np.angle(self._rtotp / self._rtots, deg=True)
-
-    @property
-    def R(self):
-        return np.abs(self._rtotp + self._rtots)
 
     def list_snell(self, n_list):
         angles = arcsin(n_list[0] * np.sin(np.deg2rad(self.theta_i)) / n_list)
@@ -90,12 +64,22 @@ class Solver2x2(Solver):
                            np.array([[em, rp * em],
                                      [rp * ep, ep]], dtype=complex) / tp)
 
-        self._rtots = Ms[1, 0] / Ms[0, 0]
-        self._ttots = 1 / Ms[0, 0]
-        self._rtotp = Mp[1, 0] / Mp[0, 0]
-        self._ttotp = 1 / Mp[0, 0]
+        rtots = Ms[1, 0] / Ms[0, 0]
+        ttots = 1 / Ms[0, 0]
+        rtotp = Mp[1, 0] / Mp[0, 0]
+        ttotp = 1 / Mp[0, 0]
 
-        return Result(self)
+        zeros = np.repeat(1, n_list.shape[1]) if n_list.ndim > 1 else 1
+
+        jones_matrix_r = np.moveaxis(np.array([[rtotp, zeros],
+                                               [zeros, rtots]]), 2, 0)
+        jones_matrix_t = np.moveaxis(np.array([[ttotp, zeros],
+                                               [zeros, ttots]]), 2, 0)
+
+        # TODO: Test if p and s correction formulas are needed.
+        power_correction = (((n_list[-1] * np.cos(th_list[-1])).real) / (n_list[0] * np.cos(th_list[0])).real)
+
+        return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
 
     @staticmethod
     def fresnel(n_i, n_t, th_i, th_t):
@@ -118,7 +102,7 @@ class Solver2x2(Solver):
         r_s = (n_i * cos_i - n_t * cos_t) / (n_i * cos_i + n_t * cos_t)
         r_p = (n_t * cos_i - n_i * cos_t) / (n_t * cos_i + n_i * cos_t)
         t_s = 2 * n_i * cos_i / (n_i * cos_i + n_t * cos_t)
-        t_p = 2 * n_i * cos_i / (n_i * cos_i + n_i * cos_t)
+        t_p = 2 * n_i * cos_i / (n_t * cos_i + n_i * cos_t)
 
         return r_s, r_p, t_s, t_p
 

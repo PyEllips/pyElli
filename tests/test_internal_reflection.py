@@ -6,7 +6,7 @@ import elli
 from scipy.constants import pi
 
 
-def test_tir_thickness():
+class TestTirThickness:
     # Refractive indices
     n_f = 1.5
     n_s = 1.0
@@ -31,10 +31,8 @@ def test_tir_thickness():
     # Air thickness variation range
     d = np.linspace(0, 1000)
 
-    # %% [markdown]
-    # ## Analytical calculation
+    # Analytical calculation
 
-    # %%
     # Reduced wavenumber
     Kx = n_f * np.sin(Phi_i)
 
@@ -78,42 +76,132 @@ def test_tir_thickness():
     T_th_s = t2_th_s * correction
     T_th_p = t2_th_p * correction
 
-    # %% [markdown]
-    # ## Calculation with Berreman4x4
+    def test_tir_thickness_4x4_scipy(self):
+        R = []
+        T = []
+        jt = []
 
-    # %%
-    R = []
-    T = []
-    jt = []
+        for dd in self.d:
+            self.layer.set_thickness(dd)
+            data = self.s.evaluate(self.lbda, np.rad2deg(self.Phi_i))
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
 
-    for dd in d:
-        layer.set_thickness(dd)
-        data = s.evaluate(lbda, np.rad2deg(Phi_i))
-        R.append(data.R[0])
-        T.append(data.T[0])
-        jt.append(data.jones_matrix_t[0])
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
 
-    R = np.array(R)
-    T = np.array(T)
-    jt = np.array(jt)
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
 
-    # Extraction of the transmission and reflexion coefficients
-    R_p = R[:, 0, 0]
-    R_s = R[:, 1, 1]
-    T_p = T[:, 0, 0]
-    T_s = T[:, 1, 1]
-    t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
-    t2_s = np.abs(jt[:, 1, 1]) ** 2
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
 
-    np.testing.assert_allclose(R_p, R_th_p)
-    np.testing.assert_allclose(R_s, R_th_s)
-    np.testing.assert_allclose(T_p, T_th_p)
-    np.testing.assert_allclose(T_s, T_th_s)
-    np.testing.assert_allclose(t2_p, t2_th_p)
-    np.testing.assert_allclose(t2_s, t2_th_s)
+    def test_tir_thickness_4x4_eig(self):
+        R = []
+        T = []
+        jt = []
+
+        for dd in self.d:
+            self.layer.set_thickness(dd)
+            data = self.s.evaluate(self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorEig())
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
+
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+
+    def test_tir_thickness_4x4_torch(self):
+        R = []
+        T = []
+        jt = []
+
+        for dd in self.d:
+            self.layer.set_thickness(dd)
+            data = self.s.evaluate(self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
+
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+
+    def test_tir_thickness_2x2(self):
+        R = []
+        T = []
+        jt = []
+
+        for dd in self.d:
+            self.layer.set_thickness(dd)
+            data = self.s.evaluate(self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver2x2)
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
+
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
 
 
-def test_tir_angle():
+class TestTirAngle:
     n_f = 1.5
     n_s = 1.0
     n_b = 1.7
@@ -140,10 +228,8 @@ def test_tir_angle():
     # Variation of incidence angle
     Phi_list = np.deg2rad(np.linspace(0, 89, 90))
 
-    # %% [markdown]
     # Analytical calculation
-    # Incidence angle
-    # %%
+
     # Reduced wavenumber
     Kx = n_f * np.sin(Phi_list)
 
@@ -186,40 +272,127 @@ def test_tir_angle():
     T_th_s = t2_th_s * correction
     T_th_p = t2_th_p * correction
 
-    # %% [markdown]
-    # ## Calculation with Berreman4x4
-    # %%
-    R = []
-    T = []
-    jt = []
+    def test_tir_angle_4x4_scipy(self):
+        R = []
+        T = []
+        jt = []
 
-    for Phi_i in Phi_list:
-        data = s.evaluate(lbda, np.rad2deg(Phi_i))
-        R.append(data.R[0])
-        T.append(data.T[0])
-        jt.append(data.jones_matrix_t[0])
+        for Phi_i in self.Phi_list:
+            data = self.s.evaluate(self.lbda, np.rad2deg(Phi_i))
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
 
-    R = np.array(R)
-    T = np.array(T)
-    jt = np.array(jt)
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
 
-    # Extraction of the transmission and reflexion coefficients
-    R_p = R[:, 0, 0]
-    R_s = R[:, 1, 1]
-    T_p = T[:, 0, 0]
-    T_s = T[:, 1, 1]
-    t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
-    t2_s = np.abs(jt[:, 1, 1]) ** 2
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
 
-    np.testing.assert_allclose(R_p, R_th_p)
-    np.testing.assert_allclose(R_s, R_th_s)
-    np.testing.assert_allclose(T_p, T_th_p)
-    np.testing.assert_allclose(T_s, T_th_s)
-    np.testing.assert_allclose(t2_p, t2_th_p)
-    np.testing.assert_allclose(t2_s, t2_th_s)
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+        
+    def test_tir_angle_4x4_eig(self):
+        R = []
+        T = []
+        jt = []
 
+        for Phi_i in self.Phi_list:
+            data = self.s.evaluate(self.lbda, np.rad2deg(Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorEig())
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
 
-def test_transition_matrix_halfspace():
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+
+    def test_tir_angle_4x4_torch(self):
+        R = []
+        T = []
+        jt = []
+
+        for Phi_i in self.Phi_list:
+            data = self.s.evaluate(self.lbda, np.rad2deg(Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
+
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+
+    def test_tir_angle_2x2(self):
+        R = []
+        T = []
+        jt = []
+
+        for Phi_i in self.Phi_list:
+            data = self.s.evaluate(self.lbda, np.rad2deg(Phi_i), solver=elli.Solver2x2)
+            R.append(data.R[0])
+            T.append(data.T[0])
+            jt.append(data.jones_matrix_t[0])
+
+        R = np.array(R)
+        T = np.array(T)
+        jt = np.array(jt)
+
+        # Extraction of the transmission and reflexion coefficients
+        R_p = R[:, 0, 0]
+        R_s = R[:, 1, 1]
+        T_p = T[:, 0, 0]
+        T_s = T[:, 1, 1]
+        t2_p = np.abs(jt[:, 0, 0]) ** 2  # Before power correction
+        t2_s = np.abs(jt[:, 1, 1]) ** 2
+
+        np.testing.assert_allclose(R_p, self.R_th_p)
+        np.testing.assert_allclose(R_s, self.R_th_s)
+        np.testing.assert_allclose(T_p, self.T_th_p)
+        np.testing.assert_allclose(T_s, self.T_th_s)
+        np.testing.assert_allclose(t2_p, self.t2_th_p)
+        np.testing.assert_allclose(t2_s, self.t2_th_s)
+
+def test_4x4_transition_matrix_halfspace():
     # Refractive indices
     n_glass = 1.5
     n_air = 1.0
