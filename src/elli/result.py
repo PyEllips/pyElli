@@ -42,8 +42,8 @@ class Result:
                       [0, 1j, -1j, 0]])
 
         # Kronecker product of S and S*
-        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self.rho),
-                                  self.rho).reshape([self.rho.shape[0], 4, 4])
+        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self.rho_matrix),
+                                  self.rho_matrix).reshape([self.rho_matrix.shape[0], 4, 4])
 
         mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
         mm11 = mueller_matrix[:, 0, 0]
