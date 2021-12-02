@@ -4,7 +4,7 @@ from .dispersions import *
 from .experiment import Experiment
 from .materials import *
 from .math import *
-from .result import Result
+from .result import Result, ResultList
 from .solver2x2 import Solver2x2
 from .solver4x4 import *
 from .structure import *

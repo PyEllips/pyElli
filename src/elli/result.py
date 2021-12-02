@@ -1,4 +1,6 @@
 # Encoding: utf-8
+from typing import List
+
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
@@ -181,3 +183,64 @@ class Result:
             return self.__getattribute__('jones_matrix_' + names[0])[:, i, j]
 
         return self.__getattribute__(names[0])[:, i, j]
+
+
+class ResultList():
+    """Class to make a row of Results easier to handle.
+    """
+
+    def __init__(self, results: List[Result]) -> None:
+        """Creates an ResultList object.
+
+        Args:
+            results (List): List of results to store.
+        """
+        self.results = results
+
+    def __getattr__(self, name: str) -> npt.NDArray:
+        """Returns the data for the requested variable 'name' of all results.
+
+        Args:
+            name (str): Variable name to return.
+                Examples for 'name'...
+                'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
+                'r_LR' : Reflection from circular right to circular left polarization.
+                'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
+                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
+                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+
+        Returns:
+            npt.NDArray: Array of data.
+        """
+        names = name.rsplit('_', 1)
+
+        if names[0] == 'Ψ':
+            names[0] = 'psi'
+        elif names[0] == 'Δ':
+            names[0] = 'delta'
+        elif names[0] == 'ρ':
+            names[0] = 'rho'
+
+        if names[0] not in ['psi', 'delta', 'rho', 'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc',
+                            'jones_matrix_r', 'jones_matrix_t', 'jones_matrix_rc', 'jones_matrix_tc']:
+            raise AttributeError(f"'Result' object has no attribute '{name}'")
+
+        if len(names) > 1:
+            (i, j) = map(_polar_index, names[1])
+
+        if names[0] in ['psi', 'delta', 'rho']:
+            if len(names) == 1:
+                return np.squeeze(np.array([
+                    result.__getattribute__(names[0]) for result in self.results]))
+            return np.squeeze(np.array([
+                result.__getattribute__(names[0] + '_matrix')[:, i, j] for result in self.results]))
+
+        if names[0] in ['r', 'rc', 't', 'tc']:
+            if len(names) == 1:
+                return np.squeeze(np.array([
+                    result.__getattribute__('jones_matrix_' + names[0]) for result in self.results]))
+            return np.squeeze(np.array([
+                result.__getattribute__('jones_matrix_' + names[0])[:, i, j] for result in self.results]))
+
+        return np.squeeze(np.array([
+            result.__getattribute__(names[0])[:, i, j] for result in self.results]))
