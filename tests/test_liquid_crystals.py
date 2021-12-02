@@ -90,7 +90,7 @@ def test_twisted_nematic_lc():
 
     # Berreman simulation
     data = s.evaluate(lbda_list, 0)
-    T_bm = np.real(data.T_pp)
+    T_bm = data.T_pp
 
     # Compare results
     np.testing.assert_array_almost_equal(T_bm, T_gt, decimal=2)

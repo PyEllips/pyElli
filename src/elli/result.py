@@ -4,6 +4,23 @@ import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
 
+def _polar_index(index: str) -> int:
+    """Return polarization index for character 'index'.
+
+    Args:
+        index (str): Polarisation index, valid are: 'p', 's', 'R', 'L'.
+    Returns:
+        int: 'p', 'L' -> 0
+                's', 'R' -> 1
+    """
+    if index in ['p', 'L']:
+        return 0
+    if index in ['s', 'R']:
+        return 1
+
+    return ValueError('Wrong index given for variable.')
+
+
 class Result:
     """Record of a simulation result."""
 
@@ -131,13 +148,13 @@ class Result:
                 'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
                 'r_LR' : Reflection from circular right to circular left polarization.
                 'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
-                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters. 
+                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
                 'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
         """
-        names = name.split('_', 1)
+        names = name.rsplit('_', 1)
 
         if names[0] == 'Ψ':
             names[0] = 'psi'
@@ -146,35 +163,21 @@ class Result:
         elif names[0] == 'ρ':
             names[0] = 'rho'
 
-        if names[0] not in ['psi', 'delta', 'rho', 'mueller', 
-                            'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc']:
+        if names[0] not in ['psi', 'delta', 'rho', 'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc',
+                            'jones_matrix_r', 'jones_matrix_t', 'jones_matrix_rc', 'jones_matrix_tc']:
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
-        if len(names) == 1:
-            return self.__getattribute__(names[0])
+        if len(names) > 1:
+            (i, j) = map(_polar_index, names[1])
 
-        if names[0] in ['psi', 'delta', 'rho', 'mueller']:
-            if names[1] == 'matrix':
-                return self.__getattribute__(names[0] + '_matrix')
-
-            (i, j) = map(self._polar_index, names[1])
+        if names[0] in ['psi', 'delta', 'rho']:
+            if len(names) == 1:
+                return self.__getattribute__(names[0])
             return self.__getattribute__(names[0] + '_matrix')[:, i, j]
 
-        (i, j) = map(self._polar_index, names[1])
+        if names[0] in ['r', 'rc', 't', 'tc']:
+            if len(names) == 1:
+                return self.__getattribute__('jones_matrix_' + names[0])
+            return self.__getattribute__('jones_matrix_' + names[0])[:, i, j]
+
         return self.__getattribute__(names[0])[:, i, j]
-
-    def _polar_index(self, index: str) -> int:
-        """Return polarization index for character 'index'.
-
-        Args:
-            index (str): Polarisation index, valid are: 'p', 's', 'R', 'L'.
-        Returns:
-            int: 'p', 'L' -> 0 
-                 's', 'R' -> 1
-        """
-        if index in ['p', 'L']:
-            return 0
-        if index in ['s', 'R']:
-            return 1
-
-        return ValueError('Wrong index given for variable.')
