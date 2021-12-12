@@ -45,7 +45,7 @@ class DispersionLaw(ABC):
         eps = self.getDielectric(lbda)
 
         return pd.DataFrame({'ϵ1': eps.real,
-                             'ϵ2': -eps.imag if conjugate else eps.iamge},
+                             'ϵ2': -eps.imag if conjugate else eps.imag},
                              index=pd.Index(lbda, name='Wavelength'))
 
     def getRefractiveIndex_df(self, lbda: npt.ArrayLike = None, conjugate=False) -> pd.DataFrame:
@@ -53,7 +53,7 @@ class DispersionLaw(ABC):
         nk = self.getRefractiveIndex(lbda)
 
         return pd.DataFrame({'n': nk.real,
-                             'k': -nk.imag if conjugate else nk.image},
+                             'k': -nk.imag if conjugate else nk.imag},
                              index=pd.Index(lbda, name='Wavelength'))
 
 
