@@ -146,56 +146,42 @@ print("\nWe reproduce figure 6.19, p. 242...")
 Theta_E_list = [0, 45, 90]
 Phi_E_list = np.linspace(0, 180, 36*2+1)
 
-Psi_pp = []
-Delta_pp = []
-Psi_ps = []
-Delta_ps = []
+data = elli.ResultList()
 
-# %%
 for Theta_E in Theta_E_list:
     for Phi_E in Phi_E_list:
         R = elli.rotation_euler(Phi_E, Theta_E, 0)
         filmMaterial.set_rotation(R)
-        data = s.evaluate(np.array([lbda]), Phi_i)
-        Psi_pp.append(data.psi_matrix[0,0,0])
-        Delta_pp.append(data.delta_matrix[0,0,0])
-        Psi_ps.append(data.psi_matrix[0,0,1])
-        Delta_ps.append(data.delta_matrix[0,0,1])
+        data.append(s.evaluate(np.array([lbda]), Phi_i))
 
 # %%
-Psi_pp = np.array(Psi_pp)
-Psi_pp = Psi_pp.reshape(3, 73).T
+psi_pp = data.psi_pp.reshape(3, 73).T
+psi_ps = data.psi_ps.reshape(3, 73).T
 
-Psi_ps = np.array(Psi_ps)
-Psi_ps = Psi_ps.reshape(3, 73).T
-
-Delta_pp = np.array(Delta_pp)
-Delta_pp = Delta_pp.reshape(3, 73).T
-
-Delta_ps = np.array(Delta_ps)
-Delta_ps = Delta_ps.reshape(3, 73).T
+delta_pp = data.delta_pp.reshape(3, 73).T
+delta_ps = data.delta_ps.reshape(3, 73).T
 
 # %%
 fig = pyplot.figure()
 # Plot curves for the three values of Theta_E
 pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
 ax1 = fig.add_subplot(2, 2, 1)
-ax1.plot(Phi_E_list, Psi_pp)
+ax1.plot(Phi_E_list, psi_pp)
 ax1.set_ylabel(r"$\Psi_{pp}$")
 
 ax2 = fig.add_subplot(2, 2, 2)
-ax2.plot(Phi_E_list, Delta_pp)
+ax2.plot(Phi_E_list, delta_pp)
 ax2.set_ylabel(r"$\Delta_{pp}$")
 
 # Plot curves for two values of Theta_E
 pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
 ax3 = fig.add_subplot(2, 2, 3)
-ax3.plot(Phi_E_list, Psi_ps)
+ax3.plot(Phi_E_list, psi_ps)
 ax3.set_ylabel(r"$\Psi_{ps}$")
 ax3.set_xlabel(r"$\phi_E$")
 
 ax4 = fig.add_subplot(2, 2, 4)
-ax4.plot(Phi_E_list, Delta_ps)
+ax4.plot(Phi_E_list, delta_ps)
 ax4.set_ylabel(r"$\Delta_{ps}$")
 ax4.set_xlabel(r"$\phi_E$")
 

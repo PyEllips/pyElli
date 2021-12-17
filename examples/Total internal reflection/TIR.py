@@ -37,15 +37,7 @@ Phi_list = np.linspace(0, 89, 90)
 # ## Calculation
 
 # %%
-R = []
-T = []
-
-for Phi_i in Phi_list:
-    data = s.evaluate(lbda, Phi_i)
-    R.append(data.R[0])
-    T.append(data.T[0])
-    
-R = np.array(R)
+data = elli.ResultList([s.evaluate(lbda, Phi_i) for Phi_i in Phi_list])
 
 
 # %% [markdown]
@@ -53,8 +45,8 @@ R = np.array(R)
 
 # %%
 plt.figure()
-plt.plot(Phi_list, np.real(R[:, 0, 0]), label='R_pp')
-plt.plot(Phi_list, np.real(R[:, 1, 1]), label='R_ss')
+plt.plot(Phi_list, data.R_pp, label='R_pp')
+plt.plot(Phi_list, data.R_ss, label='R_ss')
 plt.title("FTIR: Glass / Air")
 plt.xlabel(u"Angle of incidence (°)")
 plt.ylabel(r"Reflexion coefficients $R$")

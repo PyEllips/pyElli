@@ -58,29 +58,16 @@ T_th_pp = correction * t2_th_pp
 # %% [markdown]
 # ## Calculation with Berreman4x4
 # %%
-R = []
-T = []
-jt = []
-
-for Phi_i in Phi_list:
-    data = s.evaluate(lbda, Phi_i)
-    R.append(data.R[0])
-    T.append(data.T[0])
-    jt.append(data.jones_matrix_t[0])
+data = elli.ResultList([s.evaluate(lbda, Phi_i) for Phi_i in Phi_list])
     
-R = np.array(R)
-T = np.array(T)
-jt = np.array(jt)
+R_pp = data.R_pp
+R_ss = data.R_ss
 
+T_pp = data.T_pp
+T_ss = data.T_ss
 
-R_pp = R[:, 0, 0]
-R_ss = R[:, 1, 1]
-
-T_pp = T[:, 0, 0]
-T_ss = T[:, 1, 1]
-
-t2_pp = np.abs(jt[:, 0, 0])**2
-t2_ss = np.abs(jt[:, 1, 1])**2
+t2_pp = np.abs(data.t_pp)**2
+t2_ss = np.abs(data.t_ss)**2
 
 # %% [markdown]
 # ## Plotting

@@ -91,27 +91,15 @@ T_th_p = t2_th_p*correction
 # %% [markdown]
 # ## Calculation with Berreman4x4
 # %%
-R = []
-T = []
-jt = []
-
-for Phi_i in Phi_list:
-    data = s.evaluate(lbda, np.rad2deg(Phi_i))
-    R.append(data.R[0])
-    T.append(data.T[0])
-    jt.append(data.jones_matrix_t[0])
-    
-R = np.array(R)
-T = np.array(T)
-jt = np.array(jt)
+data = elli.ResultList([s.evaluate(lbda, np.rad2deg(Phi_i)) for Phi_i in Phi_list])
 
 # Extraction of the transmission and reflexion coefficients
-R_p = R[:, 0, 0]
-R_s = R[:, 1, 1]
-T_p = T[:, 0, 0]
-T_s = T[:, 1, 1]
-t2_p = np.abs(jt[:, 0, 0])**2  # Before power correction
-t2_s = np.abs(jt[:, 1, 1])**2
+R_p = data.R_pp
+R_s = data.R_ss
+T_p = data.T_pp
+T_s = data.T_ss
+t2_p = np.abs(data.t_pp)**2  # Before power correction
+t2_s = np.abs(data.t_ss)**2
 
 # %% [markdown]
 # ## Plotting

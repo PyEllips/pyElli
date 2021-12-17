@@ -34,24 +34,18 @@ angle = 30
 # thickness of the glass layer:
 h_list = np.linspace(0, 1000, 1000)
 
-R = []
-T = []
+data = elli.ResultList()
 
 for h in h_list:
     layer.set_thickness(h)
-    data = s.evaluate(lbda, angle)
-    R.append(data.R[0])
-    T.append(data.T[0])
-    
-R = np.array(R)
-T = np.array(T)
+    data.append(s.evaluate(lbda, angle))
 
 # %%
 plt.figure(figsize=(12., 6.))
-plt.plot(h_list, np.real(R[:, 0, 0]), label='R_pp')
-plt.plot(h_list, np.real(R[:, 1, 1]), label='R_ss')
-plt.plot(h_list, np.real(T[:, 0, 0]), label='T_pp')
-plt.plot(h_list, np.real(T[:, 1, 1]), label='T_ss')
+plt.plot(h_list, data.R_pp, label='R_pp')
+plt.plot(h_list, data.R_ss, label='R_ss')
+plt.plot(h_list, data.T_pp, label='T_pp')
+plt.plot(h_list, data.T_ss, label='T_ss')
 plt.title("Glass layer at 30 degree incidence angle")
 plt.xlabel(u"Layer thickness (nm)")
 plt.ylabel(r"Reflexion coefficients $R$")

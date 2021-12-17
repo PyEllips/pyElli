@@ -37,18 +37,16 @@ uniaxialMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
 # Incidence angles
 Φ_i_list = np.linspace(0, 89, 300)  #  array of Φ_i values
 
-Psi = []
+data = elli.ResultList()
 
 for θ_E in θ_E_list:
     R = elli.rotation_euler(Φ_E, θ_E, 0)
     uniaxialMaterial.set_rotation(R)
     s = elli.Structure(air, [], uniaxialMaterial)
     for Φ_i in Φ_i_list:
-        data = s.evaluate(500, Φ_i)
-        Psi.append(data.psi)
+        data.append(s.evaluate(500, Φ_i))
 
-Psi = np.array(Psi)
-Psi = Psi.reshape(3, 300).T
+Psi = data.psi_pp.reshape(3, 300).T
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -68,19 +66,16 @@ plt.tight_layout()
 Φ_E_list = np.linspace(0, 360, 36*2+1)  #  1st Euler angle
 θ_E_list = [0, 45, 90]  #  2nd Euler angle
 
-Psi = []
+data2 = elli.ResultList()
 
 for θ_E in θ_E_list:
-    evaluation_list = []
     for Φ_E in Φ_E_list:
         R = elli.rotation_euler(Φ_E, θ_E, 0)
         uniaxialMaterial.set_rotation(R)
         s = elli.Structure(air, [], uniaxialMaterial)
-        data = s.evaluate(500, Φ_i)
-        evaluation_list.append(data.psi_matrix[0,0,0])
-    Psi.append(evaluation_list)
+        data2.append(s.evaluate(500, Φ_i))
 
-Psi = np.array(Psi).T
+Psi = data2.psi_pp.reshape(3, 73).T
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
