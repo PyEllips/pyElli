@@ -189,13 +189,32 @@ class ResultList():
     """Class to make a row of Results easier to handle.
     """
 
-    def __init__(self, results: List[Result]) -> None:
+    def __init__(self, results: List[Result] = None) -> None:
         """Creates an ResultList object.
 
         Args:
-            results (List): List of results to store.
+            results (List[Result], optional): List of results to store. Defaults to None.
         """
-        self.results = results
+        if results is None:
+            self.results = []
+        else:
+            self.results = results
+
+    def append(self, result: Result) -> None:
+        """Append a single Result to the ResultList.
+
+        Args:
+            result (Result): Additional Result to store.
+        """
+        self.results.append(result)
+
+    def __len__(self) -> int:
+        """Returns lenght of ResultList.
+
+        Returns:
+            int: Number of Results in ResultList.
+        """
+        return len(self.results)
 
     def __getattr__(self, name: str) -> npt.NDArray:
         """Returns the data for the requested variable 'name' of all results.
