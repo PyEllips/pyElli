@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.9.3
+- Added factory class (DispersionFactory) for DispersionLaw objects
+
 ## Version 0.9.2
 - Fitting decorator buttons (fit, undo, redo)
 - Data export for decorators

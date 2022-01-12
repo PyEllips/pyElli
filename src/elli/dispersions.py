@@ -1,5 +1,6 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+import sys
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
@@ -55,6 +56,54 @@ class DispersionLaw(ABC):
         return pd.DataFrame({'n': nk.real,
                              'k': -nk.imag if conjugate else nk.imag},
                              index=pd.Index(lbda, name='Wavelength'))
+
+
+class DispersionFactory():
+    """A factory class for dispersion law objects"""
+
+    @staticmethod
+    def get_dispersion(identifier: str, *args, **kwargs) -> DispersionLaw:
+        """Creates a DispersionLaw object identified by its string name and initializes it with the
+        given parameters.
+
+        Args:
+            identifier (str): Identifier of the DispersionLaw object, e.g. DispersionCauchy.
+
+        Returns:
+            DispersionLaw: The DispersionLaw object initialized with the given parameters.
+        """
+        bad_classes = ['DispersionLaw', 'DispersionFactory', 'DispersionSum']
+        if identifier in bad_classes:
+            raise ValueError(f'No valid dispersion: {identifier}')
+
+        if hasattr(sys.modules[__name__], identifier):
+            return getattr(sys.modules[__name__], identifier)(*args, **kwargs)
+
+        raise ValueError(f'No such dispersion: {identifier}')
+
+    @staticmethod
+    def get_dispersion_short(identifier: str, *args, **kwargs) -> DispersionLaw:
+        """Creates a DispersionLaw object identified by
+        its short string name and initializes it with the
+        given parameters.
+
+        Args:
+            identifier (str): Identifier of the DispersionLaw object,
+            e.g. DispersionCauchy, dispersion_cauchy or cauchy.
+
+        Returns:
+            DispersionLaw: The DispersionLaw object initialized with the given parameters.
+        """
+        gen_ident = identifier.strip().lower()
+        if gen_ident.startswith('dispersion_'):
+            disp_name = gen_ident.split('_')[1].capitalize()
+            full_identifier = f'Dispersion{disp_name}'
+        elif gen_ident.startswith('dispersion'):
+            full_identifier = f'Dispersion{identifier[10:].capitalize()}'
+        else:
+            full_identifier = f'Dispersion{gen_ident.capitalize()}'
+
+        return DispersionFactory.get_dispersion(full_identifier, *args, **kwargs)
 
 
 class DispersionSum(DispersionLaw):
