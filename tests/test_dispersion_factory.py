@@ -14,7 +14,6 @@ def test_correct_object_generation_with_short_identifier():
     for test_name in ['less', 'LESS', 'LeSs', 'dispersion_less',
                       'DispersionLess', 'dispersION_LESS', 'DISPERSIONLESS',
                        'DISPERSION_LESS', 'DISPerSIONLESS', '   dispersion_less   ']:
-        print(test_name)
         factory_disp_less = elli.DispersionFactory.get_dispersion_short(test_name, n=1.5)
         assert isinstance(factory_disp_less, elli.DispersionLess)
         assert factory_disp_less.n == 1.5
