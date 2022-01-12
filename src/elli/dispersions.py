@@ -99,7 +99,7 @@ class DispersionFactory():
             disp_name = gen_ident.split('_')[1].capitalize()
             full_identifier = f'Dispersion{disp_name}'
         elif gen_ident.startswith('dispersion'):
-            full_identifier = f'Dispersion{identifier[10:].capitalize()}'
+            full_identifier = f'Dispersion{gen_ident[10:].capitalize()}'
         else:
             full_identifier = f'Dispersion{gen_ident.capitalize()}'
 
