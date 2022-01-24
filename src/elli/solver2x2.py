@@ -69,7 +69,7 @@ class Solver2x2(Solver):
         rtotp = Mp[1, 0] / Mp[0, 0]
         ttotp = 1 / Mp[0, 0]
 
-        zeros = np.repeat(1, n_list.shape[1]) if n_list.ndim > 1 else 1
+        zeros = np.repeat(0, n_list.shape[1]) if n_list.ndim > 1 else 1
 
         jones_matrix_r = np.moveaxis(np.array([[rtotp, zeros],
                                                [zeros, rtots]]), 2, 0)
