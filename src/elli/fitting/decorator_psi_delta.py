@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 from lmfit import minimize, Parameters
 from ipywidgets import widgets
 from IPython.display import display
+from sys import float_info
 from ..result import Result
 from ..utils import calc_pseudo_diel, calc_rho
 from .params_hist import ParamsHist
@@ -149,8 +150,12 @@ class FitRho(FitDecorator):
                                              indent=False)
             curr_checkbox.observe(self.set_vary_param, names='value')
             curr_widget = widgets.BoundedFloatText(self.params[param],
-                                                   min=self.params[param].min,
-                                                   max=self.params[param].max,
+                                                   min=float_info.min
+                                                    if self.params[param].min == -float('inf')
+                                                    else self.params[param].min,
+                                                   max=float_info.max
+                                                    if self.params[param].max == float('inf')
+                                                    else self.params[param].max,
                                                    description=param,
                                                    continuous_update=False)
             curr_widget.observe(self.update_params, names='value')
