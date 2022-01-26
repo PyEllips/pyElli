@@ -248,7 +248,8 @@ class FitRho(FitDecorator):
 
     def get_model_data(self,
                        params:Parameters=None,
-                       append_exp_data=False) -> pd.DataFrame:     
+                       repr:str='psi-delta',
+                       append_exp_data=False) -> pd.DataFrame:                   
         """Gets the data from the provided modle with the provided parameters.
         If no parameters are provided, the fitted parameters are used
         (which default to the initial parameters if no fit has been triggered).
@@ -258,13 +259,22 @@ class FitRho(FitDecorator):
                 The parameters to calculate the model with. 
                 If not provided, the fitted parameters are used.
                 Defaults to None.
+            repr (str, optional):
+                The representation of the model and experiment data.
+                Valid values are 'psi-delta' or 'rho'. Defaults to 'psi-delta'.
             append_exp_data (bool, optional):
                 Appends the experimental data if set to True.
                 Defaults to False.
 
+        Raises:
+            ValueError: Raised if the representation is not a valid value.
+
         Returns:
             pd.DataFrame: The model results
         """
+        if repr not in ['psi-delta', 'rho']:
+            raise ValueError(f'Unexpected representation: {repr}')
+
         if params is None:
             fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
             desc = 'fit'
@@ -272,15 +282,20 @@ class FitRho(FitDecorator):
             fit_result = self.model(self.exp_data.index.to_numpy(), params)
             desc = 'model'
 
-        if append_exp_data:
-            return pd.concat([self.exp_data,
-                              pd.DataFrame({f'Ψ_{desc}': fit_result.psi,
-                                            f'Δ_{desc}': fit_result.delta},
-                                            index=self.exp_data.index)], axis=1)
+        exp_data = {'psi-delta': self.exp_data,
+                    'rho': calc_rho(self.exp_data)}
 
-        return pd.DataFrame({f'Ψ_{desc}': fit_result.psi,
-                             f'Δ_{desc}': fit_result.delta},
-                             index=self.exp_data.index)
+        sim_data = {'psi-delta': pd.DataFrame({f'Ψ_{desc}': fit_result.psi,
+                                               f'Δ_{desc}': fit_result.delta},
+                                               index=self.exp_data.index),
+                    'rho': pd.DataFrame({f'ρ_{desc}': fit_result.rho},
+                                         index=self.exp_data.index)}
+
+        if append_exp_data:
+            return pd.concat([exp_data[repr],
+                              sim_data[repr]], axis=1)
+
+        return sim_data[repr]
 
     def __init__(self,
                  exp_data: pd.DataFrame,
