@@ -59,7 +59,7 @@ class TestTiO2:
 
     def test_solver2x2(self, datadir):
         sr = elli.SpectraRay(datadir)
-        Si = elli.IsotropicMaterial(sr.loadDispersionTable('\\Si_Aspnes.mat'))
+        Si = elli.IsotropicMaterial(sr.loadDispersionTable('/Si_Aspnes.mat'))
 
         meas_data = elli.SpectraRay.read_rho(datadir.join('TiO2_400cycles.txt')).loc[400:800]
         sim_data = elli.Structure(elli.AIR, self.Layer, Si).evaluate(meas_data.index, 70, solver=elli.Solver2x2).rho
@@ -71,7 +71,7 @@ class TestTiO2:
 
     def test_solver4x4_torch(self, datadir):
         sr = elli.SpectraRay(datadir)
-        Si = elli.IsotropicMaterial(sr.loadDispersionTable('\\Si_Aspnes.mat'))
+        Si = elli.IsotropicMaterial(sr.loadDispersionTable('/Si_Aspnes.mat'))
 
         meas_data = elli.SpectraRay.read_rho(datadir.join('TiO2_400cycles.txt')).loc[400:800]
         sim_data = elli.Structure(elli.AIR, self.Layer, Si).evaluate(
