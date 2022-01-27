@@ -62,7 +62,7 @@ class DispersionFactory():
     """A factory class for dispersion law objects"""
 
     @staticmethod
-    def get_dispersion(identifier: str, *args, **kwargs) -> DispersionLaw:
+    def get_dispersion(identifier: str) -> DispersionLaw:
         """Creates a DispersionLaw object identified by its string name and initializes it with the
         given parameters.
 
@@ -77,12 +77,12 @@ class DispersionFactory():
             raise ValueError(f'No valid dispersion: {identifier}')
 
         if hasattr(sys.modules[__name__], identifier):
-            return getattr(sys.modules[__name__], identifier)(*args, **kwargs)
+            return getattr(sys.modules[__name__], identifier)
 
         raise ValueError(f'No such dispersion: {identifier}')
 
     @staticmethod
-    def get_dispersion_short(identifier: str, *args, **kwargs) -> DispersionLaw:
+    def get_dispersion_short(identifier: str) -> DispersionLaw:
         """Creates a DispersionLaw object identified by
         its short string name and initializes it with the
         given parameters.
@@ -103,7 +103,7 @@ class DispersionFactory():
         else:
             full_identifier = f'Dispersion{gen_ident.capitalize()}'
 
-        return DispersionFactory.get_dispersion(full_identifier, *args, **kwargs)
+        return DispersionFactory.get_dispersion(full_identifier)
 
 
 class DispersionSum(DispersionLaw):
