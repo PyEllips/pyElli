@@ -1,6 +1,8 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 import sys
+from typing import List
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
@@ -25,6 +27,9 @@ class DispersionLaw(ABC):
 
     @abstractmethod
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        pass
+
+    def add_param_set(self, **kwargs):
         pass
 
     def __add__(self, other: "DispersionLaw") -> "DispersionLaw":
@@ -56,6 +61,21 @@ class DispersionLaw(ABC):
         return pd.DataFrame({'n': nk.real,
                              'k': -nk.imag if conjugate else nk.imag},
                              index=pd.Index(lbda, name='Wavelength'))
+
+    def _dict_to_str(self, d):
+        return ", ".join(f"{item[0]} = {item[1]}" for item in d.items())
+
+    def __repr__(self):
+        return (
+            type(self).__name__
+            + "\n"
+            + "=" * len(type(self).__name__)
+            + "\n"
+            + self._dict_to_str(self.single_params)
+            + "\n\nOscillators\n"
+            + "===========\n"
+            + "\n".join(self._dict_to_str(p) for p in self.rep_params)
+        )
 
 
 class DispersionFactory():
@@ -131,29 +151,119 @@ class DispersionLess(DispersionLaw):
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.n**2
 
+@dataclass
+class Param:
+    name:str
+    value:float
 
-class DispersionCauchy(DispersionLaw):
-    """Sellmeier dispersion law equation."""
+class ParamList:
+    _params:List[Param]
+    template:List[str]
+    defaults:List[float]
 
-    def __init__(self, n0: float = 1.5, n1: float = 0, n2: float = 0, k0: float = 0, k1: float = 0, k2: float = 0) -> None:
-        """Creates a Cauchy dispersion law.
+    def __init__(self, params:List[Param], template:List[str], defaults:List[float]) -> None:
+        self.template = template
+        self.defaults = defaults
+        self.params(params)
+
+    @property
+    def params(self) -> List[Param]:
+        return self._params
+
+    @params.setter
+    def params(self, v:List[Param]) -> None:
+        self._params = []
+        for vi in v:
+            if vi.name in self.template:
+                self._params.append(vi)
+        self._params = v
+
+    def update_param(self, v:Param) -> None:
+        pass
+
+
+class DispersionTest:
+    single_params_template = {"eps0": 0}
+    rep_params_template = {"A": 1, "B": 1, "C": 1}
+
+    def __init__(self, **kwargs):
+        super()
+        self.rep_params = []
+        self.single_params = {}
+
+        if not np.in1d(
+            list(kwargs.keys()), list(self.single_params_template.keys())
+        ).all():
+            raise Exception("Unkown parameter set")
+
+        for param in self.single_params_template.keys():
+            if not param in kwargs:
+                self.single_params[param] = self.single_params_template.get(param)
+            else:
+                self.single_params[param] = kwargs.get(param)
+
+    def dielectric_function(self, lbda):
+        pass
+
+    def add_param_set(self, **kwargs):
+        if not np.in1d(list(self.rep_params_template.keys()), list(kwargs.keys())).all():
+            raise Exception("Not all params set")
+
+        self.rep_params.append(kwargs)
+
+        return self
+
+    def _dict_to_str(self, d):
+        return ", ".join(f"{item[0]} = {item[1]}" for item in d.items())
+
+    def __repr__(self):
+        return (
+            type(self).__name__
+            + "\n"
+            + "=" * len(type(self).__name__)
+            + "\n"
+            + self._dict_to_str(self.single_params)
+            + "\n\nOscillators\n"
+            + "===========\n"
+            + "\n".join(self._dict_to_str(p) for p in self.rep_params)
+        )
+
+
+class Cauchy(DispersionLaw):
+    """Cauchy dispersion law.
 
         Cauchy coefficients: n0, n1, n2, k0, k1, k2
         coefficients defined for λ in nm
 
         n(λ) = n0 + 100 * n1/λ² + 10e7 n2/λ^4
         k(λ) = k0 + 100 * k1/λ² + 10e7 k2/λ^4
-        """
-        self.n0 = n0
-        self.n1 = n1
-        self.n2 = n2
-        self.k0 = k0
-        self.k1 = k1
-        self.k2 = k2
+    """
+    single_params_template = {'n0': 1.5, 'n1': 0, 'n2': 0,
+                              'k0': 0, 'k1': 0, 'k2':0}
+    rep_params_template = {}
+
+    def __init__(self, **kwargs):
+        super()
+        self.rep_params = []
+        self.single_params = {}
+
+        if not np.in1d(
+            list(kwargs.keys()), list(self.single_params_template.keys())
+        ).all():
+            raise Exception("Unkown parameter set")
+
+        for param in self.single_params_template.keys():
+            if not param in kwargs:
+                self.single_params[param] = self.single_params_template.get(param)
+            else:
+                self.single_params[param] = kwargs.get(param)
+
+    def add_param_set(self):
+        raise NotImplementedError("Cauchy dispersion doesn't have any repetetive parameters")
 
     def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        N = self.n0 + 1e2 * self.n1/lbda**2 + 1e7 * self.n2/lbda**4 \
-            + 1j * (self.k0 + 1e2 * self.k1/lbda**2 + 1e7 * self.k2/lbda**4)
+        N = self.single_params.get('n0') + 1e2 * self.single_params.get('n1')/lbda**2 + 1e7 * self.single_params.get('n2')/lbda**4 \
+            + 1j * (self.single_params.get('k0') + 1e2 * self.single_params.get('k1')/lbda**2 + 1e7 * self.single_params.get('k2')/lbda**4)
         return N**2
 
 
