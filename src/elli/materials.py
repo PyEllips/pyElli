@@ -78,9 +78,9 @@ class SingleMaterial(Material):
         epsilon = np.zeros((i, 3, 3), dtype=np.complex128)
 
         # get get dielectric functions from dispersion law
-        epsilon[:, 0, 0] = self.law_x.getDielectric(lbda)
-        epsilon[:, 1, 1] = self.law_y.getDielectric(lbda)
-        epsilon[:, 2, 2] = self.law_z.getDielectric(lbda)
+        epsilon[:, 0, 0] = self.law_x.get_dielectric(lbda)
+        epsilon[:, 1, 1] = self.law_y.get_dielectric(lbda)
+        epsilon[:, 2, 2] = self.law_z.get_dielectric(lbda)
 
         if self.rotated:
             epsilon = self.rotation_matrix @ epsilon @ self.rotation_matrix.T

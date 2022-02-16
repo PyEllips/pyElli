@@ -38,9 +38,12 @@ class SpectraRay:
         )
 
         if x_unit == "Wavelength":
-            return TableEpsilon(df.index, df.loc[:, "ϵ1"] + 1j * df.iloc[:, "ϵ2"])
+            return TableEpsilon(
+                lbda=df.index, epsilon=df.loc[:, "ϵ1"] + 1j * df.iloc[:, "ϵ2"]
+            )
         return TableEpsilon(
-            SpectraRay.eV2nm(df.index), df.loc[:, "ϵ1"] + 1j * df.loc[:, "ϵ2"]
+            lbda=SpectraRay.eV2nm(df.index),
+            epsilon=df.loc[:, "ϵ1"] + 1j * df.loc[:, "ϵ2"],
         )
 
     @staticmethod

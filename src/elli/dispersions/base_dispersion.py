@@ -1,17 +1,24 @@
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
 import sys
+from typing import Union
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 import pandas as pd
+
+from . import dispersions
+
+
+class InvalidParameters(Exception):
+    """Exception for invalid dispersion parameters."""
 
 
 class Dispersion(ABC):
     """Dispersion (abstract class).
 
     Functions provided for derived classes:
-    * dielectricFunction(lbda) : returns dielectric constant for wavelength 'lbda'
+    * dielectric_function(lbda) : returns dielectric constant for wavelength 'lbda'
     """
 
     @property
@@ -24,15 +31,22 @@ class Dispersion(ABC):
     def rep_params_template(self) -> dict:
         """Specifies the repeated parameters of the model and its default values."""
 
+    @staticmethod
+    def _guard_missing_params(params1, params2):
+        missing_params = np.array(params1)[np.where(~np.in1d(params1, params2))]
+
+        if len(missing_params) > 0:
+            missing_param_strings = ", ".join(f"{p}" for p in missing_params)
+            raise InvalidParameters(f"Invalid parameter(s): {missing_param_strings}")
+
     def __init__(self, **kwargs):
         super()
         self.rep_params = []
         self.single_params = {}
 
-        if not np.in1d(
+        self._guard_missing_params(
             list(kwargs.keys()), list(self.single_params_template.keys())
-        ).all():
-            raise Exception("Unkown parameter set")
+        )
 
         for param in self.single_params_template.keys():
             if not param in kwargs:
@@ -42,27 +56,36 @@ class Dispersion(ABC):
 
     @abstractmethod
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """_summary_
+        """Calculates the dielectric function in a given wavelength window.
 
         Args:
-            lbda (npt.ArrayLike): _description_
+            lbda (npt.ArrayLike): The wavelength window with unit nm.
 
         Returns:
-            npt.NDArray: _description_
+            npt.NDArray: The dielectric function for each wavelength point.
         """
 
     def add_param_set(self, **kwargs):
-        if not np.in1d(
-            list(self.rep_params_template.keys()), list(kwargs.keys())
-        ).all():
-            raise Exception("Not all params set")
+        """_summary_
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            _type_: _description_
+        """
+        self._guard_missing_params(
+            list(kwargs.keys()), list(self.rep_params_template.keys())
+        )
 
         self.rep_params.append(kwargs)
 
         return self
 
-    def __add__(self, other: "Dispersion") -> "Dispersion":
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
         """Add up the dielectric function of multiple models"""
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, dispersions.EpsilonInf(eps=other))
         return DispersionSum(self, other)
 
     def get_dielectric(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -139,17 +162,21 @@ class Dispersion(ABC):
             + "=" * len(type(self).__name__)
             + "\n"
             + _dict_to_str(self.single_params)
-            + "\n\nOscillators\n"
-            + "===========\n"
-            + "\n".join(_dict_to_str(p) for p in self.rep_params)
+            + (
+                "\n\nOscillators\n"
+                + "===========\n"
+                + "\n".join(_dict_to_str(p) for p in self.rep_params)
+                if len(self.rep_params) > 0
+                else ""
+            )
         )
 
 
 class DispersionFactory:
-    """A factory class for dispersion law objects"""
+    """A factory class for dispersion objects"""
 
     @staticmethod
-    def get_dispersion(identifier: str) -> Dispersion:
+    def get_dispersion(identifier: str, **kwargs) -> Dispersion:
         """Creates a DispersionLaw object identified by its string name and initializes it with the
         given parameters.
 
@@ -159,38 +186,14 @@ class DispersionFactory:
         Returns:
             DispersionLaw: The DispersionLaw object initialized with the given parameters.
         """
-        bad_classes = ["DispersionLaw", "DispersionFactory", "DispersionSum"]
+        bad_classes = ["Dispersion", "DispersionFactory", "DispersionSum"]
         if identifier in bad_classes:
             raise ValueError(f"No valid dispersion: {identifier}")
 
-        if hasattr(sys.modules[__name__], identifier):
-            return getattr(sys.modules[__name__], identifier)
+        if hasattr(dispersions, identifier):
+            return getattr(dispersions, identifier)(**kwargs)
 
         raise ValueError(f"No such dispersion: {identifier}")
-
-    @staticmethod
-    def get_dispersion_short(identifier: str) -> Dispersion:
-        """Creates a DispersionLaw object identified by
-        its short string name and initializes it with the
-        given parameters.
-
-        Args:
-            identifier (str): Identifier of the DispersionLaw object,
-            e.g. DispersionCauchy, dispersion_cauchy or cauchy.
-
-        Returns:
-            DispersionLaw: The DispersionLaw object initialized with the given parameters.
-        """
-        gen_ident = identifier.strip().lower()
-        if gen_ident.startswith("dispersion_"):
-            disp_name = gen_ident.split("_")[1].capitalize()
-            full_identifier = f"Dispersion{disp_name}"
-        elif gen_ident.startswith("dispersion"):
-            full_identifier = f"Dispersion{gen_ident[10:].capitalize()}"
-        else:
-            full_identifier = f"Dispersion{gen_ident.capitalize()}"
-
-        return DispersionFactory.get_dispersion(full_identifier)
 
 
 class DispersionSum(Dispersion):
@@ -199,12 +202,20 @@ class DispersionSum(Dispersion):
     single_params_template = {}
     rep_params_template = {}
 
-    def __init__(self, *dispersions: Dispersion) -> None:
+    def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
-        self.dispersions = dispersions
+        self.dispersions = disps
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         dielectric_function = np.sum(
             disp.dielectric_function(lbda) for disp in self.dispersions
         )
         return dielectric_function
+
+    def __repr__(self):
+        return (
+            "DispersionSum\n"
+            + "=" * 13
+            + "\n\n"
+            + "\n\n".join(map(str, self.dispersions))
+        )

@@ -10,14 +10,24 @@ from .base_dispersion import Dispersion
 from ..math import lambda2E
 
 
-class Constant(Dispersion):
-    """Constant Dispersion law, therefor no dispersion."""
+class ConstantRefractiveIndex(Dispersion):
+    """Constant refractive index."""
 
     single_params_template = {"n": 1}
     rep_params_template = {}
 
     def dielectric_function(self, _: npt.ArrayLike) -> npt.NDArray:
         return self.single_params.get("n") ** 2
+
+
+class EpsilonInf(Dispersion):
+    """Constant epsilon infinity."""
+
+    single_params_template = {"eps": 1}
+    rep_params_template = {}
+
+    def dielectric_function(self, _: npt.ArrayLike) -> npt.NDArray:
+        return self.single_params.get("eps")
 
 
 class Cauchy(Dispersion):

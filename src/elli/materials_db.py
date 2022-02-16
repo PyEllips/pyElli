@@ -1,5 +1,5 @@
 # Encoding: utf-8
 from .materials import IsotropicMaterial
-from .dispersions.dispersions import Constant
+from .dispersions.dispersions import ConstantRefractiveIndex, EpsilonInf
 
-AIR = IsotropicMaterial(Constant(n=1))
+AIR = IsotropicMaterial(ConstantRefractiveIndex(n=1))
