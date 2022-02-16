@@ -32,7 +32,7 @@ class Dispersion(ABC):
         """Specifies the repeated parameters of the model and its default values."""
 
     @staticmethod
-    def _guard_missing_params(params1, params2):
+    def _guard_invalid_params(params1, params2):
         missing_params = np.array(params1)[np.where(~np.in1d(params1, params2))]
 
         if len(missing_params) > 0:
@@ -44,7 +44,7 @@ class Dispersion(ABC):
         self.rep_params = []
         self.single_params = {}
 
-        self._guard_missing_params(
+        self._guard_invalid_params(
             list(kwargs.keys()), list(self.single_params_template.keys())
         )
 
@@ -74,7 +74,7 @@ class Dispersion(ABC):
         Returns:
             _type_: _description_
         """
-        self._guard_missing_params(
+        self._guard_invalid_params(
             list(kwargs.keys()), list(self.rep_params_template.keys())
         )
 
@@ -176,7 +176,7 @@ class DispersionFactory:
     """A factory class for dispersion objects"""
 
     @staticmethod
-    def get_dispersion(identifier: str, **kwargs) -> Dispersion:
+    def get_dispersion(identifier: str, *args, **kwargs) -> Dispersion:
         """Creates a DispersionLaw object identified by its string name and initializes it with the
         given parameters.
 
@@ -186,12 +186,8 @@ class DispersionFactory:
         Returns:
             DispersionLaw: The DispersionLaw object initialized with the given parameters.
         """
-        bad_classes = ["Dispersion", "DispersionFactory", "DispersionSum"]
-        if identifier in bad_classes:
-            raise ValueError(f"No valid dispersion: {identifier}")
-
         if hasattr(dispersions, identifier):
-            return getattr(dispersions, identifier)(**kwargs)
+            return getattr(dispersions, identifier)(*args, **kwargs)
 
         raise ValueError(f"No such dispersion: {identifier}")
 
