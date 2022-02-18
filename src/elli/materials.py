@@ -1,11 +1,14 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
-from .dispersions.dispersions import Dispersion
+
+if TYPE_CHECKING:
+    from .dispersions.dispersions import Dispersion
 
 
 class Material(ABC):
@@ -91,7 +94,7 @@ class SingleMaterial(Material):
 class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
-    def __init__(self, law: Dispersion) -> None:
+    def __init__(self, law: "Dispersion") -> None:
         """Creates isotropic material with a dispersion law.
 
         Args:
@@ -99,7 +102,7 @@ class IsotropicMaterial(SingleMaterial):
         """
         self.set_dispersion(law)
 
-    def set_dispersion(self, law: Dispersion) -> None:
+    def set_dispersion(self, law: "Dispersion") -> None:
         """Sets dipsersion relation of the isotropic material.
 
         Args:
@@ -113,7 +116,7 @@ class IsotropicMaterial(SingleMaterial):
 class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
-    def __init__(self, law_o: Dispersion, law_e: Dispersion) -> None:
+    def __init__(self, law_o: "Dispersion", law_e: "Dispersion") -> None:
         """Creates a uniaxial material with two dispersion laws.
 
         Args:
@@ -122,7 +125,7 @@ class UniaxialMaterial(SingleMaterial):
         """
         self.set_dispersion(law_o, law_e)
 
-    def set_dispersion(self, law_o: Dispersion, law_e: Dispersion) -> None:
+    def set_dispersion(self, law_o: "Dispersion", law_e: "Dispersion") -> None:
         """Sets dipsersion relations of the uniaxial material.
 
         Args:
@@ -137,7 +140,12 @@ class UniaxialMaterial(SingleMaterial):
 class BiaxialMaterial(SingleMaterial):
     """Biaxial material."""
 
-    def __init__(self, law_x: Dispersion, law_y: Dispersion, law_z: Dispersion) -> None:
+    def __init__(
+        self,
+        law_x: "Dispersion",
+        law_y: "Dispersion",
+        law_z: "Dispersion",
+    ) -> None:
         """Creates a biaxial material with three dispersion laws.
 
         Args:
@@ -148,7 +156,10 @@ class BiaxialMaterial(SingleMaterial):
         self.set_dispersion(law_x, law_y, law_z)
 
     def set_dispersion(
-        self, law_x: Dispersion, law_y: Dispersion, law_z: Dispersion
+        self,
+        law_x: "Dispersion",
+        law_y: "Dispersion",
+        law_z: "Dispersion",
     ) -> None:
         """Sets dipsersion relations of the biaxial material.
 

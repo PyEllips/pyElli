@@ -6,6 +6,7 @@ import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 import pandas as pd
 
+from .. import materials
 from . import dispersions
 
 
@@ -81,7 +82,11 @@ class Dispersion(ABC):
             npt.NDArray: The dielectric function for each wavelength point.
         """
 
-    def add_param_set(self, *args, **kwargs) -> "Dispersion":
+    def get_mat(self):
+        """Returns this dispersion as an isotropic material"""
+        return materials.IsotropicMaterial(self)
+
+    def add(self, *args, **kwargs) -> "Dispersion":
         """Adds a set of parameters to the dispersion.
 
         Returns:
