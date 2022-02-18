@@ -1,6 +1,5 @@
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
-import sys
 from typing import Union
 import numpy as np
 import numpy.typing as npt
@@ -39,20 +38,37 @@ class Dispersion(ABC):
             missing_param_strings = ", ".join(f"{p}" for p in missing_params)
             raise InvalidParameters(f"Invalid parameter(s): {missing_param_strings}")
 
-    def __init__(self, **kwargs):
+    @staticmethod
+    def _fill_params_dict(template: dict, *args, **kwargs) -> dict:
+        Dispersion._guard_invalid_params(list(kwargs.keys()), list(template.keys()))
+
+        if (len(kwargs) + len(args)) > len(template):
+            raise InvalidParameters("Too many parameters")
+
+        params = template.copy()
+        pos_arguments = set()
+
+        for i, val in enumerate(args):
+            key = list(template.keys())[i]
+            params[key] = val
+            pos_arguments.add(key)
+
+        for key, value in kwargs.items():
+            if key in pos_arguments:
+                raise InvalidParameters(
+                    f"Parameter {key} already set by positional argument"
+                )
+            params[key] = value
+
+        return params
+
+    def __init__(self, *args, **kwargs):
         super()
         self.rep_params = []
-        self.single_params = {}
 
-        self._guard_invalid_params(
-            list(kwargs.keys()), list(self.single_params_template.keys())
+        self.single_params = self._fill_params_dict(
+            self.single_params_template, *args, **kwargs
         )
-
-        for param in self.single_params_template.keys():
-            if not param in kwargs:
-                self.single_params[param] = self.single_params_template.get(param)
-            else:
-                self.single_params[param] = kwargs.get(param)
 
     @abstractmethod
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -65,20 +81,16 @@ class Dispersion(ABC):
             npt.NDArray: The dielectric function for each wavelength point.
         """
 
-    def add_param_set(self, **kwargs):
-        """_summary_
-
-        Raises:
-            Exception: _description_
+    def add_param_set(self, *args, **kwargs) -> "Dispersion":
+        """Adds a set of parameters to the dispersion.
 
         Returns:
-            _type_: _description_
+            Dispersion: The current object with the additional parameters added.
         """
-        self._guard_invalid_params(
-            list(kwargs.keys()), list(self.rep_params_template.keys())
+        rep_param_set = self._fill_params_dict(
+            self.rep_params_template, *args, **kwargs
         )
-
-        self.rep_params.append(kwargs)
+        self.rep_params.append(rep_param_set)
 
         return self
 

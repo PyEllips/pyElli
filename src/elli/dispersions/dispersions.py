@@ -1,4 +1,5 @@
 # Encoding: utf-8
+"""pyEllis dispersion implementations"""
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
