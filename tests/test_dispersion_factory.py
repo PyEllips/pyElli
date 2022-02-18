@@ -21,6 +21,6 @@ def test_error_on_not_existing_class():
 
 def test_error_on_bad_class():
     """Raises an error if a bad class is requested."""
-    for bad_class in ["DispersionFactory", "DispersionLaw", "DispersionSum"]:
+    for bad_class in ["DispersionFactory", "Dispersion", "DispersionSum"]:
         with pytest.raises(ValueError):
             elli.DispersionFactory.get_dispersion(bad_class)

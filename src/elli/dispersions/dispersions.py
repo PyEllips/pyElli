@@ -1,5 +1,35 @@
 # Encoding: utf-8
-"""pyEllis dispersion implementations"""
+"""The dispersions are the central part of pyElli and the transfer-matrix method.
+They describe the change of dielectric function or refractive index with wavlength.
+In pyElli the default wavelength unit is nm.
+Each dispersion has two distinct sets of parameters:
+    * Parameters which can be given only once (single parameters).
+    * Parameters which can be given in multiple sets (repeated parameters), e.g.
+        a set of oscillator parameters.
+
+The syntax for each of the parameter sets is different.
+For the single parameters they are given in the class constructor:
+    .. highlight:: python
+    .. code-block:: python
+
+        Cauchy(n0=1.458, n1=3.54e-3, n2=0, k0=0, k1=0, k2=0)
+
+Repeated parameters are added via the add() function:
+    .. highlight:: python
+    .. code-block:: python
+
+        Sellmeier().add(A=1, B=1).add(A=1, B=2)
+
+For dispersions having single and repeated parameters both are used:
+    .. highlight:: python
+    .. code-block:: python
+
+        TaucLorentz(Eg=2).add(A=10, E=2.5, C=0.1)
+
+If parameters are not fully provided, they are set to their respective default values.
+The available parameters and their respective default values
+are given in the respective class documentation.
+"""
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
@@ -12,7 +42,16 @@ from ..math import lambda2E
 
 
 class ConstantRefractiveIndex(Dispersion):
-    """Constant refractive index."""
+    """Constant refractive index.
+
+    Single parameters:
+        n: 1
+
+    Repeated parameters:
+        --
+
+    Output:
+        ε(λ) = `n`^2"""
 
     single_params_template = {"n": 1}
     rep_params_template = {}
@@ -22,7 +61,16 @@ class ConstantRefractiveIndex(Dispersion):
 
 
 class EpsilonInf(Dispersion):
-    """Constant epsilon infinity."""
+    """Constant epsilon infinity.
+
+    Single parameters:
+        eps: 1
+
+    Repeated parameters:
+        --
+
+    Output:
+        ε(λ) = `eps`"""
 
     single_params_template = {"eps": 1}
     rep_params_template = {}
@@ -32,13 +80,24 @@ class EpsilonInf(Dispersion):
 
 
 class Cauchy(Dispersion):
-    """Cauchy dispersion law.
+    """Cauchy dispersion.
 
-    Cauchy coefficients: n0, n1, n2, k0, k1, k2
-    coefficients defined for λ in nm
+    Single parameters:
+        n0: Defaults to 1.5.
+        n1: Defaults to 0. Unit in nm^2.
+        n2: Defaults to 0. Unit in nm^4.
+        k0: Defaults to 0.
+        k1: Defaults to 0. Unit in nm^2.
+        k2: Defaults to 0. Unit in nm^4.
 
-    n(λ) = n0 + 100 * n1/λ² + 10e7 n2/λ^4
-    k(λ) = k0 + 100 * k1/λ² + 10e7 k2/λ^4
+    Repeated parameters:
+        --
+
+    Output:
+        ε(λ)^2 = (
+            n0 + 100 * n1/λ² + 10^7 n2/λ^4
+            + 1j * (k0 + 100 * k1/λ² + 10^7 k2/λ^4)
+        )
     """
 
     single_params_template = {"n0": 1.5, "n1": 0, "n2": 0, "k0": 0, "k1": 0, "k2": 0}
@@ -60,17 +119,21 @@ class Cauchy(Dispersion):
 
 
 class Sellmeier(Dispersion):
-    """Creates a Sellmeier dispersion law.
+    """Sellmeier dispersion.
 
-    Sellmeier coefficients [A1, B1], [A1, B1],...
-      Ai : coefficient for n² contribution
-      Bi : resonance wavelength (µm^-2)
+    Single parameters:
+        --
 
-    ε(λ) = 1 + Σi Ai × λ²/(λ² - Bi)
+    Repeated parameters:
+        A: Coefficient for n² contribution. Defaults to 0.
+        B: Resonance wavelength (µm^-2). Defaults to 0.
+
+    Output:
+        ε(λ) = 1 + Σi Ai × λ²/(λ² - Bi)
     """
 
     single_params_template = {}
-    rep_params_template = {"A": 1, "B": 1}
+    rep_params_template = {"A": 0, "B": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         lbda = lbda / 1e3
@@ -80,15 +143,22 @@ class Sellmeier(Dispersion):
 
 
 class DrudeEnergy(Dispersion):
-    """Creates a Drude model.
+    """Drude dispersion model with parameters in units of energy.
+    Drude models in the literature typically contain an additional epsilon infinity value.
+    Use `EpsilonInf` to add this parameter or simply do DrudeEnergy() + eps_inf.
 
-    Drude coefficients ϵinf, A, Γ
-    ϵinf : epsilon infinity
-    A : Amplitude of Drude oscillator (eV^2)
-    Γ : Broadening of Drude oscillator (eV)
+    Single parameters:
+        A: Amplitude of Drude oscillator (eV^2). Defaults to 0.
+        gamma: Broadening of Drude oscillator (eV). Defaults to 0.
+
+    Repeated parameters:
+        --
+
+    Output:
+        ε(E) = `A` / (E^2 - 1j * `gamma` * E)
     """
 
-    single_params_template = {"A": 1, "gamma": 1}
+    single_params_template = {"A": 0, "gamma": 0}
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -99,12 +169,21 @@ class DrudeEnergy(Dispersion):
 
 
 class DrudeResistivity(Dispersion):
-    """Creates a Drude model.
+    """Drude dispersion model with resistivity based parameters.
+    Drude models in the literature typically contain an additional epsilon infinity value.
+    Use `EpsilonInf` to add this parameter or simply do DrudeEnergy() + eps_inf.
 
-    Drude coefficients ϵinf, ρopt, τ
-    ϵinf : epsilon infinity
-    ρopt : optical resistivity (Ω-cm)
-    τ : Mean scattering time (s)
+    Single parameters:
+        rho_opt: optical resistivity (Ω-cm)
+        tau: Mean scattering time (s)
+
+    Repeated parameters:
+        --
+
+    Output:
+       ε(E) = hbar / (eps0 * `rho_opt` * `tau` E^2 - 1j * hbar * E)
+       where hbar is the planck constant divided by 2pi
+       and eps0 is the vacuum dielectric permittivity.
     """
 
     single_params_template = {"rho_opt": 1, "tau": 1}
@@ -123,14 +202,22 @@ class DrudeResistivity(Dispersion):
 
 
 class LorentzLambda(Dispersion):
-    """Creates a Lorentz dispersion law, with wavelength coefficients.
+    """Lorentz disperison law with parameters in units of wavelengths.
 
+    Single parameters:
+        --
+
+    Repeated parameters:
+        A: Amplitude of the oscillator.
+        lambda: Resonance wavelength (nm)
+        gamma: Broadening of the oscillator (nm)
     Lorentz coefficients [A1, λ1, ζ1], [A2, λ2, ζ2],...
       Bi : coefficient
       λi : resonance wavelength (nm)
       ζi :
 
-    ε(λ) = 1 + Σi Ai × λ² / (λ² - λi² + j ζi λ)
+    Output:
+        ε(λ) = 1 + Σi `A`i × λ² / (λ² - λi² + j ζi λ)
     """
 
     single_params_templage = {}
