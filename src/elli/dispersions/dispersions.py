@@ -174,8 +174,8 @@ class DrudeResistivity(Dispersion):
     Use `EpsilonInf` to add this parameter or simply do DrudeEnergy() + eps_inf.
 
     Single parameters:
-        rho_opt: optical resistivity (Ω-cm)
-        tau: Mean scattering time (s)
+        rho_opt: Optical resistivity (Ω-cm). Defaults to 1.
+        tau: Mean scattering time (s). Defaults to 1.
 
     Repeated parameters:
         --
@@ -208,20 +208,16 @@ class LorentzLambda(Dispersion):
         --
 
     Repeated parameters:
-        A: Amplitude of the oscillator.
-        lambda: Resonance wavelength (nm)
-        gamma: Broadening of the oscillator (nm)
-    Lorentz coefficients [A1, λ1, ζ1], [A2, λ2, ζ2],...
-      Bi : coefficient
-      λi : resonance wavelength (nm)
-      ζi :
+        A: Amplitude of the oscillator. Defaults to 1.
+        lambda: Resonance wavelength (nm). Defaults to 0.
+        gamma: Broadening of the oscillator (nm). Defaults to 0.
 
     Output:
-        ε(λ) = 1 + Σi `A`i × λ² / (λ² - λi² + j ζi λ)
+        ε(λ) = 1 + Σi `A`i * λ² / (λ² - `lambda`i² + 1j * `gamma`i * λ)
     """
 
     single_params_templage = {}
-    rep_params_template = {"A": 1, "lambda": 1, "gamma": 1}
+    rep_params_template = {"A": 1, "lambda": 0, "gamma": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return 1 + sum(
@@ -233,18 +229,22 @@ class LorentzLambda(Dispersion):
 
 
 class LorentzEnergy(Dispersion):
-    """Creates a Lorentz dispersion law, with energy coefficients.
+    """Lorentz disperison law with parameters in units of energy.
 
-    Lorentz coefficients [A1, E1, Γ1], [A2, E2, Γ2],...
-      Ai : coefficient
-      Ei : resonance Energy (eV)
-      Γi :
+    Single parameters:
+        --
 
-    ε(E) = 1 + Σi Ai /(E²-Ei²+j Γi E)
+    Repeated parameters:
+        A: Amplitude of the  oscillator. Defaults to 1.
+        E: Resonance energy (eV). Defaults 0.
+        gamma: Broadening of the oscillator (eV). Defaults to 0.
+
+    Output:
+        ε(E) = 1 + Σi `A`i / (E²-`E`i²+1j * `gamma`i * E)
     """
 
     single_params_template = {}
-    rep_params_template = {"A": 1, "E": 1, "gamma": 1}
+    rep_params_template = {"A": 1, "E": 0, "gamma": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         energy = lambda2E(lbda)
@@ -255,23 +255,32 @@ class LorentzEnergy(Dispersion):
 
 
 class Gauss(Dispersion):
-    """Gauss model with energy parameters.
-    Gauss coefficients ϵinf, [A1, E1, Γ1], [A2, E2, Γ2],...
-        ϵinf : infinity dielectric constant
-        Ai : Amplitude of ith Gaussian
-        Ei : Central energy of ith Gaussian (eV)
-        Γ1 : Broadening of ith Gaussian (eV)
+    """Gauss dispersion law.
+
+    Single parameters:
+        --
+
+    Repeated parameters:
+        A: Amplitude of the oscillator
+        E: Central energy (eV)
+        sigma: Broadening of the Gaussian (eV)
+
+    Output:
+        ε(E) = Σi 2 * `A`i / sqrt(π) *
+                (D(2 * sqrt(2 * ln(2)) * (E + `E`i) / `sigma`) - D(2 * sqrt(2 * ln(2)) * (E - `E`i) / `sigma`)
+                +1j * (`A` * exp(-(4*ln(2) * (E - `E`i)/ `sigma`)^2 - `A` * exp(-(4*ln(2) * (E + `E`i)/ `sigma`)^2)
+        D is the Dawson function.
 
     References:
-    D. De Sousa Meneses, M. Malki, P. Echegut, J. Non-Cryst. Solids 351, 769-776 (2006)
-    K.-E. Peiponen, E.M. Vartiainen, Phys. Rev. B. 44, 8301 (1991)
-    H. Fujiwara, R. W. Collins, Spectroscopic Ellipsometry for Photovoltaics Volume 1, Springer International Publishing AG, 2018, p. 137
+        D. De Sousa Meneses, M. Malki, P. Echegut, J. Non-Cryst. Solids 351, 769-776 (2006)
+        K.-E. Peiponen, E.M. Vartiainen, Phys. Rev. B. 44, 8301 (1991)
+        H. Fujiwara, R. W. Collins, Spectroscopic Ellipsometry for Photovoltaics Volume 1, Springer International Publishing AG, 2018, p. 137
     """
 
     single_params_template = {}
-    rep_params_template = {"A": 1, "E": 1, "gamma": 1}
+    rep_params_template = {"A": 1, "E": 1, "sigma": 1}
 
-    def dielectricFunction(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         energy = lambda2E(lbda)
         ftos = 2 * sqrt(np.log(2))
         return sum(
@@ -279,37 +288,42 @@ class Gauss(Dispersion):
             * c.get("A")
             / sqrt(np.pi)
             * (
-                dawsn(ftos * (energy + c.get("E")) / c.get("gamma"))
-                - dawsn(ftos * (energy - c.get("E")) / c.get("gamma"))
+                dawsn(ftos * (energy + c.get("E")) / c.get("sigma"))
+                - dawsn(ftos * (energy - c.get("E")) / c.get("sigma"))
             )
             + 1j
             * (
                 c.get("A")
-                * np.exp(-((ftos * (energy - c.get("E")) / c.get("gamma")) ** 2))
+                * np.exp(-((ftos * (energy - c.get("E")) / c.get("sigma")) ** 2))
                 - c.get("A")
-                * np.exp(-((ftos * (energy + c.get("E")) / c.get("gamma")) ** 2))
+                * np.exp(-((ftos * (energy + c.get("E")) / c.get("sigma")) ** 2))
             )
             for c in self.rep_params
         )
 
 
 class TaucLorentz(Dispersion):
-    """Tauc-Lorentz model by Jellison and Modine
+    """Tauc-Lorentz dispersion law. Model by Jellison and Modine.
 
-    Tauc-Lorentz coefficients Eg, eps_inf, [A1, E1, C1], [A2, E2, C2],...
-          Eg : optical band gap energy (eV)
-          eps_inf : epsilon infinity
-          Ai : Strength of ith absorption (eV). Typically 10 < Ai < 200
-          Ei : lorentz resonance energy (eV). Always Eg < Ei
-          Ci : lorentz broadening (eV). Typically 0 < Ci < 10
-    Literature:
+    Single parameters:
+        Eg: Bandgap energy. Defaults to 1.
+
+    Repeated parameters:
+        A: Strength of the absorption. Typically 10 < A < 200. Defaults to 0.1.
+        E: Lorentz resonance energy (eV). Always keep Eg < E!!. Defaults to 1.5.
+        C: Lorentz broadening (eV). Typically 0 < Ci < 10. Defaults to 1.
+
+    Output:
+        The Tauc lorentz dispersion. Please refer to the references for a full formula.
+
+    References:
         G.E. Jellision and F.A. Modine, Appl. Phys. Lett. 69 (3), 371-374 (1996)
         Erratum, G.E. Jellison and F.A. Modine, Appl. Phys. Lett 69 (14), 2137 (1996)
         H. Chen, W.Z. Shen, Eur. Phys. J. B. 43, 503-507 (2005)
     """
 
     single_params_template = {"Eg": 1}
-    rep_params_template = {"A": 1, "E": 1, "C": 1}
+    rep_params_template = {"A": 1, "E": 1.5, "C": 1}
 
     @staticmethod
     def eps2(E, Eg, Ai, Ei, Ci):
@@ -356,57 +370,38 @@ class TaucLorentz(Dispersion):
         )
 
 
-class HighEnergyBands(Dispersion):
-    single_params_template = {"A": 1, "E_xsi": 1}
-    rep_params_template = {}
-
-    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        E = lambda2E(lbda)
-
-        a = -((self.single_params.get("E_xsi") - E) ** 2) / E ** 3
-        b = (self.single_params.get("E_xsi") + E) ** 2 / E ** 3
-
-        eps_r = (
-            3
-            * self.single_params.get("E_xsi")
-            / np.pi
-            / E ** 2
-            * (
-                a * np.log(np.abs(1 - E / self.single_params.get("E_xsi")))
-                + b * np.log(np.abs(1 + E / self.single_params.get("E_xsi")))
-                - 2 / 3 / self.single_params.get("E_xsi")
-                - 2 * self.single_params.get("E_xsi") / E ** 2
-            )
-        )
-        eps_i = (
-            3
-            * self.single_params.get("E_xsi")
-            * (np.abs(E) - self.single_params.get("E_xsi")) ** 2
-            / E ** 5
-            * np.heaviside(np.abs(E) - self.single_params.get("E_xsi"), 0)
-        )
-
-        return self.single_params.get("A") * (eps_r + 1j * eps_i)
-
-
 class Tanguy(Dispersion):
-    """Fractional dimensional Tanguy model
+    """Fractional dimensional Tanguy model.
+    This model is an analytical expression of Wannier excitons, including
+    bound and unbound states.
 
-    Tanguy coefficients A, d, gamma, R, Eg, a, b
-          A : Amplitude (eV)
-          d : dimensionality 1 < d <= 3
-          gam: excitonic broadening (eV)
-          R : excitonic binding energy (eV²)
-          Eg : optical band gap energy (eV)
-          a : Sellmeier coefficient for background dielectric constant (eV²)
-          b : Sellmeier coefficient for background dielectric constant (eV²)
+    Single parameters:
+          A: Amplitude (eV). Defaults to 1.
+          d: Dimensionality 1 < d <= 3. Defaults to 3.
+          gamma: Excitonic broadening (eV). Defaults to 0.1.
+          R : excitonic binding energy (eV). Defaults to 0.1.
+          Eg : optical band gap energy (eV). Defaults to 1.
+          a : Sellmeier coefficient for background dielectric constant (eV²).
+            Defaults to 0.
+          b : Sellmeier coefficient for background dielectric constant (eV²).
+            Defaults to 0.
+
+    Repeated parameters.
+        --
+
+    Output:
+        The Tanguy dispersion. Please refer to the references for a full formula.
+
+    References:
+        C. Tanguy, Phys. Rev. Lett. 75, 4090 (1995). Errata, Phys. Rev. Lett. 76, 716 (1996).
+        C. Tanguy, Phys. Rev. B. 60. 10660 (1990).
     """
 
     single_params_template = {
         "A": 1,
         "d": 3,
-        "gamma": 1,
-        "R": 1,
+        "gamma": 0.1,
+        "R": 0.1,
         "Eg": 1,
         "a": 0,
         "b": 0,
@@ -461,9 +456,21 @@ class Tanguy(Dispersion):
 
 class Poles(Dispersion):
     """Disperion law for an UV and IR pole,
-    i.e. Lorentz oscillators outside the fitting spectral range"""
+    i.e. Lorentz oscillators outside the fitting spectral range and zero broadening.
 
-    single_params_template = {"A_ir": 1, "A_uv": 1, "E_uv": 3}
+    Single parameters:
+        A_ir: IR Pole amplitude (eV^2). Defaults to 1.
+        A_uv: UV Pole amplitude (eV^2). Defaults to 1.
+        E_uv: UV Pole energy (eV). Defaults to 6.
+
+    Repeated parameters:
+        --
+
+    Output:
+        ε(E) = `A_ir` / E^2 + `A_uv` / (`E_uv`**2 - E**2)
+    """
+
+    single_params_template = {"A_ir": 1, "A_uv": 1, "E_uv": 6}
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -474,19 +481,33 @@ class Poles(Dispersion):
 
 
 class Table(Dispersion):
-    """Dispersion law specified by a table"""
+    """Dispersion specified by a table of wavelengths (nm) and refractive index values.
+    Please not that this model will produce errors for wavelengths outside the provided
+    wavelength range.
+
+    Single parameters:
+        lbda (list): Wavelengths in nm. Defaults to [].
+        epsilon: Complex refractive index values in the convention n + ik.
+            Defaults to [].
+
+    Repeated parameters:
+        --
+
+    Output:
+        The interpolation in the given wavelength range.
+    """
 
     single_params_template = {"lbda": [], "n": []}
     rep_params_template = {}
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Create a dispersion law from a refraction index list.
 
         'lbda'  : Wavelength list (in nm)
-        'n'     : Refractive index values (can be complex)
-                  (n" > 0 for an absorbing material)
+        'n'     : Complex refractive index values.
+                  (n > 0 for an absorbing material)
         """
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("n") ** 2,
@@ -498,18 +519,32 @@ class Table(Dispersion):
 
 
 class TableEpsilon(Dispersion):
-    """Dispersion law specified by a table"""
+    """Dispersion specified by a table of wavelengths (nm) and dielectric function values.
+    Please not that this model will produce errors for wavelengths outside the provided
+    wavelength range.
+
+    Single parameters:
+        lbda (list): Wavelengths in nm. Defaults to [].
+        epsilon: Complex dielectric function values in the convention ε1 + iε2.
+            Defaults to [].
+
+    Repeated parameters:
+        --
+
+    Output:
+        The interpolation in the given wavelength range.
+    """
 
     single_params_template = {"lbda": [], "epsilon": []}
     rep_params_template = {}
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Create a dispersion law from a dielectric constant list.
 
         'lbda'  : Tuple with (Wavelength list, unit), or Wavelength list (in nm)
         'ε'     : Refractive index values (can be complex)
         """
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
