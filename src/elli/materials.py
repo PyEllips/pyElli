@@ -269,3 +269,39 @@ class MaxwellGarnetEMA(MixtureMaterial):
         epsilon = e_h * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
             / (2 * e_h + e_g - self.fraction * (e_g - e_h))
         return epsilon
+
+
+class BruggemanEMA(MixtureMaterial):
+    """Mixture Material approximated with the Bruggeman formula
+    for spherical inclusions.
+
+    Returns one of the two analytical solutions to this quadratic equation.
+       2 * (ε_eff)² + ε_eff[(3f - 2)ε_a + (1 - 3f)ε_b] - ε_a * ε_b = 0
+
+    References:
+        Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013
+    """
+
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
+        e_h = self.host_material.get_tensor(lbda)
+        e_g = self.guest_material.get_tensor(lbda)
+        f = self.fraction
+
+        epsilon1 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 - sqrt(
+                   9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 + \
+                   18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
+        epsilon2 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 + sqrt(
+                   9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 + \
+                   18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
+
+        # TODO: find a function to find the physically correct root.
+
+        return epsilon1, epsilon2
