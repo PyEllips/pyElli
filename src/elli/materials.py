@@ -22,7 +22,6 @@ class Material(ABC):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
-        pass
 
     def get_refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Gets the refractive index tensor for wavelength 'lbda'.
@@ -50,14 +49,13 @@ class SingleMaterial(Material):
     def set_dispersion(self) -> None:
         """Sets dipsersion relation of the material.
         """
-        pass
 
     def set_rotation(self, r: npt.NDArray) -> None:
         """Sets rotation of the Material.
 
         Args:
             r (npt.NDArray): rotation matrix (from rotation_Euler() or others)
-        """       
+        """
         self.rotated = True
         self.rotation_matrix = r
 
@@ -212,7 +210,6 @@ class MixtureMaterial(Material):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
-        pass
 
 
 class VCAMaterial(MixtureMaterial):
@@ -229,6 +226,26 @@ class VCAMaterial(MixtureMaterial):
         """
         epsilon = self.host_material.get_tensor(lbda) * (1 - self.fraction) \
             + self.guest_material.get_tensor(lbda) * self.fraction
+        return epsilon
+
+
+class LooyengaEMA(MixtureMaterial):
+    """Mixture Material approximated with Looyenga's formula.
+       Valid if materials have small contrast.
+       Looyenga, H. (1965). Physica, 31(3), 401–406.
+    """
+
+    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
+        epsilon = (self.host_material.get_tensor(lbda)**(1/3) * (1 - self.fraction) \
+            + self.guest_material.get_tensor(lbda)**(1/3) * self.fraction)**3
         return epsilon
 
 
