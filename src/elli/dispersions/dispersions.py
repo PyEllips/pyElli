@@ -216,7 +216,7 @@ class LorentzLambda(Dispersion):
         ε(λ) = 1 + Σi `A`i * λ² / (λ² - `lambda`i² + 1j * `gamma`i * λ)
     """
 
-    single_params_templage = {}
+    single_params_template = {}
     rep_params_template = {"A": 1, "lambda": 0, "gamma": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:

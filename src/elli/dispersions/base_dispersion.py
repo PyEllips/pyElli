@@ -203,7 +203,9 @@ class DispersionFactory:
         Returns:
             DispersionLaw: The DispersionLaw object initialized with the given parameters.
         """
-        if hasattr(dispersions, identifier):
+        bad_identifier = ["Dispersion"]
+
+        if hasattr(dispersions, identifier) and identifier not in bad_identifier:
             return getattr(dispersions, identifier)(*args, **kwargs)
 
         raise ValueError(f"No such dispersion: {identifier}")

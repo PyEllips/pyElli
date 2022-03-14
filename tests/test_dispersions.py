@@ -1,52 +1,54 @@
 """Tests for dispersion models"""
+import elli
+import numpy as np
+import pandas as pd
+from pandas.util.testing import assert_frame_equal
+from numpy.testing import assert_array_equal
 
 
 def test_constant_refr_index():
     """Tests constant refractive index"""
+    disp = elli.ConstantRefractiveIndex(n=3)
+    diel = disp.get_dielectric_df()
+    eps0 = diel.loc[:, "ϵ1"].values
+    eps1 = diel.loc[:, "ϵ2"].values
+
+    assert_array_equal(np.ones(500) * 3 ** 2, eps0)
+    assert_array_equal(np.zeros(500), eps1)
 
 
 def test_epsilon_inf():
     """Tests epsilon infinity / constant dielectric function"""
+    disp = elli.EpsilonInf(eps=3)
+    diel = disp.get_dielectric_df()
+    eps0 = diel.loc[:, "ϵ1"].values
+    eps1 = diel.loc[:, "ϵ2"].values
+
+    assert_array_equal(np.ones(500) * 3, eps0)
+    assert_array_equal(np.zeros(500), eps1)
 
 
-def test_cauchy():
-    """Tests cauchy dispersion"""
+def test_regression_dispersions_default():
+    """Test dispersions against their prior values"""
+    dispersions = [
+        "Cauchy",
+        "DrudeEnergy",
+        "DrudeResistivity",
+        "Gauss",
+        "LorentzEnergy",
+        "LorentzLambda",
+        "Poles",
+        "Sellmeier",
+        "Tanguy",
+        "TaucLorentz",
+    ]
+    lbda = np.linspace(400, 1000, 500)
 
+    for dispersion in dispersions:
+        prototype = pd.read_csv(f"dispersion_prototypes/{dispersion}_default.csv")
+        disp = elli.DispersionFactory.get_dispersion(dispersion)
 
-def test_sellmeier():
-    """Tests sellmeier dispersion"""
-
-
-def test_drude_energy():
-    """Tests Drude energy dispersion"""
-
-
-def test_drude_resistivity():
-    """Tests Drude resistivity dispersion"""
-
-
-def test_lorentz_lambda():
-    """Test Lorentz dispersion with wavelength parameters"""
-
-
-def test_lorentz_energy():
-    """Test Lorentz dispersion with energy parameters"""
-
-
-def test_gauss():
-    """Test Gauss dispersion"""
-
-
-def test_tauc_lorentz():
-    """Test Tauc-Lorentz dispersion"""
-
-
-def test_tanguy():
-    """Test Tanguy dispersion"""
-
-
-def test_poles():
-    """Test Poles dispersion"""
+        assert_frame_equal(prototype, disp.get_dielectric_df(lbda))
 
 
 def test_table_refr_index():
