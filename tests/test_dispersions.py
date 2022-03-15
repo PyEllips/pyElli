@@ -2,8 +2,23 @@
 import elli
 import numpy as np
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
+import os
+from distutils import dir_util
+from pytest import fixture
+from pandas.testing import assert_frame_equal
 from numpy.testing import assert_array_equal
+
+
+@fixture
+def datadir(tmpdir, request):
+    """Fixture for providing the dispersion prototype folder"""
+    filename = request.module.__file__
+    test_dir, _ = os.path.splitext(filename)
+
+    if os.path.isdir(test_dir):
+        dir_util.copy_tree(test_dir, str(tmpdir))
+
+    return tmpdir
 
 
 def test_constant_refr_index():
@@ -28,7 +43,7 @@ def test_epsilon_inf():
     assert_array_equal(np.zeros(500), eps1)
 
 
-def test_regression_dispersions_default():
+def test_regression_dispersions_default(datadir):
     """Test dispersions against their prior values"""
     dispersions = [
         "Cauchy",
@@ -41,19 +56,13 @@ def test_regression_dispersions_default():
         "Sellmeier",
         "Tanguy",
         "TaucLorentz",
+        "Table",
+        "TableEpsilon",
     ]
     lbda = np.linspace(400, 1000, 500)
 
     for dispersion in dispersions:
-        prototype = pd.read_csv(f"dispersion_prototypes/{dispersion}_default.csv")
+        prototype = pd.read_csv(datadir.join(f"{dispersion}_default.csv"), index_col=0)
         disp = elli.DispersionFactory.get_dispersion(dispersion)
 
         assert_frame_equal(prototype, disp.get_dielectric_df(lbda))
-
-
-def test_table_refr_index():
-    """Test refractive index dispersion table"""
-
-
-def test_table_epsilon():
-    """Test epsilon dispersion table"""

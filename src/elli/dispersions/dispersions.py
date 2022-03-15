@@ -356,16 +356,13 @@ class TaucLorentz(Dispersion):
             * (
                 c.get("A")
                 * c.get("E")
-                * c.get("gamma")
+                * c.get("C")
                 * (energy - energy_g) ** 2
-                / (
-                    (energy ** 2 - c.get("E") ** 2) ** 2
-                    + c.get("gamma") ** 2 * energy ** 2
-                )
+                / ((energy ** 2 - c.get("E") ** 2) ** 2 + c.get("C") ** 2 * energy ** 2)
                 / energy
             )
             * np.heaviside(energy - energy_g, 0)
-            + self.eps2(energy, energy_g, c.get("A"), c.get("E"), c.get("gamma"))
+            + self.eps2(energy, energy_g, c.get("A"), c.get("E"), c.get("C"))
             for c in self.rep_params
         )
 
@@ -497,7 +494,7 @@ class Table(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": [], "n": []}
+    single_params_template = {"lbda": np.linspace(0, 3000, 1000), "n": np.ones(1000)}
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
@@ -535,7 +532,10 @@ class TableEpsilon(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": [], "epsilon": []}
+    single_params_template = {
+        "lbda": np.linspace(0, 3000, 1000),
+        "epsilon": np.ones(1000),
+    }
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
