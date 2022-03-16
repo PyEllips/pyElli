@@ -28,8 +28,8 @@ def test_constant_refr_index():
     eps0 = diel.loc[:, "ϵ1"].values
     eps1 = diel.loc[:, "ϵ2"].values
 
-    assert_array_equal(np.ones(500) * 3 ** 2, eps0)
-    assert_array_equal(np.zeros(500), eps1)
+    assert_array_equal(np.ones(801) * 3 ** 2, eps0)
+    assert_array_equal(np.zeros(801), eps1)
 
 
 def test_epsilon_inf():
@@ -39,8 +39,8 @@ def test_epsilon_inf():
     eps0 = diel.loc[:, "ϵ1"].values
     eps1 = diel.loc[:, "ϵ2"].values
 
-    assert_array_equal(np.ones(500) * 3, eps0)
-    assert_array_equal(np.zeros(500), eps1)
+    assert_array_equal(np.ones(801) * 3, eps0)
+    assert_array_equal(np.zeros(801), eps1)
 
 
 def test_regression_dispersions_default(datadir):
