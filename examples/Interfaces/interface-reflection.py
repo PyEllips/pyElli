@@ -20,8 +20,8 @@ import matplotlib.pyplot as plt
 # Materials
 n1 = 1
 n2 = 1.5
-front = elli.IsotropicMaterial(elli.DispersionLess(n1))
-back = elli.IsotropicMaterial(elli.DispersionLess(n2))
+front = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n1))
+back = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n2))
 
 # Structure
 s = elli.Structure(front, [], back)

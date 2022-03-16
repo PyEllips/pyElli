@@ -21,26 +21,27 @@
 # glass substrates. A glass with n = 1.55 minimizes the interferences.
 
 # %%
-import numpy as np
-from numpy.lib.scimath import sqrt
 import elli
 import elli.plot.structure as elliplot
-from scipy.constants import c, pi
 import matplotlib.pyplot as plt
+import numpy as np
+from numpy.lib.scimath import sqrt
+from scipy.constants import c, pi
 
 # %% [markdown]
 # ## Set parameters
 
 # %%
 # Materials
-glass = elli.IsotropicMaterial(elli.DispersionLess(1.55))
+glass = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(1.55))
 front = back = glass
 
 # Liquid crystal oriented along the x direction
 (no, ne) = (1.5, 1.6)
-Dn = ne-no
-LC = elli.UniaxialMaterial(elli.DispersionLess(no),
-                         elli.DispersionLess(ne))
+Dn = ne - no
+LC = elli.UniaxialMaterial(
+    elli.ConstantRefractiveIndex(no), elli.ConstantRefractiveIndex(ne)
+)
 R = elli.rotation_v_theta(elli.e_y, 90)
 LC.set_rotation(R)
 d = 4330
@@ -51,15 +52,15 @@ s = elli.Structure(front, [TN], back)
 
 # Calculation parameters
 (lbda_min, lbda_max) = (200e-9, 1)  #  (m)
-k0_list = np.linspace(2*pi/lbda_max, 2*pi/lbda_min)
-lbda_list = (2*pi)/k0_list*1e9
+k0_list = np.linspace(2 * pi / lbda_max, 2 * pi / lbda_min)
+lbda_list = (2 * pi) / k0_list * 1e9
 
 # %% [markdown]
 # ## Calculate theoretical curve with Gooch-Tarry law
 
 # %%
-u = 2*d*Dn/lbda_list
-GT = np.sin(pi/2*sqrt(1+u**2))**2 / (1+u**2)
+u = 2 * d * Dn / lbda_list
+GT = np.sin(pi / 2 * sqrt(1 + u**2)) ** 2 / (1 + u**2)
 
 # %% [markdown]
 # ## Simulate with Berreman4x4
@@ -84,11 +85,10 @@ ax = fig.add_subplot(1, 1, 1)
 ax.plot(k0_list, GT, label="Gooch-Tarry law")
 
 # Two plots are made, with 7 or 18 divisions in the TwistedMaterial
-ax.plot(k0_list, T7, 'x', label="Berreman4x4, 7 Divisions")
-ax.plot(k0_list, T18, 'x', label="Berreman4x4, 18 Divisions")
+ax.plot(k0_list, T7, "x", label="Berreman4x4, 7 Divisions")
+ax.plot(k0_list, T18, "x", label="Berreman4x4, 18 Divisions")
 
-ax.set_title(u"90° Twisted Nematic Liquid Crystal, " +
-             u"d = {:.2f} µm".format(d*1e-3))
+ax.set_title("90° Twisted Nematic Liquid Crystal, " + "d = {:.2f} µm".format(d * 1e-3))
 ax.set_xlabel(r"Wavenumber $k_0$ (m$^{-1}$)")
 ax.set_ylabel(r"Power transmission $T$")
 ax.legend()

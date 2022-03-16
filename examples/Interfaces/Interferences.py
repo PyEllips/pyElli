@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 
 # %%
 # Materials:
-air = elli.IsotropicMaterial(elli.DispersionLess(1.0))
-glass = elli.IsotropicMaterial(elli.DispersionLess(1.5))
+air = elli.AIR
+glass = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(1.5))
 
 # Layer and half-spaces:
 layer = elli.Layer(glass, 1)
