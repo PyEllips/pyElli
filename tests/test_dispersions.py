@@ -122,10 +122,10 @@ def test_regression_dispersions_custom_values(datadir):
         },
         {
             "name": "TaucLorentz",
-            "single_params": {"Eg": 3.5},
+            "single_params": {"Eg": 2},
             "rep_params": [
-                {"A": 100, "E": 3, "C": 0.1},
-                {"A": 150, "E": 4, "C": 0.05},
+                {"A": 100, "E": 2.5, "C": 0.1},
+                {"A": 150, "E": 3, "C": 0.05},
                 {"A": 300, "E": 4.5, "C": 0.02},
             ],
         },

@@ -123,7 +123,7 @@ class Dispersion(ABC):
         Args:
             lbda (npt.ArrayLike, optional): The wavlength range to use.
                 If this parameter is not given a default spectral range
-                from 200 to 1000 nm with 500 points is used.
+                from 200 to 1000 nm with 801 points is used.
                 Defaults to None.
             conjugate (bool, optional): Per default the convention ε1 + iε2 is returned.
                 If this flag is set to True, the ε1 + iε2 convention is returned.
@@ -134,7 +134,7 @@ class Dispersion(ABC):
                 A pandas dataframe containing the wavelength as index
                 and two rows containing ε1 and ε2.
         """
-        lbda = np.linspace(200, 1000, 500) if lbda is None else lbda
+        lbda = np.linspace(200, 1000, 801) if lbda is None else lbda
         eps = self.get_dielectric(lbda)
 
         return pd.DataFrame(
@@ -150,7 +150,7 @@ class Dispersion(ABC):
         Args:
             lbda (npt.ArrayLike, optional): The wavlength range to use.
                 If this parameter is not given a default spectral range
-                from 200 to 1000 nm with 500 points is used.
+                from 200 to 1000 nm with 801 points is used.
                 Defaults to None.
             conjugate (bool, optional): Per default the convention n + ik is returned.
                 If this flag is set to True, the n + ik convention is returned.
@@ -161,7 +161,7 @@ class Dispersion(ABC):
                 A pandas dataframe containing the wavelength as index
                 and two rows containing n and k.
         """
-        lbda = np.linspace(200, 1000, 500) if lbda is None else lbda
+        lbda = np.linspace(200, 1000, 801) if lbda is None else lbda
         nk = self.get_refractive_index(lbda)
 
         return pd.DataFrame(

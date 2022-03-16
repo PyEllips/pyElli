@@ -309,7 +309,7 @@ class TaucLorentz(Dispersion):
         Eg: Bandgap energy. Defaults to 1.
 
     Repeated parameters:
-        A: Strength of the absorption. Typically 10 < A < 200. Defaults to 0.1.
+        A: Strength of the absorption. Typically 10 < A < 200. Defaults to 20.
         E: Lorentz resonance energy (eV). Always keep Eg < E!!. Defaults to 1.5.
         C: Lorentz broadening (eV). Typically 0 < Ci < 10. Defaults to 1.
 
@@ -323,10 +323,10 @@ class TaucLorentz(Dispersion):
     """
 
     single_params_template = {"Eg": 1}
-    rep_params_template = {"A": 1, "E": 1.5, "C": 1}
+    rep_params_template = {"A": 20, "E": 1.5, "C": 1}
 
     @staticmethod
-    def eps2(E, Eg, Ai, Ei, Ci):
+    def eps1(E, Eg, Ai, Ei, Ci):
         gamma2 = sqrt(Ei ** 2 - Ci ** 2 / 2) ** 2
         alpha = sqrt(4 * Ei ** 2 - Ci ** 2)
         aL = (
@@ -352,17 +352,22 @@ class TaucLorentz(Dispersion):
         energy = lambda2E(lbda)
         energy_g = self.single_params.get("Eg")
         return sum(
-            1j
-            * (
-                c.get("A")
-                * c.get("E")
-                * c.get("C")
-                * (energy - energy_g) ** 2
-                / ((energy ** 2 - c.get("E") ** 2) ** 2 + c.get("C") ** 2 * energy ** 2)
-                / energy
+            (
+                1j
+                * (
+                    c.get("A")
+                    * c.get("E")
+                    * c.get("C")
+                    * (energy - energy_g) ** 2
+                    / (
+                        (energy ** 2 - c.get("E") ** 2) ** 2
+                        + c.get("C") ** 2 * energy ** 2
+                    )
+                    / energy
+                )
+                * np.heaviside(energy - energy_g, 0)
+                + self.eps1(energy, energy_g, c.get("A"), c.get("E"), c.get("C"))
             )
-            * np.heaviside(energy - energy_g, 0)
-            + self.eps2(energy, energy_g, c.get("A"), c.get("E"), c.get("C"))
             for c in self.rep_params
         )
 
