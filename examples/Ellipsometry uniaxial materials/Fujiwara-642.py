@@ -37,8 +37,8 @@ Theta_E = 45    # 2nd Eulet angle
 # ## Permittivity tensor of the anisotropic film (eq 6.63, p. 241):
 
 # %%
-filmMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
-                                      elli.DispersionLess(n_e))
+filmMaterial = elli.UniaxialMaterial(elli.ConstantRefractiveIndex(n_o),
+                                      elli.ConstantRefractiveIndex(n_e))
 R = elli.rotation_euler(Phi_E, Theta_E, 0)
 filmMaterial.set_rotation(R)
 print(filmMaterial.get_tensor(lbda))
@@ -52,7 +52,7 @@ print(filmMaterial.get_tensor(lbda))
 # ```
 
 # %%
-air = elli.IsotropicMaterial(elli.DispersionLess(n_i))
+air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n_i))
 Kx = n_i * np.sin(np.deg2rad(Phi_i))
 
 print("Kx: {:.4f}".format(Kx))
@@ -100,7 +100,7 @@ print(Tp)
 
 # %%
 n_t = 3.898 + 0.016j  #  refractive index of substrate
-silicon = elli.IsotropicMaterial(elli.DispersionLess(n_t))
+silicon = elli.ConstantRefractiveIndex(n_t).get_mat()
 s = elli.Structure(air, [film], silicon)
 result = s.evaluate(np.array([lbda]), Phi_i)
 #T = s.getStructureMatrix(Kx, k0)

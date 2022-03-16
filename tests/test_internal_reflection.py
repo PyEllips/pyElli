@@ -13,9 +13,9 @@ class TestTirThickness:
     n_b = 1.7
 
     # Materials:
-    glass1 = elli.IsotropicMaterial(elli.DispersionLess(n_f))
-    air = elli.IsotropicMaterial(elli.DispersionLess(n_s))
-    glass2 = elli.IsotropicMaterial(elli.DispersionLess(n_b))
+    glass1 = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_f))
+    air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_s))
+    glass2 = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_b))
 
     # Air layer thickness variation range
     d = np.linspace(0, 1000)
@@ -59,17 +59,33 @@ class TestTirThickness:
     t_bs_p = np.cos(Phi_s) * (1 - r_bs_p) / np.cos(Phi_b)
 
     # Power coefficients:
-    R_th_s = (np.abs((r_sf_s + r_bs_s * np.exp(2j * kz_s * d))
-                     / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d)))) ** 2
+    R_th_s = (
+        np.abs(
+            (r_sf_s + r_bs_s * np.exp(2j * kz_s * d))
+            / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    t2_th_s = (np.abs((t_bs_s * t_sf_s * np.exp(1j * kz_s * d))
-                      / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d)))) ** 2
+    t2_th_s = (
+        np.abs(
+            (t_bs_s * t_sf_s * np.exp(1j * kz_s * d))
+            / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    R_th_p = (np.abs((r_sf_p + r_bs_p * np.exp(2j * kz_s * d))
-                     / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d)))) ** 2
+    R_th_p = (
+        np.abs(
+            (r_sf_p + r_bs_p * np.exp(2j * kz_s * d))
+            / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    t2_th_p = (np.abs((t_bs_p * t_sf_p * np.exp(1j * kz_s * d))
-                      / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d)))) ** 2
+    t2_th_p = (
+        np.abs(
+            (t_bs_p * t_sf_p * np.exp(1j * kz_s * d))
+            / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
     correction = np.real(n_b * np.cos(Phi_b) / (n_f * np.cos(Phi_i)))
     # This is a correction term used in R +T*correction = 1
@@ -78,8 +94,9 @@ class TestTirThickness:
     T_th_p = t2_th_p * correction
 
     def test_tir_thickness_4x4_scipy(self):
-        data = elli.ResultList([s.evaluate(self.lbda, np.rad2deg(self.Phi_i))
-                               for s in self.structures])
+        data = elli.ResultList(
+            [s.evaluate(self.lbda, np.rad2deg(self.Phi_i)) for s in self.structures]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -97,8 +114,17 @@ class TestTirThickness:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_thickness_4x4_eig(self):
-        data = elli.ResultList([s.evaluate(
-            self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorEig()) for s in self.structures])
+        data = elli.ResultList(
+            [
+                s.evaluate(
+                    self.lbda,
+                    np.rad2deg(self.Phi_i),
+                    solver=elli.Solver4x4,
+                    propagator=elli.PropagatorEig(),
+                )
+                for s in self.structures
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -116,8 +142,17 @@ class TestTirThickness:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_thickness_4x4_torch(self):
-        data = elli.ResultList([s.evaluate(
-            self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch()) for s in self.structures])
+        data = elli.ResultList(
+            [
+                s.evaluate(
+                    self.lbda,
+                    np.rad2deg(self.Phi_i),
+                    solver=elli.Solver4x4,
+                    propagator=elli.PropagatorExpmTorch(),
+                )
+                for s in self.structures
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -135,8 +170,12 @@ class TestTirThickness:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_thickness_2x2(self):
-        data = elli.ResultList([s.evaluate(
-            self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver2x2) for s in self.structures])
+        data = elli.ResultList(
+            [
+                s.evaluate(self.lbda, np.rad2deg(self.Phi_i), solver=elli.Solver2x2)
+                for s in self.structures
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -160,9 +199,9 @@ class TestTirAngle:
     n_b = 1.7
 
     # Materials:
-    glass1 = elli.IsotropicMaterial(elli.DispersionLess(n_f))
-    air = elli.IsotropicMaterial(elli.DispersionLess(n_s))
-    glass2 = elli.IsotropicMaterial(elli.DispersionLess(n_b))
+    glass1 = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_f))
+    air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_s))
+    glass2 = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_b))
 
     # Layer:
     layer = elli.Layer(air, 0)
@@ -207,17 +246,33 @@ class TestTirAngle:
     t_bs_p = np.cos(Phi_s) * (1 - r_bs_p) / np.cos(Phi_b)
 
     # Power coefficients:
-    R_th_s = (np.abs((r_sf_s + r_bs_s * np.exp(2j * kz_s * d))
-                     / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d)))) ** 2
+    R_th_s = (
+        np.abs(
+            (r_sf_s + r_bs_s * np.exp(2j * kz_s * d))
+            / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    t2_th_s = (np.abs((t_bs_s * t_sf_s * np.exp(1j * kz_s * d))
-                      / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d)))) ** 2
+    t2_th_s = (
+        np.abs(
+            (t_bs_s * t_sf_s * np.exp(1j * kz_s * d))
+            / (1 + r_bs_s * r_sf_s * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    R_th_p = (np.abs((r_sf_p + r_bs_p * np.exp(2j * kz_s * d))
-                     / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d)))) ** 2
+    R_th_p = (
+        np.abs(
+            (r_sf_p + r_bs_p * np.exp(2j * kz_s * d))
+            / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
-    t2_th_p = (np.abs((t_bs_p * t_sf_p * np.exp(1j * kz_s * d))
-                      / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d)))) ** 2
+    t2_th_p = (
+        np.abs(
+            (t_bs_p * t_sf_p * np.exp(1j * kz_s * d))
+            / (1 + r_bs_p * r_sf_p * np.exp(2j * kz_s * d))
+        )
+    ) ** 2
 
     correction = np.real(n_b * np.cos(Phi_b) / (n_f * np.cos(Phi_list.astype(complex))))
     # This is a correction term used in R +T*correction = 1
@@ -227,7 +282,8 @@ class TestTirAngle:
 
     def test_tir_angle_4x4_scipy(self):
         data = elli.ResultList(
-            [self.s.evaluate(self.lbda, np.rad2deg(Phi_i)) for Phi_i in self.Phi_list])
+            [self.s.evaluate(self.lbda, np.rad2deg(Phi_i)) for Phi_i in self.Phi_list]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -245,8 +301,17 @@ class TestTirAngle:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_angle_4x4_eig(self):
-        data = elli.ResultList([self.s.evaluate(
-            self.lbda, np.rad2deg(Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorEig()) for Phi_i in self.Phi_list])
+        data = elli.ResultList(
+            [
+                self.s.evaluate(
+                    self.lbda,
+                    np.rad2deg(Phi_i),
+                    solver=elli.Solver4x4,
+                    propagator=elli.PropagatorEig(),
+                )
+                for Phi_i in self.Phi_list
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -264,8 +329,17 @@ class TestTirAngle:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_angle_4x4_torch(self):
-        data = elli.ResultList([self.s.evaluate(
-            self.lbda, np.rad2deg(Phi_i), solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch()) for Phi_i in self.Phi_list])
+        data = elli.ResultList(
+            [
+                self.s.evaluate(
+                    self.lbda,
+                    np.rad2deg(Phi_i),
+                    solver=elli.Solver4x4,
+                    propagator=elli.PropagatorExpmTorch(),
+                )
+                for Phi_i in self.Phi_list
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -283,8 +357,12 @@ class TestTirAngle:
         np.testing.assert_allclose(t2_s, self.t2_th_s)
 
     def test_tir_angle_2x2(self):
-        data = elli.ResultList([self.s.evaluate(self.lbda, np.rad2deg(
-            Phi_i), solver=elli.Solver2x2) for Phi_i in self.Phi_list])
+        data = elli.ResultList(
+            [
+                self.s.evaluate(self.lbda, np.rad2deg(Phi_i), solver=elli.Solver2x2)
+                for Phi_i in self.Phi_list
+            ]
+        )
 
         # Extraction of the transmission and reflexion coefficients
         R_p = data.R_pp
@@ -308,19 +386,20 @@ def test_4x4_transition_matrix_halfspace():
     n_air = 1.0
 
     # Materials:
-    glass = elli.IsotropicMaterial(elli.DispersionLess(n_glass))
-    air = elli.IsotropicMaterial(elli.DispersionLess(n_air))
+    glass = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_glass))
+    air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_air))
 
     # Pseudo uniaxial Backhalfspace, to force different algorithm
     air_uniaxial = elli.UniaxialMaterial(
-        elli.DispersionLess(n_air), elli.DispersionLess(n_air))
+        elli.ConstantRefractiveIndex(n=n_air), elli.ConstantRefractiveIndex(n=n_air)
+    )
 
     # Structure:
     s = elli.Structure(glass, [], air)
     s2 = elli.Structure(glass, [], air_uniaxial)
 
     # Wavelength
-    lbda = 1000      # nm
+    lbda = 1000  # nm
 
     # Variation of incidence angle
     Phi_list = np.linspace(0, 89, 90)
