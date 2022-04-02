@@ -60,23 +60,23 @@ class TestTiO2:
     params.add("TiO2_d", value=24.8772291, min=0, max=40000, vary=True)
 
     SiO2 = elli.IsotropicMaterial(
-        elli.DispersionCauchy(
-            params["SiO2_n0"],
-            params["SiO2_n1"],
-            params["SiO2_n2"],
-            params["SiO2_k0"],
-            params["SiO2_k1"],
-            params["SiO2_k2"],
+        elli.Cauchy(
+            n0=params["SiO2_n0"],
+            n1=params["SiO2_n1"],
+            n2=params["SiO2_n2"],
+            k0=params["SiO2_k0"],
+            k1=params["SiO2_k1"],
+            k2=params["SiO2_k2"],
         )
     )
     TiO2 = elli.IsotropicMaterial(
-        elli.DispersionCauchy(
-            params["TiO2_n0"],
-            params["TiO2_n1"],
-            params["TiO2_n2"],
-            params["TiO2_k0"],
-            params["TiO2_k1"],
-            params["TiO2_k2"],
+        elli.Cauchy(
+            n0=params["TiO2_n0"],
+            n1=params["TiO2_n1"],
+            n2=params["TiO2_n2"],
+            k0=params["TiO2_k0"],
+            k1=params["TiO2_k1"],
+            k2=params["TiO2_k2"],
         )
     )
 

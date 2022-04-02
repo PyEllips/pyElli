@@ -6,9 +6,9 @@
 # Author: O. Castany, M.Müller
 
 # %%
-import numpy as np
 import elli
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # %% [markdown]
@@ -20,14 +20,14 @@ n_glass = 1.5
 n_air = 1.0
 
 # Materials:
-glass = elli.IsotropicMaterial(elli.DispersionLess(n_glass))
-air = elli.IsotropicMaterial(elli.DispersionLess(n_air))
+glass = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n_glass))
+air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n_air))
 
 # Structure:
 s = elli.Structure(glass, [], air)
 
 # Wavelength
-lbda = 1000      # nm
+lbda = 1000  # nm
 
 # Variation of incidence angle
 Phi_list = np.linspace(0, 89, 90)
@@ -45,10 +45,10 @@ data = elli.ResultList([s.evaluate(lbda, Phi_i) for Phi_i in Phi_list])
 
 # %%
 plt.figure()
-plt.plot(Phi_list, data.R_pp, label='R_pp')
-plt.plot(Phi_list, data.R_ss, label='R_ss')
+plt.plot(Phi_list, data.R_pp, label="R_pp")
+plt.plot(Phi_list, data.R_ss, label="R_ss")
 plt.title("FTIR: Glass / Air")
-plt.xlabel(u"Angle of incidence (°)")
+plt.xlabel("Angle of incidence (°)")
 plt.ylabel(r"Reflexion coefficients $R$")
 plt.legend()
 plt.show()
