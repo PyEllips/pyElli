@@ -50,7 +50,7 @@ try:
         # This is a rudimentary parse_version to avoid external dependencies
         args = args[1:]
 
-    apidoc.main(args)
+    # apidoc.main(args)
 except Exception as e:
     print("Running `sphinx-apidoc` failed!\n{}".format(e))
 
@@ -73,16 +73,16 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
-    "m2r2"
+    "m2r2",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = [".rst", '.md']
+source_suffix = [".rst", ".md"]
 
-autoclass_content = 'both'
+autoclass_content = "both"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
@@ -164,10 +164,7 @@ html_theme = "sphinx_rtd_theme"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "sidebar_width": "300px",
-    "page_width": "1200px"
-}
+html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
