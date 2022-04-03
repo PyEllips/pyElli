@@ -4,8 +4,8 @@ They describe the change of dielectric function or refractive index with wavleng
 In pyElli the default wavelength unit is nm.
 Each dispersion has two distinct sets of parameters:
     * Parameters which can be given only once (single parameters).
-    * Parameters which can be given in multiple sets (repeated parameters), e.g.
-        a set of oscillator parameters.
+    * | Parameters which can be given in multiple sets (repeated parameters),
+      | e.g. a set of oscillator parameters.
 
 The syntax for each of the parameter sets is different.
 For the single parameters they are given in the class constructor:
@@ -15,12 +15,14 @@ For the single parameters they are given in the class constructor:
         Cauchy(n0=1.458, n1=3.54e-3, n2=0, k0=0, k1=0, k2=0)
 
 Repeated parameters are added via the add() function:
+
     .. highlight:: python
     .. code-block:: python
 
         Sellmeier().add(A=1, B=1).add(A=1, B=2)
 
 For dispersions having single and repeated parameters both are used:
+
     .. highlight:: python
     .. code-block:: python
 
@@ -42,16 +44,18 @@ from ..math import lambda2E
 
 
 class ConstantRefractiveIndex(Dispersion):
-    """Constant refractive index.
+    r"""Constant refractive index.
 
     Single parameters:
-        n: 1
+        :n: 1
 
     Repeated parameters:
         --
 
     Output:
-        ε(λ) = `n`^2"""
+        .. math::
+            \epsilon(\lambda) = \boldsymbol{n}^2
+    """
 
     single_params_template = {"n": 1}
     rep_params_template = {}
@@ -61,16 +65,18 @@ class ConstantRefractiveIndex(Dispersion):
 
 
 class EpsilonInf(Dispersion):
-    """Constant epsilon infinity.
+    r"""Constant epsilon infinity.
 
     Single parameters:
-        eps: 1
+        :eps: 1
 
     Repeated parameters:
         --
 
     Output:
-        ε(λ) = `eps`"""
+        .. math::
+            \epsilon(\lambda) = \textbf{eps}
+    """
 
     single_params_template = {"eps": 1}
     rep_params_template = {}
@@ -80,24 +86,25 @@ class EpsilonInf(Dispersion):
 
 
 class Cauchy(Dispersion):
-    """Cauchy dispersion.
+    r"""Cauchy dispersion.
 
     Single parameters:
-        n0: Defaults to 1.5.
-        n1: Defaults to 0. Unit in nm^2.
-        n2: Defaults to 0. Unit in nm^4.
-        k0: Defaults to 0.
-        k1: Defaults to 0. Unit in nm^2.
-        k2: Defaults to 0. Unit in nm^4.
+        :n0: Defaults to 1.5.
+        :n1: Defaults to 0. Unit in nm\ :sup:`2`.
+        :n2: Defaults to 0. Unit in nm\ :sup:`4`.
+        :k0: Defaults to 0.
+        :k1: Defaults to 0. Unit in nm\ :sup:`2`.
+        :k2: Defaults to 0. Unit in nm\ :sup:`4`.
 
     Repeated parameters:
         --
 
     Output:
-        ε(λ)^2 = (
-            n0 + 100 * n1/λ² + 10^7 n2/λ^4
-            + 1j * (k0 + 100 * k1/λ² + 10^7 k2/λ^4)
-        )
+        .. math::
+            \epsilon^2(\lambda) =
+            \boldsymbol{n_0} + 100  \boldsymbol{n_1}/\lambda^2 + 10^7 \boldsymbol{n_2}/\lambda^4
+            + i (\boldsymbol{k_0} + 100 \boldsymbol{k_1}/\lambda^2
+            + 10^7 \boldsymbol{k_2}/\lambda^4)
     """
 
     single_params_template = {"n0": 1.5, "n1": 0, "n2": 0, "k0": 0, "k1": 0, "k2": 0}
@@ -119,14 +126,14 @@ class Cauchy(Dispersion):
 
 
 class Sellmeier(Dispersion):
-    """Sellmeier dispersion.
+    r"""Sellmeier dispersion.
 
     Single parameters:
         --
 
     Repeated parameters:
-        A: Coefficient for n² contribution. Defaults to 0.
-        B: Resonance wavelength (µm^-2). Defaults to 0.
+        :A: Coefficient for n\ :sup:`2` contribution. Defaults to 0.
+        :B: Resonance wavelength (µm\ :sup:`-2`). Defaults to 0.
 
     Output:
         ε(λ) = 1 + Σi Ai × λ²/(λ² - Bi)
