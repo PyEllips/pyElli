@@ -10,7 +10,53 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test_python_37:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -r requirements.txt
+        pip install torch
+    - name: Install module
+      run: |
+        pip install .
+    - name: Test with pytest
+      run: |
+        pytest
+        
+  test_python_38:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -r requirements.txt
+        pip install torch
+    - name: Install module
+      run: |
+        pip install .
+    - name: Test with pytest
+      run: |
+        pytest
+        
+  test_python_39:
 
     runs-on: ubuntu-latest
 
@@ -20,6 +66,29 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -r requirements.txt
+        pip install torch
+    - name: Install module
+      run: |
+        pip install .
+    - name: Test with pytest
+      run: |
+        pytest
+        
+  test_python_310:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
