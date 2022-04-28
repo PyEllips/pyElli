@@ -15,6 +15,7 @@ jupyter:
 
 ```python
 import elli
+from elli.fitting import ParamsHist, fit
 ```
 
 # Load data
@@ -30,7 +31,7 @@ tss = elli.SpectraRay.read_psi_delta_file("TiO2_400cycles.txt").loc[400:800]
 # Estimate Parameters and build model
 
 ```python
-params = elli.ParamsHist()
+params = ParamsHist()
 params.add("SiO2_n0", value=1.452, min=-100, max=100, vary=False)
 params.add("SiO2_n1", value=36.0, min=-40000, max=40000, vary=False)
 params.add("SiO2_n2", value=0, min=-40000, max=40000, vary=False)
@@ -50,7 +51,7 @@ params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 ```
 
 ```python
-@elli.fit(tss, params)
+@fit(tss, params)
 def model(lbda, params):
     sr = elli.SpectraRay("./")
     Si = elli.IsotropicMaterial(sr.loadDispersionTable("Si_Aspnes.mat"))
