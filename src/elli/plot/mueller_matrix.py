@@ -1,21 +1,38 @@
 """Plotting functions for Mueller matrices"""
 # Encoding: utf-8
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+try:
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+except ImportError as e:
+    raise ImportError(
+        "Optional dependency plotly is not installed. This module will not work properly."
+    ) from e
 from typing import List
 import pandas as pd
-COLORS = ['#636EFA', '#EF553B', '#00CC96',
-          '#AB63FA', '#FFA15A', '#19D3F3',
-          '#FF6692', '#B6E880', '#FF97FF',
-          '#FECB52']
 
-def plot_mmatrix(dataframes:List[pd.DataFrame],
-                 colors:list=None,
-                 dashes:list=None,
-                 names:list=None,
-                 single:bool=True,
-                 full_scale:bool=False,
-                 sharex:bool=False) -> go.Figure:
+COLORS = [
+    "#636EFA",
+    "#EF553B",
+    "#00CC96",
+    "#AB63FA",
+    "#FFA15A",
+    "#19D3F3",
+    "#FF6692",
+    "#B6E880",
+    "#FF97FF",
+    "#FECB52",
+]
+
+
+def plot_mmatrix(
+    dataframes: List[pd.DataFrame],
+    colors: list = None,
+    dashes: list = None,
+    names: list = None,
+    single: bool = True,
+    full_scale: bool = False,
+    sharex: bool = False,
+) -> go.Figure:
     """Takes multiple Mueller matrix dataframes with columns Mxy for matrix postion x,y
     and plots them together. Needs plotly as additional requirement to work.
 
@@ -34,13 +51,15 @@ def plot_mmatrix(dataframes:List[pd.DataFrame],
     if colors is None:
         colors = COLORS
     if dashes is None:
-        dashes = ['solid', 'dash', 'dot']
+        dashes = ["solid", "dash", "dot"]
     if names is None:
-        names = ['', 'theory']
+        names = ["", "theory"]
 
     if single:
         fig = go.Figure()
-        fig.update_layout(yaxis_title='Müller Matrix Elements', xaxis_title='Wavelength (nm)')
+        fig.update_layout(
+            yaxis_title="Müller Matrix Elements", xaxis_title="Wavelength (nm)"
+        )
     else:
         fig = make_subplots(rows=4, cols=4)
         if full_scale:
@@ -52,16 +71,25 @@ def plot_mmatrix(dataframes:List[pd.DataFrame],
             dashi = dashes[j % len(dashes)]
             namesi = names[j % len(names)]
             if single:
-                fig.add_trace(go.Scatter(x=mueller_df.index,
-                                        y=mueller_df[melem],
-                                        name=f'{melem} {namesi}',
-                                        line=dict(color=coli, dash=dashi)))
+                fig.add_trace(
+                    go.Scatter(
+                        x=mueller_df.index,
+                        y=mueller_df[melem],
+                        name=f"{melem} {namesi}",
+                        line=dict(color=coli, dash=dashi),
+                    )
+                )
             else:
-                fig.add_trace(go.Scatter(x=mueller_df.index,
-                                        y=mueller_df[melem],
-                                        name=f'{melem} {namesi}',
-                                        line=dict(color=coli, dash=dashi)),
-                                        row=1 if single else i//4 + 1, col=1 if single else i%4 + 1)
+                fig.add_trace(
+                    go.Scatter(
+                        x=mueller_df.index,
+                        y=mueller_df[melem],
+                        name=f"{melem} {namesi}",
+                        line=dict(color=coli, dash=dashi),
+                    ),
+                    row=1 if single else i // 4 + 1,
+                    col=1 if single else i % 4 + 1,
+                )
     if sharex:
-        fig.update_xaxes(matches='x')
+        fig.update_xaxes(matches="x")
     return go.FigureWidget(fig)

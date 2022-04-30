@@ -22,7 +22,7 @@
 
 # %%
 import elli
-import elli.plot.structure as elliplot
+import elli.plot as elliplot
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.lib.scimath import sqrt
