@@ -1,9 +1,10 @@
 """Testing benchmark for each solver"""
 import numpy as np
 import elli
+from elli.fitting import ParamsHist
 
 
-params = elli.ParamsHist()
+params = ParamsHist()
 params.add("SiO2_n0", value=1.452, min=-100, max=100, vary=False)
 params.add("SiO2_n1", value=36.0, min=-40000, max=40000, vary=False)
 params.add("SiO2_n2", value=0, min=-40000, max=40000, vary=False)
