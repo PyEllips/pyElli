@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov nbmake
         pip install -r requirements.txt
         pip install torch
     - name: Install module
@@ -31,7 +31,7 @@ jobs:
         pip install .
     - name: Test with pytest
       run: |
-        pytest
+        pytest --nbmake
         
   test_python_38:
 
@@ -46,7 +46,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov nbmake
         pip install -r requirements.txt
         pip install torch
     - name: Install module
@@ -54,7 +54,7 @@ jobs:
         pip install .
     - name: Test with pytest
       run: |
-        pytest
+        pytest --nbmake
         
   test_python_39:
 
@@ -69,7 +69,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov nbmake
         pip install -r requirements.txt
         pip install torch
     - name: Install module
@@ -77,7 +77,7 @@ jobs:
         pip install .
     - name: Test with pytest
       run: |
-        pytest
+        pytest --nbmake
         
   test_python_310:
 
@@ -92,7 +92,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov nbmake
         pip install -r requirements.txt
         pip install torch
     - name: Install module
@@ -100,4 +100,4 @@ jobs:
         pip install .
     - name: Test with pytest
       run: |
-        pytest
+        pytest --nbmake
