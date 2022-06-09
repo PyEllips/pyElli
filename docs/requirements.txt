@@ -11,3 +11,4 @@ pandas>=1.0.0
 lmfit
 plotly
 ipywidgets
+jupyterlite-sphinx

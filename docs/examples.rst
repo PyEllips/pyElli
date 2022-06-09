@@ -3,3 +3,5 @@
 ********
 Examples
 ********
+
+.. retrolite:: jupyter_test/test.ipynb

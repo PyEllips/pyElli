@@ -74,7 +74,10 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
     "m2r2",
+    "jupyterlite_sphinx",
 ]
+
+jupyterlite_config = "jupyterlite_config.py"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

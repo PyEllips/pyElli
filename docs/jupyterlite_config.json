@@ -1,0 +1,12 @@
+{
+    "LiteBuildConfig": {
+        "federated_extensions": [
+            "https://files.pythonhosted.org/packages/f2/c6/46c3eca1e33af45b852c833d37369fae59dac6ee7e1219db768dc1c2dab4/pyElli-0.10.0.tar.gz"
+        ],
+        "ignore_sys_prefix": true,
+        "piplite_urls": [
+            "https://files.pythonhosted.org/packages/fd/f8/de304320596cac2c711daf574c2937d3cc4dec5b792d897bd9a6fad4b84f/pyElli-0.10.0-py3-none-any.whl",
+            "https://files.pythonhosted.org/packages/9f/16/c63412aec59219142b541011524417ef1c1c226e4a5ed2eb1cd808cd1a2b/plotly-5.6.0-py2.py3-none-any.whl"
+        ]
+    }
+}
