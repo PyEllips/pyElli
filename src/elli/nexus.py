@@ -1,26 +1,44 @@
 """Read and write NeXus files."""
 import h5py
+import numpy as np
 import pandas as pd
 
+from .utils import calc_rho
 
-class NexusReader:
-    """Read NeXus ellipsometry files into pandas dataframes"""
 
-    def __init__(self, h5_filename: str) -> None:
-        self.h5file = h5py.File(h5_filename, "r")
+def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
+    """Read a NeXus file containing Psi and Delta data.
 
-    def psi_delta(self) -> pd.DataFrame:
-        """Read the Ψ and Δ data from the NeXus file
+    Args:
+        nxs_filename (str): The filename of the NeXus file.
 
-        Returns:
-            pd.DataFrame: Psi/Delta DataFrame
-        """
-        raise NotImplementedError()
+    Raises:
+        ValueError: Is raised when the data is not stored as psi / delta value.
 
-    def rho(self) -> pd.DataFrame:
-        """Read the rho values from the NeXus file
+    Returns:
+        pd.DataFrame: Psi/Delta DataFrame
+    """
+    h5file = h5py.File(nxs_filename, "r")
+    if h5file["entry/sample/data_type"][()].decode("utf-8") != "psi / delta":
+        raise ValueError("Data type is not psi / delta")
 
-        Returns:
-            pd.DataFrame: Imaginary rho DataFrame
-        """
-        raise NotImplementedError()
+    wavelength = np.array(h5file["entry/sample/wavelength"])
+    psi = np.array(h5file["entry/sample/measured_data"])[:, 0, 0, 0, 0]
+    delta = np.array(h5file["entry/sample/measured_data"])[:, 1, 0, 0, 0]
+
+    df = pd.DataFrame({"Ψ": psi, "Δ": delta}, index=wavelength / 10)
+    df.index.name = "Wavelength"
+    return df
+
+
+def read_rho(nxs_filename: str) -> pd.DataFrame:
+    """Reads rho value from NeXus datafile.
+    Currently, this works only with psi / delta representation in the NeXus file.
+
+    Raises:
+        ValueError: Is raised when the data is not stored as psi / delta value.
+
+    Returns:
+        pd.DataFrame: DataFrame containing the measured data as imaginary rho value.
+    """
+    return calc_rho(read_psi_delta(nxs_filename))
