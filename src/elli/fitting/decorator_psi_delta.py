@@ -1,6 +1,7 @@
 """Decorator functions for convenient fitting"""
 # Encoding: utf-8
 from typing import Callable
+from sys import float_info
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -14,7 +15,6 @@ except ImportError as e:
         "This module requires plotly, ipywidgets and ipython to be installed."
     ) from e
 from lmfit import minimize, Parameters
-from sys import float_info
 from ..result import Result
 from ..utils import calc_pseudo_diel, calc_rho
 from .params_hist import ParamsHist
@@ -76,7 +76,9 @@ class FitRho(FitDecorator):
             self.fig.data[3].name = "ρi_tmm"
 
     def set_residual(
-        self, update_exp: bool = False, update_names: bool = False
+        self,
+        update_exp: bool = False,  # pylint: disable=unused-argument
+        update_names: bool = False,
     ) -> None:
         """Sets plots to residual values
 
@@ -274,7 +276,7 @@ class FitRho(FitDecorator):
                         index=self.exp_data.index,
                     ),
                 ]
-            ).plot()
+            ).plot(backend="plotly")
         )
 
     def plot_rho(self) -> go.Figure:
@@ -291,7 +293,7 @@ class FitRho(FitDecorator):
                     "ρci": fit_result.rho.imag,
                 },
                 index=rho.index,
-            ).plot()
+            ).plot(backend="plotly")
         )
 
     def get_model_data(
