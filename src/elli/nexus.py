@@ -32,6 +32,7 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
         index=pd.MultiIndex.from_product(
             [aois, wavelength], names=["Angle of Incidence", "Wavelength"]
         ),
+        dtype=float,
     )
 
     data = np.array(h5file["/entry/sample/measured_data"])
