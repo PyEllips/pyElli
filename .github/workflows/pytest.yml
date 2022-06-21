@@ -5,99 +5,32 @@ name: Pytest
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  test_python_37:
-
+  test_python:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pytest-cov nbmake
-        pip install -r requirements.txt
-        pip install torch
-    - name: Install module
-      run: |
-        pip install .
-    - name: Test with pytest
-      run: |
-        pytest --nbmake
-        
-  test_python_38:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pytest-cov nbmake
-        pip install -r requirements.txt
-        pip install torch
-    - name: Install module
-      run: |
-        pip install .
-    - name: Test with pytest
-      run: |
-        pytest --nbmake
-        
-  test_python_39:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pytest-cov nbmake
-        pip install -r requirements.txt
-        pip install torch
-    - name: Install module
-      run: |
-        pip install .
-    - name: Test with pytest
-      run: |
-        pytest --nbmake
-        
-  test_python_310:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pytest-cov nbmake
-        pip install -r requirements.txt
-        pip install torch
-    - name: Install module
-      run: |
-        pip install .
-    - name: Test with pytest
-      run: |
-        pytest --nbmake
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ python_version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ python_version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov nbmake
+          pip install -r requirements.txt
+          pip install torch
+      - name: Install module
+        run: |
+          pip install .
+      - name: Test with pytest
+        run: |
+          pytest --nbmake
