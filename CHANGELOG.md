@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.10.1
+
+- The fitting module is not imported at top-level anymore. It has now to be imported by `elli.fitting`.
+
 ## Version 0.10.0
 
 - Dispersions are now addressed by their name only (instead of Dispersion...)

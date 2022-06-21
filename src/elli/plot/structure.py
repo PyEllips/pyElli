@@ -1,6 +1,11 @@
 # Encoding: utf-8
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError as e:
+    raise ImportError(
+        "Optional dependency matplotlib missing. This module will not work properly."
+    ) from e
 from numpy.lib.scimath import sqrt
 from ..math import e_x
 
@@ -10,8 +15,8 @@ def get_permittivity_profile(structure, lbda):
     layers = []
     for L in structure.layers:
         layers.extend(L.get_permittivity_profile(lbda))
-    front = (float('inf'), structure.front_material.get_tensor(lbda))
-    back = (float('inf'), structure.back_material.get_tensor(lbda))
+    front = (float("inf"), structure.front_material.get_tensor(lbda))
+    back = (float("inf"), structure.back_material.get_tensor(lbda))
     return sum([[front], layers, [back]], [])
 
 
@@ -35,11 +40,11 @@ def draw_structure(structure, lbda=1000, method="graph", margin=0.15):
     """
     # Build index profile
     profile = get_index_profile(structure, lbda)
-    (h, n) = list(zip(*profile))     # unzip
+    (h, n) = list(zip(*profile))  # unzip
     n = np.array(n)
-    z_layers = np.hstack((0., np.cumsum(h[1:-1])))
+    z_layers = np.hstack((0.0, np.cumsum(h[1:-1])))
     z_max = z_layers[-1]
-    if z_max != 0.:
+    if z_max != 0.0:
         z_margin = margin * z_max
     else:
         z_margin = 1e-6
@@ -55,15 +60,15 @@ def draw_structure(structure, lbda=1000, method="graph", margin=0.15):
 
 
 def _draw_structure_graph(structure, z, n):
-    """Draw a graph of the refractive index profile """
+    """Draw a graph of the refractive index profile"""
     n = np.hstack((n, n[-1]))
     # Draw the graph
     fig = plt.figure(figsize=(8, 3))
     ax = fig.add_subplot(1, 1, 1)
     fig.subplots_adjust(bottom=0.17)
-    ax.step(z, n.real, 'black', where='post')
-    ax.spines['top'].set_visible(False)
-    ax.xaxis.set_ticks_position('bottom')
+    ax.step(z, n.real, "black", where="post")
+    ax.spines["top"].set_visible(False)
+    ax.xaxis.set_ticks_position("bottom")
     ax.set_xlabel("z (nm)")
     ax.set_ylabel("n'")
     ax.set_xlim(z.min(), z.max())
@@ -84,8 +89,9 @@ def _draw_structure_section(structure, z, n):
     ax.set_yticks([])
     ax.set_xlabel("z (nm)")
     ax.set_xlim(z.min(), z.max())
-    stack = ax.pcolormesh(X, Y, n, cmap=plt.get_cmap('gray_r'))
-    colbar = fig.colorbar(stack, orientation='vertical', anchor=(1.2, 0.5),
-                          fraction=0.05)
+    stack = ax.pcolormesh(X, Y, n, cmap=plt.get_cmap("gray_r"))
+    colbar = fig.colorbar(
+        stack, orientation="vertical", anchor=(1.2, 0.5), fraction=0.05
+    )
     colbar.ax.set_xlabel("n'", position=(3, 0))
     return ax
