@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1655794698605,
+  "lastUpdate": 1655802411857,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -2655,6 +2655,65 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000057586746971937294",
             "extra": "mean: 5.214710400002787 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a7484ddaa393534608375e9e405d9d8ca884323e",
+          "message": "Improve Testing (#48)\n\n* Test with all current python versions\r\n\r\n* Test python 3.10 not 3.1\r\n\r\n* Include basic test for fitting decorator\r\n\r\n* Simplifies test to use matrix\r\n\r\n* Corrects action to call matrix correctly\r\n\r\nCo-authored-by: domna <florian.dobener@physik.hu-berlin.de>",
+          "timestamp": "2022-06-21T10:54:16+02:00",
+          "tree_id": "9bcb01684736f7d314004e111ad0357bb278656d",
+          "url": "https://github.com/PyEllips/pyElli/commit/a7484ddaa393534608375e9e405d9d8ca884323e"
+        },
+        "date": 1655802411351,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 26.810806136166836,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008701624475220496",
+            "extra": "mean: 37.29839359999829 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "value": 1.1186921333218258,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0370307717935509",
+            "extra": "mean: 893.9009850999995 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_torch",
+            "value": 9.46434102203469,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02428365196690816",
+            "extra": "mean: 105.65975990000993 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 158.68017699314936,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001685420993623216",
+            "extra": "mean: 6.301984399999583 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 189.9639824488798,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00044090405285718303",
+            "extra": "mean: 5.264155800003323 msec\nrounds: 10"
           }
         ]
       }
