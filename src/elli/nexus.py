@@ -21,14 +21,15 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
         and the wavlength as second column.
     """
     h5file = h5py.File(nxs_filename, "r")
-    if h5file["entry/sample/data_type"][()].decode("utf-8") != "psi / delta":
+    if h5file["entry/sample/data_type"].asstr()[()] != "psi/delta":
         raise ValueError("Data type is not psi / delta")
 
     aois = np.array(h5file["entry/instrument/angle_of_incidence"])
-    wavelength = np.array(h5file["entry/sample/wavelength"]) / 10
+    wavelength = np.array(h5file["entry/instrument/spectrometer/wavelength"]) / 10
+    column_names = np.array(h5file["/entry/sample/column_names"].asstr())
     psi_delta_df = pd.DataFrame(
         {},
-        columns={"Ψ", "Δ"},
+        columns=column_names,
         index=pd.MultiIndex.from_product(
             [aois, wavelength], names=["Angle of Incidence", "Wavelength"]
         ),
@@ -38,10 +39,10 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
     data = np.array(h5file["/entry/sample/measured_data"])
 
     for i, aoi in enumerate(aois):
-        psi_delta_df.loc[aoi, "Δ"] = data[:, 1, i, 0, 0]
-        psi_delta_df.loc[aoi, "Ψ"] = data[:, 0, i, 0, 0]
+        psi_delta_df.loc[aoi, column_names[1]] = data[0, 0, i, 1, :]
+        psi_delta_df.loc[aoi, column_names[0]] = data[0, 0, i, 0, :]
 
-    return psi_delta_df
+    return psi_delta_df.rename(columns={"psi": "Ψ", "delta": "Δ"})
 
 
 def read_rho(nxs_filename: str) -> pd.DataFrame:
