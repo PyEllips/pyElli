@@ -12,7 +12,7 @@ class Solver(ABC):
     and the simulation results get returned.
 
     The actual simulation is handled by subclasses.
-    Because of this, this class should never be called.
+    Therefore, this class should never be called directly.
     """
 
     experiment = None
