@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.0
+
+- Adds reading functionality for [NeXus files](https://github.com/FAIRmat-Experimental/nexus_definitions).
+
 ## Version 0.10.1
 
 - The fitting module is not imported at top-level anymore. It has now to be imported by `elli.fitting`.
