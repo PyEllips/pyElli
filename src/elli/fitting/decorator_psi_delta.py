@@ -47,8 +47,8 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "Ψ"
             self.fig.data[1].name = "Δ"
-            self.fig.data[2].name = "Ψ_tmm"
-            self.fig.data[3].name = "Δ_tmm"
+            self.fig.data[2].name = "Ψ_calc"
+            self.fig.data[3].name = "Δ_calc"
 
     def set_rho(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Rho values
@@ -72,8 +72,8 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "ρr"
             self.fig.data[1].name = "ρi"
-            self.fig.data[2].name = "ρr_tmm"
-            self.fig.data[3].name = "ρi_tmm"
+            self.fig.data[2].name = "ρr_calc"
+            self.fig.data[3].name = "ρi_calc"
 
     def set_residual(
         self,
@@ -130,8 +130,8 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "ϵ1"
             self.fig.data[1].name = "ϵ2"
-            self.fig.data[2].name = "ϵ1_tmm"
-            self.fig.data[3].name = "ϵ2_tmm"
+            self.fig.data[2].name = "ϵ1_calc"
+            self.fig.data[3].name = "ϵ2_calc"
 
     def update_selection(self, change: dict = None) -> None:
         """Update plot after selection of displayed data
@@ -385,8 +385,8 @@ class FitRho(FitDecorator):
                     exp_data,
                     pd.DataFrame(
                         {
-                            "Ψ_tmm": model(exp_data.index, params).psi,
-                            "Δ_tmm": model(exp_data.index, params).delta,
+                            "Ψ_calc": model(exp_data.index, params).psi,
+                            "Δ_calc": model(exp_data.index, params).delta,
                         },
                         index=exp_data.index,
                     ),
