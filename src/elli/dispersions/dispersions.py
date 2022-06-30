@@ -31,6 +31,14 @@ For dispersions having both, single and repeated parameters can be used together
 If parameters are not fully provided, they are set to their respective default values.
 The available parameters and their respective default values
 are given in the respective class documentation.
+
+All classes inherit from the abstract base class `Dispersion`_.
+It provides basic functionality, such as returning dataframes or arrays
+containing the wavelength dependent dielectric function of the
+dispersion relation at current parameter set.
+
+Dispersions can be added with the `+` operator, or if you want to chain
+more than two dispersions together you may have a look at the `DispersionSum`_ class.
 """
 import numpy as np
 import numpy.typing as npt
@@ -39,7 +47,7 @@ import scipy.constants as sc
 from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 
-from .base_dispersion import Dispersion
+from .base_dispersion import Dispersion, InvalidParameters
 from ..math import lambda2E
 
 
@@ -279,7 +287,7 @@ class LorentzEnergy(Dispersion):
         )
 
 
-class Gauss(Dispersion):
+class Gaussian(Dispersion):
     r"""Gauss dispersion law.
 
     Single parameters:
@@ -527,9 +535,9 @@ class Table(Dispersion):
     wavelength range.
 
     Single parameters:
-        :lbda (list): Wavelengths in nm. Defaults to [].
+        :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
         :epsilon: Complex refractive index values in the convention n + ik.
-            Defaults to [].
+            Defaults to np.ones(1000).
 
     Repeated parameters:
         --
@@ -538,11 +546,20 @@ class Table(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": np.array([]), "n": np.array([])}
+    single_params_template = {"lbda": np.linspace(0, 3000, 1000), "n": np.ones(1000)}
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+
+        if len(self.single_params.get("lbda")) == 0:
+            raise InvalidParameters("Wavelength array cannot be of length zero.")
+
+        if len(self.single_params.get("n")) != len(self.single_params.get("lbda")):
+            raise InvalidParameters(
+                "Wavelength and refractive index arrays must have the same length."
+            )
+
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("n") ** 2,
@@ -559,9 +576,9 @@ class TableEpsilon(Dispersion):
     wavelength range.
 
     Single parameters:
-        :lbda (list): Wavelengths in nm. Defaults to [].
+        :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
         :epsilon: Complex dielectric function values in the convention ε1 + iε2.
-            Defaults to [].
+            Defaults to np.ones(1000).
 
     Repeated parameters:
         --
@@ -570,11 +587,24 @@ class TableEpsilon(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": np.array([]), "epsilon": np.array([])}
+    single_params_template = {
+        "lbda": np.linspace(0, 3000, 1000),
+        "epsilon": np.ones(1000),
+    }
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+
+        if len(self.single_params.get("lbda")) == 0:
+            raise InvalidParameters("Wavelength array cannot be of length zero.")
+
+        if len(self.single_params.get("epsilon")) != len(
+            self.single_params.get("lbda")
+        ):
+            raise InvalidParameters(
+                "Wavelength and epsilon arrays must have the same length."
+            )
 
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),

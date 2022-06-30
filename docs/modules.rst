@@ -7,5 +7,7 @@ API Reference
 .. toctree::
    :maxdepth: 2
 
-   solvers
    dispersions
+   solvers
+   structure
+   materials
