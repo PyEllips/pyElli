@@ -12,7 +12,7 @@ and aims to make optical model generation standardized and reproducible.
 PyElli can be easily extended with further optical models and the ones
 available are clearly documented and editable to your needs.
 However, pyElli comes with batteries included and already offers a wide range
-of :ref:`dispersion models<dispersions>`. All the models presented in the
+of :doc:`dispersion models<dispersions>`. All the models presented in the
 comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
 a lot of other models used by ellipsometry vendor softwares are included.
 

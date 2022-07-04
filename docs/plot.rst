@@ -12,7 +12,7 @@ Fitting and plotting
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: elli.fitting.decorator_mueller_matrix
+.. automodule:: elli.fitting.decorator_mmatrix
     :members:
     :undoc-members:
     :show-inheritance:

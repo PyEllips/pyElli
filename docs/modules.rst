@@ -15,3 +15,4 @@ API Reference
    result
    materials
    spectraray
+   helpers
