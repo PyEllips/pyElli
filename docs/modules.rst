@@ -8,6 +8,10 @@ API Reference
    :maxdepth: 2
 
    dispersions
+   plot
    solvers
    structure
+   experiment
+   result
    materials
+   spectraray

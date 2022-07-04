@@ -48,8 +48,7 @@ class SingleMaterial(Material):
 
     @abstractmethod
     def set_dispersion(self) -> None:
-        """Sets dispersion relation of the material.
-        """
+        """Sets dispersion relation of the material."""
 
     def set_rotation(self, r: npt.NDArray) -> None:
         """Sets rotation of the Material.
@@ -79,7 +78,7 @@ class SingleMaterial(Material):
         # create empty tensor
         epsilon = np.zeros((i, 3, 3), dtype=np.complex128)
 
-        # get get dielectric functions from dispersion law
+        # get get dielectric functions from dispersion
         epsilon[:, 0, 0] = self.law_x.get_dielectric(lbda)
         epsilon[:, 1, 1] = self.law_y.get_dielectric(lbda)
         epsilon[:, 2, 2] = self.law_z.get_dielectric(lbda)
@@ -94,10 +93,10 @@ class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
     def __init__(self, law: "Dispersion") -> None:
-        """Creates isotropic material with a dispersion law.
+        """Creates isotropic material with a dispersion.
 
         Args:
-            law (DispersionLaw): Dispersion relation of all three crystal directions.
+            law (Dispersion): Dispersion relation of all three crystal directions.
         """
         self.set_dispersion(law)
 
@@ -105,7 +104,7 @@ class IsotropicMaterial(SingleMaterial):
         """Sets dipsersion relation of the isotropic material.
 
         Args:
-            law (DispersionLaw): Dispersion relation of all three crystal directions.
+            law (Dispersion): Dispersion relation of all three crystal directions.
         """
         self.law_x = law
         self.law_y = law
@@ -116,11 +115,11 @@ class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
     def __init__(self, law_o: "Dispersion", law_e: "Dispersion") -> None:
-        """Creates a uniaxial material with two dispersion laws.
+        """Creates a uniaxial material with two dispersions.
 
         Args:
-            law_o (DispersionLaw): Dispersion relation for ordinary crystal axes (x and y direction).
-            law_e (DispersionLaw): Dispersion relation for extraordinary crystal axis (z direction).
+            law_o (Dispersion): Dispersion relation for ordinary crystal axes (x and y direction).
+            law_e (Dispersion): Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.set_dispersion(law_o, law_e)
 
@@ -128,8 +127,8 @@ class UniaxialMaterial(SingleMaterial):
         """Sets dipsersion relations of the uniaxial material.
 
         Args:
-            law_o (DispersionLaw): Dispersion relation for ordinary crystal axes (x and y direction).
-            law_e (DispersionLaw): Dispersion relation for extraordinary crystal axis (z direction).
+            law_o (Dispersion): Dispersion relation for ordinary crystal axes (x and y direction).
+            law_e (Dispersion): Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.law_x = law_o
         self.law_y = law_o
@@ -145,12 +144,12 @@ class BiaxialMaterial(SingleMaterial):
         law_y: "Dispersion",
         law_z: "Dispersion",
     ) -> None:
-        """Creates a biaxial material with three dispersion laws.
+        """Creates a biaxial material with three dispersions.
 
         Args:
-            law_x (DispersionLaw): Dispersion relation for x crystal axes.
-            law_y (DispersionLaw): Dispersion relation for y crystal axes.
-            law_z (DispersionLaw): Dispersion relation for z crystal axes.
+            law_x (Dispersion): Dispersion relation for x crystal axes.
+            law_y (Dispersion): Dispersion relation for y crystal axes.
+            law_z (Dispersion): Dispersion relation for z crystal axes.
         """
         self.set_dispersion(law_x, law_y, law_z)
 
@@ -163,9 +162,9 @@ class BiaxialMaterial(SingleMaterial):
         """Sets dipsersion relations of the biaxial material.
 
         Args:
-            law_x (DispersionLaw): Dispersion relation for x crystal axes.
-            law_y (DispersionLaw): Dispersion relation for y crystal axes.
-            law_z (DispersionLaw): Dispersion relation for z crystal axes.
+            law_x (Dispersion): Dispersion relation for x crystal axes.
+            law_y (Dispersion): Dispersion relation for y crystal axes.
+            law_z (Dispersion): Dispersion relation for z crystal axes.
         """
         self.law_x = law_x
         self.law_y = law_y
@@ -248,8 +247,8 @@ class VCAMaterial(MixtureMaterial):
 
 class LooyengaEMA(MixtureMaterial):
     """Mixture Material approximated with Looyenga's formula.
-       Valid if materials have small contrast.
-       Looyenga, H. (1965). Physica, 31(3), 401–406.
+    Valid if materials have small contrast.
+    Looyenga, H. (1965). Physica, 31(3), 401–406.
     """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -261,13 +260,15 @@ class LooyengaEMA(MixtureMaterial):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
-        epsilon = (self.host_material.get_tensor(lbda)**(1/3) * (1 - self.fraction) \
-            + self.guest_material.get_tensor(lbda)**(1/3) * self.fraction)**3
+        epsilon = (
+            self.host_material.get_tensor(lbda) ** (1 / 3) * (1 - self.fraction)
+            + self.guest_material.get_tensor(lbda) ** (1 / 3) * self.fraction
+        ) ** 3
         return epsilon
 
 
-class MaxwellGarnetEMA(MixtureMaterial):
-    """Mixture Material approximated with the Maxwell Garnet formula.
+class MaxwellGarnettEMA(MixtureMaterial):
+    """Mixture Material approximated with the Maxwell Garnett formula.
     It is valid for spherical inclusions with small volume fraction.
     """
 
