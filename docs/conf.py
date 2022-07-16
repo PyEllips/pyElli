@@ -10,6 +10,9 @@
 import os
 import sys
 import shutil
+import plotly.io as pio
+
+pio.renderers.default = "sphinx_gallery"
 
 # -- Path setup --------------------------------------------------------------
 
@@ -74,7 +77,15 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
     "m2r2",
+    "sphinx_gallery.gen_gallery",
 ]
+
+sphinx_gallery_conf = {
+    "examples_dirs": "../examples/gallery",  # path to your example scripts
+    "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
+    "capture_repr": ("_repr_html_", "__repr__"),
+    "first_notebook_cell": (""),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
