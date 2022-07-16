@@ -1,6 +1,7 @@
 """Decorator functions for convenient fitting"""
 # Encoding: utf-8
 from typing import Callable
+from sys import float_info
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -14,7 +15,6 @@ except ImportError as e:
         "This module requires plotly, ipywidgets and ipython to be installed."
     ) from e
 from lmfit import minimize, Parameters
-from sys import float_info
 from ..result import Result
 from ..utils import calc_pseudo_diel, calc_rho
 from .params_hist import ParamsHist
@@ -47,8 +47,8 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "Ψ"
             self.fig.data[1].name = "Δ"
-            self.fig.data[2].name = "Ψ_tmm"
-            self.fig.data[3].name = "Δ_tmm"
+            self.fig.data[2].name = "Ψ_calc"
+            self.fig.data[3].name = "Δ_calc"
 
     def set_rho(self, update_exp: bool = False, update_names: bool = False) -> None:
         """Sets Plot to Rho values
@@ -72,11 +72,13 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "ρr"
             self.fig.data[1].name = "ρi"
-            self.fig.data[2].name = "ρr_tmm"
-            self.fig.data[3].name = "ρi_tmm"
+            self.fig.data[2].name = "ρr_calc"
+            self.fig.data[3].name = "ρi_calc"
 
     def set_residual(
-        self, update_exp: bool = False, update_names: bool = False
+        self,
+        update_exp: bool = False,  # pylint: disable=unused-argument
+        update_names: bool = False,
     ) -> None:
         """Sets plots to residual values
 
@@ -128,8 +130,8 @@ class FitRho(FitDecorator):
         if update_names:
             self.fig.data[0].name = "ϵ1"
             self.fig.data[1].name = "ϵ2"
-            self.fig.data[2].name = "ϵ1_tmm"
-            self.fig.data[3].name = "ϵ2_tmm"
+            self.fig.data[2].name = "ϵ1_calc"
+            self.fig.data[3].name = "ϵ2_calc"
 
     def update_selection(self, change: dict = None) -> None:
         """Update plot after selection of displayed data
@@ -274,7 +276,7 @@ class FitRho(FitDecorator):
                         index=self.exp_data.index,
                     ),
                 ]
-            ).plot()
+            ).plot(backend="plotly")
         )
 
     def plot_rho(self) -> go.Figure:
@@ -291,7 +293,7 @@ class FitRho(FitDecorator):
                     "ρci": fit_result.rho.imag,
                 },
                 index=rho.index,
-            ).plot()
+            ).plot(backend="plotly")
         )
 
     def get_model_data(
@@ -383,8 +385,8 @@ class FitRho(FitDecorator):
                     exp_data,
                     pd.DataFrame(
                         {
-                            "Ψ_tmm": model(exp_data.index, params).psi,
-                            "Δ_tmm": model(exp_data.index, params).delta,
+                            "Ψ_calc": model(exp_data.index, params).psi,
+                            "Δ_calc": model(exp_data.index, params).delta,
                         },
                         index=exp_data.index,
                     ),

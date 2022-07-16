@@ -5,3 +5,4 @@ pandas>=1.0.0
 ipywidgets
 plotly
 lmfit
+h5py
