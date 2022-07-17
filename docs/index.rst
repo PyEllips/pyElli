@@ -15,9 +15,41 @@ of :doc:`dispersion models<dispersions>`. All the models presented in the
 comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
 a lot of other models used by ellipsometry vendor softwares are included.
 
-To start you may want to dive into :ref:`install<installation>` and have a look 
-at the :ref:`overview<overview>` or the :doc:`examples<auto_examples/index>` section.
-You may want to start with the :doc:`basic usage<auto_examples/basic_usage>` example.
+To start you may want to dive into :ref:`install<installation>`.
+The bast way to start is to have a look at the :doc:`basic usage<auto_examples/plot_basic_usage>` or
+the :doc:`other examples<auto_examples/index>`.
+
+PyElli consists of a set of classes which work together to create a full 
+light interaction experiment.
+In the image below you see the set of different classes and how they work together
+to evaluate a modeled system.
+
+.. mermaid::
+    
+    graph TD
+        Dx(Dispersion x) --> AM
+        Dy(Dispersion y) --> AM
+        Dz(Dispersion z) --> AM
+        D(Dispersion) --> M
+        M(Material) --> S
+        AM(AnisotropicMaterial) --> S
+        S(Structure) --> E(Experiment)
+        S --> |evaluate| R(Result)
+        E --> R
+
+It starts by building a set of dispersions and plugging them into materials classes the specific 
+number of dispersions depends on whether it is an :code:`IsotropicMaterial` or an :code:`AnisotropicMaterial`.
+These materials classes also support creating effective medium layers for inclusions or roughnesses.
+The next layer is building a :code:`Structure` from these materials.
+The :code:`Structure` needs as least two materials for the incoming and outgoing materials,
+but can contain arbitrary more layers which are only limited by the computational resources.
+The :code:`Structure` class can also account for gradient changes of materials in z-direction
+of a layer, which is useful for gradient layers or roughness modeling.
+As the last step the :code:`Structure` is plugged into an :code:`Experiment`, which contains
+the experimental conditions, such as light polarizations.
+By evaluating the experiment a :code:`Result` class containing the calculated data is returned.
+The creation of an experiment can be skipped by calling the :code:`evaluate(...)` function directly
+on a :code:`Structure` class if you want to use standard experimental settings.
 
 .. rubric:: References
 
@@ -27,6 +59,8 @@ You may want to start with the :doc:`basic usage<auto_examples/basic_usage>` exa
    Ed. 1, Springer Series in Optical Sciences 212 (2018).
    https://doi.org/10.1007/978-3-319-75377-5
 
+
+
 Contents
 ========
 
@@ -34,8 +68,8 @@ Contents
    :maxdepth: 2
 
    installation
-   overview
    auto_examples/index
+   overview
    modules
 
 Misc
