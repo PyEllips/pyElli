@@ -79,6 +79,7 @@ extensions = [
     "sphinx_rtd_theme",
     "m2r2",
     "sphinx_gallery.gen_gallery",
+    "sphinxcontrib.mermaid",
 ]
 
 

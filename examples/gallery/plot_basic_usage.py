@@ -6,7 +6,6 @@ This example shows the basic usage of building a model and fitting it to measure
 As an example material SiO2 on Si is used.
 
 """
-
 import elli
 from elli.fitting import ParamsHist, fit
 from elli.nexus import read_psi_delta

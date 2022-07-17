@@ -12,3 +12,4 @@ lmfit
 plotly
 ipywidgets
 sphinx-gallery
+sphinxcontrib-mermaid 
