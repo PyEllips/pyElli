@@ -11,6 +11,7 @@ import os
 import sys
 import shutil
 import plotly.io as pio
+from plotly.io._sg_scraper import plotly_sg_scraper
 
 pio.renderers.default = "sphinx_gallery"
 
@@ -80,11 +81,17 @@ extensions = [
     "sphinx_gallery.gen_gallery",
 ]
 
+
+image_scrapers = (
+    "matplotlib",
+    plotly_sg_scraper,
+)
+
 sphinx_gallery_conf = {
     "examples_dirs": "../examples/gallery",  # path to your example scripts
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
     "capture_repr": ("_repr_html_", "__repr__"),
-    "first_notebook_cell": (""),
+    "image_scrapers": image_scrapers,
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -200,6 +207,7 @@ html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_css_files = ["style.css"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

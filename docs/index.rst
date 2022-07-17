@@ -15,8 +15,9 @@ of :doc:`dispersion models<dispersions>`. All the models presented in the
 comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
 a lot of other models used by ellipsometry vendor softwares are included.
 
-To start you may want to dive into :ref:`Install<installation>` and have a look 
-at the :ref:`Basic usage<usage>` or the :ref:`Examples<examples>` section.
+To start you may want to dive into :ref:`install<installation>` and have a look 
+at the :ref:`overview<overview>` or the :doc:`examples<auto_examples/index>` section.
+You may want to start with the :doc:`basic usage<auto_examples/basic_usage>` example.
 
 .. rubric:: References
 

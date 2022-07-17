@@ -4,7 +4,7 @@
 Install
 ========
 The installers for all releases are available at the 
-:ref:`Python package Index (PyPI)<https://pypi.org/project/pyElli>`.
+`Python package Index (PyPI) <https://pypi.org/project/pyElli>`_.
 
 To install the package in your current virtual environment execute
 
@@ -13,7 +13,7 @@ To install the package in your current virtual environment execute
         pip install pyElli
 
 A complete environment for pyElli is also available as a 
-:ref:`Docker Container<https://hub.docker.com/r/domna/pyelli>`.
+`Docker Container <https://hub.docker.com/r/domna/pyelli>`_.
 To pull and run it directly just execute
 
     .. code-block:: shell
@@ -30,7 +30,7 @@ To install the latest development version use:
 
             pip install git+https://github.com/pyEllips/pyElli.git
 
-The source code is hosted on :ref:`GitHub<https://github.com/PyEllips/pyElli>`,
+The source code is hosted on `GitHub <https://github.com/PyEllips/pyElli>`_,
 to manually install from source, clone the repository and run `pip install -e .` in
 the folder to install it in development mode:
 
