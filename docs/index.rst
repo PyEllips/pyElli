@@ -2,7 +2,64 @@
 pyElli
 ======
 
-This is the documentation of **pyElli**.
+PyElli is an open-source numerical solver for spectral ellipsometry employing well-known 
+2x2 and 4x4 solver algorithms. It is intended for a broad range of problems
+such as simple fitting of layered structures, anisotropic layers and any
+other polarized light interaction with layered 1D structures.
+It serves as a system for the day to day ellipsometry task at hand
+and aims to make optical model generation standardized and reproducible.
+
+PyElli is build to be easily extendable by optical models.
+However, pyElli comes with batteries included and already offers a wide range
+of :doc:`dispersion models<dispersions>`. All the models presented in the
+comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
+a lot of other models used by ellipsometry vendor softwares are included.
+
+To start you may want to dive into :ref:`install<installation>`.
+The bast way to start is to have a look at the :doc:`basic usage<auto_examples/plot_basic_usage>` or
+the :doc:`other examples<auto_examples/index>`.
+
+PyElli consists of a set of classes which work together to create a full 
+light interaction experiment.
+In the image below you see the set of different classes and how they work together
+to evaluate a modeled system.
+
+.. mermaid::
+    
+    graph TD
+        Dx(Dispersion x) --> AM
+        Dy(Dispersion y) --> AM
+        Dz(Dispersion z) --> AM
+        D(Dispersion) --> M
+        M(Material) --> S
+        AM(AnisotropicMaterial) --> S
+        S(Structure) --> E(Experiment)
+        S --> |evaluate| R(Result)
+        E --> R
+
+It starts by building a set of dispersions and plugging them into materials classes the specific 
+number of dispersions depends on whether it is an :code:`IsotropicMaterial` or an :code:`AnisotropicMaterial`.
+These materials classes also support creating effective medium layers for inclusions or roughnesses.
+The next layer is building a :code:`Structure` from these materials.
+The :code:`Structure` needs as least two materials for the incoming and outgoing materials,
+but can contain arbitrary more layers which are only limited by the computational resources.
+The :code:`Structure` class can also account for gradient changes of materials in z-direction
+of a layer, which is useful for gradient layers or roughness modeling.
+As the last step the :code:`Structure` is plugged into an :code:`Experiment`, which contains
+the experimental conditions, such as light polarizations.
+By evaluating the experiment a :code:`Result` class containing the calculated data is returned.
+The creation of an experiment can be skipped by calling the :code:`evaluate(...)` function directly
+on a :code:`Structure` class if you want to use standard experimental settings.
+
+.. rubric:: References
+
+.. [1] H. Fujiwara and R. W. Collins, 
+   Spectroscopic Ellipsometry for Photovoltaics, 
+   Volume 1: Fundamental Principles and Solar Cell Characterization, 
+   Ed. 1, Springer Series in Optical Sciences 212 (2018).
+   https://doi.org/10.1007/978-3-319-75377-5
+
+
 
 Contents
 ========
@@ -10,33 +67,18 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Overview <readme>
+   installation
+   auto_examples/index
+   overview
+   modules
+
+Misc
+====
+
+.. toctree::
+   :maxdepth: 1
+
    Contributions & Help <contributing>
    License <license>
    Authors <authors>
    Changelog <changelog>
-   Module Reference <api/modules>
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
-.. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-.. _references: https://www.sphinx-doc.org/en/stable/markup/inline.html
-.. _Python domain syntax: https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#the-python-domain
-.. _Sphinx: https://www.sphinx-doc.org/
-.. _Python: https://docs.python.org/
-.. _Numpy: https://numpy.org/doc/stable
-.. _SciPy: https://docs.scipy.org/doc/scipy/reference/
-.. _matplotlib: https://matplotlib.org/contents.html#
-.. _Pandas: https://pandas.pydata.org/pandas-docs/stable
-.. _Scikit-Learn: https://scikit-learn.org/stable
-.. _autodoc: https://www.sphinx-doc.org/en/master/ext/autodoc.html
-.. _Google style: https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings
-.. _NumPy style: https://numpydoc.readthedocs.io/en/latest/format.html
-.. _classical style: https://www.sphinx-doc.org/en/master/domains.html#info-field-lists

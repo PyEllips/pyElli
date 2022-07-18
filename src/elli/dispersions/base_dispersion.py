@@ -194,14 +194,14 @@ class DispersionFactory:
 
     @staticmethod
     def get_dispersion(identifier: str, *args, **kwargs) -> Dispersion:
-        """Creates a DispersionLaw object identified by its string name and initializes it with the
+        """Creates a Dispersion object identified by its string name and initializes it with the
         given parameters.
 
         Args:
-            identifier (str): Identifier of the DispersionLaw object, e.g. DispersionCauchy.
+            identifier (str): Identifier of the Dispersion object, e.g. Cauchy.
 
         Returns:
-            DispersionLaw: The DispersionLaw object initialized with the given parameters.
+            DispersionLaw: The Dispersion object initialized with the given parameters.
         """
         bad_identifier = ["Dispersion"]
 
@@ -212,7 +212,7 @@ class DispersionFactory:
 
 
 class DispersionSum(Dispersion):
-    """Representation for a sum of two dispersions"""
+    """Represents a sum of two dispersions"""
 
     single_params_template = {}
     rep_params_template = {}

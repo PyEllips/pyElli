@@ -1,12 +1,13 @@
 """Tests for dispersion models"""
-import elli
+import os
+from setuptools import distutils
 import numpy as np
 import pandas as pd
-import os
-from distutils import dir_util
 from pytest import fixture
 from pandas.testing import assert_frame_equal
 from numpy.testing import assert_array_equal
+
+import elli
 
 
 @fixture
@@ -16,7 +17,7 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        dir_util.copy_tree(test_dir, str(tmpdir))
+        distutils.dir_util.copy_tree(test_dir, str(tmpdir))
 
     return tmpdir
 
@@ -28,7 +29,7 @@ def test_constant_refr_index():
     eps0 = diel.loc[:, "ϵ1"].values
     eps1 = diel.loc[:, "ϵ2"].values
 
-    assert_array_equal(np.ones(801) * 3 ** 2, eps0)
+    assert_array_equal(np.ones(801) * 3**2, eps0)
     assert_array_equal(np.zeros(801), eps1)
 
 
@@ -49,7 +50,7 @@ def test_regression_dispersions_default(datadir):
         "Cauchy",
         "DrudeEnergy",
         "DrudeResistivity",
-        "Gauss",
+        "Gaussian",
         "LorentzEnergy",
         "LorentzLambda",
         "Poles",
@@ -112,7 +113,7 @@ def test_regression_dispersions_custom_values(datadir):
             ],
         },
         {
-            "name": "Gauss",
+            "name": "Gaussian",
             "single_params": {},
             "rep_params": [
                 {"A": 100, "E": 3, "sigma": 0.1},
