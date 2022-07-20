@@ -39,14 +39,15 @@ that any documentation update is done in the same way was a code contribution.
 
 ## Code Contributions
 
-    An architecture description, design principles or at least a summary of the
-    main concepts will make it easy for potential contributors to get started
-    quickly.
+PyElli consists of different classes representing different parts of an ellipsometric
+experiment. You can see an overview graph in the [documentation](https://pyelli.readthedocs.io/en/latest/index.html).
+If you want to add a dispersion, solver or material class to extend the
+present functionality you can do so by creating a new class under the respective abstract base classes.
 
 #### Submit an issue
 
 Before you work on any non-trivial code contribution it's best to first create
-a report in the `issue tracker`\_ to start a discussion on the subject.
+a report in the [issue tracker](https://github.com/PyEllips/pyElli/issues) to start a discussion on the subject.
 This often provides additional considerations and avoids unnecessary work.
 
 #### Create an environment
@@ -66,17 +67,17 @@ or **Miniconda**
 
 1.  Create an user account on [github](https://github.com/) if you do not already have one.
 2.  Fork the [project repository](https://github.com/PyEllips/pyElli/) click on the _Fork_ button near the top of the
-    page. This creates a copy of the code under your account on |the repository service|.
+    page. This creates a copy of the code under your account on github.
 3.  Clone this copy to your local disk
 
-         git clone git@github.com:YourLogin/pyElli.git
+         git clone https://github.com:YourLogin/pyElli.git
          cd pyElli
 
 4.  You should run
 
           pip install -U pip setuptools -e .
 
-    to be able run `putup --help`.
+    which installs the package in development mode in your current virtualenv.
 
 ### Implement your changes
 
@@ -102,13 +103,13 @@ or **Miniconda**
     contribution adds an additional feature and is not just a bugfix.
 
     Moreover, writing a `descriptive commit message` is highly recommended.
-    In case of doubt, you can check the commit history with::
+    In case of doubt, you can check the commit history with:
 
         git log --graph --decorate --pretty=oneline --abbrev-commit --all
 
     to look for recurring communication patterns.
 
-5.  Please check that your changes don't break any unit tests with::
+5.  Please check that your changes don't break any unit tests with:
 
         pytest
 
@@ -120,8 +121,8 @@ or **Miniconda**
 
 ### Submit your contribution
 
-1.  If everything works fine, push your local branch to |the repository service| with::
+1.  If everything works fine, push your local branch to github with:
 
          git push -u origin my-feature
 
-2.  Go to the web page of your fork and click contribute to send your changes for review.
+2.  Go to the web page of your fork and create a pull request to send your changes for review.
