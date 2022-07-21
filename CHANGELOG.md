@@ -2,7 +2,7 @@
 
 ## Version 0.11.0
 
-- Adds reading functionality for [NeXus files](https://github.com/FAIRmat-Experimental/nexus_definitions).
+- Adds reading functionality for [NeXus files](https://fairmat-experimental.github.io/nexus-fairmat-proposal/50433d9039b3f33299bab338998acb5335cd8951/classes/contributed_definitions/NXellipsometry.html#nxellipsometry).
 
 ## Version 0.10.1
 
