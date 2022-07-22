@@ -309,13 +309,105 @@ class BruggemanEMA(MixtureMaterial):
         e_g = self.guest_material.get_tensor(lbda)
         f = self.fraction
 
-        epsilon1 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 - sqrt(
-                   9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 + \
-                   18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
-        epsilon2 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 + sqrt(
-                   9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 + \
-                   18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
+        # fmt: off
+        root1 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 - sqrt(
+            9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 +
+            18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
+        root2 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 + sqrt(
+            9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 +
+            18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
+        # fmt: on
 
-        # TODO: find a function to find the physically correct root.
+        return self.jansson_algorithm(e_h, e_g, root1, root2)
 
-        return epsilon1, epsilon2
+    @staticmethod
+    def jansson_algorithm(
+        e_h: npt.ArrayLike,
+        e_g: npt.ArrayLike,
+        root1: npt.ArrayLike,
+        root2: npt.ArrayLike,
+    ):
+        """Use the algorithm proposed by Jansson and Arwin to find the correct root of
+        the solution to the Bruggeman formula.
+        References:
+            Jansson R. , Arwin H. (1994) Optics Communications, 106, 4-6, 133-138,
+            https://doi.org/10.1016/0030-4018(94)90309-3.
+
+        Args:
+            e_h (npt.ArrayLike): Dielectric tensor of host material.
+            e_g (npt.ArrayLike): Dielectric tensor of host material.
+            root1 (npt.ArrayLike): Solution 1 for dielectric tensor of mixture.
+            root2 (npt.ArrayLike): Solution 2 for dielectric tensor of mixture.
+
+        Returns:
+            npt.NDArray: Physically correct permittivity tensor for the mixture.
+        """
+
+        # Catch calculation warnings
+        old_settings = np.geterr()
+        np.seterr(invalid="ignore", divide="ignore")
+
+        z0 = (
+            e_h
+            * e_g
+            * (np.conj(e_h) - np.conj(e_g))
+            / (np.conj(e_h) * e_g - e_h * np.conj(e_g))
+        )
+        scaling_factor = np.conj(e_g - e_h) / np.abs(e_g - e_h)
+
+        # Reset numpy settings
+        np.seterr(**old_settings)
+
+        # Find indices for the three cases
+        mask_equal = np.nonzero(np.isnan(z0.real))
+        mask_straight = np.nonzero(np.isinf(z0.real))
+        mask_general = np.nonzero(
+            np.logical_not(np.logical_or(np.isnan(z0.real), np.isinf(z0.real)))
+        )
+
+        def check_straight_line():
+            def w(z):
+                return np.where(
+                    z0[mask_straight].real == np.inf,
+                    z[mask_straight] * scaling_factor[mask_straight],
+                    -1 * z[mask_straight] * scaling_factor[mask_straight],
+                )
+
+            return np.where(
+                np.logical_and(
+                    w(e_h).real < w(root1).real, w(root1).real < w(e_g).real
+                ),
+                root1[mask_straight],
+                root2[mask_straight],
+            )
+
+        def check_general_case():
+            def zeta(z):
+                return (
+                    (z[mask_general] - z0[mask_general])
+                    / np.abs(z0[mask_general])
+                    * scaling_factor[mask_general]
+                )
+
+            zeta_1, zeta_2, zeta_root1, zeta_root2 = np.where(
+                np.logical_and(zeta(e_h).imag > 0, zeta(e_g).imag > 0),
+                (zeta(e_h), zeta(e_g), zeta(root1), zeta(root2)),
+                (-zeta(e_h), -zeta(e_g), -zeta(root1), -zeta(root2)),
+            )
+
+            return np.where(
+                np.logical_and(
+                    np.abs(zeta_root1 <= 1),
+                    zeta_root1.imag >= np.imag((zeta_1 + zeta_2) / 2),
+                ),
+                root1[mask_general],
+                root2[mask_general],
+            )
+
+        # Create new array and write correct values into it
+        correct_root = np.full_like(e_h, np.nan)
+        correct_root[mask_equal] = e_h[mask_equal]
+        correct_root[mask_straight] = check_straight_line()
+        correct_root[mask_general] = check_general_case()
+
+        return correct_root
