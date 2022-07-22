@@ -6,9 +6,12 @@ This example shows the basic usage of building a model and fitting it to measure
 As an example material SiO2 on Si is used.
 
 """
+# %%
 import elli
 from elli.fitting import ParamsHist, fit
 from elli.nexus import read_psi_delta
+
+# sphinx_gallery_thumbnail_path = '_static/basic_usage.png'
 
 
 # %%
@@ -193,7 +196,3 @@ fit_stats.chisqr
 # %%
 # We can print the full fit statistics, too.
 fit_stats
-
-# %%
-
-# sphinx_gallery_thumbnail_path = '_static/basic_usage.png'

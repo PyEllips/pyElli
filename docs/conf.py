@@ -93,6 +93,7 @@ sphinx_gallery_conf = {
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
     "capture_repr": ("_repr_html_", "__repr__"),
     "image_scrapers": image_scrapers,
+    "remove_config_comments": True,
 }
 
 # Add any paths that contain templates here, relative to this directory.
