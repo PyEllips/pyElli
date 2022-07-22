@@ -9,8 +9,7 @@ from .dispersions import DispersionLaw
 
 
 class Material(ABC):
-    """Base class for materials (abstract).
-    """
+    """Base class for materials (abstract)."""
 
     @abstractmethod
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -36,8 +35,7 @@ class Material(ABC):
 
 
 class SingleMaterial(Material):
-    """Base class for non mixed materials (abstract).
-    """
+    """Base class for non mixed materials (abstract)."""
 
     law_x = None
     law_y = None
@@ -47,8 +45,7 @@ class SingleMaterial(Material):
 
     @abstractmethod
     def set_dispersion(self) -> None:
-        """Sets dipsersion relation of the material.
-        """
+        """Sets dipsersion relation of the material."""
 
     def set_rotation(self, r: npt.NDArray) -> None:
         """Sets rotation of the Material.
@@ -138,7 +135,9 @@ class UniaxialMaterial(SingleMaterial):
 class BiaxialMaterial(SingleMaterial):
     """Biaxial material."""
 
-    def __init__(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
+    def __init__(
+        self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw
+    ) -> None:
         """Creates a biaxial material with three dispersion laws.
 
         Args:
@@ -148,7 +147,9 @@ class BiaxialMaterial(SingleMaterial):
         """
         self.set_dispersion(law_x, law_y, law_z)
 
-    def set_dispersion(self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw) -> None:
+    def set_dispersion(
+        self, law_x: DispersionLaw, law_y: DispersionLaw, law_z: DispersionLaw
+    ) -> None:
         """Sets dipsersion relations of the biaxial material.
 
         Args:
@@ -168,7 +169,9 @@ class MixtureMaterial(Material):
     guest_material = None
     fraction = None
 
-    def __init__(self, host_material: Material, guest_material: Material, fraction: float) -> None:
+    def __init__(
+        self, host_material: Material, guest_material: Material, fraction: float
+    ) -> None:
         """Creates a material mixture from two materials.
 
         Args:
@@ -179,7 +182,9 @@ class MixtureMaterial(Material):
         self.set_constituents(host_material, guest_material)
         self.set_fraction(fraction)
 
-    def set_constituents(self, host_material: Material, guest_material: Material) -> None:
+    def set_constituents(
+        self, host_material: Material, guest_material: Material
+    ) -> None:
         """Sets Materials in the mixture.
 
         Args:
@@ -196,7 +201,7 @@ class MixtureMaterial(Material):
             fraction (float): Fraction of the guest material (Range 0 - 1).
         """
         if not 0 <= fraction <= 1:
-            raise ValueError('Fractions not in range from 0 to 1')
+            raise ValueError("Fractions not in range from 0 to 1")
 
         self.fraction = fraction
 
@@ -224,15 +229,19 @@ class VCAMaterial(MixtureMaterial):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
-        epsilon = self.host_material.get_tensor(lbda) * (1 - self.fraction) \
+        epsilon = (
+            self.host_material.get_tensor(lbda) * (1 - self.fraction)
             + self.guest_material.get_tensor(lbda) * self.fraction
+        )
         return epsilon
 
 
 class LooyengaEMA(MixtureMaterial):
     """Mixture Material approximated with Looyenga's formula.
-       Valid if materials have small contrast.
-       Looyenga, H. (1965). Physica, 31(3), 401–406.
+    Valid if materials have small contrast.
+
+    References:
+        Looyenga, H. (1965). Physica, 31(3), 401–406.
     """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -244,14 +253,16 @@ class LooyengaEMA(MixtureMaterial):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
-        epsilon = (self.host_material.get_tensor(lbda)**(1/3) * (1 - self.fraction) \
-            + self.guest_material.get_tensor(lbda)**(1/3) * self.fraction)**3
+        epsilon = (
+            self.host_material.get_tensor(lbda) ** (1 / 3) * (1 - self.fraction)
+            + self.guest_material.get_tensor(lbda) ** (1 / 3) * self.fraction
+        ) ** 3
         return epsilon
 
 
 class MaxwellGarnetEMA(MixtureMaterial):
     """Mixture Material approximated with the Maxwell Garnet formula.
-       It is valid for spherical inclusions with small volume fraction.
+    It is valid for spherical inclusions with small volume fraction.
     """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -266,8 +277,11 @@ class MaxwellGarnetEMA(MixtureMaterial):
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
 
-        epsilon = e_h * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
+        # fmt: off
+        epsilon = e_h \
+            * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
             / (2 * e_h + e_g - self.fraction * (e_g - e_h))
+        # fmt: on
         return epsilon
 
 
