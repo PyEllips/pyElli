@@ -7,7 +7,7 @@
 
 # %%
 import elli
-import elli.plot.structure as elliplot
+import elli.plot as elliplot
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -17,8 +17,8 @@ np.set_printoptions(suppress=True, precision=3)
 # ## Front and back materials
 
 # %%
-air = elli.IsotropicMaterial(elli.DispersionLess(1.0))
-glass = elli.IsotropicMaterial(elli.DispersionLess(1.5))
+air = elli.AIR
+glass = elli.ConstantRefractiveIndex(1.5).get_mat()
 
 # %% [markdown]
 # ## Materials for a SiO2/TiO2 Bragg mirror
@@ -27,8 +27,8 @@ glass = elli.IsotropicMaterial(elli.DispersionLess(1.5))
 n_SiO2 = 1.47
 n_TiO2 = 2.23 + 1j * 5.2e-4
 
-SiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_SiO2))
-TiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_TiO2))
+SiO2 = elli.ConstantRefractiveIndex(n_SiO2).get_mat()
+TiO2 = elli.ConstantRefractiveIndex(n_TiO2).get_mat()
 
 # %% [markdown]
 # ## Calculate layer thickness as quarterwaveplates
@@ -74,7 +74,7 @@ fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 ax.plot(lbda_list, R, label="$R_{ss}$")
 ax.plot(lbda_list, T, label="$T_{ss}$")
-ax.legend(loc='center right')
+ax.legend(loc="center right")
 ax.set_xlabel(r"Wavelength $\lambda$ (nm)")
 ax.set_ylabel(r"Power reflection $R$ or transmission $T$")
 ax.set_title(r"Bragg mirror: Air/{TiO$_2$/SiO$_2$}x8/TiO$_2$/Glass")
@@ -85,3 +85,5 @@ plt.show()
 
 # %%
 elliplot.draw_structure(s)
+
+# %%

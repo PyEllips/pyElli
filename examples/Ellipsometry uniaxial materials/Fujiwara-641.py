@@ -18,14 +18,14 @@ import matplotlib.pyplot as plt
 
 # %%
 # Front half-space (air)
-air = elli.IsotropicMaterial(elli.DispersionLess(1))
+air = elli.AIR
 
 # Anisotropic substrate
 n_o = 2.0  #  ordinary index of thin layer
 n_e = 2.5  #  extraordinary index of thin layer
 
-uniaxialMaterial = elli.UniaxialMaterial(elli.DispersionLess(n_o),
-                                       elli.DispersionLess(n_e))
+uniaxialMaterial = elli.UniaxialMaterial(elli.ConstantRefractiveIndex(n_o),
+                                       elli.ConstantRefractiveIndex(n_e))
 
 # %% [markdown]
 # ## We reproduce figure 6.16 (p. 238)

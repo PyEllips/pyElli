@@ -8,7 +8,7 @@
 # %%
 import numpy as np
 import elli
-import elli.plot.structure as elliplot
+import elli.plot as elliplot
 import matplotlib.pyplot as plt
 from scipy.constants import pi
 
@@ -20,8 +20,8 @@ from scipy.constants import pi
 # %%
 n_a = 1.0
 n_g = 1.5
-air = elli.IsotropicMaterial(elli.DispersionLess(n_a))
-glass = elli.IsotropicMaterial(elli.DispersionLess(n_g))
+air = elli.ConstantRefractiveIndex(n_a).get_mat()
+glass = elli.ConstantRefractiveIndex(n_g).get_mat()
 
 # %% [markdown]
 # ### Materials for a SiO2/TiO2 Bragg mirror
@@ -32,8 +32,8 @@ k0 = 2*pi/lbda0
 n_SiO2 = 1.47
 n_TiO2 = 2.23 + 1j * 5.2e-4
 
-SiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_SiO2))
-TiO2 = elli.IsotropicMaterial(elli.DispersionLess(n_TiO2))
+SiO2 = elli.ConstantRefractiveIndex(n_SiO2).get_mat()
+TiO2 = elli.ConstantRefractiveIndex(n_TiO2).get_mat()
 
 # %% [markdown]
 # ### Layers and Structure

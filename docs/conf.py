@@ -10,6 +10,10 @@
 import os
 import sys
 import shutil
+import plotly.io as pio
+from plotly.io._sg_scraper import plotly_sg_scraper
+
+pio.renderers.default = "sphinx_gallery"
 
 # -- Path setup --------------------------------------------------------------
 
@@ -50,7 +54,7 @@ try:
         # This is a rudimentary parse_version to avoid external dependencies
         args = args[1:]
 
-    apidoc.main(args)
+    # apidoc.main(args)
 except Exception as e:
     print("Running `sphinx-apidoc` failed!\n{}".format(e))
 
@@ -73,16 +77,31 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
-    "m2r2"
+    "m2r2",
+    "sphinx_gallery.gen_gallery",
+    "sphinxcontrib.mermaid",
 ]
+
+
+image_scrapers = (
+    "matplotlib",
+    plotly_sg_scraper,
+)
+
+sphinx_gallery_conf = {
+    "examples_dirs": "../examples/gallery",  # path to your example scripts
+    "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
+    "capture_repr": ("_repr_html_", "__repr__"),
+    "image_scrapers": image_scrapers,
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = [".rst", '.md']
+source_suffix = [".rst", ".md"]
 
-autoclass_content = 'both'
+autoclass_content = "both"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
@@ -164,10 +183,7 @@ html_theme = "sphinx_rtd_theme"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "sidebar_width": "300px",
-    "page_width": "1200px"
-}
+html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -192,6 +208,7 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_css_files = ["style.css"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

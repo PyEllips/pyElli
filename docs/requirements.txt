@@ -11,3 +11,7 @@ pandas>=1.0.0
 lmfit
 plotly
 ipywidgets
+sphinx-gallery
+sphinxcontrib-mermaid 
+matplotlib
+h5py

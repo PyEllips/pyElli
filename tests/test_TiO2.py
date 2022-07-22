@@ -5,6 +5,7 @@ import os
 import numpy as np
 from pytest import fixture
 import elli
+from elli.fitting import ParamsHist
 
 
 @fixture
@@ -41,7 +42,7 @@ def si_dispersion(datadir):
 class TestTiO2:
     """Test cases for TiO2/SiO2/Si reference layers"""
 
-    params = elli.ParamsHist()
+    params = ParamsHist()
     params.add("SiO2_n0", value=1.452, min=-100, max=100, vary=False)
     params.add("SiO2_n1", value=36.0, min=-40000, max=40000, vary=False)
     params.add("SiO2_n2", value=0, min=-40000, max=40000, vary=False)
@@ -60,23 +61,23 @@ class TestTiO2:
     params.add("TiO2_d", value=24.8772291, min=0, max=40000, vary=True)
 
     SiO2 = elli.IsotropicMaterial(
-        elli.DispersionCauchy(
-            params["SiO2_n0"],
-            params["SiO2_n1"],
-            params["SiO2_n2"],
-            params["SiO2_k0"],
-            params["SiO2_k1"],
-            params["SiO2_k2"],
+        elli.Cauchy(
+            n0=params["SiO2_n0"],
+            n1=params["SiO2_n1"],
+            n2=params["SiO2_n2"],
+            k0=params["SiO2_k0"],
+            k1=params["SiO2_k1"],
+            k2=params["SiO2_k2"],
         )
     )
     TiO2 = elli.IsotropicMaterial(
-        elli.DispersionCauchy(
-            params["TiO2_n0"],
-            params["TiO2_n1"],
-            params["TiO2_n2"],
-            params["TiO2_k0"],
-            params["TiO2_k1"],
-            params["TiO2_k2"],
+        elli.Cauchy(
+            n0=params["TiO2_n0"],
+            n1=params["TiO2_n1"],
+            n2=params["TiO2_n2"],
+            k0=params["TiO2_k0"],
+            k1=params["TiO2_k1"],
+            k2=params["TiO2_k2"],
         )
     )
 
