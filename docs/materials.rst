@@ -29,6 +29,9 @@ Effective medium approximations
 .. autoclass:: elli.materials.VCAMaterial
     :members:
 
+.. autoclass:: elli.materials.BruggemanEMA
+    :members:
+
 .. autoclass:: elli.materials.MaxwellGarnettEMA
     :members:
 

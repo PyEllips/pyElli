@@ -297,14 +297,23 @@ class MaxwellGarnettEMA(MixtureMaterial):
 
 
 class BruggemanEMA(MixtureMaterial):
-    """Mixture Material approximated with the Bruggeman formula
+    r"""Mixture Material approximated with the Bruggeman formula
     for spherical inclusions.
 
     Returns one of the two analytical solutions to this quadratic equation.
-       2 * (ε_eff)² + ε_eff[(3f - 2)ε_a + (1 - 3f)ε_b] - ε_a * ε_b = 0
+
+    .. math::
+       2 \epsilon_\text{eff}^2 +
+       \epsilon_\text{eff} [(3f - 2) \epsilon_a
+       + (1 - 3f)\epsilon_b] - \epsilon_a \cdot \epsilon_b = 0
+
+    where :math:`\epsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    :math:`\epsilon_a` is the permittivity of the first mixture material,
+    :math:`\epsilon_b` is the permittivity of the second mixture material
+    and :math:`f` is the volume fraction of material a in the  material b.
 
     References:
-        Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013
+        * Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013
     """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -340,9 +349,10 @@ class BruggemanEMA(MixtureMaterial):
     ):
         """Use the algorithm proposed by Jansson and Arwin to find the correct root of
         the solution to the Bruggeman formula.
+
         References:
-            Jansson R. , Arwin H. (1994) Optics Communications, 106, 4-6, 133-138,
-            https://doi.org/10.1016/0030-4018(94)90309-3.
+            * Jansson R. , Arwin H. (1994) Optics Communications, 106, 4-6, 133-138,
+              https://doi.org/10.1016/0030-4018(94)90309-3.
 
         Args:
             e_h (npt.ArrayLike): Dielectric tensor of host material.
@@ -400,7 +410,7 @@ class BruggemanEMA(MixtureMaterial):
                     * scaling_factor[mask_general]
                 )
 
-            zeta_1, zeta_2, zeta_root1, zeta_root2 = np.where(
+            zeta_1, zeta_2, zeta_root1, _ = np.where(
                 np.logical_and(zeta(e_h).imag > 0, zeta(e_g).imag > 0),
                 (zeta(e_h), zeta(e_g), zeta(root1), zeta(root2)),
                 (-zeta(e_h), -zeta(e_g), -zeta(root1), -zeta(root2)),
