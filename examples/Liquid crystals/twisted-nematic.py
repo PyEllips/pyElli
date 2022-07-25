@@ -75,7 +75,7 @@ data2 = s.evaluate(lbda_list, 0)
 T18 = np.real(data2.T_pp)
 
 # %% [markdown]
-# ## Plot 
+# ## Plot
 
 # %%
 fig = plt.figure()

@@ -13,8 +13,8 @@ from .result import Result
 
 
 class AbstractLayer(ABC):
-    """Abstract class for a layer.
-    """
+    """Abstract class for a layer."""
+
     d = None
 
     def set_thickness(self, d: float) -> None:
@@ -26,7 +26,9 @@ class AbstractLayer(ABC):
         self.d = d
 
     @abstractmethod
-    def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+    def get_permittivity_profile(
+        self, lbda: npt.ArrayLike
+    ) -> List[Tuple[float, npt.NDArray]]:
         """Returns the permittivity profile of the layer for the given wavelengths.
 
         Args:
@@ -39,15 +41,20 @@ class AbstractLayer(ABC):
 
 
 class RepeatedLayers(AbstractLayer):
-    """Repeated structure of layers.
-    """
+    """Repeated structure of layers."""
 
     repetitions = None  # Number of repetitions
-    before = None       # additional layers before the first period
-    after = None        # additional layers after the last period
-    layers = None       # layers to repeat
+    before = None  # additional layers before the first period
+    after = None  # additional layers after the last period
+    layers = None  # layers to repeat
 
-    def __init__(self, layers: List[AbstractLayer], repetitions: int, before: int = 0, after: int = 0) -> None:
+    def __init__(
+        self,
+        layers: List[AbstractLayer],
+        repetitions: int,
+        before: int = 0,
+        after: int = 0,
+    ) -> None:
         """Create a repeated structure of layers.
 
         Example : For layers [1,2,3] with n=2, before=1 and after=0, the structure will be 3123123.
@@ -61,7 +68,9 @@ class RepeatedLayers(AbstractLayer):
         self.set_repetitions(repetitions, before, after)
         self.set_layers(layers)
 
-    def set_repetitions(self, repetitions: int, before: int = 0, after: int = 0) -> None:
+    def set_repetitions(
+        self, repetitions: int, before: int = 0, after: int = 0
+    ) -> None:
         """Defines the number of repetitions and the first and last layers.
 
         Example : For layers [1,2,3] with n=2, before=1 and after=0, the structure will be 3123123.
@@ -83,7 +92,9 @@ class RepeatedLayers(AbstractLayer):
         """
         self.layers = layers
 
-    def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+    def get_permittivity_profile(
+        self, lbda: npt.ArrayLike
+    ) -> List[Tuple[float, npt.NDArray]]:
         """Returns the permittivity profile of the layer for the given wavelengths.
 
         Args:
@@ -97,10 +108,10 @@ class RepeatedLayers(AbstractLayer):
             layers += l.get_permittivity_profile(lbda)
 
         if self.before > 0:
-            before = layers[-self.before:]
+            before = layers[-self.before :]
         else:
             before = []
-        return before + self.repetitions * layers + layers[:self.after]
+        return before + self.repetitions * layers + layers[: self.after]
 
 
 class Layer(AbstractLayer):
@@ -124,7 +135,9 @@ class Layer(AbstractLayer):
         """
         self.material = material
 
-    def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+    def get_permittivity_profile(
+        self, lbda: npt.ArrayLike
+    ) -> List[Tuple[float, npt.NDArray]]:
         """Returns the permittivity profile of the layer for the given wavelengths.
 
         Args:
@@ -139,9 +152,9 @@ class Layer(AbstractLayer):
 #########################################################
 # Inhomogeneous Layers
 
+
 class InhomogeneousLayer(Layer):
-    """Abstract base class for inhomogeneous layers with varying properties in z-direction.
-    """
+    """Abstract base class for inhomogeneous layers with varying properties in z-direction."""
 
     div = None
 
@@ -159,7 +172,7 @@ class InhomogeneousLayer(Layer):
         Returns:
             npt.NDArray: array of 'z' positions [z0, z1,... , zmax], with z0 = 0 and zmax = z{d+1}
         """
-        return np.linspace(0, self.d, self.div+1)
+        return np.linspace(0, self.d, self.div + 1)
 
     @abstractmethod
     def get_tensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -178,13 +191,13 @@ class InhomogeneousLayer(Layer):
         """
         z = self.get_slices()
         h = np.diff(z)
-        zmid = (z[:-1] + z[1:]) / 2.
+        zmid = (z[:-1] + z[1:]) / 2.0
         tensor = [self.get_tensor(z, lbda) for z in zmid]
         return list(zip(h, tensor))
 
 
 class TwistedLayer(InhomogeneousLayer):
-    """Twisted layer. 
+    """Twisted layer.
     The material gets rotated around the z axis."""
 
     def __init__(self, material: Material, d: float, div: int, angle: float) -> None:
@@ -229,15 +242,21 @@ class VaryingMixtureLayer(InhomogeneousLayer):
 
     fraction_modulation = None
 
-    def __init__(self, material: MixtureMaterial, d: float, div: int, fraction_modulation: Callable[[float], float]) -> None:
+    def __init__(
+        self,
+        material: MixtureMaterial,
+        d: float,
+        div: int,
+        fraction_modulation: Callable[[float], float],
+    ) -> None:
         """Creates a layer with a mixture material varying in z direction.
 
         Args:
             material (MixtureMaterial): MixtureMaterial object
             d (float): Thickness of layer (in nm)
             div (int): Number of slices for the layer
-            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount, 
-                                                            takes float from 0 to 1 (top to bottom of layer), 
+            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
+                                                            takes float from 0 to 1 (top to bottom of layer),
                                                             should return fraction at that level
         """
         self.set_material(material)
@@ -245,12 +264,14 @@ class VaryingMixtureLayer(InhomogeneousLayer):
         self.set_divisions(div)
         self.set_fraction_modulation(fraction_modulation)
 
-    def set_fraction_modulation(self, fraction_modulation: Callable[[float], float]) -> None:
+    def set_fraction_modulation(
+        self, fraction_modulation: Callable[[float], float]
+    ) -> None:
         """Sets function for variation of the mixture over the layer
 
         Args:
-            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount, 
-                                                            takes float from 0 to 1 (top to bottom of layer), 
+            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
+                                                            takes float from 0 to 1 (top to bottom of layer),
                                                             should return fraction at that level
         """
         self.fraction_modulation = fraction_modulation
@@ -273,6 +294,7 @@ class VaryingMixtureLayer(InhomogeneousLayer):
 #########################################################
 # Structure Class
 
+
 class Structure:
     """Description of the whole structure.
 
@@ -281,11 +303,14 @@ class Structure:
     - back half-space (exit)
     - layer succession
     """
+
     front_material = None
     back_material = None
     layers = []  # list of layers
 
-    def __init__(self, front: IsotropicMaterial, layers: List[Layer], back: Material) -> None:
+    def __init__(
+        self, front: IsotropicMaterial, layers: List[Layer], back: Material
+    ) -> None:
         """Creates a structure.
 
         Args:
@@ -321,7 +346,9 @@ class Structure:
         """
         self.layers = layers
 
-    def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List[Tuple[float, npt.NDArray]]:
+    def get_permittivity_profile(
+        self, lbda: npt.ArrayLike
+    ) -> List[Tuple[float, npt.NDArray]]:
         """Returns the permittivity profile of the complete structure for the given wavelengths.
 
         Args:
@@ -338,7 +365,13 @@ class Structure:
         permittivity_profile.extend([(np.inf, self.back_material.get_tensor(lbda))])
         return permittivity_profile
 
-    def evaluate(self, lbda: npt.ArrayLike, theta_i: float, solver: Solver = Solver4x4, **solver_kwargs) -> Result:
+    def evaluate(
+        self,
+        lbda: npt.ArrayLike,
+        theta_i: float,
+        solver: Solver = Solver4x4,
+        **solver_kwargs
+    ) -> Result:
         """Return the Evaluation of the structure for the given parameters with standard settings.
 
         Args:

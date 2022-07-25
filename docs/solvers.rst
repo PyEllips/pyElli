@@ -25,7 +25,7 @@ Use them according to your preference or already installed ecosystem.
 
 .. rubric:: References
 
-.. [1] Dwight W. Berreman, "Optics in Stratified and Anisotropic Media: 4×4-Matrix Formulation," J. Opt. Soc. Am. 62, 502-510 (1972) 
+.. [1] Dwight W. Berreman, "Optics in Stratified and Anisotropic Media: 4×4-Matrix Formulation," J. Opt. Soc. Am. 62, 502-510 (1972)
 
 
 

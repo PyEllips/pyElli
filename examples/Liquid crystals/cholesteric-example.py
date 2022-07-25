@@ -85,7 +85,7 @@ T_LL = data.Tc_LL
 R_LL = data.Rc_LL
 
 # %% [markdown]
-# ## Text output: 
+# ## Text output:
 # eigenvalues and eigenvectors of the transmission matrix for
 # a wavelength in the middle of the stop-band.
 # %%

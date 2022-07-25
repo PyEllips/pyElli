@@ -22,10 +22,12 @@ from .result import Result
 
 
 class Propagator(ABC):
-    """Propagator abstract base class.
-    """
+    """Propagator abstract base class."""
+
     @abstractmethod
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness.
 
         Args:
@@ -40,10 +42,11 @@ class Propagator(ABC):
 
 
 class PropagatorLinear(Propagator):
-    """Propagator class using a simple linear approximation of the matrix exponential.
-    """
+    """Propagator class using a simple linear approximation of the matrix exponential."""
 
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with a linear approximation of the matrix exponential.
 
         Args:
@@ -54,16 +57,18 @@ class PropagatorLinear(Propagator):
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        p_hs_lin = np.identity(4) + 1j * h * \
-            np.einsum('nij,n->nij', delta, 2 * sc.pi / lbda)
+        p_hs_lin = np.identity(4) + 1j * h * np.einsum(
+            "nij,n->nij", delta, 2 * sc.pi / lbda
+        )
         return p_hs_lin
 
 
 class PropagatorExpmScipy(Propagator):
-    """Propagator class using the Padé approximation of the matrix exponential.
-    """
+    """Propagator class using the Padé approximation of the matrix exponential."""
 
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
 
         Args:
@@ -74,7 +79,7 @@ class PropagatorExpmScipy(Propagator):
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum('nij,n->nij', delta, 2 * sc.pi / lbda)
+        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
         p_hs_pade = np.asarray([scipy_expm(mat) for mat in mats])
 
@@ -82,10 +87,11 @@ class PropagatorExpmScipy(Propagator):
 
 
 class PropagatorExpmTorch(Propagator):
-    """Propagator class using a vectorized polynomial approximation of the matrix exponential.
-    """
+    """Propagator class using a vectorized polynomial approximation of the matrix exponential."""
 
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the polynomial approximation of the matrix exponential.
 
         Args:
@@ -96,7 +102,7 @@ class PropagatorExpmTorch(Propagator):
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum('nij,n->nij', delta, 2 * sc.pi / lbda)
+        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
         t = torch.from_numpy(mats)
         texp = torch.matrix_exp(t)
@@ -106,10 +112,11 @@ class PropagatorExpmTorch(Propagator):
 
 
 class PropagatorExpmTF(Propagator):
-    """Propagator class using a vectorized Padé approximation of the matrix exponential
-    """
+    """Propagator class using a vectorized Padé approximation of the matrix exponential"""
 
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
 
         Args:
@@ -120,7 +127,7 @@ class PropagatorExpmTF(Propagator):
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum('nij,n->nij', delta, 2 * sc.pi / lbda)
+        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
         t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
         texp = tf.linalg.expm(t)
@@ -130,10 +137,11 @@ class PropagatorExpmTF(Propagator):
 
 
 class PropagatorEig(Propagator):
-    """Propagator class using the eigenvalue decomposition method.
-    """
+    """Propagator class using the eigenvalue decomposition method."""
 
-    def calculate_propagation(self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike) -> npt.NDArray:
+    def calculate_propagation(
+        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with eigenvalue decomposition.
 
         Args:
@@ -148,8 +156,9 @@ class PropagatorEig(Propagator):
 
         # Sort according to z propagation direction, highest Re(q) first
         # if Re(q) is zero, sort by Im(q)
-        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)),
-                     np.argsort(-np.real(q)))
+        i = np.where(
+            np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q))
+        )
 
         q = np.take_along_axis(q, i, axis=-1)
         w = np.take_along_axis(w, i[:, np.newaxis, :], axis=-1)
@@ -166,8 +175,7 @@ class PropagatorEig(Propagator):
 
 
 class Solver4x4(Solver):
-    """Solver class to evaluate Experiment objects. Based on Berreman's 4x4 method.
-    """
+    """Solver class to evaluate Experiment objects. Based on Berreman's 4x4 method."""
 
     @staticmethod
     def build_delta_matrix(k_x: npt.ArrayLike, eps: npt.NDArray) -> npt.NDArray:
@@ -189,15 +197,31 @@ class Solver4x4(Solver):
         ones = np.tile(1, i)
 
         delta = np.array(
-            [[-k_x * eps[:, 2, 0] / eps[:, 2, 2], -k_x * eps[:, 2, 1] / eps[:, 2, 2],
-              zeros, ones - k_x ** 2 / eps[:, 2, 2]],
-             [zeros, zeros, -ones, zeros],
-             [eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
-              k_x ** 2 - eps[:, 1, 1] + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
-              zeros, k_x * eps[:, 1, 2] / eps[:, 2, 2]],
-             [eps[:, 0, 0] - eps[:, 0, 2] * eps[:, 2, 0] / eps[:, 2, 2],
-              eps[:, 0, 1] - eps[:, 0, 2] * eps[:, 2, 1] / eps[:, 2, 2],
-              zeros, -k_x * eps[:, 0, 2] / eps[:, 2, 2]]], dtype=np.complex128)
+            [
+                [
+                    -k_x * eps[:, 2, 0] / eps[:, 2, 2],
+                    -k_x * eps[:, 2, 1] / eps[:, 2, 2],
+                    zeros,
+                    ones - k_x**2 / eps[:, 2, 2],
+                ],
+                [zeros, zeros, -ones, zeros],
+                [
+                    eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
+                    k_x**2
+                    - eps[:, 1, 1]
+                    + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+                    zeros,
+                    k_x * eps[:, 1, 2] / eps[:, 2, 2],
+                ],
+                [
+                    eps[:, 0, 0] - eps[:, 0, 2] * eps[:, 2, 0] / eps[:, 2, 2],
+                    eps[:, 0, 1] - eps[:, 0, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+                    zeros,
+                    -k_x * eps[:, 0, 2] / eps[:, 2, 2],
+                ],
+            ],
+            dtype=np.complex128,
+        )
         delta = np.moveaxis(delta, 2, 0)
         return delta
 
@@ -220,8 +244,9 @@ class Solver4x4(Solver):
 
         # Sort according to z propagation direction, highest Re(q) first
         # if Re(q) is zero, sort by Im(q)
-        i = np.where(np.isclose(q.real, 0), np.argsort(-np.imag(q)),
-                     np.argsort(-np.real(q)))
+        i = np.where(
+            np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q))
+        )
 
         q = np.take_along_axis(q, i, axis=-1)
         p = np.take_along_axis(p, i[:, np.newaxis, :], axis=-1)
@@ -245,7 +270,7 @@ class Solver4x4(Solver):
 
         ne = np.abs(e)
         c = np.ones_like(e)
-        i = (ne != 0.0)
+        i = ne != 0.0
         c[i] = e[i] / ne[i]
 
         p = p * c[:, np.newaxis, :]
@@ -261,9 +286,9 @@ class Solver4x4(Solver):
         return p
 
     @staticmethod
-    def transition_matrix_iso_halfspace(k_x: npt.ArrayLike,
-                                        epsilon: npt.ArrayLike,
-                                        inv: bool = False) -> npt.NDArray:
+    def transition_matrix_iso_halfspace(
+        k_x: npt.ArrayLike, epsilon: npt.ArrayLike, inv: bool = False
+    ) -> npt.NDArray:
         """Returns transition incident or exit matrix L for isotropic half-spaces.
 
         Args:
@@ -283,22 +308,32 @@ class Solver4x4(Solver):
         ones = np.tile(1, i)
 
         if inv:
-            sp_to_xy = np.array([[zeros,           ones,   -ones / cos_phi / n_x, zeros],
-                                 [zeros,           ones,   ones / cos_phi / n_x,  zeros],
-                                 [ones / cos_phi,  zeros,  zeros,                 ones / n_x],
-                                 [-ones / cos_phi, zeros,  zeros,                 ones / n_x]],
-                                dtype=np.complex128)
+            sp_to_xy = np.array(
+                [
+                    [zeros, ones, -ones / cos_phi / n_x, zeros],
+                    [zeros, ones, ones / cos_phi / n_x, zeros],
+                    [ones / cos_phi, zeros, zeros, ones / n_x],
+                    [-ones / cos_phi, zeros, zeros, ones / n_x],
+                ],
+                dtype=np.complex128,
+            )
             return np.moveaxis(0.5 * sp_to_xy, 2, 0)
 
-        sp_to_xy = np.array([[zeros,          zeros,          cos_phi, -cos_phi],
-                             [ones,           ones,           zeros,   zeros],
-                             [-n_x * cos_phi, n_x * cos_phi,  zeros,   zeros],
-                             [zeros,          zeros,          n_x,     n_x]],
-                            dtype=np.complex128)
+        sp_to_xy = np.array(
+            [
+                [zeros, zeros, cos_phi, -cos_phi],
+                [ones, ones, zeros, zeros],
+                [-n_x * cos_phi, n_x * cos_phi, zeros, zeros],
+                [zeros, zeros, n_x, n_x],
+            ],
+            dtype=np.complex128,
+        )
         return np.moveaxis(sp_to_xy, 2, 0)
 
     @staticmethod
-    def get_k_z(material: "Material", lbda: npt.ArrayLike, k_x: npt.ArrayLike) -> npt.NDArray:
+    def get_k_z(
+        material: "Material", lbda: npt.ArrayLike, k_x: npt.ArrayLike
+    ) -> npt.NDArray:
         """Calculates Kz in a material
 
         Args:
@@ -310,10 +345,12 @@ class Solver4x4(Solver):
             npt.NDArray: value of Kz in the material
         """
         nx = material.get_refractive_index(lbda)[:, 0, 0]
-        k_z2 = nx ** 2 - k_x ** 2
+        k_z2 = nx**2 - k_x**2
         return sqrt(k_z2)
 
-    def __init__(self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()) -> None:
+    def __init__(
+        self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()
+    ) -> None:
         super().__init__(experiment)
         self.propagator = propagator
 
@@ -330,18 +367,23 @@ class Solver4x4(Solver):
         layers = reversed(self.permittivity_profile[1:-1])
 
         if isinstance(self.structure.back_material, IsotropicMaterial):
-            t = self.transition_matrix_iso_halfspace(k_x, self.permittivity_profile[-1][1])
+            t = self.transition_matrix_iso_halfspace(
+                k_x, self.permittivity_profile[-1][1]
+            )
         else:
             t = self.transition_matrix_halfspace(
-                self.build_delta_matrix(k_x, self.permittivity_profile[-1][1]))
+                self.build_delta_matrix(k_x, self.permittivity_profile[-1][1])
+            )
 
         for d, epsilon in layers:
             p = self.propagator.calculate_propagation(
-                self.build_delta_matrix(k_x, epsilon), -d, self.lbda)
+                self.build_delta_matrix(k_x, epsilon), -d, self.lbda
+            )
             t = p @ t
 
         lf = self.transition_matrix_iso_halfspace(
-            k_x, self.permittivity_profile[0][1], inv=True)
+            k_x, self.permittivity_profile[0][1], inv=True
+        )
         t = lf @ t
 
         # Extraction of t_it out of t. "2::-2" means integers {2,0}.
@@ -357,7 +399,7 @@ class Solver4x4(Solver):
 
         jones_matrix_t = t_ti
         jones_matrix_r = t_ri
-        
+
         # The power transmission coefficient is the ratio of the 'z' components
         # of the Poynting vector:       t = P_t_z / P_i_z
         # For isotropic media, we have: t = kb'/kf' |t_bf|^2
@@ -367,6 +409,8 @@ class Solver4x4(Solver):
             k_z_f = self.get_k_z(self.structure.front_material, self.lbda, k_x)
             k_z_b = self.get_k_z(self.structure.back_material, self.lbda, k_x)
             power_correction = k_z_b.real / k_z_f.real
-            return Result(self.experiment, jones_matrix_r, jones_matrix_t, power_correction)
+            return Result(
+                self.experiment, jones_matrix_r, jones_matrix_t, power_correction
+            )
 
         return Result(self.experiment, jones_matrix_r, jones_matrix_t)

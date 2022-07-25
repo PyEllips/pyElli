@@ -3,16 +3,16 @@
 ========
 Install
 ========
-The installers for all releases are available at the 
+The installers for all releases are available at the
 `Python package Index (PyPI) <https://pypi.org/project/pyElli>`_.
 
 To install the package in your current virtual environment execute
 
     .. code-block:: shell
-        
+
         pip install pyElli
 
-A complete environment for pyElli is also available as a 
+A complete environment for pyElli is also available as a
 `Docker Container <https://hub.docker.com/r/domna/pyelli>`_.
 To pull and run it directly just execute
 

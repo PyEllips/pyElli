@@ -16,14 +16,21 @@ class Experiment:
     theta_i = None
     lbda = None
 
-    def __init__(self, structure: "Structure", lbda: npt.ArrayLike, theta_i: float, vector: npt.ArrayLike = [1, 0, 1, 0]) -> None:
+    def __init__(
+        self,
+        structure: "Structure",
+        lbda: npt.ArrayLike,
+        theta_i: float,
+        vector: npt.ArrayLike = [1, 0, 1, 0],
+    ) -> None:
         """Creates a virtual experiment to simulate the behavior of a structure.
-        
+
         Args:
             structure (Structure): Structure object to evaluate.
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
             theta_i (float): Incident angle (in degrees).
-            vector (npt.ArrayLike, optional): Jones or Stokes vector of incident light. Defaults to [1, 0, -1, 0].
+            vector (npt.ArrayLike, optional):
+                Jones or Stokes vector of incident light. Defaults to [1, 0, -1, 0].
         """
         self.set_structure(structure)
         self.set_theta(theta_i)
@@ -62,18 +69,34 @@ class Experiment:
         if vector.shape == (2,):
             self.jones_vector = vector
 
-            self.stokes_vector = np.array([
-                np.abs(self.jones_vector[0])**2 + np.abs(self.jones_vector[1])**2,
-                np.abs(self.jones_vector[0])**2 - np.abs(self.jones_vector[1])**2,
-                2 * np.real(self.jones_vector[0] * np.conjugate(self.jones_vector[1])),
-                -2 * np.imag(self.jones_vector[0] * np.conjugate(self.jones_vector[1]))])
+            self.stokes_vector = np.array(
+                [
+                    np.abs(self.jones_vector[0]) ** 2
+                    + np.abs(self.jones_vector[1]) ** 2,
+                    np.abs(self.jones_vector[0]) ** 2
+                    - np.abs(self.jones_vector[1]) ** 2,
+                    2
+                    * np.real(
+                        self.jones_vector[0] * np.conjugate(self.jones_vector[1])
+                    ),
+                    -2
+                    * np.imag(
+                        self.jones_vector[0] * np.conjugate(self.jones_vector[1])
+                    ),
+                ]
+            )
 
         elif vector.shape == (4,):
             self.stokes_vector = vector
 
-            p = np.sqrt(self.stokes_vector[1]**2 +
-                        self.stokes_vector[2]**2 +
-                        self.stokes_vector[3]**2) / self.stokes_vector[0]
+            p = (
+                np.sqrt(
+                    self.stokes_vector[1] ** 2
+                    + self.stokes_vector[2] ** 2
+                    + self.stokes_vector[3] ** 2
+                )
+                / self.stokes_vector[0]
+            )
             Q = self.stokes_vector[1] / (self.stokes_vector[0] * p)
             U = self.stokes_vector[2] / (self.stokes_vector[0] * p)
             V = self.stokes_vector[3] / (self.stokes_vector[0] * p)
