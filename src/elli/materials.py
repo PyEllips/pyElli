@@ -410,10 +410,10 @@ class BruggemanEMA(MixtureMaterial):
                     * scaling_factor[mask_general]
                 )
 
-            zeta_1, zeta_2, zeta_root1, _ = np.where(
+            zeta_1, zeta_2, zeta_root1 = np.where(
                 np.logical_and(zeta(e_h).imag > 0, zeta(e_g).imag > 0),
-                (zeta(e_h), zeta(e_g), zeta(root1), zeta(root2)),
-                (-zeta(e_h), -zeta(e_g), -zeta(root1), -zeta(root2)),
+                (zeta(e_h), zeta(e_g), zeta(root1)),
+                (-zeta(e_h), -zeta(e_g), -zeta(root1)),
             )
 
             return np.where(
