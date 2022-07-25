@@ -3,19 +3,19 @@ Solvers
 *******
 
 For calculation of light interaction in material stacks the transfer matrix method is used.
-In pyElli the `Solver` classes provide the necessary toolset for two kinds of transfer matrix algorithms.
-They are not intended to be used directly, but rather to be provided in the evaluation in the `Structure` class.
-The `Solver2x2` is a simple and fast algorithm for isotropic materials.
+In pyElli the :class:`Solver<elli.solver.Solver>` classes provide the necessary toolset for two kinds of transfer matrix algorithms.
+They are not intended to be used directly, but rather to be provided in the evaluation in the :class:`Structure<elli.structure.Structure>` class.
+The :class:`Solver2x2<elli.solver2x2.Solver2x2>` is a simple and fast algorithm for isotropic materials.
 It splits the calculation into two 2x2 matrices, one for the s and one for the p polarized light.
 
-The `Solver4x4` is a more complex algorithm for anisotropic materials.
+The :class:`Solver4x4<elli.solver4x4.Solver4x4>` is a more complex algorithm for anisotropic materials.
 It employs a full 4x4 matrix formulation for all light interaction.
 It is based on the Berreman matrix formalism [1]_.
 In the Berreman formalism a propagotor for matrix exponentials is needed.
 pyElli provides different implementations to be used in the calculation of the transfer matrices.
-The `PropagatorEig` is based on solving the eigenvalues of the first order approximation of the matrix exponential.
+The :class:`PropagatorEig<elli.solver4x4.PropagatorEig>` is based on solving the eigenvalues of the first order approximation of the matrix exponential.
 Although, it is very fast it is not very accurate.
-The `PropagatorExpm` is solving the matrix exponential by the Padé approximation.
+The :class:`PropagatorExpm<elli.solver4x4.PropagatorExpmScipy>` is solving the matrix exponential by the Padé approximation.
 There are three classes available, which use the scipy, tensorflow or pyTorch packages.
 The scipy package is the slowest, since it is not vectorized.
 Tensorflow and pyTorch both offer a faster and vectorized version, but need the respective packages to be installed.

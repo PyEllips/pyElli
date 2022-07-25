@@ -38,18 +38,18 @@ to evaluate a modeled system.
         E --> R
 
 It starts by building a set of dispersions and plugging them into materials classes the specific
-number of dispersions depends on whether it is an :code:`IsotropicMaterial` or an :code:`AnisotropicMaterial`.
+number of dispersions depends on whether it is an :class:`IsotropicMaterial<elli.materials.IsotropicMaterial>` or an :class:`AnisotropicMaterial<elli.materials.UniaxialMaterial>`.
 These materials classes also support creating effective medium layers for inclusions or roughnesses.
-The next layer is building a :code:`Structure` from these materials.
-The :code:`Structure` needs as least two materials for the incoming and outgoing materials,
-but can contain arbitrary more layers which are only limited by the computational resources.
-The :code:`Structure` class can also account for gradient changes of materials in z-direction
+The next step is building a :class:`Structure<elli.structure.Structure>` from these materials.
+The :class:`Structure<elli.structure.Structure>` needs as least two materials for the incoming and outgoing materials,
+but can contain arbitrary more :class:`layers<elli.structure.Layer>` which are only limited by the computational resources.
+The :class:`VaryingMixtureLayer<elli.structure.VaryingMixtureLayer>` class can also account for gradient changes of materials in z-direction
 of a layer, which is useful for gradient layers or roughness modeling.
-As the last step the :code:`Structure` is plugged into an :code:`Experiment`, which contains
+As the last step the :class:`Structure<elli.structure.Structure>` is plugged into an :class:`Experiment<elli.experiment.Experiment>`, which contains
 the experimental conditions, such as light polarizations.
-By evaluating the experiment a :code:`Result` class containing the calculated data is returned.
-The creation of an experiment can be skipped by calling the :code:`evaluate(...)` function directly
-on a :code:`Structure` class if you want to use standard experimental settings.
+By evaluating the experiment a :class:`Result<elli.result.Result>` class containing the calculated data is returned.
+The creation of an experiment can be skipped by calling the :meth:`evaluate<elli.structure.Structure.evaluate>` method directly
+on a :class:`Structure<elli.structure.Structure>` class if you want to use standard experimental settings.
 
 .. rubric:: References
 
