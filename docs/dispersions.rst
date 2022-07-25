@@ -15,8 +15,6 @@ Epsilon Infinity
 
 .. autoclass:: elli.dispersions.dispersions.EpsilonInf
 
-.. _cauchy:
-
 Cauchy
 ======
 .. autoclass:: elli.dispersions.dispersions.Cauchy
