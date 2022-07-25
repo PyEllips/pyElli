@@ -3,7 +3,7 @@ Materials & EMA
 ================
 
 Abstract base classes
-----------------
+---------------------
 .. autoclass:: elli.materials.Material
     :members:
 
