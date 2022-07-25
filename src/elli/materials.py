@@ -319,17 +319,17 @@ class BruggemanEMA(MixtureMaterial):
     r"""Mixture Material approximated with the Bruggeman formula
     for spherical inclusions.
 
-    Returns one of the two analytical solutions to this quadratic equation.
+    Returns one of the two analytical solutions to this quadratic equation:
 
     .. math::
-       2 \epsilon_\text{eff}^2 +
-       \epsilon_\text{eff} [(3f - 2) \epsilon_a
-       + (1 - 3f)\epsilon_b] - \epsilon_a \cdot \epsilon_b = 0
+       2 \varepsilon_\text{eff}^2 +
+       \varepsilon_\text{eff} [(3f - 2) \varepsilon_a
+       + (1 - 3f)\varepsilon_b] - \varepsilon_a \cdot \varepsilon_b = 0
 
-    where :math:`\epsilon_\text{eff}` is the effective permittivity of host/mixture material,
-    :math:`\epsilon_a` is the permittivity of the first mixture material,
-    :math:`\epsilon_b` is the permittivity of the second mixture material
-    and :math:`f` is the volume fraction of material a in the  material b.
+    where :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    :math:`\varepsilon_a` is the permittivity of the first mixture material,
+    :math:`\varepsilon_b` is the permittivity of the second mixture material
+    and :math:`f` is the volume fraction of material a in the material b.
 
     References:
         * Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013

@@ -64,7 +64,7 @@ class ConstantRefractiveIndex(Dispersion):
 
     Output:
         .. math::
-            \epsilon(\lambda) = \boldsymbol{n}^2
+            \varepsilon(\lambda) = \boldsymbol{n}^2
     """
 
     single_params_template = {"n": 1}
@@ -85,7 +85,7 @@ class EpsilonInf(Dispersion):
 
     Output:
         .. math::
-            \epsilon(\lambda) = \textbf{eps}
+            \varepsilon(\lambda) = \textbf{eps}
     """
 
     single_params_template = {"eps": 1}
@@ -111,7 +111,7 @@ class Cauchy(Dispersion):
 
     Output:
         .. math::
-            \epsilon^2(\lambda) =
+            \varepsilon^2(\lambda) =
             \boldsymbol{n_0} + 100  \boldsymbol{n_1}/\lambda^2 + 10^7 \boldsymbol{n_2}/\lambda^4
             + i (\boldsymbol{k_0} + 100 \boldsymbol{k_1}/\lambda^2
             + 10^7 \boldsymbol{k_2}/\lambda^4)
@@ -147,7 +147,7 @@ class Sellmeier(Dispersion):
 
     Output:
         .. math::
-            \epsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
+            \varepsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
             \cdot \lambda^2 /(\lambda^2 - \boldsymbol{B}_j)
 
         With :math:`j` as the index of the respective oscillator.
@@ -178,7 +178,7 @@ class DrudeEnergy(Dispersion):
 
     Output:
         .. math::
-            \epsilon(E)
+            \varepsilon(E)
             = \boldsymbol{A} / (E^2 - i \cdot \boldsymbol{gamma} \cdot E)
     """
 
@@ -207,12 +207,12 @@ class DrudeResistivity(Dispersion):
     Output:
 
         .. math::
-            \epsilon(E) = \hbar / (\epsilon_0  \cdot
+            \varepsilon(E) = \hbar / (\varepsilon_0  \cdot
             \boldsymbol{rho\_opt} \cdot \boldsymbol{tau} \cdot E^2
             - i \cdot \hbar \cdot E)
 
        where :math:`\hbar` is the planck constant divided by :math:`2\pi`
-       and :math:`\epsilon_0` is the vacuum dielectric permittivity.
+       and :math:`\varepsilon_0` is the vacuum dielectric permittivity.
     """
 
     single_params_template = {"rho_opt": 1, "tau": 1}
@@ -244,7 +244,7 @@ class LorentzLambda(Dispersion):
     Output:
 
         .. math::
-            \epsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
+            \varepsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
             \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lambda}_j^2
             + i \cdot \boldsymbol{gamma}_j \cdot \lambda)
 
@@ -276,7 +276,7 @@ class LorentzEnergy(Dispersion):
 
     Output:
         .. math::
-            \epsilon(E) = 1 + \sum_j \boldsymbol{A}_j / \left(E^2-\boldsymbol{E}_j^2
+            \varepsilon(E) = 1 + \sum_j \boldsymbol{A}_j / \left(E^2-\boldsymbol{E}_j^2
             + i \cdot \boldsymbol{gamma}_j \cdot E\right)
 
         With :math:`j`  as the index for the respective oscillator.
@@ -307,7 +307,7 @@ class Gaussian(Dispersion):
     Output:
 
         .. math::
-            \epsilon(E) = \sum_j & \; 2 \cdot \boldsymbol{A}_j / \sqrt{π} \cdot
+            \varepsilon(E) = \sum_j & \; 2 \cdot \boldsymbol{A}_j / \sqrt{π} \cdot
                     (D\left(2 \cdot \sqrt{2 \cdot \ln(2)} \cdot (E + \boldsymbol{E}_j)
                     / \boldsymbol{sigma}_j\right) \\
                     &- D\left(2 \cdot \sqrt{2 \cdot \ln(2)} \cdot (E - \boldsymbol{E}_j)
@@ -523,7 +523,7 @@ class Poles(Dispersion):
 
     Output:
         .. math::
-                \epsilon(E) = \boldsymbol{A\_ir} / E^2
+                \varepsilon(E) = \boldsymbol{A\_ir} / E^2
                 + \boldsymbol{A\_uv} / (\boldsymbol{E\_uv}^2 - E^2)
     """
 
