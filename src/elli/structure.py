@@ -238,16 +238,17 @@ class TwistedLayer(InhomogeneousLayer):
 
 
 class VaryingMixtureLayer(InhomogeneousLayer):
-    """Mixture layer, with varying fraction."""
+    """Mixture layer, with varying fraction dependent on z Position.
 
-    fraction_modulation = None
-
+    Note: The set fraction of the mixture material will be ignored
+    and replaced by the result of the fraction modulation function.
+    """
     def __init__(
         self,
         material: MixtureMaterial,
         d: float,
         div: int,
-        fraction_modulation: Callable[[float], float],
+        fraction_modulation: Callable[[float], float] = lambda x: x,
     ) -> None:
         """Creates a layer with a mixture material varying in z direction.
 
@@ -257,7 +258,9 @@ class VaryingMixtureLayer(InhomogeneousLayer):
             div (int): Number of slices for the layer
             fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
                                                             takes float from 0 to 1 (top to bottom of layer),
-                                                            should return fraction at that level
+                                                            should return fraction at that level.
+                                                            Defaults to a linear profile
+                                                            (100% host material to 100% guest material).
         """
         self.set_material(material)
         self.set_thickness(d)
@@ -273,7 +276,7 @@ class VaryingMixtureLayer(InhomogeneousLayer):
             fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
                                                             takes float from 0 to 1 (top to bottom of layer),
                                                             should return fraction at that level.
-                                                            Defaults to a linear profile 
+                                                            Defaults to a linear profile
                                                             (100% host material to 100% guest material).
         """
         self.fraction_modulation = fraction_modulation
