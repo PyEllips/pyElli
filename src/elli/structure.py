@@ -265,14 +265,16 @@ class VaryingMixtureLayer(InhomogeneousLayer):
         self.set_fraction_modulation(fraction_modulation)
 
     def set_fraction_modulation(
-        self, fraction_modulation: Callable[[float], float]
+        self, fraction_modulation: Callable[[float], float] = lambda x: x
     ) -> None:
         """Sets function for variation of the mixture over the layer
 
         Args:
             fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
                                                             takes float from 0 to 1 (top to bottom of layer),
-                                                            should return fraction at that level
+                                                            should return fraction at that level.
+                                                            Defaults to a linear profile 
+                                                            (100% host material to 100% guest material).
         """
         self.fraction_modulation = fraction_modulation
 
@@ -286,8 +288,9 @@ class VaryingMixtureLayer(InhomogeneousLayer):
         Returns:
             npt.NDArray: Permittivity tensor for position 'z' and wavelength 'lbda'.
         """
-        self.material.set_fraction(self.fraction_modulation(z / self.d))
-        epsilon = self.material.get_tensor(lbda)
+        epsilon = self.material.get_tensor_fraction(
+            lbda, self.fraction_modulation(z / self.d)
+        )
         return epsilon
 
 
@@ -359,8 +362,8 @@ class Structure:
         """
         permittivity_profile = [(np.inf, self.front_material.get_tensor(lbda))]
 
-        for L in self.layers:
-            permittivity_profile.extend(L.get_permittivity_profile(lbda))
+        for layer in self.layers:
+            permittivity_profile.extend(layer.get_permittivity_profile(lbda))
 
         permittivity_profile.extend([(np.inf, self.back_material.get_tensor(lbda))])
         return permittivity_profile

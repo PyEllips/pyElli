@@ -217,6 +217,18 @@ class MixtureMaterial(Material):
         self.fraction = fraction
 
     @abstractmethod
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        while overwriting the set fraction. Used in VaryingMixtureLayers.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
+
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
 
@@ -226,23 +238,26 @@ class MixtureMaterial(Material):
         Returns:
             npt.NDArray: Permittivity tensor.
         """
+        return self.get_tensor_fraction(lbda, self.fraction)
 
 
 class VCAMaterial(MixtureMaterial):
     """Mixture Material approximated with a simple virtual crystal like average."""
 
-    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        while overwriting the set fraction.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
 
         Returns:
             npt.NDArray: Permittivity tensor.
         """
         epsilon = (
-            self.host_material.get_tensor(lbda) * (1 - self.fraction)
-            + self.guest_material.get_tensor(lbda) * self.fraction
+            self.host_material.get_tensor(lbda) * (1 - fraction)
+            + self.guest_material.get_tensor(lbda) * fraction
         )
         return epsilon
 
@@ -255,18 +270,20 @@ class LooyengaEMA(MixtureMaterial):
         Looyenga, H. (1965). Physica, 31(3), 401–406.
     """
 
-    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        while overwriting the set fraction.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
 
         Returns:
             npt.NDArray: Permittivity tensor.
         """
         epsilon = (
-            self.host_material.get_tensor(lbda) ** (1 / 3) * (1 - self.fraction)
-            + self.guest_material.get_tensor(lbda) ** (1 / 3) * self.fraction
+            self.host_material.get_tensor(lbda) ** (1 / 3) * (1 - fraction)
+            + self.guest_material.get_tensor(lbda) ** (1 / 3) * fraction
         ) ** 3
         return epsilon
 
@@ -276,11 +293,13 @@ class MaxwellGarnettEMA(MixtureMaterial):
     It is valid for spherical inclusions with small volume fraction.
     """
 
-    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        while overwriting the set fraction.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
 
         Returns:
             npt.NDArray: Permittivity tensor.
@@ -290,8 +309,8 @@ class MaxwellGarnettEMA(MixtureMaterial):
 
         # fmt: off
         epsilon = e_h \
-            * (2 * self.fraction * (e_g - e_h) + e_g + 2 * e_h) \
-            / (2 * e_h + e_g - self.fraction * (e_g - e_h))
+            * (2 * fraction * (e_g - e_h) + e_g + 2 * e_h) \
+            / (2 * e_h + e_g - fraction * (e_g - e_h))
         # fmt: on
         return epsilon
 
@@ -316,18 +335,20 @@ class BruggemanEMA(MixtureMaterial):
         * Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013
     """
 
-    def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        while overwriting the set fraction.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
 
         Returns:
             npt.NDArray: Permittivity tensor.
         """
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
-        f = self.fraction
+        f = fraction
 
         # fmt: off
         root1 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 - sqrt(
