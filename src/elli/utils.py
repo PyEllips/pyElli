@@ -39,6 +39,7 @@ def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
 def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
     """Calculate rho from a Psi-Delta DataFrame.
     The Psi-Delta DataFrame should be structured as follows:
+
         :index: Wavelength
         :column 'Ψ': Psi from measurement
         :column 'Δ': Delta from measurement
