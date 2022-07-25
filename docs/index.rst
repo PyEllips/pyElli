@@ -69,7 +69,6 @@ Contents
 
    installation
    auto_examples/index
-   overview
    modules
 
 Misc
