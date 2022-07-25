@@ -12,11 +12,11 @@ if TYPE_CHECKING:
 
 
 class Material(ABC):
-    """Base class for materials (abstract)."""
+    """Base class for materials (abstract class)."""
 
     @abstractmethod
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+        """Gets the permittivity tensor of the material for wavelength 'lbda'.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
@@ -38,7 +38,7 @@ class Material(ABC):
 
 
 class SingleMaterial(Material):
-    """Base class for non mixed materials (abstract)."""
+    """Base class for non-mixed materials (abstract class)."""
 
     dispersion_x = None
     dispersion_y = None
@@ -54,7 +54,7 @@ class SingleMaterial(Material):
         """Sets rotation of the Material.
 
         Args:
-            r (npt.NDArray): rotation matrix (from rotation_Euler() or others)
+            r (npt.NDArray): rotation matrix (from :func:`rotation_euler<elli.math.rotation_euler>` or others)
         """
         self.rotated = True
         self.rotation_matrix = r
@@ -242,7 +242,18 @@ class MixtureMaterial(Material):
 
 
 class VCAMaterial(MixtureMaterial):
-    """Mixture Material approximated with a simple virtual crystal like average."""
+    r"""Mixture Material approximated with a simple virtual crystal like average.
+
+    .. math::
+       \varepsilon_\text{eff} = (1 - f) \varepsilon_h + f \varepsilon_g
+
+    where:
+    
+    * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    * :math:`\varepsilon_h` is the permittivity of the host mixture material,
+    * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
+    * :math:`f` is the volume fraction of material a in the guest material.
+    """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
         """Gets the permittivity tensor of the marterial for wavelength 'lbda',
@@ -263,8 +274,18 @@ class VCAMaterial(MixtureMaterial):
 
 
 class LooyengaEMA(MixtureMaterial):
-    """Mixture Material approximated with Looyenga's formula.
-    Valid if materials have small contrast.
+    r"""Mixture Material approximated with Looyenga's formula.
+    Valid for materials with small contrast.
+
+    .. math::
+       \varepsilon_\text{eff} = ((1 - f) \varepsilon_h^{1/3} + f \varepsilon_g^{1/3})^3
+
+    where:
+    
+    * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    * :math:`\varepsilon_h` is the permittivity of the host mixture material,
+    * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
+    * :math:`f` is the volume fraction of material a in the guest material.
 
     References:
         Looyenga, H. (1965). Physica, 31(3), 401–406.
@@ -289,8 +310,19 @@ class LooyengaEMA(MixtureMaterial):
 
 
 class MaxwellGarnettEMA(MixtureMaterial):
-    """Mixture Material approximated with the Maxwell Garnett formula.
+    r"""Mixture Material approximated with the Maxwell Garnett formula.
     It is valid for spherical inclusions with small volume fraction.
+
+    .. math::
+       \varepsilon_\text{eff} = \varepsilon_h \frac{2f(\varepsilon_g - \varepsilon_h) + \varepsilon_g + 2\varepsilon_h}
+       {2\varepsilon_h + \varepsilon_g - f(\varepsilon_g - \varepsilon_h)}
+    
+    where:
+    
+    * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    * :math:`\varepsilon_h` is the permittivity of the host mixture material,
+    * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
+    * :math:`f` is the volume fraction of material a in the guest material.
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
