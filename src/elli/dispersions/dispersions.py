@@ -3,12 +3,14 @@
 They describe the change of dielectric function or refractive index with wavlength.
 In pyElli the default wavelength unit is nm.
 Each dispersion has two distinct sets of parameters:
+
     * Parameters which can be given only once (single parameters).
-    * | Parameters which can be given in multiple sets (repeated parameters),
-      | e.g. a set of oscillator parameters.
+    * Parameters which can be given in multiple sets (repeated parameters),
+      e.g. a set of oscillator parameters.
 
 The syntax for each of the parameter sets is different.
 For the single parameters they are given in the class constructor:
+
     .. highlight:: python
     .. code-block:: python
 
@@ -203,10 +205,12 @@ class DrudeResistivity(Dispersion):
         --
 
     Output:
+
         .. math::
             \epsilon(E) = \hbar / (\epsilon_0  \cdot
             \boldsymbol{rho\_opt} \cdot \boldsymbol{tau} \cdot E^2
             - i \cdot \hbar \cdot E)
+
        where :math:`\hbar` is the planck constant divided by :math:`2\pi`
        and :math:`\epsilon_0` is the vacuum dielectric permittivity.
     """
@@ -238,10 +242,12 @@ class LorentzLambda(Dispersion):
         :gamma: Broadening of the oscillator. Defaults to 0. Unit in nm.
 
     Output:
+
         .. math::
             \epsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
             \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lambda}_j^2
             + i \cdot \boldsymbol{gamma}_j \cdot \lambda)
+
         The summation index :math:`j` refers to the respective oscillator.
     """
 
@@ -299,6 +305,7 @@ class Gaussian(Dispersion):
         :sigma: Broadening of the Gaussian. Defaults to 1. Unit in eV.
 
     Output:
+
         .. math::
             \epsilon(E) = \sum_j & \; 2 \cdot \boldsymbol{A}_j / \sqrt{π} \cdot
                     (D\left(2 \cdot \sqrt{2 \cdot \ln(2)} \cdot (E + \boldsymbol{E}_j)
@@ -309,6 +316,7 @@ class Gaussian(Dispersion):
                     (E - \boldsymbol{E}_j)/ \boldsymbol{sigma}_j\right)^2 \\
                     &- \boldsymbol{A}_j \cdot \exp\left(-(4 \cdot ln(2) \cdot
                     (E + \boldsymbol{E}_j)/ \boldsymbol{sigma}_j\right)^2\Bigr)
+
         D is the
         `Dawson function
         <https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.dawsn.html>`_.
