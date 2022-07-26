@@ -119,6 +119,20 @@ or **Miniconda**
 
     This should create html pages in `build/sphinx/html` for you.
 
+7.  We are using the python [black formatter](https://black.readthedocs.io/en/stable/) throughout the code and sphinx-lint for the docstrings.
+    We supply a pre-commit hook which you can install accordingly to
+    pre-commits [documentation](https://pre-commit.com/#install),
+    which checks black formatting before the code is committed.
+    For sphinx you have to invoke it manually by installing with
+
+        pip install sphinx-lint
+
+    and running
+
+        sphinx-lint
+
+    in the project directory.
+
 ### Submit your contribution
 
 1.  If everything works fine, push your local branch to github with:
