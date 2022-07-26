@@ -116,10 +116,12 @@ class Result:
         """Creates result object, to store simulation data. Gets called by solvers.
 
         Args:
-            experiment (Experiment): Evalatued experiment, with structure and experimental parameters.
+            experiment (Experiment):
+                Evalatued experiment, with structure and experimental parameters.
             jones_matrix_r (npt.NDArray): Jones matrix for the reflection direction.
             jones_matrix_t (npt.NDArray): Jones matrix for the transmission direction.
-            power_correction (npt.NDArray): Correction factors, to get the power transmission values.
+            power_correction (npt.NDArray):
+                Correction factors, to get the power transmission values.
         """
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
@@ -139,12 +141,14 @@ class Result:
                 'r_LR' : Reflection from circular right to circular left polarization.
                 'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
-                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+                'psi', 'delta', 'rho':
+                    Reduced ellipsometry parameters,
+                    the whole matricies are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
         """
-        return self.__getattr__(name)
+        return self[name]
 
     def __getattr__(self, name: str) -> npt.NDArray:
         """Return the data for the requested variable 'name'.
@@ -156,7 +160,9 @@ class Result:
                 'r_LR' : Reflection from circular right to circular left polarization.
                 'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
-                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+                'psi', 'delta', 'rho':
+                    Reduced ellipsometry parameters,
+                    the whole matricies are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
@@ -245,7 +251,9 @@ class ResultList:
                 'r_LR' : Reflection from circular right to circular left polarization.
                 'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
-                'psi', 'delta', 'rho': Reduced ellipsometry parameters, the whole matricies are returned by 'psi_matrix'.
+                'psi', 'delta', 'rho':
+                    Reduced ellipsometry parameters,
+                    the whole matricies are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.

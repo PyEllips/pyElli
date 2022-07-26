@@ -17,13 +17,13 @@ class AbstractLayer(ABC):
 
     d = None
 
-    def set_thickness(self, d: float) -> None:
+    def set_thickness(self, thickness: float) -> None:
         """Defines the thickness of the layer in nm.
 
         Args:
             d (float): Thickness of the layer in nm.
         """
-        self.d = d
+        self.d = thickness
 
     @abstractmethod
     def get_permittivity_profile(
@@ -35,9 +35,9 @@ class AbstractLayer(ABC):
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
 
         Returns:
-            List[Tuple[float, npt.NDArray]]: Returns list of tuples [(thickness, dielectric tensor), ...]
+            List[Tuple[float, npt.NDArray]]:
+                Returns list of tuples [(thickness, dielectric tensor), ...]
         """
-        pass
 
 
 class RepeatedLayers(AbstractLayer):
@@ -62,7 +62,8 @@ class RepeatedLayers(AbstractLayer):
         Args:
             layers (List[AbstractLayer]): List of the repeated layers, starting from z=0
             repetitions (int): Number of repetitions
-            before (int, optional): Number of additional layers before the first period. Defaults to 0.
+            before (int, optional):
+                Number of additional layers before the first period. Defaults to 0.
             after (int, optional): Number of additional layers after the last period. Defaults to 0.
         """
         self.set_repetitions(repetitions, before, after)
@@ -77,7 +78,8 @@ class RepeatedLayers(AbstractLayer):
 
         Args:
             repetitions (int): Number of repetitions
-            before (int, optional): Number of additional layers before the first period. Defaults to 0.
+            before (int, optional):
+                Number of additional layers before the first period. Defaults to 0.
             after (int, optional): Number of additional layers after the last period. Defaults to 0.
         """
         self.repetitions = repetitions
@@ -101,7 +103,8 @@ class RepeatedLayers(AbstractLayer):
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
 
         Returns:
-            List[Tuple[float, npt.NDArray]]: Returns list of tuples [(thickness, dielectric tensor), ...]
+            List[Tuple[float, npt.NDArray]]:
+                Returns list of tuples [(thickness, dielectric tensor), ...]
         """
         layers = []
         for l in self.layers:
@@ -144,7 +147,8 @@ class Layer(AbstractLayer):
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
 
         Returns:
-            List[Tuple[float, npt.NDArray]]: Returns a list containing one tuple [(thickness, dielectric tensor)]
+            List[Tuple[float, npt.NDArray]]:
+                Returns a list containing one tuple [(thickness, dielectric tensor)]
         """
         return [(self.d, self.material.get_tensor(lbda))]
 
@@ -177,7 +181,6 @@ class InhomogeneousLayer(Layer):
     @abstractmethod
     def get_tensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns permittivity tensor matrix for position 'z'."""
-        pass
 
     def get_permittivity_profile(self, lbda: npt.ArrayLike) -> List:
         """Returns the permittivity profile of the layer for the given wavelengths.
@@ -187,7 +190,8 @@ class InhomogeneousLayer(Layer):
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
 
         Returns:
-            List[Tuple[float, npt.NDArray]]: Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ...]
+            List[Tuple[float, npt.NDArray]]:
+                Returns list of tuples [(d1, epsilon1), (d2, epsilon2), ...]
         """
         z = self.get_slices()
         h = np.diff(z)
@@ -257,11 +261,12 @@ class VaryingMixtureLayer(InhomogeneousLayer):
             material (MixtureMaterial): MixtureMaterial object
             d (float): Thickness of layer (in nm)
             div (int): Number of slices for the layer
-            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
-                                                            takes float from 0 to 1 (top to bottom of layer),
-                                                            should return fraction at that level.
-                                                            Defaults to a linear profile
-                                                            (100% host material to 100% guest material).
+            fraction_modulation (Callable[[float], float]):
+                Function to modify the fraction amount,
+                takes float from 0 to 1 (top to bottom of layer),
+                should return fraction at that level.
+                Defaults to a linear profile
+                (100% host material to 100% guest material).
         """
         self.set_material(material)
         self.set_thickness(d)
@@ -274,11 +279,12 @@ class VaryingMixtureLayer(InhomogeneousLayer):
         """Sets function for variation of the mixture over the layer
 
         Args:
-            fraction_modulation (Callable[[float], float]): Function to modify the fraction amount,
-                                                            takes float from 0 to 1 (top to bottom of layer),
-                                                            should return fraction at that level.
-                                                            Defaults to a linear profile
-                                                            (100% host material to 100% guest material).
+            fraction_modulation (Callable[[float], float]):
+                Function to modify the fraction amount,
+                takes float from 0 to 1 (top to bottom of layer),
+                should return fraction at that level.
+                Defaults to a linear profile
+                (100% host material to 100% guest material).
         """
         self.fraction_modulation = fraction_modulation
 
@@ -362,7 +368,8 @@ class Structure:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
 
         Returns:
-            List[Tuple[float, npt.NDArray]]: Returns list of tuples [(thickness, dielectric tensor), ...]
+            List[Tuple[float, npt.NDArray]]:
+                Returns list of tuples [(thickness, dielectric tensor), ...]
         """
         permittivity_profile = [(np.inf, self.front_material.get_tensor(lbda))]
 

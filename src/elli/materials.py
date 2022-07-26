@@ -1,3 +1,5 @@
+"""Material classes to supply isotropic and anistropic materials
+and EMAs."""
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
@@ -50,14 +52,15 @@ class SingleMaterial(Material):
     def set_dispersion(self) -> None:
         """Sets dispersion relation of the material."""
 
-    def set_rotation(self, r: npt.NDArray) -> None:
+    def set_rotation(self, rot: npt.NDArray) -> None:
         """Sets rotation of the Material.
 
         Args:
-            r (npt.NDArray): rotation matrix (from :func:`rotation_euler<elli.math.rotation_euler>` or others)
+            r (npt.NDArray):
+                rotation matrix (from :func:`rotation_euler<elli.math.rotation_euler>` or others)
         """
         self.rotated = True
-        self.rotation_matrix = r
+        self.rotation_matrix = rot
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
@@ -100,6 +103,7 @@ class IsotropicMaterial(SingleMaterial):
         """
         self.set_dispersion(dispersion)
 
+    # pylint: disable=arguments-differ
     def set_dispersion(self, dispersion: "Dispersion") -> None:
         """Sets dipsersion relation of the isotropic material.
 
@@ -118,19 +122,24 @@ class UniaxialMaterial(SingleMaterial):
         """Creates a uniaxial material with two dispersions.
 
         Args:
-            dispersion_o (Dispersion): Dispersion relation for ordinary crystal axes (x and y direction).
-            dispersion_e (Dispersion): Dispersion relation for extraordinary crystal axis (z direction).
+            dispersion_o (Dispersion):
+                Dispersion relation for ordinary crystal axes (x and y direction).
+            dispersion_e (Dispersion):
+                Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.set_dispersion(dispersion_o, dispersion_e)
 
+    # pylint: disable=arguments-differ
     def set_dispersion(
         self, dispersion_o: "Dispersion", dispersion_e: "Dispersion"
     ) -> None:
         """Sets dipsersion relations of the uniaxial material.
 
         Args:
-            dispersion_o (Dispersion): Dispersion relation for ordinary crystal axes (x and y direction).
-            dispersion_e (Dispersion): Dispersion relation for extraordinary crystal axis (z direction).
+            dispersion_o (Dispersion):
+                Dispersion relation for ordinary crystal axes (x and y direction).
+            dispersion_e (Dispersion):
+                Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.dispersion_x = dispersion_o
         self.dispersion_y = dispersion_o
@@ -155,6 +164,7 @@ class BiaxialMaterial(SingleMaterial):
         """
         self.set_dispersion(dispersion_x, dispersion_y, dispersion_z)
 
+    # pylint: disable=arguments-differ
     def set_dispersion(
         self,
         dispersion_x: "Dispersion",
@@ -314,7 +324,8 @@ class MaxwellGarnettEMA(MixtureMaterial):
     It is valid for spherical inclusions with small volume fraction.
 
     .. math::
-       \varepsilon_\text{eff} = \varepsilon_h \frac{2f(\varepsilon_g - \varepsilon_h) + \varepsilon_g + 2\varepsilon_h}
+       \varepsilon_\text{eff} = \varepsilon_h \frac{2f(\varepsilon_g - \varepsilon_h)
+       + \varepsilon_g + 2\varepsilon_h}
        {2\varepsilon_h + \varepsilon_g - f(\varepsilon_g - \varepsilon_h)}
 
     where:
@@ -380,6 +391,7 @@ class BruggemanEMA(MixtureMaterial):
         """
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
+        # pylint: disable=invalid-name
         f = fraction
 
         # fmt: off
@@ -421,6 +433,7 @@ class BruggemanEMA(MixtureMaterial):
         old_settings = np.geterr()
         np.seterr(invalid="ignore", divide="ignore")
 
+        # pylint: disable=invalid-name
         z0 = (
             e_h
             * e_g
