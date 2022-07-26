@@ -24,7 +24,7 @@ s = elli.Structure(front, [layer], back)
 
 # %%
 # Wavelength and wavenumber:
-lbda = 1000      # nm
+lbda = 1000  # nm
 
 # Incidence angle:
 angle = 30
@@ -41,13 +41,13 @@ for h in h_list:
     data.append(s.evaluate(lbda, angle))
 
 # %%
-plt.figure(figsize=(12., 6.))
-plt.plot(h_list, data.R_pp, label='R_pp')
-plt.plot(h_list, data.R_ss, label='R_ss')
-plt.plot(h_list, data.T_pp, label='T_pp')
-plt.plot(h_list, data.T_ss, label='T_ss')
+plt.figure(figsize=(12.0, 6.0))
+plt.plot(h_list, data.R_pp, label="R_pp")
+plt.plot(h_list, data.R_ss, label="R_ss")
+plt.plot(h_list, data.T_pp, label="T_pp")
+plt.plot(h_list, data.T_ss, label="T_ss")
 plt.title("Glass layer at 30 degree incidence angle")
-plt.xlabel(u"Layer thickness (nm)")
+plt.xlabel("Layer thickness (nm)")
 plt.ylabel(r"Reflexion coefficients $R$")
 plt.legend()
 plt.show()

@@ -1,5 +1,6 @@
 # Encoding: utf-8
 import numpy as np
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as e:

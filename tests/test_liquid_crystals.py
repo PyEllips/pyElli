@@ -43,19 +43,19 @@ def test_cholesteric_lc():
     # Theoretical calculation
     q = 2 * pi / p / 1e-9
     alpha = q / k0
-    epsilon = (no ** 2 + ne ** 2) / 2
-    delta = (no ** 2 - ne ** 2) / 2
-    n2 = sqrt((alpha ** 2 + epsilon - sqrt(4 * epsilon * alpha ** 2 + delta ** 2)))
-    w = 1j * (ne ** 2 - n2 ** 2 - alpha ** 2) / (2 * alpha * n2)  # not k0/c
+    epsilon = (no**2 + ne**2) / 2
+    delta = (no**2 - ne**2) / 2
+    n2 = sqrt((alpha**2 + epsilon - sqrt(4 * epsilon * alpha**2 + delta**2)))
+    w = 1j * (ne**2 - n2**2 - alpha**2) / (2 * alpha * n2)  # not k0/c
     A = -2j * k0 * n2 * h * 1e-9
 
     R_th = (
         np.abs(
-            (w ** 2 + 1)
+            (w**2 + 1)
             * (1 - np.exp(-2j * k0 * n2 * h * 1e-9))
             / (
                 2 * w * (1 + np.exp(-2j * k0 * n2 * h * 1e-9))
-                - 1j * (w ** 2 - 1) * (1 - np.exp(-2j * k0 * n2 * h * 1e-9))
+                - 1j * (w**2 - 1) * (1 - np.exp(-2j * k0 * n2 * h * 1e-9))
             )
         )
         ** 2
@@ -97,7 +97,7 @@ def test_twisted_nematic_lc():
 
     # Gooch-Tarry law
     u = 2 * d * Dn / lbda_list
-    T_gt = np.sin(pi / 2 * sqrt(1 + u ** 2)) ** 2 / (1 + u ** 2)
+    T_gt = np.sin(pi / 2 * sqrt(1 + u**2)) ** 2 / (1 + u**2)
 
     # Berreman simulation
     data = s.evaluate(lbda_list, 0)

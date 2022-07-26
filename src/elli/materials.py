@@ -248,7 +248,7 @@ class VCAMaterial(MixtureMaterial):
        \varepsilon_\text{eff} = (1 - f) \varepsilon_h + f \varepsilon_g
 
     where:
-    
+
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
@@ -281,7 +281,7 @@ class LooyengaEMA(MixtureMaterial):
        \varepsilon_\text{eff} = ((1 - f) \varepsilon_h^{1/3} + f \varepsilon_g^{1/3})^3
 
     where:
-    
+
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
@@ -316,9 +316,9 @@ class MaxwellGarnettEMA(MixtureMaterial):
     .. math::
        \varepsilon_\text{eff} = \varepsilon_h \frac{2f(\varepsilon_g - \varepsilon_h) + \varepsilon_g + 2\varepsilon_h}
        {2\varepsilon_h + \varepsilon_g - f(\varepsilon_g - \varepsilon_h)}
-    
+
     where:
-    
+
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and

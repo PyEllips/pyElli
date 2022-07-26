@@ -23,22 +23,23 @@ np.set_printoptions(suppress=True, precision=4)
 # ## Example: Air / anisotropic film / silicon substrate
 
 # %%
-n_i = 1.0       # incident medium is air
-n_o = 2.0       # ordinary index of thin layer
-n_e = 2.5       # extraordinary index of thin layer
-lbda = 620      # Wavelength for evaluation (nm)
-Phi_i = 70      # 70° indicence angle (degree)
-d = 100      # thin layer thickness (nm)
+n_i = 1.0  # incident medium is air
+n_o = 2.0  # ordinary index of thin layer
+n_e = 2.5  # extraordinary index of thin layer
+lbda = 620  # Wavelength for evaluation (nm)
+Phi_i = 70  # 70° indicence angle (degree)
+d = 100  # thin layer thickness (nm)
 # Orientation of the anisotropy of the thin layer
-Phi_E = 45      # 1st Euler angle
-Theta_E = 45    # 2nd Eulet angle
+Phi_E = 45  # 1st Euler angle
+Theta_E = 45  # 2nd Eulet angle
 
 # %% [markdown]
 # ## Permittivity tensor of the anisotropic film (eq 6.63, p. 241):
 
 # %%
-filmMaterial = elli.UniaxialMaterial(elli.ConstantRefractiveIndex(n_o),
-                                      elli.ConstantRefractiveIndex(n_e))
+filmMaterial = elli.UniaxialMaterial(
+    elli.ConstantRefractiveIndex(n_o), elli.ConstantRefractiveIndex(n_e)
+)
 R = elli.rotation_euler(Phi_E, Theta_E, 0)
 filmMaterial.set_rotation(R)
 print(filmMaterial.get_tensor(lbda))
@@ -103,9 +104,9 @@ n_t = 3.898 + 0.016j  #  refractive index of substrate
 silicon = elli.ConstantRefractiveIndex(n_t).get_mat()
 s = elli.Structure(air, [film], silicon)
 result = s.evaluate(np.array([lbda]), Phi_i)
-#T = s.getStructureMatrix(Kx, k0)
-#print("\nTransfer matrix T (eq 6.67, p. 242):")
-#print(T)
+# T = s.getStructureMatrix(Kx, k0)
+# print("\nTransfer matrix T (eq 6.67, p. 242):")
+# print(T)
 """                                                                 (eq 6.67)
 Fujiwara uses the ellipsometry convention for the orientation of the 'p'
 polarized electric fields (see figures 2.15 and 6.14). With my convention,
@@ -144,7 +145,7 @@ print("\nWe reproduce figure 6.19, p. 242...")
 
 # %%
 Theta_E_list = [0, 45, 90]
-Phi_E_list = np.linspace(0, 180, 36*2+1)
+Phi_E_list = np.linspace(0, 180, 36 * 2 + 1)
 
 data = elli.ResultList()
 
@@ -164,7 +165,7 @@ delta_ps = data.delta_ps.reshape(3, 73).T
 # %%
 fig = pyplot.figure()
 # Plot curves for the three values of Theta_E
-pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
+pyplot.rcParams["axes.prop_cycle"] = pyplot.cycler("color", "kbg")
 ax1 = fig.add_subplot(2, 2, 1)
 ax1.plot(Phi_E_list, psi_pp)
 ax1.set_ylabel(r"$\Psi_{pp}$")
@@ -174,7 +175,7 @@ ax2.plot(Phi_E_list, delta_pp)
 ax2.set_ylabel(r"$\Delta_{pp}$")
 
 # Plot curves for two values of Theta_E
-pyplot.rcParams['axes.prop_cycle'] = pyplot.cycler('color', 'kbg')
+pyplot.rcParams["axes.prop_cycle"] = pyplot.cycler("color", "kbg")
 ax3 = fig.add_subplot(2, 2, 3)
 ax3.plot(Phi_E_list, psi_ps)
 ax3.set_ylabel(r"$\Psi_{ps}$")

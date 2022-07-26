@@ -58,10 +58,10 @@ class ParamsHist(Parameters):
             ValueError: If history_len is not an int or < 1.
         """
         if not isinstance(history_len, int):
-            raise ValueError('History length has to be an integer')
+            raise ValueError("History length has to be an integer")
 
         if history_len < 1:
-            raise ValueError('History length must be greater than 0')
+            raise ValueError("History length must be greater than 0")
 
         self._history = self._history[-history_len:]
         self._max_length = history_len

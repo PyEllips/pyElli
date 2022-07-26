@@ -43,7 +43,7 @@ class TestTirThickness:
 
     # Wave vector:
     kz_f = n_f * k0 * np.cos(Phi_i)
-    kz_s = k0 * np.sqrt(complex(n_s ** 2 - Kx ** 2))
+    kz_s = k0 * np.sqrt(complex(n_s**2 - Kx**2))
     kz_b = n_b * k0 * np.cos(Phi_b)
 
     # Amplitude coefficient polarisation s:
@@ -53,8 +53,8 @@ class TestTirThickness:
     t_bs_s = 1 + r_bs_s
 
     # Amplitude coefficient polarisation p:
-    r_sf_p = (kz_f * n_s ** 2 - kz_s * n_f ** 2) / (kz_s * n_f ** 2 + kz_f * n_s ** 2)
-    r_bs_p = (kz_s * n_b ** 2 - kz_b * n_s ** 2) / (kz_s * n_b ** 2 + kz_b * n_s ** 2)
+    r_sf_p = (kz_f * n_s**2 - kz_s * n_f**2) / (kz_s * n_f**2 + kz_f * n_s**2)
+    r_bs_p = (kz_s * n_b**2 - kz_b * n_s**2) / (kz_s * n_b**2 + kz_b * n_s**2)
     t_sf_p = np.cos(Phi_i) * (1 - r_sf_p) / np.cos(Phi_s)
     t_bs_p = np.cos(Phi_s) * (1 - r_bs_p) / np.cos(Phi_b)
 
@@ -230,7 +230,7 @@ class TestTirAngle:
 
     # Wave vector:
     kz_f = n_f * k0 * np.cos((Phi_list.astype(complex)))
-    kz_s = k0 * np.sqrt((-(Kx ** 2 - n_s ** 2)).astype(complex))
+    kz_s = k0 * np.sqrt((-(Kx**2 - n_s**2)).astype(complex))
     kz_b = n_b * k0 * np.cos(Phi_b)
 
     # Amplitude coefficient for 's' polarisation:
@@ -240,8 +240,8 @@ class TestTirAngle:
     t_bs_s = 1 + r_bs_s
 
     # Amplitude coefficient for 'p' polarisation:
-    r_sf_p = (kz_f * n_s ** 2 - kz_s * n_f ** 2) / (kz_s * n_f ** 2 + kz_f * n_s ** 2)
-    r_bs_p = (kz_s * n_b ** 2 - kz_b * n_s ** 2) / (kz_s * n_b ** 2 + kz_b * n_s ** 2)
+    r_sf_p = (kz_f * n_s**2 - kz_s * n_f**2) / (kz_s * n_f**2 + kz_f * n_s**2)
+    r_bs_p = (kz_s * n_b**2 - kz_b * n_s**2) / (kz_s * n_b**2 + kz_b * n_s**2)
     t_sf_p = np.cos((Phi_list.astype(complex))) * (1 - r_sf_p) / np.cos(Phi_s)
     t_bs_p = np.cos(Phi_s) * (1 - r_bs_p) / np.cos(Phi_b)
 

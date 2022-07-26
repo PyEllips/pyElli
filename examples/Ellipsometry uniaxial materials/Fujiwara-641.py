@@ -24,8 +24,9 @@ air = elli.AIR
 n_o = 2.0  #  ordinary index of thin layer
 n_e = 2.5  #  extraordinary index of thin layer
 
-uniaxialMaterial = elli.UniaxialMaterial(elli.ConstantRefractiveIndex(n_o),
-                                       elli.ConstantRefractiveIndex(n_e))
+uniaxialMaterial = elli.UniaxialMaterial(
+    elli.ConstantRefractiveIndex(n_o), elli.ConstantRefractiveIndex(n_e)
+)
 
 # %% [markdown]
 # ## We reproduce figure 6.16 (p. 238)
@@ -63,7 +64,7 @@ plt.tight_layout()
 Φ_i = 70  #  70° incidence angle
 
 # Orientations of the anisotropic substrate
-Φ_E_list = np.linspace(0, 360, 36*2+1)  #  1st Euler angle
+Φ_E_list = np.linspace(0, 360, 36 * 2 + 1)  #  1st Euler angle
 θ_E_list = [0, 45, 90]  #  2nd Euler angle
 
 data2 = elli.ResultList()

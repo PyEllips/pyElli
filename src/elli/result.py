@@ -15,12 +15,12 @@ def _polar_index(index: str) -> int:
         int: 'p', 'L' -> 0
                 's', 'R' -> 1
     """
-    if index in ['p', 'L']:
+    if index in ["p", "L"]:
         return 0
-    if index in ['s', 'R']:
+    if index in ["s", "R"]:
         return 1
 
-    return ValueError('Wrong index given for variable.')
+    return ValueError("Wrong index given for variable.")
 
 
 class Result:
@@ -55,14 +55,12 @@ class Result:
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
-        a = np.array([[1, 0, 0, 1],
-                      [1, 0, 0, -1],
-                      [0, 1, 1, 0],
-                      [0, 1j, -1j, 0]])
+        a = np.array([[1, 0, 0, 1], [1, 0, 0, -1], [0, 1, 1, 0], [0, 1j, -1j, 0]])
 
         # Kronecker product of S and S*
-        s_kron_s_star = np.einsum('aij,akl->aikjl', np.conjugate(self.rho_matrix),
-                                  self.rho_matrix).reshape([self.rho_matrix.shape[0], 4, 4])
+        s_kron_s_star = np.einsum(
+            "aij,akl->aikjl", np.conjugate(self.rho_matrix), self.rho_matrix
+        ).reshape([self.rho_matrix.shape[0], 4, 4])
 
         mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
         mm11 = mueller_matrix[:, 0, 0]
@@ -80,13 +78,17 @@ class Result:
     @property
     def jones_matrix_tc(self) -> npt.NDArray:
         c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(c), self._jones_matrix_t, c)
+        return np.einsum(
+            "ij,...jk,kl->...il", np.linalg.inv(c), self._jones_matrix_t, c
+        )
 
     @property
     def jones_matrix_rc(self) -> npt.NDArray:
         c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
         d = 1 / sqrt(2) * np.array([[-1, -1], [-1j, 1j]])
-        return np.einsum('ij,...jk,kl->...il', np.linalg.inv(d), self._jones_matrix_r, c)
+        return np.einsum(
+            "ij,...jk,kl->...il", np.linalg.inv(d), self._jones_matrix_r, c
+        )
 
     @property
     def R(self) -> npt.NDArray:
@@ -104,10 +106,13 @@ class Result:
     def Tc(self) -> npt.NDArray:
         return np.abs(self.jones_matrix_tc) ** 2 * self._power_correction[:, None, None]
 
-    def __init__(self, experiment: "Experiment",
-                 jones_matrix_r: npt.NDArray,
-                 jones_matrix_t: npt.NDArray,
-                 power_correction: npt.NDArray = None) -> None:
+    def __init__(
+        self,
+        experiment: "Experiment",
+        jones_matrix_r: npt.NDArray,
+        jones_matrix_t: npt.NDArray,
+        power_correction: npt.NDArray = None,
+    ) -> None:
         """Creates result object, to store simulation data. Gets called by solvers.
 
         Args:
@@ -156,38 +161,52 @@ class Result:
         Returns:
             npt.NDArray: Array of data.
         """
-        names = name.rsplit('_', 1)
+        names = name.rsplit("_", 1)
 
-        if names[0] == 'Ψ':
-            names[0] = 'psi'
-        elif names[0] == 'Δ':
-            names[0] = 'delta'
-        elif names[0] == 'ρ':
-            names[0] = 'rho'
+        if names[0] == "Ψ":
+            names[0] = "psi"
+        elif names[0] == "Δ":
+            names[0] = "delta"
+        elif names[0] == "ρ":
+            names[0] = "rho"
 
-        if names[0] not in ['psi', 'delta', 'rho', 'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc',
-                            'jones_matrix_r', 'jones_matrix_t', 'jones_matrix_rc', 'jones_matrix_tc']:
+        if names[0] not in [
+            "psi",
+            "delta",
+            "rho",
+            "r",
+            "t",
+            "rc",
+            "tc",
+            "R",
+            "T",
+            "Rc",
+            "Tc",
+            "jones_matrix_r",
+            "jones_matrix_t",
+            "jones_matrix_rc",
+            "jones_matrix_tc",
+        ]:
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
         if len(names) > 1:
             (i, j) = map(_polar_index, names[1])
 
-        if names[0] in ['psi', 'delta', 'rho']:
+        if names[0] in ["psi", "delta", "rho"]:
             if len(names) == 1:
                 return self.__getattribute__(names[0])
-            return self.__getattribute__(names[0] + '_matrix')[:, i, j]
+            return self.__getattribute__(names[0] + "_matrix")[:, i, j]
 
-        if names[0] in ['r', 'rc', 't', 'tc']:
+        if names[0] in ["r", "rc", "t", "tc"]:
             if len(names) == 1:
-                return self.__getattribute__('jones_matrix_' + names[0])
-            return self.__getattribute__('jones_matrix_' + names[0])[:, i, j]
+                return self.__getattribute__("jones_matrix_" + names[0])
+            return self.__getattribute__("jones_matrix_" + names[0])[:, i, j]
 
         return self.__getattribute__(names[0])[:, i, j]
 
 
-class ResultList():
-    """Class to make a row of Results easier to handle.
-    """
+class ResultList:
+    """Class to make a row of Results easier to handle."""
 
     def __init__(self, results: List[Result] = None) -> None:
         """Creates an ResultList object.
@@ -231,35 +250,74 @@ class ResultList():
         Returns:
             npt.NDArray: Array of data.
         """
-        names = name.rsplit('_', 1)
+        names = name.rsplit("_", 1)
 
-        if names[0] == 'Ψ':
-            names[0] = 'psi'
-        elif names[0] == 'Δ':
-            names[0] = 'delta'
-        elif names[0] == 'ρ':
-            names[0] = 'rho'
+        if names[0] == "Ψ":
+            names[0] = "psi"
+        elif names[0] == "Δ":
+            names[0] = "delta"
+        elif names[0] == "ρ":
+            names[0] = "rho"
 
-        if names[0] not in ['psi', 'delta', 'rho', 'r', 't', 'rc', 'tc', 'R', 'T', 'Rc', 'Tc',
-                            'jones_matrix_r', 'jones_matrix_t', 'jones_matrix_rc', 'jones_matrix_tc']:
+        if names[0] not in [
+            "psi",
+            "delta",
+            "rho",
+            "r",
+            "t",
+            "rc",
+            "tc",
+            "R",
+            "T",
+            "Rc",
+            "Tc",
+            "jones_matrix_r",
+            "jones_matrix_t",
+            "jones_matrix_rc",
+            "jones_matrix_tc",
+        ]:
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
         if len(names) > 1:
             (i, j) = map(_polar_index, names[1])
 
-        if names[0] in ['psi', 'delta', 'rho']:
+        if names[0] in ["psi", "delta", "rho"]:
             if len(names) == 1:
-                return np.squeeze(np.array([
-                    result.__getattribute__(names[0]) for result in self.results]))
-            return np.squeeze(np.array([
-                result.__getattribute__(names[0] + '_matrix')[:, i, j] for result in self.results]))
+                return np.squeeze(
+                    np.array(
+                        [result.__getattribute__(names[0]) for result in self.results]
+                    )
+                )
+            return np.squeeze(
+                np.array(
+                    [
+                        result.__getattribute__(names[0] + "_matrix")[:, i, j]
+                        for result in self.results
+                    ]
+                )
+            )
 
-        if names[0] in ['r', 'rc', 't', 'tc']:
+        if names[0] in ["r", "rc", "t", "tc"]:
             if len(names) == 1:
-                return np.squeeze(np.array([
-                    result.__getattribute__('jones_matrix_' + names[0]) for result in self.results]))
-            return np.squeeze(np.array([
-                result.__getattribute__('jones_matrix_' + names[0])[:, i, j] for result in self.results]))
+                return np.squeeze(
+                    np.array(
+                        [
+                            result.__getattribute__("jones_matrix_" + names[0])
+                            for result in self.results
+                        ]
+                    )
+                )
+            return np.squeeze(
+                np.array(
+                    [
+                        result.__getattribute__("jones_matrix_" + names[0])[:, i, j]
+                        for result in self.results
+                    ]
+                )
+            )
 
-        return np.squeeze(np.array([
-            result.__getattribute__(names[0])[:, i, j] for result in self.results]))
+        return np.squeeze(
+            np.array(
+                [result.__getattribute__(names[0])[:, i, j] for result in self.results]
+            )
+        )

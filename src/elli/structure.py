@@ -243,6 +243,7 @@ class VaryingMixtureLayer(InhomogeneousLayer):
     Note: The set fraction of the mixture material will be ignored
     and replaced by the result of the fraction modulation function.
     """
+
     def __init__(
         self,
         material: MixtureMaterial,

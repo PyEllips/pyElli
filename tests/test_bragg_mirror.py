@@ -57,7 +57,7 @@ class TestBragg:
         """Returns the reflection coefficient in amplitude"""
         Kx = self.n[0] * np.sin(incidence_angle)
         sinPhi = Kx / self.n
-        kz = 2 * pi / self.lbda_list * np.sqrt(self.n ** 2 - Kx ** 2)
+        kz = 2 * pi / self.lbda_list * np.sqrt(self.n**2 - Kx**2)
 
         # Reflexion coefficient r_{k,k+1} for a single interface
         #    polarisation s:
