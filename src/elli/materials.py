@@ -52,7 +52,7 @@ class SingleMaterial(Material):
     def set_dispersion(self) -> None:
         """Sets dispersion relation of the material."""
 
-    def set_rotation(self, rot: npt.NDArray) -> None:
+    def set_rotation(self, r: npt.NDArray) -> None:
         """Sets rotation of the Material.
 
         Args:
@@ -60,7 +60,7 @@ class SingleMaterial(Material):
                 rotation matrix (from :func:`rotation_euler<elli.math.rotation_euler>` or others)
         """
         self.rotated = True
-        self.rotation_matrix = rot
+        self.rotation_matrix = r
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
@@ -391,7 +391,6 @@ class BruggemanEMA(MixtureMaterial):
         """
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
-        # pylint: disable=invalid-name
         f = fraction
 
         # fmt: off
@@ -433,7 +432,6 @@ class BruggemanEMA(MixtureMaterial):
         old_settings = np.geterr()
         np.seterr(invalid="ignore", divide="ignore")
 
-        # pylint: disable=invalid-name
         z0 = (
             e_h
             * e_g

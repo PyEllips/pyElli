@@ -17,13 +17,13 @@ class AbstractLayer(ABC):
 
     d = None
 
-    def set_thickness(self, thickness: float) -> None:
+    def set_thickness(self, d: float) -> None:
         """Defines the thickness of the layer in nm.
 
         Args:
             d (float): Thickness of the layer in nm.
         """
-        self.d = thickness
+        self.d = d
 
     @abstractmethod
     def get_permittivity_profile(

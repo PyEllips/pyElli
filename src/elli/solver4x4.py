@@ -38,7 +38,6 @@ class Propagator(ABC):
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        pass
 
 
 class PropagatorLinear(Propagator):
