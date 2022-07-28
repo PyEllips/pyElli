@@ -348,9 +348,9 @@ single-line-class-stmt=no
 # else.
 single-line-if-stmt=no
 
-variable-rgx=[a-zA-Z][a-zA-Z0-9_]{0,30}$
-argument-rgx=[a-zA-Z][a-zA-Z0-9_]{0,30}$
-attr-rgx=[a-zA-Z][a-zA-Z0-9_]{0,30}$
+variable-rgx=_?[a-zA-Z][a-zA-Z0-9_]{0,30}$
+argument-rgx=_?[a-zA-Z][a-zA-Z0-9_]{0,30}$
+attr-rgx=_?[a-zA-Z][a-zA-Z0-9_]{0,30}$
 
 
 [IMPORTS]
