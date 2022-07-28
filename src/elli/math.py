@@ -81,12 +81,12 @@ def rotation_v(v: npt.ArrayLike) -> npt.NDArray:
         npt.NDArray: rotation matrix :math:`M_R`
     """
     # fmt: off
-    w = np.array([[0,     -v[2], v[1]],
+    m_w = np.array([[0,     -v[2], v[1]],
                   [v[2],  0,     -v[0]],
                   [-v[1], v[0],  0]])
     # fmt: on
 
-    return scipy.linalg.expm(w)
+    return scipy.linalg.expm(m_w)
 
 
 def rotation_v_theta(v: npt.ArrayLike, theta: float) -> npt.NDArray:
@@ -102,13 +102,13 @@ def rotation_v_theta(v: npt.ArrayLike, theta: float) -> npt.NDArray:
         npt.NDArray: rotation matrix :math:`M_R`
     """
     # fmt: off
-    w = np.array([[0,     -v[2], v[1]],
+    m_w = np.array([[0,     -v[2], v[1]],
                   [v[2],  0,     -v[0]],
                   [-v[1], v[0],  0]])
     # fmt: on
 
     return (
         np.identity(3)
-        + w * np.sin(np.deg2rad(theta))
-        + np.linalg.matrix_power(w, 2) * (1 - np.cos(np.deg2rad(theta)))
+        + m_w * np.sin(np.deg2rad(theta))
+        + np.linalg.matrix_power(m_w, 2) * (1 - np.cos(np.deg2rad(theta)))
     )

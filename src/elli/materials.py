@@ -74,12 +74,12 @@ class SingleMaterial(Material):
         # Check for shape of lbda
         shape = np.shape(lbda)
         if shape == ():
-            i = 1
+            length = 1
         else:
-            i = shape[0]
+            length = shape[0]
 
         # create empty tensor
-        epsilon = np.zeros((i, 3, 3), dtype=np.complex128)
+        epsilon = np.zeros((length, 3, 3), dtype=np.complex128)
 
         # get get dielectric functions from dispersion
         epsilon[:, 0, 0] = self.dispersion_x.get_dielectric(lbda)

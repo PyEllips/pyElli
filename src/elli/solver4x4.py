@@ -26,13 +26,13 @@ class Propagator(ABC):
 
     @abstractmethod
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
@@ -44,19 +44,19 @@ class PropagatorLinear(Propagator):
     """Propagator class using a simple linear approximation of the matrix exponential."""
 
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with a linear approximation of the matrix exponential.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        p_hs_lin = np.identity(4) + 1j * h * np.einsum(
+        p_hs_lin = np.identity(4) + 1j * thickness * np.einsum(
             "nij,n->nij", delta, 2 * sc.pi / lbda
         )
         return p_hs_lin
@@ -66,19 +66,19 @@ class PropagatorExpmScipy(Propagator):
     """Propagator class using the Padé approximation of the matrix exponential."""
 
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
+        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
         p_hs_pade = np.asarray([scipy_expm(mat) for mat in mats])
 
@@ -89,23 +89,23 @@ class PropagatorExpmTorch(Propagator):
     """Propagator class using a vectorized polynomial approximation of the matrix exponential."""
 
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the polynomial approximation of the matrix exponential.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
+        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        t = torch.from_numpy(mats)
-        texp = torch.matrix_exp(t)
-        p_hs_taylor = np.asarray(texp.numpy(), dtype=np.complex128)
+        torch_mat = torch.from_numpy(mats)
+        torch_mat_exp = torch.matrix_exp(torch_mat)
+        p_hs_taylor = np.asarray(torch_mat_exp.numpy(), dtype=np.complex128)
 
         return p_hs_taylor
 
@@ -114,23 +114,23 @@ class PropagatorExpmTF(Propagator):
     """Propagator class using a vectorized Padé approximation of the matrix exponential"""
 
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
             npt.NDArray: Propagator for the given layer
         """
-        mats = 1j * h * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
+        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        t = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
-        texp = tf.linalg.expm(t)
-        p_hs_pade = np.array(texp, dtype=np.complex128)
+        tf_mat = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
+        tf_mat_exp = tf.linalg.expm(tf_mat)
+        p_hs_pade = np.array(tf_mat_exp, dtype=np.complex128)
 
         return p_hs_pade
 
@@ -139,13 +139,13 @@ class PropagatorEig(Propagator):
     """Propagator class using the eigenvalue decomposition method."""
 
     def calculate_propagation(
-        self, delta: npt.NDArray, h: float, lbda: npt.ArrayLike
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
         """Calculates propagation for a given Delta matrix and layer thickness with eigenvalue decomposition.
 
         Args:
             delta (npt.NDArray): Delta Matrix
-            h (float): Thickness of layer (nm)
+            thickness (float): Thickness of layer (nm)
             lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
 
         Returns:
@@ -162,15 +162,15 @@ class PropagatorEig(Propagator):
         q = np.take_along_axis(q, i, axis=-1)
         w = np.take_along_axis(w, i[:, np.newaxis, :], axis=-1)
 
-        wi = np.linalg.inv(w)
+        w_i = np.linalg.inv(w)
 
-        q = np.exp(q * 2j * h * sc.pi / lbda[:, None])
+        q = np.exp(q * 2j * thickness * sc.pi / lbda[:, None])
 
         p = np.zeros((lbda.shape[0], 4, 4), dtype=np.complex128)
         for i in range(4):
             p[:, i, i] = q[:, i]
 
-        return w @ p @ wi
+        return w @ p @ w_i
 
 
 class Solver4x4(Solver):
@@ -188,12 +188,12 @@ class Solver4x4(Solver):
             npt.NDArray: Delta 4x4 matrix: infinitesimal propagation matrix
         """
         if np.shape(k_x) == ():
-            i = 1
+            length = 1
         else:
-            i = np.shape(k_x)[0]
+            length = np.shape(k_x)[0]
 
-        zeros = np.tile(0, i)
-        ones = np.tile(1, i)
+        zeros = np.tile(0, length)
+        ones = np.tile(1, length)
 
         delta = np.array(
             [
@@ -243,12 +243,12 @@ class Solver4x4(Solver):
 
         # Sort according to z propagation direction, highest Re(q) first
         # if Re(q) is zero, sort by Im(q)
-        i = np.where(
+        idx = np.where(
             np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q))
         )
 
-        q = np.take_along_axis(q, i, axis=-1)
-        p = np.take_along_axis(p, i[:, np.newaxis, :], axis=-1)
+        q = np.take_along_axis(q, idx, axis=-1)
+        p = np.take_along_axis(p, idx[:, np.newaxis, :], axis=-1)
         # Result should be (+,+,-,-)
 
         # For each direction, sort according to Ey component, highest Ey first
@@ -302,9 +302,9 @@ class Solver4x4(Solver):
         sin_phi = k_x / n_x
         cos_phi = sqrt(1 - sin_phi**2)
 
-        i = np.shape(k_x)[0]
-        zeros = np.tile(0, i)
-        ones = np.tile(1, i)
+        length = np.shape(k_x)[0]
+        zeros = np.tile(0, length)
+        ones = np.tile(1, length)
 
         if inv:
             sp_to_xy = np.array(
@@ -366,32 +366,32 @@ class Solver4x4(Solver):
         layers = reversed(self.permittivity_profile[1:-1])
 
         if isinstance(self.structure.back_material, IsotropicMaterial):
-            t = self.transition_matrix_iso_halfspace(
+            m_t = self.transition_matrix_iso_halfspace(
                 k_x, self.permittivity_profile[-1][1]
             )
         else:
-            t = self.transition_matrix_halfspace(
+            m_t = self.transition_matrix_halfspace(
                 self.build_delta_matrix(k_x, self.permittivity_profile[-1][1])
             )
 
-        for d, epsilon in layers:
-            p = self.propagator.calculate_propagation(
-                self.build_delta_matrix(k_x, epsilon), -d, self.lbda
+        for thickness, epsilon in layers:
+            m_p = self.propagator.calculate_propagation(
+                self.build_delta_matrix(k_x, epsilon), -thickness, self.lbda
             )
-            t = p @ t
+            m_t = m_p @ m_t
 
-        lf = self.transition_matrix_iso_halfspace(
+        m_lf = self.transition_matrix_iso_halfspace(
             k_x, self.permittivity_profile[0][1], inv=True
         )
-        t = lf @ t
+        m_t = m_lf @ m_t
 
-        # Extraction of t_it out of t. "2::-2" means integers {2,0}.
-        t_it = t[:, 2::-2, 2::-2]
+        # Extraction of t_it out of m_t. "2::-2" means integers {2,0}.
+        t_it = m_t[:, 2::-2, 2::-2]
         # Calculate the inverse and make sure it is a matrix.
         t_ti = np.linalg.inv(t_it)
 
-        # Extraction of t_rt out of t. "3::-2" means integers {3,1}.
-        t_rt = t[:, 3::-2, 2::-2]
+        # Extraction of t_rt out of m_t. "3::-2" means integers {3,1}.
+        t_rt = m_t[:, 3::-2, 2::-2]
 
         # Then we have t_ri = t_rt * t_ti
         t_ri = t_rt @ t_ti

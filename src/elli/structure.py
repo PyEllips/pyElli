@@ -15,15 +15,15 @@ from .result import Result
 class AbstractLayer(ABC):
     """Abstract class for a layer."""
 
-    d = None
+    thickness = None
 
-    def set_thickness(self, d: float) -> None:
+    def set_thickness(self, thickness: float) -> None:
         """Defines the thickness of the layer in nm.
 
         Args:
-            d (float): Thickness of the layer in nm.
+            thickness (float): Thickness of the layer in nm.
         """
-        self.d = d
+        self.thickness = thickness
 
     @abstractmethod
     def get_permittivity_profile(
@@ -107,8 +107,8 @@ class RepeatedLayers(AbstractLayer):
                 Returns list of tuples [(thickness, dielectric tensor), ...]
         """
         layers = []
-        for l in self.layers:
-            layers += l.get_permittivity_profile(lbda)
+        for layer in self.layers:
+            layers += layer.get_permittivity_profile(lbda)
 
         if self.before > 0:
             before = layers[-self.before :]
@@ -120,15 +120,15 @@ class RepeatedLayers(AbstractLayer):
 class Layer(AbstractLayer):
     """Homogeneous layer of dielectric material."""
 
-    def __init__(self, material: Material, d: float) -> None:
-        """New layer of material 'material', with thickness 'd'
+    def __init__(self, material: Material, thickness: float) -> None:
+        """New layer of material 'material', with thickness 'thickness'
 
         Args:
             material (Material): Material object
-            d (float): Thickness of layer (in nm)
+            thickness (float): Thickness of layer (in nm)
         """
         self.set_material(material)
-        self.set_thickness(d)
+        self.set_thickness(thickness)
 
     def set_material(self, material: Material) -> None:
         """Defines the material for the layer.
@@ -150,7 +150,7 @@ class Layer(AbstractLayer):
             List[Tuple[float, npt.NDArray]]:
                 Returns a list containing one tuple [(thickness, dielectric tensor)]
         """
-        return [(self.d, self.material.get_tensor(lbda))]
+        return [(self.thickness, self.material.get_tensor(lbda))]
 
 
 #########################################################
@@ -176,7 +176,7 @@ class InhomogeneousLayer(Layer):
         Returns:
             npt.NDArray: array of 'z' positions [z0, z1,... , zmax], with z0 = 0 and zmax = z{d+1}
         """
-        return np.linspace(0, self.d, self.div + 1)
+        return np.linspace(0, self.thickness, self.div + 1)
 
     @abstractmethod
     def get_tensor(self, z: float, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -204,17 +204,19 @@ class TwistedLayer(InhomogeneousLayer):
     """Twisted layer.
     The material gets rotated around the z axis."""
 
-    def __init__(self, material: Material, d: float, div: int, angle: float) -> None:
+    def __init__(
+        self, material: Material, thickness: float, div: int, angle: float
+    ) -> None:
         """Creates a layer with a twisted material.
 
         Args:
             material (Material): Material object
-            d (float): Thickness of layer (in nm)
+            thickness (float): Thickness of layer (in nm)
             div (int): Number of slices for the layer
             angle (float): rotation angle over the distance 'd' (in degrees)
         """
         self.set_material(material)
-        self.set_thickness(d)
+        self.set_thickness(thickness)
         self.set_divisions(div)
         self.set_angle(angle)
 
@@ -237,8 +239,8 @@ class TwistedLayer(InhomogeneousLayer):
             npt.NDArray: Permittivity tensor for position 'z' and wavelength 'lbda'.
         """
         epsilon = self.material.get_tensor(lbda)
-        R = rotation_v_theta([0, 0, 1], self.angle * z / self.d)
-        return R @ epsilon @ R.T
+        m_r = rotation_v_theta([0, 0, 1], self.angle * z / self.thickness)
+        return m_r @ epsilon @ m_r.T
 
 
 class VaryingMixtureLayer(InhomogeneousLayer):
@@ -251,12 +253,11 @@ class VaryingMixtureLayer(InhomogeneousLayer):
     def __init__(
         self,
         material: MixtureMaterial,
-        d: float,
+        thickness: float,
         div: int,
         fraction_modulation: Callable[[float], float] = lambda x: x,
     ) -> None:
-        """Creates a layer with a mixture material varying in z direction.
-
+        """
         Args:
             material (MixtureMaterial): MixtureMaterial object
             d (float): Thickness of layer (in nm)
@@ -269,7 +270,7 @@ class VaryingMixtureLayer(InhomogeneousLayer):
                 (100% host material to 100% guest material).
         """
         self.set_material(material)
-        self.set_thickness(d)
+        self.set_thickness(thickness)
         self.set_divisions(div)
         self.set_fraction_modulation(fraction_modulation)
 
@@ -299,7 +300,7 @@ class VaryingMixtureLayer(InhomogeneousLayer):
             npt.NDArray: Permittivity tensor for position 'z' and wavelength 'lbda'.
         """
         epsilon = self.material.get_tensor_fraction(
-            lbda, self.fraction_modulation(z / self.d)
+            lbda, self.fraction_modulation(z / self.thickness)
         )
         return epsilon
 
@@ -312,9 +313,10 @@ class Structure:
     """Description of the whole structure.
 
     Consists of:
-    - front half-space (incident)
-    - back half-space (exit)
-    - layer succession
+
+    * front half-space (incident)
+    * layer succession
+    * back half-space (exit)
     """
 
     front_material = None
@@ -324,8 +326,7 @@ class Structure:
     def __init__(
         self, front: IsotropicMaterial, layers: List[Layer], back: Material
     ) -> None:
-        """Creates a structure.
-
+        """
         Args:
             front (IsotropicMaterial): IsotropicMaterial used as front half space
             layers (List[Layer]): List of Layers, starting from z=0

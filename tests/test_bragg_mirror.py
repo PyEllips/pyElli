@@ -47,8 +47,8 @@ class TestBragg:
     n.shape = (-1, 1)
 
     d = np.ones(N + 1)
-    d[1::2] = L_TiO2.d  #  d[0] is not used
-    d[2::2] = L_SiO2.d
+    d[1::2] = L_TiO2.thickness  #  d[0] is not used
+    d[2::2] = L_SiO2.thickness
 
     (lbda1, lbda2) = (1100, 2500)
     lbda_list = np.linspace(lbda1, lbda2, 200)
