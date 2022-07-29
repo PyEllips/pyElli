@@ -63,7 +63,7 @@ def rotation_euler(p: float, n: float, r: float) -> npt.NDArray:
 
 
 def rotation_v(v: npt.ArrayLike) -> npt.NDArray:
-    """Returns rotation matrix defined by a rotation vector v.
+    r"""Returns rotation matrix defined by a rotation vector v.
 
     The calculation is made with the matrix exponential
     :math:`M_R = \exp(W)`, with :math:`W_{ij} = - ε_{ijk} V_{k}`,
