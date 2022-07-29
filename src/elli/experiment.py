@@ -37,7 +37,7 @@ class Experiment:
         structure: "Structure",
         lbda: npt.ArrayLike,
         theta_i: float,
-        vector: npt.ArrayLike = [1, 0, 1, 0],
+        vector: npt.ArrayLike = None,
     ) -> None:
         """Creates a virtual experiment to simulate the behavior of a structure.
 
@@ -46,7 +46,7 @@ class Experiment:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
             theta_i (float): Incident angle (in degrees).
             vector (npt.ArrayLike, optional):
-                Jones or Stokes vector of incident light. Defaults to [1, 0, -1, 0].
+                Jones or Stokes vector of incident light. Defaults to diagonal polarization ([1, 0, 1, 0]).
         """
         self.set_structure(structure)
         self.set_theta(theta_i)
@@ -80,6 +80,9 @@ class Experiment:
         Args:
             vector (npt.ArrayLike): Jones or Stokes vector of incident light.
         """
+        if vector is None:
+            vector = [1, 0, 1, 0]
+
         vector = np.asarray(vector)
 
         if vector.shape == (2,):
@@ -155,8 +158,5 @@ class Experiment:
         Returns:
             Result: Result of the experiment.
         """
-        if solver_kwargs == {}:
-            solv = solver(self)
-        else:
-            solv = solver(self, **solver_kwargs)
+        solv = solver(self, **solver_kwargs)
         return solv.calculate()
