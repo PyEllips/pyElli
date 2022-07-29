@@ -53,3 +53,6 @@ MANIFEST
 # Per-project virtualenvs
 .venv*/
 .conda*/
+
+# Ignore pyenv virtualenv python version
+.python-version

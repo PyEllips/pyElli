@@ -18,7 +18,7 @@ from lmfit import minimize, Parameters
 from ..result import Result
 from ..utils import calc_pseudo_diel, calc_rho
 from .params_hist import ParamsHist
-from .decorator import FitDecorator
+from .decorator import FitDecorator, is_in_notebook
 
 
 class FitRho(FitDecorator):
@@ -201,19 +201,22 @@ class FitRho(FitDecorator):
             widgets.HBox([v, w])
             for v, w in zip(list(self.param_widgets.values()), checkboxes)
         ]
-        display(
-            widgets.VBox(
-                [
-                    widgets.HBox(
-                        combo_widget + button_list,
-                        layout=widgets.Layout(
-                            width="100%", display="inline-flex", flex_flow="row wrap"
+        if is_in_notebook():
+            display(
+                widgets.VBox(
+                    [
+                        widgets.HBox(
+                            combo_widget + button_list,
+                            layout=widgets.Layout(
+                                width="100%",
+                                display="inline-flex",
+                                flex_flow="row wrap",
+                            ),
                         ),
-                    ),
-                    self.fig,
-                ]
+                        self.fig,
+                    ]
+                )
             )
-        )
 
     def fit_function(
         self,

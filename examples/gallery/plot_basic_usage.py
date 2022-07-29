@@ -93,7 +93,7 @@ params.add("SiO2_d", value=20, min=0, max=40000, vary=True)
 # There exist 4x4 matrix solvers as well.
 # You may refer to the :ref:`solver documentation <solvers>` for further details.
 #
-# Executing the cell below compares the simulated Ψ / Δ values
+# Executing the cell below in a jupyter notebook displays a comparison of the simulated Ψ / Δ values
 # at the current parameter values with their measured counterparts.
 # Additionally, input fields for each model parameter are shown.
 # You may change the parameters and the calcualted data will change accordingly.

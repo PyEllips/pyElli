@@ -15,7 +15,7 @@ from lmfit.minimizer import MinimizerResult
 from ..result import Result
 from ..plot.mueller_matrix import plot_mmatrix
 from .params_hist import ParamsHist
-from .decorator import FitDecorator
+from .decorator import FitDecorator, is_in_notebook
 
 
 def mmatrix_to_dataframe(
@@ -132,19 +132,22 @@ class FitMuellerMatrix(FitDecorator):
             widgets.HBox([v, w])
             for v, w in zip(list(self.param_widgets.values()), checkboxes)
         ]
-        display(
-            widgets.VBox(
-                [
-                    widgets.HBox(
-                        combo_widget + button_list + [residual_checkbox],
-                        layout=widgets.Layout(
-                            width="100%", display="inline-flex", flex_flow="row wrap"
+        if is_in_notebook():
+            display(
+                widgets.VBox(
+                    [
+                        widgets.HBox(
+                            combo_widget + button_list + [residual_checkbox],
+                            layout=widgets.Layout(
+                                width="100%",
+                                display="inline-flex",
+                                flex_flow="row wrap",
+                            ),
                         ),
-                    ),
-                    self.fig,
-                ]
+                        self.fig,
+                    ]
+                )
             )
-        )
 
     def fit_function(
         self, params: Parameters, lbda: npt.NDArray, mueller_matrix: pd.DataFrame

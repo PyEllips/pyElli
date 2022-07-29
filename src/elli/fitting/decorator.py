@@ -11,6 +11,25 @@ import pandas as pd
 from .params_hist import ParamsHist
 
 
+def is_in_notebook() -> bool:
+    """Checks whether the current shell is in a jupyter notebook.
+
+    Returns:
+        bool: True if the shell is in jupyter, False otherwise.
+    """
+    try:
+        # pylint: disable=import-outside-toplevel
+        from IPython import get_ipython
+
+        if "IPKernelApp" not in get_ipython().config:
+            return False
+    except ImportError:
+        return False
+    except AttributeError:
+        return False
+    return True
+
+
 class FitDecorator(ABC):
     """The abstract base class for fitting decorators.
     Providing features for fit, undo and redo buttons."""
@@ -42,14 +61,13 @@ class FitDecorator(ABC):
         Returns:
             pd.DataFrame: The model results
         """
-        ...
 
     def to_csv(
         self,
+        *args,
         fname: str,
         params: Parameters = None,
         append_exp_data: bool = False,
-        *args,
         **kwargs
     ) -> None:
         """Saves the current model to csv. This is just a wrapper to
@@ -80,7 +98,6 @@ class FitDecorator(ABC):
         Returns:
             Result: The fitting result
         """
-        ...
 
     @abstractmethod
     def update_selection(self, change: dict = None) -> None:
@@ -89,7 +106,6 @@ class FitDecorator(ABC):
         Args:
             change (dict, optional): A dictionary containing the ipywidgets change event
         """
-        ...
 
     def set_vary_param(self, change: dict) -> None:
         self.initial_params[change.owner.description_tooltip].vary = change.new
