@@ -157,10 +157,19 @@ class Layer(AbstractLayer):
 # Inhomogeneous Layers
 
 
-class InhomogeneousLayer(Layer):
+class InhomogeneousLayer(AbstractLayer):
     """Abstract base class for inhomogeneous layers with varying properties in z-direction."""
 
+    material = None
     div = None
+
+    def set_material(self, material: Material) -> None:
+        """Defines the material for the layer.
+
+        Args:
+            material (Material): Material object
+        """
+        self.material = material
 
     def set_divisions(self, div: int) -> None:
         """Defines the number of slices to simulate the layer.
