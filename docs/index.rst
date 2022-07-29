@@ -26,13 +26,16 @@ to evaluate a modeled system.
 
 .. mermaid::
 
-    graph TD
+   graph LR
         Dx(Dispersion x) --> AM
         Dy(Dispersion y) --> AM
         Dz(Dispersion z) --> AM
         D(Dispersion) --> M
-        M(Material) --> S
-        AM(AnisotropicMaterial) --> S
+        M(Material) --> L
+        AM(AnisotropicMaterial) --> L
+        M -- front Material --> S
+        AM -- back Material --> S
+        L(Layers) --> S & S
         S(Structure) --> E(Experiment)
         S --> |evaluate| R(Result)
         E --> R
