@@ -8,8 +8,14 @@ A list of Layers can be added as desired in between these materials,
 to create a 1D model of layered media.
 
 The basic :class:`Layer` consists of a material and an assigned thickness.
+An arbitrary sequence of layers can be stacked and repeated by :class:`RepeatedLayers`,
+to create Bragg-mirror or multiple quantum well structures.
 
+There are also classes to approximate layers with varying properties along the z-axis
+(inhomogeneous layers) by creating multiple thinner homogeneous slices:
 
+* :class:`TwistedLayer` is able to represent rotating materials, like twisted nematic materials.
+* :class:`VaryingMixtureLayer` takes an :class:`MixtureMaterial<elli.materials.MixtureMaterial>` and uses a gradient as mixture fraction.
 """
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Callable
