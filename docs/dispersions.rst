@@ -15,21 +15,12 @@ Epsilon Infinity
 
 Cauchy
 ======
-
-.. plot::
-
-   import matplotlib.pyplot as plt
-   import numpy as np
-   import elli
-   lbda = np.linspace(400, 800, 1000)
-   plt.plot(lbda, elli.Cauchy().get_dielectric(lbda).real, label="real")
-   plt.plot(lbda, elli.Cauchy().get_dielectric(lbda).imag, label="imag")
-   plt.xlabel("Wavelength (nm)")
-   plt.ylabel("Dielectric function")
-   plt.title(r'Cauchy model')
-   plt.show()
-
 .. autoclass:: elli.dispersions.dispersions.Cauchy
+
+.. plotly::
+
+   elli.Cauchy().get_dielectric_df().plot(backend="plotly")
+
 
 Sellmeier
 =========
@@ -51,7 +42,11 @@ Lorentz
 
 Wavelength parameters
 ---------------------
-.. autoclass:: elli.dispersions.dispersions.LorentzLambda
+
+.. plotly::
+
+   elli.LorentzLambda().add(1, 500, 100).get_dielectric_df().plot(backend="plotly")
+
 
 Energy parameters
 -----------------
