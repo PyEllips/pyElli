@@ -2,6 +2,8 @@
 Materials & EMA
 ================
 
+.. automodule:: elli.materials
+
 Abstract base classes
 ---------------------
 .. autoclass:: elli.materials.Material

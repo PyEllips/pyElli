@@ -1,6 +1,31 @@
-"""Material classes to supply isotropic and anistropic materials
-and EMAs."""
 # Encoding: utf-8
+"""The Materials submodule provides the classes to build
+complex materials from :doc:`dispersion models<dispersions>`.
+
+The simplest provided material is the
+:class:`IsotropicMaterial<elli.materials.IsotropicMaterial>`.
+It takes only one Dispersion which is used for all three axis of the material.
+It can also be created by calling dispersion.get_mat().
+
+For Crystals with two or three different dispersions, there are the
+:class:`UniaxialMaterial<elli.materials.UniaxialMaterial>` and
+:class:`UniaxialMaterial<elli.materials.UniaxialMaterial>` respectively.
+
+The respective materials can be rotated to achieve different crystal orientations.
+A good visualization for these rotations can be found in Figure 6.10 of Fujiwara's
+book 'Spectroscopic Ellipsometry' [1]_.
+
+Additionally two materials can be combined via various :ref:'Effective medium approximations',
+to create mixtures or account for interface roughness.
+
+.. rubric:: References
+
+.. [1] H. Fujiwara,
+   Spectroscopic Ellipsometry,
+   Principles and Applications,
+   Chichester, UK, John Wiley & Sons, Ltd (2007).
+   https://doi.org/10.1002/9780470060193
+"""
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
@@ -63,7 +88,7 @@ class SingleMaterial(Material):
         self.rotation_matrix = r
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+        """Gets the permittivity tensor of the material for wavelength 'lbda'.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
@@ -105,7 +130,7 @@ class IsotropicMaterial(SingleMaterial):
 
     # pylint: disable=arguments-differ
     def set_dispersion(self, dispersion: "Dispersion") -> None:
-        """Sets dipsersion relation of the isotropic material.
+        """Sets dispersion relation of the isotropic material.
 
         Args:
             dispersion (Dispersion): Dispersion relation of all three crystal directions.
@@ -133,7 +158,7 @@ class UniaxialMaterial(SingleMaterial):
     def set_dispersion(
         self, dispersion_o: "Dispersion", dispersion_e: "Dispersion"
     ) -> None:
-        """Sets dipsersion relations of the uniaxial material.
+        """Sets dispersion relations of the uniaxial material.
 
         Args:
             dispersion_o (Dispersion):
@@ -171,7 +196,7 @@ class BiaxialMaterial(SingleMaterial):
         dispersion_y: "Dispersion",
         dispersion_z: "Dispersion",
     ) -> None:
-        """Sets dipsersion relations of the biaxial material.
+        """Sets dispersion relations of the biaxial material.
 
         Args:
             dispersion_x (Dispersion): Dispersion relation for x crystal axes.
@@ -228,7 +253,7 @@ class MixtureMaterial(Material):
 
     @abstractmethod
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        """Gets the permittivity tensor of the material for wavelength 'lbda',
         while overwriting the set fraction. Used in VaryingMixtureLayers.
 
         Args:
@@ -240,7 +265,7 @@ class MixtureMaterial(Material):
         """
 
     def get_tensor(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda'.
+        """Gets the permittivity tensor of the material for wavelength 'lbda'.
 
         Args:
             lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
@@ -302,7 +327,7 @@ class LooyengaEMA(MixtureMaterial):
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        """Gets the permittivity tensor of the material for wavelength 'lbda',
         while overwriting the set fraction.
 
         Args:
@@ -337,7 +362,7 @@ class MaxwellGarnettEMA(MixtureMaterial):
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        """Gets the permittivity tensor of the material for wavelength 'lbda',
         while overwriting the set fraction.
 
         Args:
@@ -379,7 +404,7 @@ class BruggemanEMA(MixtureMaterial):
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
-        """Gets the permittivity tensor of the marterial for wavelength 'lbda',
+        """Gets the permittivity tensor of the material for wavelength 'lbda',
         while overwriting the set fraction.
 
         Args:
