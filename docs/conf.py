@@ -77,6 +77,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx_rtd_theme",
     "m2r2",
     "sphinx_gallery.gen_gallery",
