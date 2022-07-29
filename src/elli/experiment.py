@@ -1,4 +1,20 @@
 # Encoding: utf-8
+r"""The experiment class defines the external conditions of the sample.
+
+It requires a Structure to evaluate and includes the information about
+the incident light beam:
+
+* the wavelengths :math:`\lambda`
+* the incidence angle :math:`\theta_\text{i}`
+* and the polarization, which can be given by a Jones or Stokes vector
+
+The evaluate method can be called, to start the calculation of the optical properties.
+To choose a Solver to be used in the calculation, the solver class is provided
+as an argument and an object will be created automatically.
+
+The experiment class is only needed in special cases an can be skipped by calling
+:meth:`elli.structure.Structure.evaluate`.
+"""
 import numpy as np
 import numpy.typing as npt
 
