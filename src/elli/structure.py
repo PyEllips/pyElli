@@ -1,4 +1,16 @@
 # Encoding: utf-8
+"""The virtual representation of a sample is finally build
+using the Structure class.
+
+A :class:`Structure` consists of one IsotropicMaterial used as semi-infinite
+entry material and a second arbitrary Material as exit material.
+A list of Layers can be added as desired in between these materials,
+to create a 1D model of layered media.
+
+The basic :class:`Layer` consists of a material and an assigned thickness.
+
+
+"""
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Callable
 import numpy as np
@@ -14,16 +26,6 @@ from .result import Result
 
 class AbstractLayer(ABC):
     """Abstract class for a layer."""
-
-    thickness = None
-
-    def set_thickness(self, thickness: float) -> None:
-        """Defines the thickness of the layer in nm.
-
-        Args:
-            thickness (float): Thickness of the layer in nm.
-        """
-        self.thickness = thickness
 
     @abstractmethod
     def get_permittivity_profile(
@@ -120,6 +122,8 @@ class RepeatedLayers(AbstractLayer):
 class Layer(AbstractLayer):
     """Homogeneous layer of dielectric material."""
 
+    thickness = None
+
     def __init__(self, material: Material, thickness: float) -> None:
         """New layer of material 'material', with thickness 'thickness'
 
@@ -129,6 +133,14 @@ class Layer(AbstractLayer):
         """
         self.set_material(material)
         self.set_thickness(thickness)
+
+    def set_thickness(self, thickness: float) -> None:
+        """Defines the thickness of the layer in nm.
+
+        Args:
+            thickness (float): Thickness of the layer in nm.
+        """
+        self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
         """Defines the material for the layer.
@@ -160,8 +172,17 @@ class Layer(AbstractLayer):
 class InhomogeneousLayer(AbstractLayer):
     """Abstract base class for inhomogeneous layers with varying properties in z-direction."""
 
+    thickness = None
     material = None
     div = None
+
+    def set_thickness(self, thickness: float) -> None:
+        """Defines the thickness of the layer in nm.
+
+        Args:
+            thickness (float): Thickness of the layer in nm.
+        """
+        self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
         """Defines the material for the layer.
