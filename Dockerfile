@@ -7,3 +7,4 @@ RUN pip install plotly ipython ipywidgets torch
 RUN pip install pyElli
 
 WORKDIR $HOME/work
+ADD examples ./

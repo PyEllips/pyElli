@@ -14,5 +14,6 @@ API Reference
    solvers
    result
    plot
+   read_write
    spectraray
    helpers
