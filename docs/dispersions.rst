@@ -42,6 +42,7 @@ Lorentz
 
 Wavelength parameters
 ---------------------
+.. autoclass:: elli.dispersions.dispersions.LorentzLambda
 
 .. plotly::
 
