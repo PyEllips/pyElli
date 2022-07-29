@@ -12,6 +12,7 @@ lmfit
 plotly
 ipywidgets
 sphinx-gallery
+sphinx-plotly-directive
 sphinxcontrib-mermaid 
 matplotlib
 h5py
