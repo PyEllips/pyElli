@@ -1,6 +1,8 @@
 """
 Multilayer fit
 ==============
+
+Fits a multilayer model to an ALD grown TiO2 sample on SiO2 / Si.
 """
 
 # %%
