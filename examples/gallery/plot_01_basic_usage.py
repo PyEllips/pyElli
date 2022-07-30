@@ -2,8 +2,7 @@
 Basic usage
 ===========
 
-This example shows the basic usage of building a model and fitting it to measurement data.
-As an example material SiO2 on Si is used.
+Basic usage of building a model and fitting it to measurement data of SiO2 on Si.
 
 """
 # %%
@@ -196,3 +195,9 @@ fit_stats.chisqr
 # %%
 # We can print the full fit statistics, too.
 fit_stats
+
+# %%
+# References
+# ----------
+# `Here <https://github.com/PyEllips/pyElli/tree/master/examples/Basic%20Usage>`_
+# you can find the latest jupyter notebook and data files of this example.

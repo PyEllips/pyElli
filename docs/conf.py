@@ -12,6 +12,7 @@ import sys
 import shutil
 import plotly.io as pio
 from plotly.io._sg_scraper import plotly_sg_scraper
+from sphinx_gallery.sorting import FileNameSortKey
 
 pio.renderers.default = "sphinx_gallery"
 
@@ -95,6 +96,10 @@ sphinx_gallery_conf = {
     "capture_repr": ("_repr_html_", "__repr__"),
     "image_scrapers": image_scrapers,
     "remove_config_comments": True,
+    "download_all_examples": False,
+    "show_signature": False,
+    "first_notebook_cell": None,
+    "within_subsection_order": FileNameSortKey,
 }
 
 # Add any paths that contain templates here, relative to this directory.

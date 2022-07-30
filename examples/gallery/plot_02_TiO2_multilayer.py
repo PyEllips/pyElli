@@ -1,36 +1,33 @@
----
-jupyter:
-  jupytext:
-    formats: ipynb,md
-    text_representation:
-      extension: .md
-      format_name: markdown
-      format_version: '1.3'
-      jupytext_version: 1.11.4
-  kernelspec:
-    display_name: Python (elli)
-    language: python
-    name: myenv
----
+"""
+Multilayer fit
+==============
+"""
 
-```python
+# %%
 import elli
 from elli.fitting import ParamsHist, fit
-```
 
+# sphinx_gallery_thumbnail_path = '_static/multilayer.png'
+
+# %%
 # Load data
-Load data collected with Sentech Ellipsometer and cut the spectral range (to use Si Aspnes file)
-
-The sample is an ALD grown TiO2 sample (with 400 cycles) on commercially available SiO2 / Si substrate.
-
-```python
+# ---------
+#
+# Load data collected with Sentech Ellipsometer and cut the spectral range (to use Si Aspnes file)
+#
+# The sample is an ALD grown TiO2 sample (with 400 cycles)
+# on commercially available SiO2 / Si substrate.
 tss = elli.SpectraRay.read_psi_delta_file("TiO2_400cycles.txt").loc[400:800]
-ρ = elli.SpectraRay.read_rho("TiO2_400cycles.txt").loc[400:800]
-```
 
-# Estimate Parameters and build model
-
-```python
+# %%
+# Set start parameters
+# --------------------
+# Here we set the start parameters for the TiO2 and SiO2 layer.
+# We set the SiO2 layer parameters to a fixed value from another
+# fit of the substrate. See the :ref:`Basic usage` example for details
+# on how to perform such a fit.
+# In general it is a good idea to fit your data layer-wise if possible
+# to yield a better fit quality.
 params = ParamsHist()
 params.add("SiO2_n0", value=1.452, min=-100, max=100, vary=False)
 params.add("SiO2_n1", value=36.0, min=-40000, max=40000, vary=False)
@@ -48,9 +45,14 @@ params.add("TiO2_k1", value=0, min=-40000, max=40000, vary=False)
 params.add("TiO2_k2", value=0, min=-40000, max=40000, vary=False)
 
 params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
-```
 
-```python
+# %%
+# Building the model
+# ------------------
+# Here the model is build and the experimental structure is returned.
+# For details on this process please refer to the :ref:`Basic usage` example.
+# When executed in an jupyter notebook this displays an interactive graph
+# with which you can select the start parameters before fitting the data.
 @fit(tss, params)
 def model(lbda, params):
     sr = elli.SpectraRay("./")
@@ -81,25 +83,27 @@ def model(lbda, params):
 
     # Alternative: Use 4x4 Solver with faster PyTorch propagator (needs Pytorch to be installed)
     # return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
-```
 
-# Fit to experimental data
 
-```python
-out = model.fit()
-out
-```
-
-# Show fits
-
-```python
+# %%
+# Plot & Fit model
+# ----------------
+# We plot the model to see the deviation with the initial parameters.
 model.plot()
-```
 
-```python
-model.plot_rho()
-```
 
-```python
+# %%
+# Now lets perform the fit and plot the comparison of
+# calculation and experimental data afterwards.
+fit_stats = model.fit()
+model.plot()
 
-```
+# %%
+# We can also have a look at the fit statistics.
+fit_stats
+
+# %%
+# References
+# ----------
+# `Here <https://github.com/PyEllips/pyElli/tree/master/examples/TiO2%20Fit>`_
+# you can find the latest jupyter notebook and data files of this example.
