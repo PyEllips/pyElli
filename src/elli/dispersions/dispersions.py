@@ -1,6 +1,6 @@
 # Encoding: utf-8
 """The dispersions are the central part of pyElli and the transfer-matrix method.
-They describe the change of dielectric function or refractive index with wavlength.
+They describe the change of dielectric function or refractive index with the wavelength.
 In pyElli the default wavelength unit is nm.
 Each dispersion has two distinct sets of parameters:
 
@@ -231,7 +231,7 @@ class DrudeResistivity(Dispersion):
 
 
 class LorentzLambda(Dispersion):
-    r"""Lorentz disperison law with parameters in units of wavelengths.
+    r"""Lorentz dispersion law with parameters in units of wavelengths.
 
     Single parameters:
         --
@@ -264,7 +264,7 @@ class LorentzLambda(Dispersion):
 
 
 class LorentzEnergy(Dispersion):
-    r"""Lorentz disperison law with parameters in units of energy.
+    r"""Lorentz dispersion law with parameters in units of energy.
 
     Single parameters:
         --
@@ -510,7 +510,7 @@ class Tanguy(Dispersion):
 
 
 class Poles(Dispersion):
-    r"""Disperion law for an UV and IR pole,
+    r"""Dispersion law for an UV and IR pole,
     i.e. Lorentz oscillators outside the fitting spectral range and zero broadening.
 
     Single parameters:

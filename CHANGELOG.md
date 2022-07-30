@@ -11,7 +11,7 @@
 ## Version 0.10.0
 
 - Dispersions are now addressed by their name only (instead of Dispersion...)
-- Dispersions are initialized with two distinguished set of parameters for parameters which are set once and parameters which may be set multiple times (for oscillators etc). They can bey added by invocing the `add` command on the respective class.
+- Dispersions are initialized with two distinguished set of parameters for parameters which are set once and parameters which may be set multiple times (for oscillators etc). They can be added by invoking the `add` command on the respective class.
 - There is a new factory class `DispersionFactory` to get a dispersion from it's string name, i.e. `DispersionFactory.get_dispersion(...)`
 
 ## Version 0.9.2
@@ -43,7 +43,7 @@
 
 ## Version 0.1.0
 
-- Initial Version after unforking
+- Initial Version after un-forking
 - Complete rewrite of module structure
 - Vectorization of calculations for massive speed-up
 - Packaging as PyPi package

@@ -96,11 +96,11 @@ class ParamsHist(Parameters):
         super().__getitem__(key).value = value
 
     def update_params(self, parameters) -> None:
-        """Updates the current paramters from a lmfit parameters object.
+        """Updates the current parameters from a lmfit parameters object.
 
         Args:
             parameters (lmfit.Parameters):
-                The lmfit paramters object to update the values from.
+                The lmfit parameters object to update the values from.
         """
         self.commit()
         self.update(parameters)

@@ -121,7 +121,7 @@ class Dispersion(ABC):
         """Returns the dielectric function as a pandas dataframe
 
         Args:
-            lbda (npt.ArrayLike, optional): The wavlength range to use.
+            lbda (npt.ArrayLike, optional): The wavelength range to use.
                 If this parameter is not given a default spectral range
                 from 200 to 1000 nm with 801 points is used.
                 Defaults to None.
@@ -148,7 +148,7 @@ class Dispersion(ABC):
         """Returns the refractive index as a pandas dataframe
 
         Args:
-            lbda (npt.ArrayLike, optional): The wavlength range to use.
+            lbda (npt.ArrayLike, optional): The wavelength range to use.
                 If this parameter is not given a default spectral range
                 from 200 to 1000 nm with 801 points is used.
                 Defaults to None.

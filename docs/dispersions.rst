@@ -78,7 +78,7 @@ Epsilon values
 Abstract classes
 ================
 These classes serve as basic interfaces for dispersions and
-convenient + generalised handling.
+convenient + generalized handling.
 
 Dispersion
 ----------

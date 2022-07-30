@@ -11,7 +11,7 @@ It splits the calculation into two 2x2 matrices, one for the s and one for the p
 The :class:`Solver4x4<elli.solver4x4.Solver4x4>` is a more complex algorithm for anisotropic materials.
 It employs a full 4x4 matrix formulation for all light interaction.
 It is based on the Berreman matrix formalism [1]_.
-In the Berreman formalism a propagotor for matrix exponentials is needed.
+In the Berreman formalism a propagator for matrix exponentials is needed.
 pyElli provides different implementations to be used in the calculation of the transfer matrices.
 The :class:`PropagatorEig<elli.solver4x4.PropagatorEig>` is based on solving the eigenvalues of the first order approximation of the matrix exponential.
 Although, it is very fast it is not very accurate.

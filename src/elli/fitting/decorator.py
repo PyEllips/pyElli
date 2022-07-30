@@ -127,7 +127,7 @@ class FitDecorator(ABC):
         self.update_selection()
 
     def re_undo_button_clicked(self, button: widgets.Button) -> None:
-        """Redo or undo an operation on the paramters history object
+        """Redo or undo an operation on the parameters history object
 
         Args:
             button (widgets.Button):

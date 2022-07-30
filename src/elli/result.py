@@ -10,7 +10,7 @@ def _polar_index(index: str) -> int:
     """Return polarization index for character 'index'.
 
     Args:
-        index (str): Polarisation index, valid are: 'p', 's', 'R', 'L'.
+        index (str): Polarization index, valid are: 'p', 's', 'R', 'L'.
     Returns:
         int: 'p', 'L' -> 0
                 's', 'R' -> 1
@@ -117,7 +117,7 @@ class Result:
 
         Args:
             experiment (Experiment):
-                Evalatued experiment, with structure and experimental parameters.
+                Evaluated experiment, with structure and experimental parameters.
             jones_matrix_r (npt.NDArray): Jones matrix for the reflection direction.
             jones_matrix_t (npt.NDArray): Jones matrix for the transmission direction.
             power_correction (npt.NDArray):
@@ -143,7 +143,7 @@ class Result:
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
                 'psi', 'delta', 'rho':
                     Reduced ellipsometry parameters,
-                    the whole matricies are returned by 'psi_matrix'.
+                    the whole matrices are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
@@ -162,7 +162,7 @@ class Result:
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
                 'psi', 'delta', 'rho':
                     Reduced ellipsometry parameters,
-                    the whole matricies are returned by 'psi_matrix'.
+                    the whole matrices are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
@@ -234,7 +234,7 @@ class ResultList:
         self.results.append(result)
 
     def __len__(self) -> int:
-        """Returns lenght of ResultList.
+        """Returns length of ResultList.
 
         Returns:
             int: Number of Results in ResultList.
@@ -253,7 +253,7 @@ class ResultList:
                 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
                 'psi', 'delta', 'rho':
                     Reduced ellipsometry parameters,
-                    the whole matricies are returned by 'psi_matrix'.
+                    the whole matrices are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.

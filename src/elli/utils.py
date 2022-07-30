@@ -14,7 +14,7 @@ def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
         angle (float): Angle of measurement in degree
         output (str, optional): Output format for dielectric function.
             'n': refractive index,
-            'eps': Dielectic function as two-column pandas.DataFrame,
+            'eps': Dielectric function as two-column pandas.DataFrame,
             'epsi': Dielectric function as imaginary number.
             Defaults to 'eps'.
 
@@ -58,7 +58,7 @@ def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_qwp_thickness(material: "Material", lbda: float) -> float:
-    """Return the thickness of a material in nm for a quater wave plate at wavelength 'lbda'.
+    """Return the thickness of a material in nm for a quarter wave plate at wavelength 'lbda'.
 
     Args:
         material (Material): Material object of the quarter wave plate

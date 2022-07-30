@@ -18,7 +18,7 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
     Returns:
     pd.DataFrame: Psi/Delta DataFrame.
         The index is a multiindex consisting of the angle of incidents as first column
-        and the wavlength as second column.
+        and the wavelength as second column.
     """
     h5file = h5py.File(nxs_filename, "r")
     if h5file["entry/sample/data_type"].asstr()[()] != "psi/delta":
@@ -55,6 +55,6 @@ def read_rho(nxs_filename: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: DataFrame containing the measured data as imaginary rho value.
             The index is a multiindex consisting of the angle of incidents as first column
-            and the wavlength as second column.
+            and the wavelength as second column.
     """
     return calc_rho(read_psi_delta(nxs_filename))
