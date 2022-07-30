@@ -238,14 +238,14 @@ class LorentzLambda(Dispersion):
 
     Repeated parameters:
         :A: Amplitude of the oscillator. Defaults to 1.
-        :lambda: Resonance wavelength. Defaults to 0. Unit in nm.
+        :lbda: Resonance wavelength. Defaults to 0. Unit in nm.
         :gamma: Broadening of the oscillator. Defaults to 0. Unit in nm.
 
     Output:
 
         .. math::
             \varepsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
-            \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lambda}_j^2
+            \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lbda}_j^2
             + i \cdot \boldsymbol{gamma}_j \cdot \lambda)
 
         The summation index :math:`j` refers to the respective oscillator.
