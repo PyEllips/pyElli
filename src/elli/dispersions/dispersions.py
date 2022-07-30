@@ -245,7 +245,7 @@ class LorentzLambda(Dispersion):
 
         .. math::
             \varepsilon(\lambda) = 1 + \sum_j \boldsymbol{A}_j
-            \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lambda_r}_j^2
+            \cdot \lambda^2 / (\lambda^2 - \boldsymbol{lambda\_r}_j^2
             + i \cdot \boldsymbol{gamma}_j \cdot \lambda)
 
         The summation index :math:`j` refers to the respective oscillator.
