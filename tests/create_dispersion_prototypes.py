@@ -61,9 +61,9 @@ def loop_dispersions_custom_values():
             "name": "LorentzLambda",
             "single_params": {},
             "rep_params": [
-                {"A": 100, "lambda": 500, "gamma": 10},
-                {"A": 150, "lambda": 300, "gamma": 20},
-                {"A": 300, "lambda": 750, "gamma": 50},
+                {"A": 100, "lambda_r": 500, "gamma": 10},
+                {"A": 150, "lambda_r": 300, "gamma": 20},
+                {"A": 300, "lambda_r": 750, "gamma": 50},
             ],
         },
         {
