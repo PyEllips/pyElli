@@ -11,14 +11,16 @@ e_z = np.array([0, 0, 1]).reshape((3,))
 
 
 def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts wavelength values to energy values.
-    :math:`E = c \cdot \hbar / \boldsymbol{\lambda}`
+    r"""Converts wavelength values to energy values and vice versa.
+
+    .. math::
+        E = c \cdot \hbar / \boldsymbol{\lambda}
 
     Args:
-        lbda (npt.ArrayLike): Single value or array of wavelengths in nm.
+        lbda (npt.ArrayLike): Single value or array of wavelengths in nm or energy in eV.
 
     Returns:
-        npt.ArrayLike: Energy in eV.
+        npt.ArrayLike: Energy in eV or wavelength in nm.
     """
 
     return sc.speed_of_light * sc.value("Planck constant in eV/Hz") / (lbda * 1e-9)

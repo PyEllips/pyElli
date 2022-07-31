@@ -1,13 +1,11 @@
 =================
 Helper functions
 =================
+Helper functions for generation rotation matrices and
+conversions for wavelengths and ellipsometric quantities.
 
 .. automodule:: elli.math
     :members:
-    :undoc-members:
-    :show-inheritance:
 
 .. automodule:: elli.utils
     :members:
-    :undoc-members:
-    :show-inheritance:

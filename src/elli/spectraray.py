@@ -1,16 +1,33 @@
-"""A helper class to load data from SpectraRay ASCII Files
+"""A helper class to load data from SpectraRay ASCII Files.
+It only supplies a rundimentary loading of standard psi/delta values
+and misses some other features.
 """
 import pandas as pd
-import scipy.constants as sc
 from .dispersions.dispersions import TableEpsilon
 from .utils import calc_rho
+from .math import lambda2E
 
 
 class SpectraRay:
+    """Helper class to load spectraray ascii files into
+    pyEllis pandas format."""
+
     def __init__(self, path: str) -> None:
         self.spectraray_path = path
 
     def loadDispersionTable(self, fname: str) -> TableEpsilon:
+        """Load a dispersion table from a ascii file
+        in the spectraray materials ascii format.
+        This only accounts for tabulated dielectric function data.
+        Spectraray also stores dispersion data in other formats,
+        but this function is not able to read these other formats.
+
+        Args:
+            fname (str): The filename of the spectraray ascii file.
+
+        Returns:
+            TableEpsilon: A dispersion class containing the tabulated data.
+        """
         start = 0
         stop = 0
         with open(self.spectraray_path + fname, "r", encoding="utf8") as file:
@@ -42,12 +59,24 @@ class SpectraRay:
                 lbda=df.index, epsilon=df.loc[:, "ϵ1"] + 1j * df.iloc[:, "ϵ2"]
             )
         return TableEpsilon(
-            lbda=SpectraRay.eV2nm(df.index),
+            lbda=lambda2E(df.index),
             epsilon=df.loc[:, "ϵ1"] + 1j * df.loc[:, "ϵ2"],
         )
 
     @staticmethod
     def read_psi_delta_file(fname: str, decimal: str = ".") -> pd.DataFrame:
+        """Read a psi/delta spectraray ascii file.
+        Only reads the first entry and does not support reading multiple angles.
+        For multiple angles you have to save the data in multiple files.
+
+        Args:
+            fname (str): Filename of the measurement ascii file.
+            decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
+
+        Returns:
+            pd.DataFrame: DataFrame containing the psi/delta data in
+            the format to be further processes inside pyElli.
+        """
         psi_delta = pd.read_csv(
             fname,
             index_col=0,
@@ -66,8 +95,18 @@ class SpectraRay:
 
     @staticmethod
     def read_mmatrix(fname: str, decimal: str = ".") -> pd.DataFrame:
-        """Read a Mueller matrix from a Sentech ASCII file.
-        Save the file in SpectraRay under Save As -> Ascii (.txt)"""
+        """Read a mueller matrix spectraray ascii file.
+        Only reads the first entry and does not support reading multiple angles.
+        For multiple angles you have to save the data in multiple files.
+
+        Args:
+            fname (str): Filename of the measurement ascii file.
+            decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
+
+        Returns:
+            pd.DataFrame: DataFrame containing the psi/delta data in
+            the format to be further processes inside pyElli.
+        """
         mueller_matrix = pd.read_csv(
             fname, sep=r"\s+", decimal=decimal, index_col=0
         ).iloc[:, -17:-1]
@@ -95,9 +134,17 @@ class SpectraRay:
 
     @staticmethod
     def read_rho(fname: str, decimal: str = ".") -> pd.DataFrame:
+        """Read a psi/delta spectraray ascii file and converts it to rho values.
+        Only reads the first entry and does not support reading multiple angles.
+        For multiple angles you have to save the data in multiple files.
+
+        Args:
+            fname (str): Filename of the measurement ascii file.
+            decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
+
+        Returns:
+            pd.DataFrame: DataFrame containing the rho data in
+            the format to be further processes inside pyElli.
+        """
         psi_delta = SpectraRay.read_psi_delta_file(fname, decimal)
         return calc_rho(psi_delta)
-
-    @staticmethod
-    def eV2nm(wlen):
-        return sc.value("Planck constant in eV s") * sc.c * 1e9 / wlen

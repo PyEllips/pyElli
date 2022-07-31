@@ -2,32 +2,52 @@
 Fitting and plotting
 ====================
 
-.. automodule:: elli.plot.mueller_matrix
-    :members:
-    :undoc-members:
-    :show-inheritance:
+Interactive fitting
+-------------------
 
-.. automodule:: elli.plot.structure
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: elli.fitting.decorator_mmatrix
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+Psi/Delta fitting
+^^^^^^^^^^^^^^^^^
 .. automodule:: elli.fitting.decorator_psi_delta
     :members:
-    :undoc-members:
     :show-inheritance:
 
+Mueller matrix fitting
+^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: elli.fitting.decorator_mmatrix
+    :members:
+    :show-inheritance:
+
+Fitting base class
+^^^^^^^^^^^^^^^^^^
 .. automodule:: elli.fitting.decorator
     :members:
-    :undoc-members:
     :show-inheritance:
 
+Parameter class
+---------------
 .. automodule:: elli.fitting.params_hist
     :members:
-    :undoc-members:
     :show-inheritance:
+
+Plotting
+--------
+
+Mueller matrix
+^^^^^^^^^^^^^^
+.. automodule:: elli.plot.mueller_matrix
+    :members:
+    :show-inheritance:
+
+Structure
+^^^^^^^^^
+.. automodule:: elli.plot.structure
+    :members:
+    :show-inheritance:
+
+
+
+
+
+
+
+

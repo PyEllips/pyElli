@@ -1,4 +1,9 @@
-"""Read and write NeXus files."""
+"""Read and write NeXus files in the ellipsometry
+`standard <https://manual.nexusformat.org/classes/contributed_definitions/NXellipsometry.html#nxellipsometry>`_.
+NeXus is a format originating from large beam line facitilies and is adapted for
+other smaller labratory experiments to supply an agreed standard for data sharing.
+For now only reading is supported but in the future there will also be a writer
+to store the whole optical model and fit inside the NeXus file."""
 import h5py
 import numpy as np
 import pandas as pd
@@ -16,7 +21,7 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
         ValueError: Is raised when the data is not stored as psi / delta value.
 
     Returns:
-    pd.DataFrame: Psi/Delta DataFrame.
+        pd.DataFrame: Psi/Delta DataFrame.
         The index is a multiindex consisting of the angle of incidents as first column
         and the wavelength as second column.
     """
@@ -54,7 +59,7 @@ def read_rho(nxs_filename: str) -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: DataFrame containing the measured data as imaginary rho value.
-            The index is a multiindex consisting of the angle of incidents as first column
-            and the wavelength as second column.
+        The index is a multiindex consisting of the angle of incidents as first column
+        and the wavelength as second column.
     """
     return calc_rho(read_psi_delta(nxs_filename))
