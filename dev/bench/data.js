@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1659200420064,
+  "lastUpdate": 1659259866990,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -6018,6 +6018,65 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00032498447019251356",
             "extra": "mean: 5.354073700004847 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "florian.dobener@physik.hu-berlin.de",
+            "name": "domna",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "florian.dobener@physik.hu-berlin.de",
+            "name": "domna",
+            "username": "domna"
+          },
+          "distinct": true,
+          "id": "7caeb9f64aa5e4efe01ceeacf79db3c4b8be97fd",
+          "message": "Adds docs for helpers, plots and spectraray",
+          "timestamp": "2022-07-31T11:29:10+02:00",
+          "tree_id": "a5f89419b55d84013d630d0e05c829f38518687e",
+          "url": "https://github.com/PyEllips/pyElli/commit/7caeb9f64aa5e4efe01ceeacf79db3c4b8be97fd"
+        },
+        "date": 1659259866087,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 25.0911654879458,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008257605794329249",
+            "extra": "mean: 39.854665200005 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "value": 6.355039888469322,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02333109783727258",
+            "extra": "mean: 157.35542459999579 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_torch",
+            "value": 8.738989010392892,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01327547368882804",
+            "extra": "mean: 114.42971250000937 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 156.6963986591023,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000347984874149966",
+            "extra": "mean: 6.381767600004196 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 181.4461413510599,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000633354875278854",
+            "extra": "mean: 5.511277299996209 msec\nrounds: 10"
           }
         ]
       }
