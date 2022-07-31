@@ -78,11 +78,16 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "sphinx_plotly_directive",
     "sphinx_rtd_theme",
     "m2r2",
     "sphinx_gallery.gen_gallery",
     "sphinxcontrib.mermaid",
 ]
+
+plotly_html_show_source_link = False
+plotly_html_show_formats = False
+plotly_pre_code = "import elli"
 
 
 image_scrapers = (
