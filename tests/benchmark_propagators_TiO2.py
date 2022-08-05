@@ -22,7 +22,6 @@ params.add("TiO2_k2", value=0, min=-40000, max=40000, vary=False)
 
 params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 
-
 SiO2 = elli.Cauchy(
     params["SiO2_n0"],
     params["SiO2_n1"],
@@ -76,6 +75,7 @@ def test_solver4x4_expm(benchmark):
         iterations=1,
         rounds=10,
     )
+
 
 def test_solver4x4_linear(benchmark):
     """Benchmarks linear propagator with solver4x4"""
