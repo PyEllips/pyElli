@@ -21,7 +21,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-benchmark pytest-coverage
-          pip install torch
       - name: Install module
         run: |
           pip install .
