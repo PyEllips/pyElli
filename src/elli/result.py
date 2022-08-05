@@ -59,6 +59,14 @@ class Result:
         return rho
 
     @property
+    def rho_t(self) -> npt.NDArray:
+        r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction.
+        """
+        rho_t = np.dot(self.rho_matrix_t, self.experiment.jones_vector)
+        rho_t = rho_t[:, 0] / rho_t[:, 1]
+        return rho_t
+
+    @property
     def psi(self) -> npt.NDArray:
         r"""Returns the ellipsometric angle :math:`\psi` in reflection direction.
 
@@ -70,6 +78,17 @@ class Result:
         return np.rad2deg(np.arctan(np.abs(self.rho)))
 
     @property
+    def psi_t(self) -> npt.NDArray:
+        r"""Returns the ellipsometric angle :math:`\psi_\text{t}` in transmission direction.
+
+        It results from:
+
+        .. math::
+            \rho_\text{t} = \tan \psi_\text{t} \exp(-i \Delta_\text{t})
+        """
+        return np.rad2deg(np.arctan(np.abs(self.rho_t)))
+
+    @property
     def delta(self) -> npt.NDArray:
         r"""Returns the ellipsometric angle :math:`\Delta` in reflection direction.
 
@@ -79,6 +98,17 @@ class Result:
             \rho = \tan \psi \exp(-i \Delta)
         """
         return -np.angle(self.rho, deg=True)
+
+    @property
+    def delta_t(self) -> npt.NDArray:
+        r"""Returns the ellipsometric angle :math:`\Delta_\text{t}` in transmission direction.
+
+        It results from:
+
+        .. math::
+            \rho_\text{t} = \tan \psi_\text{t} \exp(-i \Delta_\text{t})
+        """
+        return -np.angle(self.rho_t, deg=True)
 
     @property
     def rho_matrix(self) -> npt.NDArray:
@@ -97,6 +127,22 @@ class Result:
         return self.jones_matrix_r / r_ss[:, None, None]
 
     @property
+    def rho_matrix_t(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\rho_t` in reflection direction.
+
+        .. math::
+            M_{\rho \text{,t}} = \begin{bmatrix}
+            \rho_\text{t,pp} & \rho_\text{t,ps} \\ \rho_\text{t,sp} & 1
+            \end{bmatrix}
+            = t_\text{ss} \begin{bmatrix}
+            t_\text{pp}/t_\text{ss} & t_\text{ps}/t_\text{ss} \\ t_\text{sp}/t_\text{ss} & 1
+            \end{bmatrix}
+        """
+        t_ss = self.jones_matrix_t[..., 1, 1]
+        return self.jones_matrix_t / t_ss[:, None, None]
+
+    @property
     def psi_matrix(self) -> npt.NDArray:
         r"""Returns the matrix of the ellipsometric parameter
         :math:`\psi` in reflection direction.
@@ -109,6 +155,18 @@ class Result:
         return np.rad2deg(np.arctan(np.abs(self.rho_matrix)))
 
     @property
+    def psi_matrix_t(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\psi_\text{t}` in transmission direction.
+
+        .. math::
+            M_{\psi \text{,t}} = \begin{bmatrix}
+            \psi_\text{t,pp} & \psi_\text{t,ps} \\ \psi_\text{t,sp} & 45°
+            \end{bmatrix}
+        """
+        return np.rad2deg(np.arctan(np.abs(self.rho_matrix_t)))
+
+    @property
     def delta_matrix(self) -> npt.NDArray:
         r"""Returns the matrix of the ellipsometric parameter
         :math:`\Delta` in reflection direction.
@@ -119,6 +177,18 @@ class Result:
             \end{bmatrix}
         """
         return -np.angle(self.rho_matrix, deg=True)
+
+    @property
+    def delta_matrix_t(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\Delta_\text{t}` in transmission direction.
+
+        .. math::
+            M_{\Delta \text{,t}} = \begin{bmatrix}
+            \Delta_\text{t,pp} & \Delta_\text{t,ps} \\ \Delta_\text{t,sp} & 0°
+            \end{bmatrix}
+        """
+        return -np.angle(self.rho_matrix_t, deg=True)
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
