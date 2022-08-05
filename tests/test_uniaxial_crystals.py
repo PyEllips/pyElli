@@ -30,7 +30,7 @@ class TestUniaxial:
     air = elli.AIR
     epsilon_air = air.get_tensor(lbda)
 
-    Tp = elli.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
+    Tp = elli.PropagatorExpm().calculate_propagation(Delta, -d, np.array([lbda]))
     Li = elli.Solver4x4.transition_matrix_iso_halfspace(
         np.array([Kx]), epsilon_air, inv=True
     )
