@@ -1,4 +1,21 @@
 # Encoding: utf-8
+"""After a calculation is completed, the Solver returns an object of the Result class.
+
+It is used to store the evaluated experiment and all resulting optical properties like
+Jones matrices and ellipsometric parameters (psi, delta, rho, mueller matrices).
+A list of all properties is given below.
+
+All properties will return an array in the length of the provided wavelength array
+of the requested property.
+
+These can be accessed by different methods:
+
+* With dot notation: ``result.property``
+* With the get method: ``result.get('property')``
+
+For Matrix properties, a specific value can be requested using a ``property_ij`` notation.
+As i and j the respective polarization identifiers can be used (r/s or R/L).
+"""
 from typing import List
 
 import numpy as np
@@ -28,33 +45,85 @@ class Result:
 
     @property
     def rho(self) -> npt.NDArray:
+        r"""Returns the ellipsometric parameter :math:`\rho` in reflection direction.
+
+        It is calculated by dot product of the \rho matrix
+        :math:`M_\rho` and the Jones vector :math:`\vec{E}` of the incident light beam.
+        It then takes the :math:`\rho_\text{pp}` element and returns it.
+
+        .. math::
+            M_{\text{$\rho$, exp}} = M_\rho \cdot \vec{E}
+        """
         rho = np.dot(self.rho_matrix, self.experiment.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
         return rho
 
     @property
     def psi(self) -> npt.NDArray:
+        r"""Returns the ellipsometric angle :math:`\psi` in reflection direction.
+
+        It results from:
+
+        .. math::
+            \rho = \tan \psi \exp(-i \Delta)
+        """
         return np.rad2deg(np.arctan(np.abs(self.rho)))
 
     @property
     def delta(self) -> npt.NDArray:
+        r"""Returns the ellipsometric angle :math:`\Delta` in reflection direction.
+
+        It results from:
+
+        .. math::
+            \rho = \tan \psi \exp(-i \Delta)
+        """
         return -np.angle(self.rho, deg=True)
 
     @property
     def rho_matrix(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\rho` in reflection direction.
+
+        .. math::
+            M_\rho = \begin{bmatrix}
+            \rho_\text{pp} & \rho_\text{ps} \\ \rho_\text{sp} & 1
+            \end{bmatrix}
+            = r_\text{ss} \begin{bmatrix}
+            r_\text{pp}/r_\text{ss} & r_{ps}/r_\text{ss} \\ r_\text{sp}/r_\text{ss} & 1
+            \end{bmatrix}
+        """
         r_ss = self.jones_matrix_r[..., 1, 1]
         return self.jones_matrix_r / r_ss[:, None, None]
 
     @property
     def psi_matrix(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\psi` in reflection direction.
+
+        .. math::
+            M_\psi = \begin{bmatrix}
+            \psi_\text{pp} & \psi_\text{ps} \\ \psi_\text{sp} & 45°
+            \end{bmatrix}
+        """
         return np.rad2deg(np.arctan(np.abs(self.rho_matrix)))
 
     @property
     def delta_matrix(self) -> npt.NDArray:
+        r"""Returns the matrix of the ellipsometric parameter
+        :math:`\Delta` in reflection direction.
+
+        .. math::
+            M_\Delta = \begin{bmatrix}
+            \Delta_\text{pp} & \Delta_\text{ps} \\ \Delta_\text{sp} & 0°
+            \end{bmatrix}
+        """
         return -np.angle(self.rho_matrix, deg=True)
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
+        """Returns the Mueller matrix for reflection, calculated from the rho matrix.
+        """
         a = np.array([[1, 0, 0, 1], [1, 0, 0, -1], [0, 1, 1, 0], [0, 1j, -1j, 0]])
 
         # Kronecker product of S and S*
@@ -69,14 +138,36 @@ class Result:
 
     @property
     def jones_matrix_t(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude transmission coefficients.
+
+        .. math::
+            M_\text{t} = \begin{bmatrix}
+            t_\text{pp} & t_\text{ps} \\ t_\text{sp} & t_\text{ss}
+            \end{bmatrix}
+        """
         return self._jones_matrix_t
 
     @property
     def jones_matrix_r(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude reflection coefficients.
+
+        .. math::
+            M_\text{r} = \begin{bmatrix}
+            r_\text{pp} & r_\text{ps} \\ r_\text{sp} & r_\text{ss}
+            \end{bmatrix}
+        """
         return self._jones_matrix_r
 
     @property
     def jones_matrix_tc(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude transmission coefficients
+        for circular polarization.
+
+        .. math::
+            M_\text{tc} = \begin{bmatrix}
+            t_\text{LL} & t_\text{LR} \\ t_\text{RL} & t_\text{RR}
+            \end{bmatrix}
+        """
         c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
         return np.einsum(
             "ij,...jk,kl->...il", np.linalg.inv(c), self._jones_matrix_t, c
@@ -84,6 +175,14 @@ class Result:
 
     @property
     def jones_matrix_rc(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude reflection coefficients
+        for circular polarization.
+
+        .. math::
+            M_\text{rc} = \begin{bmatrix}
+            r_\text{LL} & r_\text{LR} \\ r_\text{RL} & r_\text{RR}
+            \end{bmatrix}
+        """
         c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
         d = 1 / sqrt(2) * np.array([[-1, -1], [-1j, 1j]])
         return np.einsum(
@@ -92,18 +191,38 @@ class Result:
 
     @property
     def R(self) -> npt.NDArray:
+        r"""Returns the reflectance matrix separated for s and p polarization.
+
+        .. math::
+            M_R = \begin{bmatrix} R_{pp} & R_{ps} \\ R_{sp} & R_{ss} \end{bmatrix}
+        """
         return np.abs(self._jones_matrix_r) ** 2
 
     @property
     def T(self) -> npt.NDArray:
+        r"""Returns the transmittance matrix separated for s and p polarization.
+
+        .. math::
+            M_T = \begin{bmatrix} T_{pp} & T_{ps} \\ T_{sp} & T_{ss} \end{bmatrix}
+        """
         return np.abs(self._jones_matrix_t) ** 2 * self._power_correction[:, None, None]
 
     @property
     def Rc(self) -> npt.NDArray:
+        r"""Returns the reflectance matrix with the for circular polarizations.
+
+        .. math::
+            M_{Rc} = \begin{bmatrix} R_{LL} & R_{LR} \\ R_{RL} & R_{RR} \end{bmatrix}
+        """
         return np.abs(self.jones_matrix_rc) ** 2
 
     @property
     def Tc(self) -> npt.NDArray:
+        r"""Returns the transmittance matrix with the for circular polarizations.
+
+        .. math::
+            M_{Tc} = \begin{bmatrix} T_{LL} & T_{LR} \\ T_{RL} & T_{RR} \end{bmatrix}
+        """
         return np.abs(self.jones_matrix_tc) ** 2 * self._power_correction[:, None, None]
 
     def __init__(
@@ -137,13 +256,13 @@ class Result:
         Args:
             name (str): Variable name to return.
                 Examples for 'name':
-                'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
-                'r_LR' : Reflection from circular right to circular left polarization.
-                'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
-                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
-                'psi', 'delta', 'rho':
-                    Reduced ellipsometry parameters,
-                    the whole matrices are returned by 'psi_matrix'.
+
+                * 'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
+                * 'r_LR' : Reflection from circular right to circular left polarization.
+                * 'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
+                * 'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
+                * 'psi', 'delta', 'rho': Reduced ellipsometry parameters,
+                  the whole matrices are returned by 'psi_matrix'.
 
         Returns:
             npt.NDArray: Array of data.
