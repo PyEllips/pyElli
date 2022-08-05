@@ -93,7 +93,7 @@ class TestTirThickness:
     T_th_s = t2_th_s * correction
     T_th_p = t2_th_p * correction
 
-    def test_tir_thickness_4x4_scipy(self):
+    def test_tir_thickness_4x4_expm(self):
         data = elli.ResultList(
             [s.evaluate(self.lbda, np.rad2deg(self.Phi_i)) for s in self.structures]
         )
@@ -121,34 +121,6 @@ class TestTirThickness:
                     np.rad2deg(self.Phi_i),
                     solver=elli.Solver4x4,
                     propagator=elli.PropagatorEig(),
-                )
-                for s in self.structures
-            ]
-        )
-
-        # Extraction of the transmission and reflexion coefficients
-        R_p = data.R_pp
-        R_s = data.R_ss
-        T_p = data.T_pp
-        T_s = data.T_ss
-        t2_p = np.abs(data.t_pp) ** 2  # Before power correction
-        t2_s = np.abs(data.t_ss) ** 2
-
-        np.testing.assert_allclose(R_p, self.R_th_p)
-        np.testing.assert_allclose(R_s, self.R_th_s)
-        np.testing.assert_allclose(T_p, self.T_th_p)
-        np.testing.assert_allclose(T_s, self.T_th_s)
-        np.testing.assert_allclose(t2_p, self.t2_th_p)
-        np.testing.assert_allclose(t2_s, self.t2_th_s)
-
-    def test_tir_thickness_4x4_torch(self):
-        data = elli.ResultList(
-            [
-                s.evaluate(
-                    self.lbda,
-                    np.rad2deg(self.Phi_i),
-                    solver=elli.Solver4x4,
-                    propagator=elli.PropagatorExpmTorch(),
                 )
                 for s in self.structures
             ]
@@ -280,7 +252,7 @@ class TestTirAngle:
     T_th_s = t2_th_s * correction
     T_th_p = t2_th_p * correction
 
-    def test_tir_angle_4x4_scipy(self):
+    def test_tir_angle_4x4_expm(self):
         data = elli.ResultList(
             [self.s.evaluate(self.lbda, np.rad2deg(Phi_i)) for Phi_i in self.Phi_list]
         )
@@ -308,34 +280,6 @@ class TestTirAngle:
                     np.rad2deg(Phi_i),
                     solver=elli.Solver4x4,
                     propagator=elli.PropagatorEig(),
-                )
-                for Phi_i in self.Phi_list
-            ]
-        )
-
-        # Extraction of the transmission and reflexion coefficients
-        R_p = data.R_pp
-        R_s = data.R_ss
-        T_p = data.T_pp
-        T_s = data.T_ss
-        t2_p = np.abs(data.t_pp) ** 2  # Before power correction
-        t2_s = np.abs(data.t_ss) ** 2
-
-        np.testing.assert_allclose(R_p, self.R_th_p)
-        np.testing.assert_allclose(R_s, self.R_th_s)
-        np.testing.assert_allclose(T_p, self.T_th_p)
-        np.testing.assert_allclose(T_s, self.T_th_s)
-        np.testing.assert_allclose(t2_p, self.t2_th_p)
-        np.testing.assert_allclose(t2_s, self.t2_th_s)
-
-    def test_tir_angle_4x4_torch(self):
-        data = elli.ResultList(
-            [
-                self.s.evaluate(
-                    self.lbda,
-                    np.rad2deg(Phi_i),
-                    solver=elli.Solver4x4,
-                    propagator=elli.PropagatorExpmTorch(),
                 )
                 for Phi_i in self.Phi_list
             ]
