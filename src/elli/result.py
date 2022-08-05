@@ -60,8 +60,7 @@ class Result:
 
     @property
     def rho_t(self) -> npt.NDArray:
-        r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction.
-        """
+        r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction."""
         rho_t = np.dot(self.rho_matrix_t, self.experiment.jones_vector)
         rho_t = rho_t[:, 0] / rho_t[:, 1]
         return rho_t
@@ -192,8 +191,7 @@ class Result:
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
-        """Returns the Mueller matrix for reflection, calculated from the rho matrix.
-        """
+        """Returns the Mueller matrix for reflection, calculated from the rho matrix."""
         a = np.array([[1, 0, 0, 1], [1, 0, 0, -1], [0, 1, 1, 0], [0, 1j, -1j, 0]])
 
         # Kronecker product of S and S*
