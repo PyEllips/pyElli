@@ -207,17 +207,6 @@ class Result:
         return mueller_matrix / mm11[:, None, None]
 
     @property
-    def jones_matrix_t(self) -> npt.NDArray:
-        r"""Returns the Jones matrix with the amplitude transmission coefficients.
-
-        .. math::
-            M_\text{t} = \begin{bmatrix}
-            t_\text{pp} & t_\text{ps} \\ t_\text{sp} & t_\text{ss}
-            \end{bmatrix}
-        """
-        return self._jones_matrix_t
-
-    @property
     def jones_matrix_r(self) -> npt.NDArray:
         r"""Returns the Jones matrix with the amplitude reflection coefficients.
 
@@ -229,19 +218,15 @@ class Result:
         return self._jones_matrix_r
 
     @property
-    def jones_matrix_tc(self) -> npt.NDArray:
-        r"""Returns the Jones matrix with the amplitude transmission coefficients
-        for circular polarization.
+    def jones_matrix_t(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude transmission coefficients.
 
         .. math::
-            M_\text{tc} = \begin{bmatrix}
-            t_\text{LL} & t_\text{LR} \\ t_\text{RL} & t_\text{RR}
+            M_\text{t} = \begin{bmatrix}
+            t_\text{pp} & t_\text{ps} \\ t_\text{sp} & t_\text{ss}
             \end{bmatrix}
         """
-        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
-        return np.einsum(
-            "ij,...jk,kl->...il", np.linalg.inv(c), self._jones_matrix_t, c
-        )
+        return self._jones_matrix_t
 
     @property
     def jones_matrix_rc(self) -> npt.NDArray:
@@ -257,6 +242,21 @@ class Result:
         d = 1 / sqrt(2) * np.array([[-1, -1], [-1j, 1j]])
         return np.einsum(
             "ij,...jk,kl->...il", np.linalg.inv(d), self._jones_matrix_r, c
+        )
+
+    @property
+    def jones_matrix_tc(self) -> npt.NDArray:
+        r"""Returns the Jones matrix with the amplitude transmission coefficients
+        for circular polarization.
+
+        .. math::
+            M_\text{tc} = \begin{bmatrix}
+            t_\text{LL} & t_\text{LR} \\ t_\text{RL} & t_\text{RR}
+            \end{bmatrix}
+        """
+        c = 1 / sqrt(2) * np.array([[1, 1], [1j, -1j]])
+        return np.einsum(
+            "ij,...jk,kl->...il", np.linalg.inv(c), self._jones_matrix_t, c
         )
 
     @property
