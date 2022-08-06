@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1659706006241,
+  "lastUpdate": 1659799688427,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -6372,6 +6372,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.002568207392115503",
             "extra": "mean: 6.23502969999663 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cc91f6e612ef543d3551dbeb01fd1fe7bfcc24c8",
+          "message": "Use Scipy as only expm solver\n\n* Use Scipy as only expm solver (need scipy >= 1.9.0)\r\n\r\n* Fix linting and tests\r\n\r\n* Fix uniaxial crystal test\r\n\r\n* Fix remaining tests\r\n\r\n* Removes last occurences of PropagatorExpmScipy and bumps scipy version to 1.9.0\r\n\r\nCo-authored-by: domna <florian.dobener@physik.hu-berlin.de>",
+          "timestamp": "2022-08-06T17:26:29+02:00",
+          "tree_id": "6353c7f4aa001c45ea19755247e2dee1b7433d78",
+          "url": "https://github.com/PyEllips/pyElli/commit/cc91f6e612ef543d3551dbeb01fd1fe7bfcc24c8"
+        },
+        "date": 1659799687797,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 17.121692304781266,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0038760964335131792",
+            "extra": "mean: 58.40544159999581 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.191707533512725,
+            "unit": "iter/sec",
+            "range": "stddev: 0.022848038987202116",
+            "extra": "mean: 192.61485619999803 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 58.91919616399765,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007810082005207756",
+            "extra": "mean: 16.972397199998568 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 118.54531854166783,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0009786941657320845",
+            "extra": "mean: 8.435592499998279 msec\nrounds: 10"
           }
         ]
       }
