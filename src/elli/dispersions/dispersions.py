@@ -46,6 +46,8 @@ import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 import scipy.constants as sc
+
+# pylint: disable=no-name-in-module
 from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 

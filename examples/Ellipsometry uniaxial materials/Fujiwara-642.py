@@ -87,7 +87,7 @@ print(np.real(q))
 # ```
 
 # %%
-Tp = elli.PropagatorExpmScipy().calculate_propagation(Delta, -d, np.array([lbda]))
+Tp = elli.PropagatorExpm().calculate_propagation(Delta, -d, np.array([lbda]))
 print("\nPropagation matrix (eq 6.66, p. 242):")
 print(Tp)
 

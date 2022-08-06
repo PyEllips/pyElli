@@ -15,11 +15,7 @@ In the Berreman formalism a propagator for matrix exponentials is needed.
 pyElli provides different implementations to be used in the calculation of the transfer matrices.
 The :class:`PropagatorEig<elli.solver4x4.PropagatorEig>` is based on solving the eigenvalues of the first order approximation of the matrix exponential.
 Although, it is very fast it is not very accurate.
-The :class:`PropagatorExpm<elli.solver4x4.PropagatorExpmScipy>` is solving the matrix exponential by various approximation.
-There are three classes available, which use the scipy, tensorflow or pyTorch packages.
-The scipy package is the slowest, since it is not vectorized.
-Tensorflow and pyTorch both offer a faster and vectorized version, but need the respective packages to be installed.
-Use them according to your preference or already installed ecosystem.
+The :class:`PropagatorExpm<elli.solver4x4.PropagatorExpm>` is solving the matrix exponential by the Pade approximation.
 
 .. rubric:: References
 

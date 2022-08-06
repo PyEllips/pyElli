@@ -110,22 +110,7 @@ class TestTiO2:
 
         assert TestTiO2.chisqr(meas_data, sim_data) < 0.0456
 
-    def test_solver4x4_torch(self, si_dispersion, meas_data):
-        """The solver4x4 with torch propagator is within chi square accuracy"""
-        sim_data = (
-            elli.Structure(elli.AIR, self.Layer, si_dispersion)
-            .evaluate(
-                meas_data.index,
-                70,
-                solver=elli.Solver4x4,
-                propagator=elli.PropagatorExpmTorch(),
-            )
-            .rho
-        )
-
-        assert TestTiO2.chisqr(meas_data, sim_data) < 0.0456
-
-    def test_solver4x4_scipy(self, si_dispersion, meas_data):
+    def test_solver4x4_expm(self, si_dispersion, meas_data):
         """The solver4x4 with scipy propagator is within chi square accuracy"""
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
@@ -133,7 +118,7 @@ class TestTiO2:
                 meas_data.index,
                 70,
                 solver=elli.Solver4x4,
-                propagator=elli.PropagatorExpmScipy(),
+                propagator=elli.PropagatorExpm(),
             )
             .rho
         )

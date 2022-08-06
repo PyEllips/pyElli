@@ -22,7 +22,6 @@ params.add("TiO2_k2", value=0, min=-40000, max=40000, vary=False)
 
 params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 
-
 SiO2 = elli.Cauchy(
     params["SiO2_n0"],
     params["SiO2_n1"],
@@ -67,35 +66,15 @@ def test_solver4x4_eig(benchmark):
     )
 
 
-def test_solver4x4_scipy(benchmark):
+def test_solver4x4_expm(benchmark):
     """Benchmarks expm-scipy propagator with solver4x4"""
     benchmark.pedantic(
         s.evaluate,
         args=(lbda, PHI),
-        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpmScipy()},
+        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpm()},
         iterations=1,
         rounds=10,
     )
-
-
-def test_solver4x4_torch(benchmark):
-    """Benchmarks expm-torch propagator with solver4x4"""
-    benchmark.pedantic(
-        s.evaluate,
-        args=(lbda, PHI),
-        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpmTorch()},
-        iterations=1,
-        rounds=10,
-    )
-
-
-# def test_solver4x4_tf(benchmark):
-#     """Benchmarks expm-tf propagator with solver4x4"""
-#     benchmark.pedantic(s.evaluate,
-#               args=(lbda, PHI),
-#               kwargs={'solver': elli.Solver4x4, 'propagator': elli.PropagatorExpmTF()},
-#               iterations=1,
-#               rounds=10)
 
 
 def test_solver4x4_linear(benchmark):

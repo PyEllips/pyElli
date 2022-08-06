@@ -6,16 +6,6 @@ from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 import scipy.constants as sc
 
-try:
-    import tensorflow as tf
-except ImportError:
-    pass
-
-try:
-    import torch
-except ImportError:
-    pass
-
 from .materials import IsotropicMaterial
 from .solver import Solver
 from .result import Result
@@ -62,7 +52,7 @@ class PropagatorLinear(Propagator):
         return p_hs_lin
 
 
-class PropagatorExpmScipy(Propagator):
+class PropagatorExpm(Propagator):
     """Propagator class using the Padé approximation of the matrix exponential."""
 
     def calculate_propagation(
@@ -80,59 +70,7 @@ class PropagatorExpmScipy(Propagator):
         """
         mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        p_hs_pade = np.asarray([scipy_expm(mat) for mat in mats])
-
-        return p_hs_pade
-
-
-class PropagatorExpmTorch(Propagator):
-    """Propagator class using a vectorized polynomial approximation of the matrix exponential."""
-
-    def calculate_propagation(
-        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
-    ) -> npt.NDArray:
-        """Calculates propagation for a given Delta matrix and layer thickness with the polynomial approximation of the matrix exponential.
-
-        Args:
-            delta (npt.NDArray): Delta Matrix
-            thickness (float): Thickness of layer (nm)
-            lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
-
-        Returns:
-            npt.NDArray: Propagator for the given layer
-        """
-        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
-
-        torch_mat = torch.from_numpy(mats)
-        torch_mat_exp = torch.matrix_exp(torch_mat)
-        p_hs_taylor = np.asarray(torch_mat_exp.numpy(), dtype=np.complex128)
-
-        return p_hs_taylor
-
-
-class PropagatorExpmTF(Propagator):
-    """Propagator class using a vectorized Padé approximation of the matrix exponential"""
-
-    def calculate_propagation(
-        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
-    ) -> npt.NDArray:
-        """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
-
-        Args:
-            delta (npt.NDArray): Delta Matrix
-            thickness (float): Thickness of layer (nm)
-            lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
-
-        Returns:
-            npt.NDArray: Propagator for the given layer
-        """
-        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
-
-        tf_mat = tf.convert_to_tensor(np.asarray(mats, dtype=np.complex64))
-        tf_mat_exp = tf.linalg.expm(tf_mat)
-        p_hs_pade = np.array(tf_mat_exp, dtype=np.complex128)
-
-        return p_hs_pade
+        return scipy_expm(mats)
 
 
 class PropagatorEig(Propagator):
@@ -348,7 +286,7 @@ class Solver4x4(Solver):
         return sqrt(k_z2)
 
     def __init__(
-        self, experiment: "Experiment", propagator: Propagator = PropagatorExpmScipy()
+        self, experiment: "Experiment", propagator: Propagator = PropagatorExpm()
     ) -> None:
         super().__init__(experiment)
         self.propagator = propagator
