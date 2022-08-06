@@ -81,10 +81,7 @@ def model(lbda, params):
 
     return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver2x2)
     # Alternative: Use 4x4 Solver with scipy propagator
-    # return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpmScipy())
-
-    # Alternative: Use 4x4 Solver with faster PyTorch propagator (needs Pytorch to be installed)
-    # return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpmTorch())
+    # return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpm())
 
 
 # %%
