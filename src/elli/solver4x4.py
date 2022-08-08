@@ -70,7 +70,9 @@ class PropagatorExpm(Propagator):
         """
         mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        return scipy_expm(mats)
+        propagator = np.asarray([scipy_expm(mat) for mat in mats])
+
+        return propagator
 
 
 class PropagatorEig(Propagator):
