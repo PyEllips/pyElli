@@ -27,11 +27,13 @@ def _polar_index(index: str) -> int:
     """Return polarization index for character 'index'.
 
     Args:
-        index (str): Polarization index, valid are: 'p', 's', 'R', 'L'.
+        index (str): Polarization index, valid are: 'p', 's', 'R', 'L' and '0' till '3'.
     Returns:
         int: 'p', 'L' -> 0
                 's', 'R' -> 1
     """
+    if index in ["0", "1", "2", "3"]:
+        return int(index)
     if index in ["p", "L"]:
         return 0
     if index in ["s", "R"]:
@@ -363,19 +365,10 @@ class Result:
         elif names[0] == "ρ":
             names[0] = "rho"
 
-        if names[0] not in [
-            "psi",
-            "delta",
-            "rho",
-            "r",
-            "t",
-            "rc",
-            "tc",
-            "R",
-            "T",
-            "Rc",
-            "Tc",
-        ]:
+        if not (
+            names[0] in ["psi", "delta", "rho", "r", "t", "rc", "tc"]
+            or names[0] in self.__dir__()
+        ):
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
         if len(names) > 1:
@@ -442,8 +435,4 @@ class ResultList:
             npt.NDArray: Array of data.
         """
 
-        return np.squeeze(
-            np.array(
-                [getattr(result, name) for result in self.results]
-            )
-        )
+        return np.squeeze(np.array([getattr(result, name) for result in self.results]))
