@@ -67,6 +67,12 @@
             for (const entry of entries) {
               const {commit, date, tool, benches} = entry;
               for (const bench of benches) {
+                // Hide old test values in dataset
+                if (bench.name.endsWith("test_solver4x4_torch") 
+                    || bench.name.endsWith("test_solver4x4_eig")
+                    || bench.name.endsWith("test_solver4x4_linear")) {
+                  continue;
+                }
                 const result = { commit, date, tool, bench };
                 const arr = map.get(bench.name);
                 if (arr === undefined) {

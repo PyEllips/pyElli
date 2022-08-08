@@ -33,7 +33,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 36.51289119999319 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1021593409810544,
             "unit": "iter/sec",
             "range": "stddev: 0.03882440422954798",
@@ -92,7 +92,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 49.636746800004516 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6929644792436743,
             "unit": "iter/sec",
             "range": "stddev: 0.03432219282524867",
@@ -151,7 +151,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.040489699998034 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9215984025895082,
             "unit": "iter/sec",
             "range": "stddev: 0.2173732971722593",
@@ -210,7 +210,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.64963620000037 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0133221486185249,
             "unit": "iter/sec",
             "range": "stddev: 0.03571425854602444",
@@ -269,7 +269,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.118040199996585 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0956475180913479,
             "unit": "iter/sec",
             "range": "stddev: 0.02626852884438932",
@@ -328,7 +328,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.09136690000514 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1059152506828098,
             "unit": "iter/sec",
             "range": "stddev: 0.014534283566777528",
@@ -387,7 +387,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.482352199991055 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.157986895277916,
             "unit": "iter/sec",
             "range": "stddev: 0.025008232142050044",
@@ -446,7 +446,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.76427689999582 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.089119372885514,
             "unit": "iter/sec",
             "range": "stddev: 0.024140306346260916",
@@ -505,7 +505,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 51.92795259999912 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6657202912162156,
             "unit": "iter/sec",
             "range": "stddev: 0.028906658678392726",
@@ -564,7 +564,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.8300454000003 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.128505824149266,
             "unit": "iter/sec",
             "range": "stddev: 0.01721070710700149",
@@ -623,7 +623,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.42476800000014 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0916256475202815,
             "unit": "iter/sec",
             "range": "stddev: 0.018634110672395527",
@@ -682,7 +682,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.91992959999868 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0657970208621748,
             "unit": "iter/sec",
             "range": "stddev: 0.02652296828947435",
@@ -741,7 +741,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 44.25665830000014 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0939718309756064,
             "unit": "iter/sec",
             "range": "stddev: 0.019144007773764654",
@@ -800,7 +800,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.182692600002156 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0946315240067273,
             "unit": "iter/sec",
             "range": "stddev: 0.019002653069319756",
@@ -859,7 +859,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 36.56666529999768 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1713165418953755,
             "unit": "iter/sec",
             "range": "stddev: 0.03168645771968143",
@@ -918,7 +918,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.29264919999969 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0460941598385325,
             "unit": "iter/sec",
             "range": "stddev: 0.036698922270012056",
@@ -977,7 +977,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 54.160685900001226 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6129629102403218,
             "unit": "iter/sec",
             "range": "stddev: 0.055971512007329",
@@ -1036,7 +1036,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.718175799993105 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.089300690312564,
             "unit": "iter/sec",
             "range": "stddev: 0.025651833295619708",
@@ -1095,7 +1095,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.15174249999802 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.100920455956462,
             "unit": "iter/sec",
             "range": "stddev: 0.014259150607650959",
@@ -1154,7 +1154,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 46.22939420000307 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9310038803913984,
             "unit": "iter/sec",
             "range": "stddev: 0.02432573659509155",
@@ -1213,7 +1213,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 55.31843649999928 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6232165637899533,
             "unit": "iter/sec",
             "range": "stddev: 0.045822841805320896",
@@ -1272,7 +1272,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.803893899995614 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0122917063904888,
             "unit": "iter/sec",
             "range": "stddev: 0.023099099245945817",
@@ -1331,7 +1331,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 37.28305009999531 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1060564105791622,
             "unit": "iter/sec",
             "range": "stddev: 0.04187940096163273",
@@ -1390,7 +1390,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.51695409999729 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0838782995926386,
             "unit": "iter/sec",
             "range": "stddev: 0.02253794832921243",
@@ -1449,7 +1449,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.23668409999459 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.076501594882986,
             "unit": "iter/sec",
             "range": "stddev: 0.022916691120402705",
@@ -1508,7 +1508,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.7722554000012 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.12283064221575,
             "unit": "iter/sec",
             "range": "stddev: 0.021871071852530365",
@@ -1567,7 +1567,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.22529689999885 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.093049630430454,
             "unit": "iter/sec",
             "range": "stddev: 0.021455929613340165",
@@ -1626,7 +1626,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 49.90647029999877 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6997464821434117,
             "unit": "iter/sec",
             "range": "stddev: 0.04300080610323151",
@@ -1685,7 +1685,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.957503800002314 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0513403109360682,
             "unit": "iter/sec",
             "range": "stddev: 0.025581689545843826",
@@ -1744,7 +1744,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.164380700004585 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1365483567266899,
             "unit": "iter/sec",
             "range": "stddev: 0.020435614070165056",
@@ -1803,7 +1803,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.60387990000527 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0783378055582205,
             "unit": "iter/sec",
             "range": "stddev: 0.019964538356976345",
@@ -1862,7 +1862,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.063895499991986 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0419612615680596,
             "unit": "iter/sec",
             "range": "stddev: 0.026720049282882907",
@@ -1921,7 +1921,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.22419300000115 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0275714821331206,
             "unit": "iter/sec",
             "range": "stddev: 0.023934289591703416",
@@ -1980,7 +1980,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.26520019999771 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0308111609368535,
             "unit": "iter/sec",
             "range": "stddev: 0.023023749813981274",
@@ -2039,7 +2039,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 54.80585180000048 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.5854712175835194,
             "unit": "iter/sec",
             "range": "stddev: 0.0236855469493771",
@@ -2098,7 +2098,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.14627669999982 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0475954617056218,
             "unit": "iter/sec",
             "range": "stddev: 0.017197415416475428",
@@ -2157,7 +2157,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.854462500000466 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0386267092857344,
             "unit": "iter/sec",
             "range": "stddev: 0.031132162723481377",
@@ -2216,7 +2216,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 37.70110809999778 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1181859260197706,
             "unit": "iter/sec",
             "range": "stddev: 0.021631599450788325",
@@ -2275,7 +2275,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.48238240000188 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0888747727792485,
             "unit": "iter/sec",
             "range": "stddev: 0.016142393574982823",
@@ -2334,7 +2334,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 36.739269399998875 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1189998367821226,
             "unit": "iter/sec",
             "range": "stddev: 0.027617870143706355",
@@ -2393,7 +2393,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.81823340000312 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.091076967383712,
             "unit": "iter/sec",
             "range": "stddev: 0.015927466622842095",
@@ -2452,7 +2452,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.90020640000205 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.079638574464412,
             "unit": "iter/sec",
             "range": "stddev: 0.0169774590583994",
@@ -2511,7 +2511,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.77134490000208 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9140845933610643,
             "unit": "iter/sec",
             "range": "stddev: 0.0372756649667864",
@@ -2570,7 +2570,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.90727590000256 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.028325708263068,
             "unit": "iter/sec",
             "range": "stddev: 0.024025878894922983",
@@ -2629,7 +2629,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.713981800001875 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0532565797387494,
             "unit": "iter/sec",
             "range": "stddev: 0.030181544812201703",
@@ -2688,7 +2688,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 37.29839359999829 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1186921333218258,
             "unit": "iter/sec",
             "range": "stddev: 0.0370307717935509",
@@ -2747,7 +2747,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.88109480000173 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.7137952108380548,
             "unit": "iter/sec",
             "range": "stddev: 0.046493594760440585",
@@ -2806,7 +2806,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 42.35668989998658 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1067296464039504,
             "unit": "iter/sec",
             "range": "stddev: 0.022585751894937993",
@@ -2865,7 +2865,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 55.260651099996494 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6310457179614261,
             "unit": "iter/sec",
             "range": "stddev: 0.03372174839824892",
@@ -2924,7 +2924,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.9600489000008 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1072501090660736,
             "unit": "iter/sec",
             "range": "stddev: 0.014657185679842935",
@@ -2983,7 +2983,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.63548559999026 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.072450761517039,
             "unit": "iter/sec",
             "range": "stddev: 0.030873200761528833",
@@ -3042,7 +3042,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.8199678999992 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0724145913045884,
             "unit": "iter/sec",
             "range": "stddev: 0.02806895651315839",
@@ -3101,7 +3101,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 51.66875009999785 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6388597469732281,
             "unit": "iter/sec",
             "range": "stddev: 0.055578933411835514",
@@ -3160,7 +3160,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.15348070000118 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.941727837745702,
             "unit": "iter/sec",
             "range": "stddev: 0.03978545187382683",
@@ -3219,7 +3219,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.69244040000126 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1116425384964852,
             "unit": "iter/sec",
             "range": "stddev: 0.039036778026644764",
@@ -3278,7 +3278,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 49.47237329999439 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.8903866549770614,
             "unit": "iter/sec",
             "range": "stddev: 0.038822894745069586",
@@ -3337,7 +3337,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 51.75222880001229 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9081318758455182,
             "unit": "iter/sec",
             "range": "stddev: 0.025550671023944493",
@@ -3396,7 +3396,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 51.592165700003534 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.888344129736656,
             "unit": "iter/sec",
             "range": "stddev: 0.06216398390072727",
@@ -3455,7 +3455,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 46.442079800004876 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0743280371526522,
             "unit": "iter/sec",
             "range": "stddev: 0.017129040557651014",
@@ -3514,7 +3514,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 43.60248710000576 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0553721278517285,
             "unit": "iter/sec",
             "range": "stddev: 0.028194225707524525",
@@ -3573,7 +3573,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.43149150000522 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1796981299003915,
             "unit": "iter/sec",
             "range": "stddev: 0.021312834353681837",
@@ -3632,7 +3632,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 42.725415600006045 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.039704877533069,
             "unit": "iter/sec",
             "range": "stddev: 0.01766613583981537",
@@ -3691,7 +3691,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 43.227215600001045 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0583588619712851,
             "unit": "iter/sec",
             "range": "stddev: 0.031025903294285225",
@@ -3750,7 +3750,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 50.63821300000768 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9023509338152891,
             "unit": "iter/sec",
             "range": "stddev: 0.05839603257101975",
@@ -3809,7 +3809,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 45.25398870000572 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.065434423284223,
             "unit": "iter/sec",
             "range": "stddev: 0.020326048134480714",
@@ -3868,7 +3868,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 45.51541000000725 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0338877085786091,
             "unit": "iter/sec",
             "range": "stddev: 0.09080473697106681",
@@ -3927,7 +3927,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 45.15296660000274 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.074589873066017,
             "unit": "iter/sec",
             "range": "stddev: 0.016103395590847194",
@@ -3986,7 +3986,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 64.77331570000047 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.597884569575091,
             "unit": "iter/sec",
             "range": "stddev: 0.034839568652778506",
@@ -4045,7 +4045,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 43.298907699994515 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.049241961263605,
             "unit": "iter/sec",
             "range": "stddev: 0.03692030771080308",
@@ -4104,7 +4104,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 44.2499415000043 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1597195797963336,
             "unit": "iter/sec",
             "range": "stddev: 0.04222665640941348",
@@ -4163,7 +4163,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 58.80920989999652 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6255522103579768,
             "unit": "iter/sec",
             "range": "stddev: 0.058084926958237554",
@@ -4222,7 +4222,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 45.39453700000422 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.089332564930921,
             "unit": "iter/sec",
             "range": "stddev: 0.029114014087146433",
@@ -4281,7 +4281,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 51.779039599989574 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9006565715975656,
             "unit": "iter/sec",
             "range": "stddev: 0.03815453513958686",
@@ -4340,7 +4340,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 57.35497660000988 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6120229621333192,
             "unit": "iter/sec",
             "range": "stddev: 0.055721074191323605",
@@ -4399,7 +4399,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 37.256774399997994 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1058709976652206,
             "unit": "iter/sec",
             "range": "stddev: 0.05569673158178192",
@@ -4458,7 +4458,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.35382219999235 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0725524582776922,
             "unit": "iter/sec",
             "range": "stddev: 0.024951639185968152",
@@ -4517,7 +4517,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 36.0355906999871 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.129816943284131,
             "unit": "iter/sec",
             "range": "stddev: 0.06652553610782691",
@@ -4576,7 +4576,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 42.40770060000614 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.057105457884373,
             "unit": "iter/sec",
             "range": "stddev: 0.037671070287073595",
@@ -4635,7 +4635,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.33528339998611 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0959759917305303,
             "unit": "iter/sec",
             "range": "stddev: 0.02236137093287237",
@@ -4694,7 +4694,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 42.039230399996086 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.0821176596030038,
             "unit": "iter/sec",
             "range": "stddev: 0.042555408977005674",
@@ -4753,7 +4753,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 58.57633719999171 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6239480029986684,
             "unit": "iter/sec",
             "range": "stddev: 0.042112900026789434",
@@ -4812,7 +4812,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 52.032211800002415 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6603577691829272,
             "unit": "iter/sec",
             "range": "stddev: 0.049635403472603486",
@@ -4871,7 +4871,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.1217971000101 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.92793008711341,
             "unit": "iter/sec",
             "range": "stddev: 0.05948480316516988",
@@ -4930,7 +4930,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 57.81970919999253 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.5920857652828353,
             "unit": "iter/sec",
             "range": "stddev: 0.0570166892470315",
@@ -4989,7 +4989,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.93309809999164 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.1121691441864505,
             "unit": "iter/sec",
             "range": "stddev: 0.03794928203648031",
@@ -5048,7 +5048,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.75578210001163 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 1.134292966250369,
             "unit": "iter/sec",
             "range": "stddev: 0.02299361789062694",
@@ -5107,7 +5107,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 50.421642399993516 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.8977931705909178,
             "unit": "iter/sec",
             "range": "stddev: 0.024704086737081257",
@@ -5166,7 +5166,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 47.12029299999472 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.9080073036580846,
             "unit": "iter/sec",
             "range": "stddev: 0.06859848690351865",
@@ -5225,7 +5225,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 55.40061080000669 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.6529067101141252,
             "unit": "iter/sec",
             "range": "stddev: 0.054594871192005026",
@@ -5284,7 +5284,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 61.381988500022544 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 0.5611315450632913,
             "unit": "iter/sec",
             "range": "stddev: 0.040790090868938964",
@@ -5343,7 +5343,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 48.71595589999913 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 5.427251159169339,
             "unit": "iter/sec",
             "range": "stddev: 0.01775787714938901",
@@ -5402,7 +5402,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.89482029999465 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.473602243205496,
             "unit": "iter/sec",
             "range": "stddev: 0.019221825861158524",
@@ -5461,7 +5461,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 38.071968499991726 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 5.97178325841455,
             "unit": "iter/sec",
             "range": "stddev: 0.029261468068192038",
@@ -5520,7 +5520,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.28015840001922 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 7.741551097379322,
             "unit": "iter/sec",
             "range": "stddev: 0.022183874503024666",
@@ -5579,7 +5579,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 49.768504899998334 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 5.55426221782652,
             "unit": "iter/sec",
             "range": "stddev: 0.0116928025476096",
@@ -5638,7 +5638,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 49.60304850000341 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 5.0578764149188515,
             "unit": "iter/sec",
             "range": "stddev: 0.027770909621228086",
@@ -5697,7 +5697,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.45067220000169 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.636454081157218,
             "unit": "iter/sec",
             "range": "stddev: 0.027453934006855",
@@ -5756,7 +5756,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 57.065686199996435 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 3.969559112033435,
             "unit": "iter/sec",
             "range": "stddev: 0.03196297374103628",
@@ -5815,7 +5815,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.60954659998879 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.412753302079932,
             "unit": "iter/sec",
             "range": "stddev: 0.018798349442291445",
@@ -5874,7 +5874,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.37059720000309 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 8.263707978244547,
             "unit": "iter/sec",
             "range": "stddev: 0.014177413571982947",
@@ -5933,7 +5933,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.259565700005396 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.574654832511474,
             "unit": "iter/sec",
             "range": "stddev: 0.035564620262322544",
@@ -5992,7 +5992,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.05092489999811 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.112593023374329,
             "unit": "iter/sec",
             "range": "stddev: 0.018947967550089033",
@@ -6051,7 +6051,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 39.854665200005 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.355039888469322,
             "unit": "iter/sec",
             "range": "stddev: 0.02333109783727258",
@@ -6110,7 +6110,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 40.07345279999868 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.46682446813399,
             "unit": "iter/sec",
             "range": "stddev: 0.027115803326107055",
@@ -6169,7 +6169,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.37687739999478 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 7.485098723471373,
             "unit": "iter/sec",
             "range": "stddev: 0.022883807244445487",
@@ -6228,7 +6228,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.59972509999932 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 8.331436799774613,
             "unit": "iter/sec",
             "range": "stddev: 0.011135003100204302",
@@ -6287,7 +6287,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 59.54372959999432 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 3.636892149530887,
             "unit": "iter/sec",
             "range": "stddev: 0.030803100248265686",
@@ -6346,7 +6346,7 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 41.47720039999285 msec\nrounds: 10"
           },
           {
-            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_scipy",
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
             "value": 6.438907729422578,
             "unit": "iter/sec",
             "range": "stddev: 0.021489177729636516",
