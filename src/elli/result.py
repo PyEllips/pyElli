@@ -375,10 +375,6 @@ class Result:
             "T",
             "Rc",
             "Tc",
-            "jones_matrix_r",
-            "jones_matrix_t",
-            "jones_matrix_rc",
-            "jones_matrix_tc",
         ]:
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
@@ -445,74 +441,9 @@ class ResultList:
         Returns:
             npt.NDArray: Array of data.
         """
-        names = name.rsplit("_", 1)
-
-        if names[0] == "Ψ":
-            names[0] = "psi"
-        elif names[0] == "Δ":
-            names[0] = "delta"
-        elif names[0] == "ρ":
-            names[0] = "rho"
-
-        if names[0] not in [
-            "psi",
-            "delta",
-            "rho",
-            "r",
-            "t",
-            "rc",
-            "tc",
-            "R",
-            "T",
-            "Rc",
-            "Tc",
-            "jones_matrix_r",
-            "jones_matrix_t",
-            "jones_matrix_rc",
-            "jones_matrix_tc",
-        ]:
-            raise AttributeError(f"'Result' object has no attribute '{name}'")
-
-        if len(names) > 1:
-            (i, j) = map(_polar_index, names[1])
-
-        if names[0] in ["psi", "delta", "rho"]:
-            if len(names) == 1:
-                return np.squeeze(
-                    np.array(
-                        [result.__getattribute__(names[0]) for result in self.results]
-                    )
-                )
-            return np.squeeze(
-                np.array(
-                    [
-                        result.__getattribute__(names[0] + "_matrix")[:, i, j]
-                        for result in self.results
-                    ]
-                )
-            )
-
-        if names[0] in ["r", "rc", "t", "tc"]:
-            if len(names) == 1:
-                return np.squeeze(
-                    np.array(
-                        [
-                            result.__getattribute__("jones_matrix_" + names[0])
-                            for result in self.results
-                        ]
-                    )
-                )
-            return np.squeeze(
-                np.array(
-                    [
-                        result.__getattribute__("jones_matrix_" + names[0])[:, i, j]
-                        for result in self.results
-                    ]
-                )
-            )
 
         return np.squeeze(
             np.array(
-                [result.__getattribute__(names[0])[:, i, j] for result in self.results]
+                [getattr(result, name) for result in self.results]
             )
         )
