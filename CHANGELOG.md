@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.12.0
+
+- Added a lot of documentation
+- Added a Bruggeman EMA Material
+- Support for transmissive Ellipsometry
+- Renamed PropagatorExpmScipy to PropagatorExpm
+- Removed Torch and Tensorflow Solvers
+
 ## Version 0.11.0
 
 - Adds reading functionality for [NeXus files](https://fairmat-experimental.github.io/nexus-fairmat-proposal/50433d9039b3f33299bab338998acb5335cd8951/classes/contributed_definitions/NXellipsometry.html#nxellipsometry).
