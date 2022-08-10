@@ -10,37 +10,22 @@ e_y = np.array([0, 1, 0]).reshape((3,))
 e_z = np.array([0, 0, 1]).reshape((3,))
 
 
-def lambda2E(lbda: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts wavelength values to energy values.
+def conversion_wavelength_energy(value: npt.ArrayLike) -> npt.ArrayLike:
+    r"""Converts wavelength values to energy values and vice versa.
 
     .. math::
         E = c \cdot \hbar / \boldsymbol{\lambda}
 
     Args:
-        lbda (npt.ArrayLike): Single value or array of wavelengths in nm.
+        value (npt.ArrayLike): Single value or array of wavelengths in nm or energy in eV.
 
     Returns:
-        npt.ArrayLike: Energy in eV.
+        npt.ArrayLike: Energy in eV or wavelength in nm.
     """
-    return sc.speed_of_light * sc.value("Planck constant in eV/Hz") / (lbda * 1e-9)
+    return sc.speed_of_light * sc.value("Planck constant in eV/Hz") / (value * 1e-9)
 
 
-def E2lambda(E: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts energy values to wavelength values.
-
-    .. math::
-        \lambda = c \cdot \hbar / \boldsymbol{E}
-
-    Args:
-        lbda (npt.ArrayLike): Single value or array of energies in eV.
-
-    Returns:
-        npt.ArrayLike: Wavelength in nm.
-    """
-    return (sc.speed_of_light * sc.value("Planck constant in eV/Hz") / E) * 1e-9
-
-
-def freq2E(f: npt.ArrayLike) -> npt.ArrayLike:
+def conversion_frequency2energy(f: npt.ArrayLike) -> npt.ArrayLike:
     r"""Converts frequency values to energy values.
 
     .. math::
@@ -55,7 +40,7 @@ def freq2E(f: npt.ArrayLike) -> npt.ArrayLike:
     return f * sc.value("Planck constant in eV/Hz")
 
 
-def E2freq(E: npt.ArrayLike) -> npt.ArrayLike:
+def conversion_energy2frequency(E: npt.ArrayLike) -> npt.ArrayLike:
     r"""Converts energy values to frequency values.
 
     .. math::
@@ -70,64 +55,35 @@ def E2freq(E: npt.ArrayLike) -> npt.ArrayLike:
     return E / sc.value("Planck constant in eV/Hz")
 
 
-def freq2lambda(f: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts frequency values to wavelength values.
-
-    .. math::
-        \lambda = c / \boldsymbol{f}
-
-    Args:
-        f (npt.ArrayLike): Single value or array of frequencies in Hz.
-
-    Returns:
-        npt.ArrayLike: Wavelength in nm.
-    """
-    return (sc.speed_of_light / f) * 1e-9
-
-
-def lambda2freq(lbda: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts wavelength values to frequency values.
+def conversion_wavelength_frequency(value: npt.ArrayLike) -> npt.ArrayLike:
+    r"""Converts wavelength values to frequency values and vice versa.
 
     .. math::
         f = c / \boldsymbol{\lambda}
 
     Args:
-        lbda (npt.ArrayLike): Single value or array of wavelengths in nm.
+        value (npt.ArrayLike): Single value or array of wavelengths in nm or frequencies in Hz.
 
     Returns:
-        npt.ArrayLike: Frequencies in Hz.
+        npt.ArrayLike: Frequencies in Hz or wavelengths in nm.
     """
-    return sc.speed_of_light / (lbda * 1e-9)
+    return sc.speed_of_light / (value * 1e-9)
 
 
-def lambda2wnum(lbda: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts wavelength values to wavenumber values.
+def conversion_wavelength_wavenumber(value: npt.ArrayLike) -> npt.ArrayLike:
+    r"""Converts wavelength values to wavenumber values and vice versa.
 
     .. math::
         \tilde{\nu} = 1 / \boldsymbol{\lambda}
 
     Args:
-        lbda (npt.ArrayLike): Single value or array of wavelengths in nm.
+        value (npt.ArrayLike): Single value or array of wavelengths in nm
+            or wavenumbers in :math:`\text{cm}^{-1}`.
 
     Returns:
-        npt.ArrayLike: Wavenumbers in :math:`\text{cm}^{-1}`.
+        npt.ArrayLike: Wavenumbers in :math:`\text{cm}^{-1}` or wavelengths in nm.
     """
-    return 1 / (lbda * 1e-7)
-
-
-def wnum2lambda(wnum: npt.ArrayLike) -> npt.ArrayLike:
-    r"""Converts wavenumber values to wavelength values.
-
-    .. math::
-        \lambda = 1 / \boldsymbol{\tilde{\nu}}
-
-    Args:
-        wnum (npt.ArrayLike): Single value or array of wavenumbers in :math:`\text{cm}^{-1}`.
-
-    Returns:
-        npt.ArrayLike: Wavelengths in Hz.
-    """
-    return 1 / (wnum * 1e7)
+    return 1e7 / value
 
 
 #########################################################

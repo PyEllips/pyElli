@@ -52,7 +52,7 @@ from scipy.special import gamma, digamma, dawsn
 import scipy.interpolate
 
 from .base_dispersion import Dispersion, InvalidParameters
-from ..math import lambda2E
+from ..math import conversion_wavelength_energy
 
 
 class ConstantRefractiveIndex(Dispersion):
@@ -188,7 +188,7 @@ class DrudeEnergy(Dispersion):
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         return self.single_params.get("A") / (
             energy**2 - 1j * self.single_params.get("gamma") * energy
         )
@@ -221,7 +221,7 @@ class DrudeResistivity(Dispersion):
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         hbar = sc.value("Planck constant in eV/Hz") / 2 / np.pi
         eps0 = sc.value("vacuum electric permittivity") * 1e-2
 
@@ -288,7 +288,7 @@ class LorentzEnergy(Dispersion):
     rep_params_template = {"A": 1, "E": 0, "gamma": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         return 1 + sum(
             c.get("A") / (c.get("E") ** 2 - energy**2 - 1j * c.get("gamma") * energy)
             for c in self.rep_params
@@ -335,7 +335,7 @@ class Gaussian(Dispersion):
     rep_params_template = {"A": 1, "E": 1, "sigma": 1}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         ftos = 2 * sqrt(np.log(2))
         return sum(
             2
@@ -403,7 +403,7 @@ class TaucLorentz(Dispersion):
         # fmt: on
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         energy_g = self.single_params.get("Eg")
         return sum(
             (
@@ -466,7 +466,7 @@ class Tanguy(Dispersion):
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        E = lambda2E(lbda)
+        E = conversion_wavelength_energy(lbda)
         A = self.single_params.get("A")
         d = self.single_params.get("d")
         gam = self.single_params.get("gamma")
@@ -533,7 +533,7 @@ class Poles(Dispersion):
     rep_params_template = {}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        energy = lambda2E(lbda)
+        energy = conversion_wavelength_energy(lbda)
         return self.single_params.get("A_ir") / energy**2 + self.single_params.get(
             "A_uv"
         ) / (self.single_params.get("E_uv") ** 2 - energy**2)

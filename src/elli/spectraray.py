@@ -5,7 +5,7 @@ and misses some other features.
 import pandas as pd
 from .dispersions.dispersions import TableEpsilon
 from .utils import calc_rho
-from .math import lambda2E
+from .math import conversion_wavelength_energy
 
 
 class SpectraRay:
@@ -59,7 +59,7 @@ class SpectraRay:
                 lbda=df.index, epsilon=df.loc[:, "ϵ1"] + 1j * df.iloc[:, "ϵ2"]
             )
         return TableEpsilon(
-            lbda=lambda2E(df.index),
+            lbda=conversion_wavelength_energy(df.index),
             epsilon=df.loc[:, "ϵ1"] + 1j * df.loc[:, "ϵ2"],
         )
 
