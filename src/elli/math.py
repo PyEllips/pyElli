@@ -14,7 +14,7 @@ def conversion_wavelength_energy(value: npt.ArrayLike) -> npt.ArrayLike:
     r"""Converts wavelength values to energy values and vice versa.
 
     .. math::
-        E = c \cdot \hbar / \boldsymbol{\lambda}
+        value_{\text{target}} = c \cdot \hbar / \boldsymbol{value}
 
     Args:
         value (npt.ArrayLike): Single value or array of wavelengths in nm or energy in eV.
@@ -59,7 +59,7 @@ def conversion_wavelength_frequency(value: npt.ArrayLike) -> npt.ArrayLike:
     r"""Converts wavelength values to frequency values and vice versa.
 
     .. math::
-        f = c / \boldsymbol{\lambda}
+        value_{\text{target}} = c / \boldsymbol{value}
 
     Args:
         value (npt.ArrayLike): Single value or array of wavelengths in nm or frequencies in Hz.
@@ -74,7 +74,7 @@ def conversion_wavelength_wavenumber(value: npt.ArrayLike) -> npt.ArrayLike:
     r"""Converts wavelength values to wavenumber values and vice versa.
 
     .. math::
-        \tilde{\nu} = 1 / \boldsymbol{\lambda}
+        value_{\text{target}} = 1 / \boldsymbol{value}
 
     Args:
         value (npt.ArrayLike): Single value or array of wavelengths in nm
