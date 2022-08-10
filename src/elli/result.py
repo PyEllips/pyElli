@@ -14,7 +14,7 @@ These can be accessed by different methods:
 * With the get method: ``result.get('property')``
 
 For Matrix properties, a specific value can be requested using a ``property_ij`` notation.
-As i and j the respective polarization identifiers or 
+As i and j the respective polarization identifiers or
 numerical indices can be used (r/s or R/L or 0...3).
 
 To make handling multiple experiments easier, they can be grouped into a list and provided
