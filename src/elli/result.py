@@ -266,6 +266,15 @@ class Result:
 
     @property
     def R(self) -> npt.NDArray:
+        r"""Returns the absolute reflectance for unpolarized light.
+
+        .. math::
+            R = R_{pp} / R_{ss}
+        """
+        return (self.R_matrix[:, 0, 0] + self.R_matrix[:, 1, 1]) / 2
+
+    @property
+    def R_matrix(self) -> npt.NDArray:
         r"""Returns the reflectance matrix separated for s and p polarization.
 
         .. math::
@@ -275,6 +284,15 @@ class Result:
 
     @property
     def T(self) -> npt.NDArray:
+        r"""Returns the absolute transmittance for unpolarized light.
+
+        .. math::
+            T = T_{pp} / T_{ss}
+        """
+        return (self.T_matrix[:, 0, 0] + self.T_matrix[:, 1, 1]) / 2
+
+    @property
+    def T_matrix(self) -> npt.NDArray:
         r"""Returns the transmittance matrix separated for s and p polarization.
 
         .. math::
@@ -283,8 +301,8 @@ class Result:
         return np.abs(self._jones_matrix_t) ** 2 * self._power_correction[:, None, None]
 
     @property
-    def Rc(self) -> npt.NDArray:
-        r"""Returns the reflectance matrix with the for circular polarizations.
+    def Rc_matrix(self) -> npt.NDArray:
+        r"""Returns the reflectance matrix for circular polarizations.
 
         .. math::
             M_{Rc} = \begin{bmatrix} R_{LL} & R_{LR} \\ R_{RL} & R_{RR} \end{bmatrix}
@@ -292,7 +310,7 @@ class Result:
         return np.abs(self.jones_matrix_rc) ** 2
 
     @property
-    def Tc(self) -> npt.NDArray:
+    def Tc_matrix(self) -> npt.NDArray:
         r"""Returns the transmittance matrix with the for circular polarizations.
 
         .. math::
@@ -371,7 +389,7 @@ class Result:
             names[0] = "rho"
 
         if not (
-            names[0] in ["psi", "delta", "rho", "r", "t", "rc", "tc"]
+            names[0] in ["psi", "delta", "rho", "r", "t", "rc", "tc", "Rc", "Tc"]
             or names[0] in self.__dir__()
         ):
             raise AttributeError(f"'Result' object has no attribute '{name}'")
@@ -379,7 +397,7 @@ class Result:
         if len(names) > 1:
             (i, j) = map(_polar_index, names[1])
 
-        if names[0] in ["psi", "delta", "rho"]:
+        if names[0] in ["psi", "delta", "rho", "R", "T"]:
             if len(names) == 1:
                 return self.__getattribute__(names[0])
             return self.__getattribute__(names[0] + "_matrix")[:, i, j]
@@ -388,6 +406,11 @@ class Result:
             if len(names) == 1:
                 return self.__getattribute__("jones_matrix_" + names[0])
             return self.__getattribute__("jones_matrix_" + names[0])[:, i, j]
+
+        if names[0] in ["Rc", "Tc"]:
+            if len(names) == 1:
+                return self.__getattribute__(names[0] + "_matrix")
+            return self.__getattribute__(names[0] + "_matrix")[:, i, j]
 
         return self.__getattribute__(names[0])[:, i, j]
 
