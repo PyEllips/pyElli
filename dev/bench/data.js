@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1660161295990,
+  "lastUpdate": 1660211734995,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -6892,6 +6892,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00017300486755206216",
             "extra": "mean: 5.287841700000229 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "distinct": true,
+          "id": "1c6daa716cca7458de414cb84545387e0fc80256",
+          "message": "Add properties for absolute reflectance and transmittance for unpolarized light",
+          "timestamp": "2022-08-11T11:54:06+02:00",
+          "tree_id": "73af6a07cdea670af2b546fa3834c75c6529d44b",
+          "url": "https://github.com/PyEllips/pyElli/commit/1c6daa716cca7458de414cb84545387e0fc80256"
+        },
+        "date": 1660211734401,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.106234536377467,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006977564540300522",
+            "extra": "mean: 41.48304450000069 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 7.219862113875071,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02669518470018045",
+            "extra": "mean: 138.5068002999958 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 138.98566151645156,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0015485776599249638",
+            "extra": "mean: 7.194986799999015 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 193.38455793729972,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00006128338651207747",
+            "extra": "mean: 5.171043700005384 msec\nrounds: 10"
           }
         ]
       }
