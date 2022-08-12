@@ -375,11 +375,20 @@ class MaxwellGarnettEMA(MixtureMaterial):
         e_h = self.host_material.get_tensor(lbda)
         e_g = self.guest_material.get_tensor(lbda)
 
-        # fmt: off
-        epsilon = e_h \
-            * (2 * fraction * (e_g - e_h) + e_g + 2 * e_h) \
+        # Catch calculation warnings
+        old_settings = np.geterr()
+        np.seterr(invalid="ignore")
+
+        maxwell_garnett = (
+            e_h
+            * (2 * fraction * (e_g - e_h) + e_g + 2 * e_h)
             / (2 * e_h + e_g - fraction * (e_g - e_h))
-        # fmt: on
+        )
+
+        # Reset numpy settings
+        np.seterr(**old_settings)
+
+        epsilon = np.where(np.logical_and(e_h == 0, e_g == 0), e_h, maxwell_garnett)
         return epsilon
 
 
