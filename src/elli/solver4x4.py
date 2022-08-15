@@ -1,14 +1,15 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+
 import numpy as np
 import numpy.typing as npt
+import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
-import scipy.constants as sc
 
 from .materials import IsotropicMaterial
-from .solver import Solver
 from .result import Result
+from .solver import Solver
 
 
 class Propagator(ABC):

@@ -1,6 +1,6 @@
 """This files generates files for the current values of the dispersions"""
-import numpy as np
 import elli
+import numpy as np
 
 
 def execute_and_save(dispersion, identifier, rep_params, *args, **kwargs):

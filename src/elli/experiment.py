@@ -18,9 +18,9 @@ The experiment class is only needed in special cases an can be skipped by callin
 import numpy as np
 import numpy.typing as npt
 
-from .solver4x4 import Solver4x4
-from .solver import Solver
 from .result import Result
+from .solver import Solver
+from .solver4x4 import Solver4x4
 
 
 class Experiment:

@@ -1,13 +1,13 @@
 """Tests for dispersion models"""
 import os
-from setuptools import distutils
-import numpy as np
-import pandas as pd
-from pytest import fixture
-from pandas.testing import assert_frame_equal
-from numpy.testing import assert_array_equal
 
 import elli
+import numpy as np
+import pandas as pd
+from numpy.testing import assert_array_equal
+from pandas.testing import assert_frame_equal
+from pytest import fixture
+from setuptools import distutils
 
 
 @fixture

@@ -27,7 +27,7 @@ n_med = (ne + no) / 2
 LC = elli.UniaxialMaterial(
     elli.ConstantRefractiveIndex(no), elli.ConstantRefractiveIndex(ne)
 )  # ne along z
-R = elli.rotation_v_theta(elli.e_y, 90)  # rotation of pi/2 along y
+R = elli.rotation_v_theta(elli.E_Y, 90)  # rotation of pi/2 along y
 LC.set_rotation(R)  # apply rotation from z to x
 # Cholesteric pitch (nm):
 p = 650

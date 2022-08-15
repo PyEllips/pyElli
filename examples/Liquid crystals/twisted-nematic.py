@@ -42,7 +42,7 @@ Dn = ne - no
 LC = elli.UniaxialMaterial(
     elli.ConstantRefractiveIndex(no), elli.ConstantRefractiveIndex(ne)
 )
-R = elli.rotation_v_theta(elli.e_y, 90)
+R = elli.rotation_v_theta(elli.E_Y, 90)
 LC.set_rotation(R)
 d = 4330
 TN = elli.TwistedLayer(LC, d, 7, 90)

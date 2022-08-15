@@ -33,7 +33,6 @@ import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
-
 if TYPE_CHECKING:
     from .dispersions.dispersions import Dispersion
 

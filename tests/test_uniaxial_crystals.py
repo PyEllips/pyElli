@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # encoding: utf-8
 
-import numpy as np
 import elli
+import numpy as np
 
 
 class TestUniaxial:

@@ -9,10 +9,10 @@ Interface reflection
 #
 # Interface between two materials n1/n2.
 # Calculations of the transmission and reflexion coefficients with varying incidence angle.
-import numpy as np
 import elli
-from scipy.constants import c, pi
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.constants import c, pi
 
 # %%
 # Structure definition

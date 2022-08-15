@@ -1,5 +1,6 @@
 # Encoding: utf-8
 import numpy as np
+from numpy.lib.scimath import sqrt
 
 try:
     import matplotlib.pyplot as plt
@@ -7,8 +8,8 @@ except ImportError as e:
     raise ImportError(
         "Optional dependency matplotlib missing. This module will not work properly."
     ) from e
-from numpy.lib.scimath import sqrt
-from ..math import e_x
+
+from ..utils import E_X
 
 
 def get_permittivity_profile(structure, lbda):
@@ -21,7 +22,7 @@ def get_permittivity_profile(structure, lbda):
     return sum([[front], layers, [back]], [])
 
 
-def get_index_profile(structure, lbda, v=e_x):
+def get_index_profile(structure, lbda, v=E_X):
     """Returns refractive index profile.
 
     'v' : Unit vector, direction of evaluation of the refraction index.

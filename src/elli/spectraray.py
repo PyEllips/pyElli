@@ -3,9 +3,9 @@ It only supplies a rundimentary loading of standard psi/delta values
 and misses some other features.
 """
 import pandas as pd
+
 from .dispersions.dispersions import TableEpsilon
-from .utils import calc_rho
-from .math import conversion_wavelength_energy
+from .utils import calc_rho, conversion_wavelength_energy
 
 
 class SpectraRay:

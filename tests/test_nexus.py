@@ -1,9 +1,11 @@
 """Tests for a TiO2/SiO2/Si reference layer"""
 from __future__ import unicode_literals
-from distutils import dir_util
+
 import os
-from pytest import fixture
+from distutils import dir_util
+
 from elli.nexus import read_psi_delta, read_rho
+from pytest import fixture
 
 
 @fixture

@@ -1,6 +1,6 @@
 """Testing cases for the dispersion law factory class."""
-import pytest
 import elli
+import pytest
 
 
 def test_correct_object_generation():

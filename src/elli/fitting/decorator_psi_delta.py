@@ -1,24 +1,26 @@
 """Decorator functions for convenient fitting"""
 # Encoding: utf-8
-from typing import Callable
 from sys import float_info
+from typing import Callable
+
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+from lmfit import Parameters, minimize
 
 try:
     import plotly.graph_objects as go
-    from ipywidgets import widgets
     from IPython.display import display
+    from ipywidgets import widgets
 except ImportError as e:
     raise ImportError(
         "This module requires plotly, ipywidgets and ipython to be installed."
     ) from e
-from lmfit import minimize, Parameters
+
 from ..result import Result
 from ..utils import calc_pseudo_diel, calc_rho
-from .params_hist import ParamsHist
 from .decorator import FitDecorator, is_in_notebook
+from .params_hist import ParamsHist
 
 
 class FitRho(FitDecorator):

@@ -2,12 +2,14 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 
+import pandas as pd
+from lmfit import Parameters
+
 try:
     from ipywidgets import widgets
 except ImportError as e:
     raise ImportError("This module requires ipywidgets to work properly.") from e
-from lmfit import Parameters
-import pandas as pd
+
 from .params_hist import ParamsHist
 
 

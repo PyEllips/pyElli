@@ -19,7 +19,7 @@ def test_cholesteric_lc():
     LC = elli.UniaxialMaterial(
         elli.ConstantRefractiveIndex(n=no), elli.ConstantRefractiveIndex(n=ne)
     )  # ne along z
-    R = elli.rotation_v_theta(elli.e_y, 90)  # rotation round y
+    R = elli.rotation_v_theta(elli.E_Y, 90)  # rotation round y
     LC.set_rotation(R)  # apply rotation from z to x
     # Cholesteric pitch:
     p = 650
@@ -82,7 +82,7 @@ def test_twisted_nematic_lc():
     LC = elli.UniaxialMaterial(
         elli.ConstantRefractiveIndex(n=no), elli.ConstantRefractiveIndex(n=ne)
     )
-    R = elli.rotation_v_theta(elli.e_y, 90)
+    R = elli.rotation_v_theta(elli.E_Y, 90)
     LC.set_rotation(R)
     d = 4330
     TN = elli.TwistedLayer(LC, d, 18, 90)

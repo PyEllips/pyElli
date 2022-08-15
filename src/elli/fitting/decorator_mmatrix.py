@@ -2,20 +2,22 @@
 # Encoding: utf-8
 from typing import Callable
 
+import numpy.typing as npt
+import pandas as pd
+from lmfit import Parameters, minimize
+from lmfit.minimizer import MinimizerResult
+
 try:
-    from ipywidgets import widgets
-    from IPython.display import display
     import plotly.graph_objects as go
+    from IPython.display import display
+    from ipywidgets import widgets
 except ImportError as e:
     raise ImportError("This module requires ipywidgets, plotly and ipython.") from e
-import pandas as pd
-import numpy.typing as npt
-from lmfit import minimize, Parameters
-from lmfit.minimizer import MinimizerResult
-from ..result import Result
+
 from ..plot.mueller_matrix import plot_mmatrix
-from .params_hist import ParamsHist
+from ..result import Result
 from .decorator import FitDecorator, is_in_notebook
+from .params_hist import ParamsHist
 
 
 def mmatrix_to_dataframe(

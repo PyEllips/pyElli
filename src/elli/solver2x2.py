@@ -2,8 +2,8 @@
 import numpy as np
 from numpy.lib.scimath import arcsin, sqrt
 
-from .solver import Solver
 from .result import Result
+from .solver import Solver
 
 
 class Solver2x2(Solver):

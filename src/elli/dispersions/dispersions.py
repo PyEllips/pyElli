@@ -44,15 +44,15 @@ more than two dispersions together you may have a look at the `DispersionSum`_ c
 """
 import numpy as np
 import numpy.typing as npt
-from numpy.lib.scimath import sqrt
 import scipy.constants as sc
+import scipy.interpolate
+from numpy.lib.scimath import sqrt
 
 # pylint: disable=no-name-in-module
-from scipy.special import gamma, digamma, dawsn
-import scipy.interpolate
+from scipy.special import dawsn, digamma, gamma
 
+from ..utils import conversion_wavelength_energy
 from .base_dispersion import Dispersion, InvalidParameters
-from ..math import conversion_wavelength_energy
 
 
 class ConstantRefractiveIndex(Dispersion):

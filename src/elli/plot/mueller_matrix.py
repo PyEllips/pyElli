@@ -1,5 +1,9 @@
 """Plotting functions for Mueller matrices"""
 # Encoding: utf-8
+from typing import List
+
+import pandas as pd
+
 try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
@@ -7,8 +11,6 @@ except ImportError as e:
     raise ImportError(
         "Optional dependency plotly is not installed. This module will not work properly."
     ) from e
-from typing import List
-import pandas as pd
 
 COLORS = [
     "#636EFA",

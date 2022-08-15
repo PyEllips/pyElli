@@ -18,16 +18,17 @@ There are also classes to approximate layers with varying properties along the z
 * :class:`VaryingMixtureLayer` takes an :class:`MixtureMaterial<elli.materials.MixtureMaterial>` and uses a gradient as mixture fraction.
 """
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Callable
+from typing import Callable, List, Tuple
+
 import numpy as np
 import numpy.typing as npt
 
 from .experiment import Experiment
-from .materials import Material, MixtureMaterial, IsotropicMaterial
-from .math import rotation_v_theta
+from .materials import IsotropicMaterial, Material, MixtureMaterial
+from .result import Result
 from .solver import Solver
 from .solver4x4 import Solver4x4
-from .result import Result
+from .utils import E_Z, rotation_v_theta
 
 
 class AbstractLayer(ABC):
@@ -275,7 +276,7 @@ class TwistedLayer(InhomogeneousLayer):
             npt.NDArray: Permittivity tensor for position 'z' and wavelength 'lbda'.
         """
         epsilon = self.material.get_tensor(lbda)
-        m_r = rotation_v_theta([0, 0, 1], self.angle * z / self.thickness)
+        m_r = rotation_v_theta(E_Z, self.angle * z / self.thickness)
         return m_r @ epsilon @ m_r.T
 
 

@@ -1,10 +1,11 @@
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
 from typing import Union
+
 import numpy as np
 import numpy.typing as npt
-from numpy.lib.scimath import sqrt
 import pandas as pd
+from numpy.lib.scimath import sqrt
 
 from .. import materials
 from . import dispersions

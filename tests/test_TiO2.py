@@ -1,11 +1,13 @@
 """Tests for a TiO2/SiO2/Si reference layer"""
 from __future__ import unicode_literals
-from distutils import dir_util
+
 import os
-import numpy as np
-from pytest import fixture
+from distutils import dir_util
+
 import elli
+import numpy as np
 from elli.fitting import ParamsHist
+from pytest import fixture
 
 
 @fixture
