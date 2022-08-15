@@ -2,11 +2,19 @@
 
 ## Version 0.12.0
 
+### Breaking Changes:
+- Renamed the conversion functions and added more
+- result.R and .T now return the reflectance/transmittance instead of the respective matrix, which can be accessed with .R_matrix/.T_matrix
+- Renamed PropagatorExpmScipy to PropagatorExpm
+- Removed Torch and Tensorflow Solvers
+
+### New:
 - Added a lot of documentation
 - Added a Bruggeman EMA Material
 - Support for transmissive Ellipsometry
-- Renamed PropagatorExpmScipy to PropagatorExpm
-- Removed Torch and Tensorflow Solvers
+
+### Bug fixes:
+- Fix nan values in MaxwellGarnettEMA
 
 ## Version 0.11.0
 
