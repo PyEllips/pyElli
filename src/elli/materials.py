@@ -81,7 +81,7 @@ class SingleMaterial(Material):
 
         Args:
             r (npt.NDArray):
-                rotation matrix (from :func:`rotation_euler<elli.math.rotation_euler>` or others)
+                rotation matrix (from :func:`rotation_euler<elli.utils.rotation_euler>` or others)
         """
         self.rotated = True
         self.rotation_matrix = r
