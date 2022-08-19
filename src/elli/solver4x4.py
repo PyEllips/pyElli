@@ -94,11 +94,8 @@ class PropagatorEig(Propagator):
         """
         q, w = np.linalg.eig(delta)
 
-        # Sort according to z propagation direction, highest Re(q) first
-        # if Re(q) is zero, sort by Im(q)
-        i = np.where(
-            np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q))
-        )
+        # Sort according to z propagation direction, by Re(q) first, then Im(q)
+        i = np.lexsort((-np.real(q), -np.imag(q)))
 
         q = np.take_along_axis(q, i, axis=-1)
         w = np.take_along_axis(w, i[:, np.newaxis, :], axis=-1)
@@ -182,11 +179,8 @@ class Solver4x4(Solver):
         """
         q, p = np.linalg.eig(delta)
 
-        # Sort according to z propagation direction, highest Re(q) first
-        # if Re(q) is zero, sort by Im(q)
-        idx = np.where(
-            np.isclose(q.real, 0), np.argsort(-np.imag(q)), np.argsort(-np.real(q))
-        )
+        # Sort according to z propagation direction, by Re(q) first, then Im(q)
+        idx = np.lexsort((-np.real(q), -np.imag(q)))
 
         q = np.take_along_axis(q, idx, axis=-1)
         p = np.take_along_axis(p, idx[:, np.newaxis, :], axis=-1)
