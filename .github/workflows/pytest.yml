@@ -32,5 +32,4 @@ jobs:
           pip install .
       - name: Test with pytest
         run: |
-          export JUPYTER_PREFER_ENV_PATH=1
           pytest --nbmake
