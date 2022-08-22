@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.13.0
+
+### Breaking Changes:
+- Moved math submodule into utils, to avoid name conflict with Python's math module
+
+### Bug fixes:
+- Fix error in eigenvalue sorting (PropergatorEig and non-isotropic backmaterials)
+- Pin version of ipywidgets to keep plotly working
+
 ## Version 0.12.0
 
 ### Breaking Changes:
