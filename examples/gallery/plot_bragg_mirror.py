@@ -30,13 +30,13 @@ n_TiO2 = 2.23 + 1j * 5.2e-4
 SiO2 = elli.ConstantRefractiveIndex(n_SiO2).get_mat()
 TiO2 = elli.ConstantRefractiveIndex(n_TiO2).get_mat()
 
-# %% 
+# %%
 # Create layers and structure
 # ---------------------------
-# The SiO2 and TiO2 layers are set to the thickness of an 
+# The SiO2 and TiO2 layers are set to the thickness of an
 # quarterwaveplate of the respective material at 1550 nm.
-# 
-# The layers are then stacked alternatingly and put into the 
+#
+# The layers are then stacked alternatingly and put into the
 # complete structure with air and the glass substrate.
 lbda0 = 1550
 
