@@ -9,12 +9,12 @@ The central idea is to construct a class containing the measurement data and an 
 which is fitted to the data with `lmfit <https://lmfit.github.io/lmfit-py/index.html>`_.
 Since pyElli uses lmfit under the hood you may take advantage of it's vast capabilities.
 
-To make creation of the fitting classes as easy as possible pyElli contains decorators to 
+To make creation of the fitting classes as easy as possible pyElli contains decorators to
 automatically instantiate the class by providing a function containing the optical model.
 
 Here you see an example of invoking such a decorator with a measurement dataframe **psi_delta** and
-parameters **params**, an lmfit `Parameter <https://lmfit.github.io/lmfit-py/parameters.html#lmfit.parameter.Parameter>`_ 
-or :class:`ParamsHist<elli.fitting.params_hist.ParamsHist>` object to create a 
+parameters **params**, an lmfit `Parameter <https://lmfit.github.io/lmfit-py/parameters.html#lmfit.parameter.Parameter>`_
+or :class:`ParamsHist<elli.fitting.params_hist.ParamsHist>` object to create a
 :class:`FitRho<elli.fitting.decorator_psi_delta.FitRho>` class.
 
 .. code-block:: python
@@ -23,7 +23,7 @@ or :class:`ParamsHist<elli.fitting.params_hist.ParamsHist>` object to create a
     def model(lbda, params):
         ...
 
-In the :code:`model` function the actual optical model should be constructed and an 
+In the :code:`model` function the actual optical model should be constructed and an
 :class:`Experiment<elli.experiment.Experiment>` object
 should be returned.
 A detailed example on how to use this decorator you find in the :doc:`basic usage<auto_examples/plot_01_basic_usage>` example.
