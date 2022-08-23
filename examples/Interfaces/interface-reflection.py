@@ -56,7 +56,7 @@ T_th_pp = correction * t2_th_pp
 
 
 # %% [markdown]
-# ## Calculation with Berreman4x4
+# ## Calculation with pyElli
 # %%
 data = elli.ResultList([s.evaluate(lbda, Phi_i) for Phi_i in Phi_list])
 

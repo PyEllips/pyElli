@@ -69,8 +69,8 @@ n[-1] = n_g
 n.shape = (-1, 1)
 
 d = np.ones(N + 1)
-d[1::2] = L_TiO2.d  #  d[0] is not used
-d[2::2] = L_SiO2.d
+d[1::2] = L_TiO2.thickness  #  d[0] is not used
+d[2::2] = L_SiO2.thickness
 
 (lbda1, lbda2) = (1100, 2500)
 lbda_list = np.linspace(lbda1, lbda2, 200)
@@ -119,7 +119,7 @@ R_th_ss = (np.abs(ReflectionCoeff(pi / 4, "s"))) ** 2  #  Phi_i = pi/4
 R_th_pp = (np.abs(ReflectionCoeff(pi / 4, "p"))) ** 2
 
 # %% [markdown]
-# ## Calculation with Berreman4x4
+# ## Calculation with pyElli
 # %%
 # Incidence angle Phi_i = 0, 's' polarization
 data = s.evaluate(lbda_list, 0)

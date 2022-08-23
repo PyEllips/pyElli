@@ -19,3 +19,7 @@ sphx_glr_python_to_jupyter.py plot_02_TiO2_multilayer.py
 mv plot_02_TiO2_multilayer.ipynb ../TiO2\ Fit/TiO2\ Multilayerfit.ipynb
 cp TiO2_400cycles.txt ../TiO2\ Fit/
 cp Si_Aspnes.mat ../TiO2\ Fit/
+
+# Copy Bragg-Mirror
+sphx_glr_python_to_jupyter.py plot_bragg_mirror.py
+mv plot_bragg_mirror.ipynb ../Bragg-mirror/Bragg-Mirror.ipynb

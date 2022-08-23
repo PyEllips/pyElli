@@ -72,7 +72,7 @@ R_th = (
 )
 
 # %% [markdown]
-# ## Calculation with Berreman4x4
+# ## Calculation with pyElli
 # %%
 data = s.evaluate(lbda, 0)
 

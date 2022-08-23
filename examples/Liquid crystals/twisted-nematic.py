@@ -63,7 +63,7 @@ u = 2 * d * Dn / lbda_list
 GT = np.sin(pi / 2 * sqrt(1 + u**2)) ** 2 / (1 + u**2)
 
 # %% [markdown]
-# ## Simulate with Berreman4x4
+# ## Simulate with pyElli
 
 # %%
 TN.set_divisions(7)

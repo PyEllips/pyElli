@@ -103,7 +103,7 @@ T_th_s = t2_th_s * correction
 T_th_p = t2_th_p * correction
 
 # %% [markdown]
-# ## Calculation with Berreman4x4
+# ## Calculation with pyElli
 
 # %%
 data = elli.ResultList()

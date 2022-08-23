@@ -1,9 +1,11 @@
-#!/usr/bin/python
-# encoding: utf-8
-# %% [markdown]
-# # Example of a cholesteric liquid crystal
-#
-# Author: O. Castany, C. Molinaro, M. Müller
+"""
+Cholesteric Liquid Crystal
+==========================
+"""
+# %%
+# Example of a cholesteric liquid crystal
+# ---------------------------------------
+# Authors: O. Castany, C. Molinaro, M. Müller
 
 # %%
 import elli
@@ -12,11 +14,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.constants import c, pi
 
-# %% [markdown]
-# ## Set parameters
-
 # %%
-# Materials
+# Setup materials and structure
+# -----------------------------
 glass = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(1.55))
 front = back = glass
 
@@ -26,15 +26,17 @@ Dn = ne - no
 n_med = (ne + no) / 2
 LC = elli.UniaxialMaterial(
     elli.ConstantRefractiveIndex(no), elli.ConstantRefractiveIndex(ne)
-)  # ne along z
+)  # ne is along z
 R = elli.rotation_v_theta(elli.E_Y, 90)  # rotation of pi/2 along y
 LC.set_rotation(R)  # apply rotation from z to x
+
 # Cholesteric pitch (nm):
 p = 650
+
 # One half turn of a right-handed helix:
 TN = elli.TwistedLayer(LC, p / 2, angle=180, div=35)
 
-# Inhomogeneous layer, repeated layer, and structure
+# Repetition the helix layer
 N = 15  # number half pitch repetitions
 h = N * p / 2
 L = elli.RepeatedLayers([TN], N)
@@ -44,17 +46,16 @@ s = elli.Structure(front, [L], back)
 lbda_min, lbda_max = 800, 1200  # (nm)
 lbda_B = p * n_med
 lbda_list = np.linspace(lbda_min, lbda_max, 100)
-k0_list = 2 * pi / lbda_list
 
-# %% [markdown]
-# ## Analytical calculation for the maximal reflection
 # %%
+# Analytical calculation for the maximal reflection
+# -------------------------------------------------
 R_th = np.tanh(Dn / n_med * pi * h / p) ** 2
 lbda_B1, lbda_B2 = p * no, p * ne
 
-# %% [markdown]
-# ## Calculation with pyElli
 # %%
+# Calculation with pyElli
+# -----------------------
 data = s.evaluate(lbda_list, 0)
 
 T_pp = data.T_pp
@@ -84,35 +85,9 @@ T_LR = data.Tc_LR
 T_LL = data.Tc_LL
 R_LL = data.Rc_LL
 
-# %% [markdown]
-# ## Text output:
-# eigenvalues and eigenvectors of the transmission matrix for
-# a wavelength in the middle of the stop-band.
 # %%
-i = np.argmin(np.abs(lbda_list - lbda_B))  #  index for stop-band center
-T = data.jones_matrix_t[i]  #  transmission matrix
-eigenvalues, eigenvectors = np.linalg.eig(T)
-np.set_printoptions(precision=3)
-print("\nTransmission in the middle of the stop-band...\n")
-print("Eigenvalues of the Jones transmission matrix:")
-print(eigenvalues)
-print("Corresponding power transmission:")
-print(np.abs(eigenvalues) ** 2)
-print("Corresponding eigenvectors:")
-print(eigenvectors)
-# Note: the transformation matrix to the eigenvector basis is
-# B = numpy.matrix(eigenvectors), and the matrix B⁻¹ T B is diagonal.
-print("Normalization to the 'p' componant:")
-print(eigenvectors / eigenvectors[0, :])
-print("Ratio 's'/'p':")
-print(np.abs(eigenvectors[1, :] / eigenvectors[0, :]))
-print("Complex angle (°) (+90°: L, -90°: R)")
-print(180 / pi * np.angle(eigenvectors[1, :] / eigenvectors[0, :]))
-# We observe that the eigenvectors are nearly perfectly polarized circular waves
-
-# %% [markdown]
-# ## Plotting
-# %%
+# Plotting
+# --------
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
@@ -136,7 +111,4 @@ ax.set_xlabel(r"Wavelength $\lambda_0$ (nm)")
 ax.set_ylabel(r"Power transmission $T$ and reflexion $R$")
 plt.show()
 
-# %%
 elliplot.draw_structure(s)
-
-# %%
