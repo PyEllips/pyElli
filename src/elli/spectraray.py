@@ -1,5 +1,5 @@
 """A helper class to load data from SpectraRay ASCII Files.
-It only supplies a rundimentary loading of standard psi/delta values
+It only supplies a rudimentary loading of standard psi/delta values
 and misses some other features.
 """
 import pandas as pd
@@ -64,13 +64,16 @@ class SpectraRay:
         )
 
     @staticmethod
-    def read_psi_delta_file(fname: str, decimal: str = ".") -> pd.DataFrame:
+    def read_psi_delta_file(
+        fname: str, sep: str = r"\s+", decimal: str = "."
+    ) -> pd.DataFrame:
         """Read a psi/delta spectraray ascii file.
         Only reads the first entry and does not support reading multiple angles.
         For multiple angles you have to save the data in multiple files.
 
         Args:
             fname (str): Filename of the measurement ascii file.
+            sep (str, optional): Data separator in the datafile. Defaults to "\s+".
             decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
         Returns:
@@ -80,7 +83,7 @@ class SpectraRay:
         psi_delta = pd.read_csv(
             fname,
             index_col=0,
-            sep=r"\s+",
+            sep=sep,
             decimal=decimal,
             usecols=[0, 1, 2],
             names=["Wavelength", "Ψ", "Δ"],
@@ -94,22 +97,23 @@ class SpectraRay:
         return psi_delta
 
     @staticmethod
-    def read_mmatrix(fname: str, decimal: str = ".") -> pd.DataFrame:
+    def read_mmatrix(fname: str, sep: str = r"\s+", decimal: str = ".") -> pd.DataFrame:
         """Read a mueller matrix spectraray ascii file.
         Only reads the first entry and does not support reading multiple angles.
         For multiple angles you have to save the data in multiple files.
 
         Args:
             fname (str): Filename of the measurement ascii file.
+            sep (str, optional): Data separator in the datafile. Defaults to "\s+".
             decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
         Returns:
             pd.DataFrame: DataFrame containing the psi/delta data in
             the format to be further processes inside pyElli.
         """
-        mueller_matrix = pd.read_csv(
-            fname, sep=r"\s+", decimal=decimal, index_col=0
-        ).iloc[:, -17:-1]
+        mueller_matrix = pd.read_csv(fname, sep=sep, decimal=decimal, index_col=0).iloc[
+            :, -17:-1
+        ]
         mueller_matrix.index.name = "Wavelength"
         mueller_matrix.columns = [
             "M11",
@@ -133,18 +137,19 @@ class SpectraRay:
         return mueller_matrix
 
     @staticmethod
-    def read_rho(fname: str, decimal: str = ".") -> pd.DataFrame:
+    def read_rho(fname: str, sep: str = r"\s+", decimal: str = ".") -> pd.DataFrame:
         """Read a psi/delta spectraray ascii file and converts it to rho values.
         Only reads the first entry and does not support reading multiple angles.
         For multiple angles you have to save the data in multiple files.
 
         Args:
             fname (str): Filename of the measurement ascii file.
+            sep (str, optional): Data separator in the datafile. Defaults to "\s+".
             decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
         Returns:
             pd.DataFrame: DataFrame containing the rho data in
             the format to be further processes inside pyElli.
         """
-        psi_delta = SpectraRay.read_psi_delta_file(fname, decimal)
+        psi_delta = SpectraRay.read_psi_delta_file(fname, sep, decimal)
         return calc_rho(psi_delta)
