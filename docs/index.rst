@@ -16,7 +16,7 @@ comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
 a lot of other models used by ellipsometry vendor softwares are included.
 
 To start you may want to dive into :ref:`install<installation>`.
-The bast way to start is to have a look at the :doc:`basic usage<auto_examples/plot_basic_usage>` or
+The bast way to start is to have a look at the :doc:`basic usage<auto_examples/plot_01_basic_usage>` or
 the :doc:`other examples<auto_examples/index>`.
 
 PyElli consists of a set of classes which work together to create a full
