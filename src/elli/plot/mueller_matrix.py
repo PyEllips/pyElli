@@ -1,6 +1,6 @@
 """Plotting functions for Mueller matrices"""
 # Encoding: utf-8
-from typing import List
+from typing import List, Union, Optional
 
 import pandas as pd
 
@@ -27,10 +27,10 @@ COLORS = [
 
 
 def plot_mmatrix(
-    dataframes: List[pd.DataFrame],
-    colors: list = None,
-    dashes: list = None,
-    names: list = None,
+    dataframes: Union[pd.DataFrame, List[pd.DataFrame]],
+    colors: Optional[List[str]] = None,
+    dashes: Optional[List[str]] = None,
+    names: Optional[List[str]] = None,
     single: bool = True,
     full_scale: bool = False,
     sharex: bool = False,
@@ -39,17 +39,24 @@ def plot_mmatrix(
     and plots them together. Needs plotly as additional requirement to work.
 
     Args:
-        dataframes (List[pd.DataFrame]): A list of dataframes containing data of the same index.
-        colors (list, optional): A list of colors which are cycled for each dataframes index. Defaults to None.
-        dashes (list, optional): A list of dash line styles which are cycled for each dataframes index. Defaults to None.
-        names (list, optional): A name for each dataframe index. Defaults to None.
+        dataframes (Union[pd.Dataframe, List[pd.DataFrame]]):
+            A dataframe or a list of dataframes containing data of the same index.
+        colors (Optional[List[str]], optional):
+            A list of colors which are cycled for each dataframes index. Defaults to None.
+        dashes (Optional[List[str]], optional):
+            A list of dash line styles which are cycled for each dataframes index. Defaults to None.
+        names (Optional[List[str]], optional): A name for each dataframe index. Defaults to None.
         single (bool, optional): Uses a single plot if set and a grid if not set. Defaults to True.
         full_scale (bool, optional): Sets the y-axis limits to [-1, 1] if set. Defaults to False.
-        sharex (bool, optional): Ties the zooming of the x-axis together for each plot in grid view. Defaults to False.
+        sharex (bool, optional):
+            Ties the zooming of the x-axis together for each plot in grid view. Defaults to False.
 
     Returns:
         go.Figure: A plotly figure containing the data from dataframes as a grid or single view.
     """
+    if isinstance(dataframes, pd.DataFrame):
+        dataframes = [dataframes]
+
     if colors is None:
         colors = COLORS
     if dashes is None:
