@@ -25,11 +25,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-cov nbmake
-          pip install -r requirements.txt
       - name: Install module
         run: |
-          pip install .
+          pip install .[plot,testing]
       - name: Test with pytest
         run: |
           pytest --nbmake
