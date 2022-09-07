@@ -4,15 +4,19 @@ from typing import Callable
 
 import numpy.typing as npt
 import pandas as pd
-from lmfit import Parameters, minimize
-from lmfit.minimizer import MinimizerResult
 
 try:
+    from lmfit import Parameters, minimize
+    from lmfit.minimizer import MinimizerResult
     import plotly.graph_objects as go
     from IPython.display import display
     from ipywidgets import widgets
 except ImportError as e:
-    raise ImportError("This module requires ipywidgets, plotly and ipython.") from e
+    raise ImportError(
+        "This module requires lmfit, ipywidgets, plotly and ipython.\n"
+        "Try installing this package with the additional fitting requirement, "
+        "i.e. pip install pyElli[fitting]"
+    ) from e
 
 from ..plot.mueller_matrix import plot_mmatrix
 from ..result import Result

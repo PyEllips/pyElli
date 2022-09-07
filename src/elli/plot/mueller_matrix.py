@@ -9,7 +9,9 @@ try:
     from plotly.subplots import make_subplots
 except ImportError as e:
     raise ImportError(
-        "Optional dependency plotly is not installed. This module will not work properly."
+        "Optional dependency plotly is not installed. This module will not work properly.\n"
+        "Try installing this package with the additional fitting requirement, "
+        "i.e. pip install pyElli[fitting]"
     ) from e
 
 COLORS = [

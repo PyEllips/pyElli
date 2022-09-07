@@ -6,7 +6,9 @@ try:
     import matplotlib.pyplot as plt
 except ImportError as e:
     raise ImportError(
-        "Optional dependency matplotlib missing. This module will not work properly."
+        "Optional dependency matplotlib missing. This module will not work properly.\n"
+        "Try installing this package with the additional fitting requirement, "
+        "i.e. pip install pyElli[fitting]"
     ) from e
 
 from ..utils import E_X

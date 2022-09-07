@@ -3,12 +3,16 @@
 from abc import ABC, abstractmethod
 
 import pandas as pd
-from lmfit import Parameters
 
 try:
+    from lmfit import Parameters
     from ipywidgets import widgets
 except ImportError as e:
-    raise ImportError("This module requires ipywidgets to work properly.") from e
+    raise ImportError(
+        "This module requires lmfit and ipywidgets to work properly.\n"
+        "Try installing this package with the additional fitting requirement, "
+        "i.e. pip install pyElli[fitting]"
+    ) from e
 
 from .params_hist import ParamsHist
 

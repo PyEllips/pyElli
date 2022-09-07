@@ -23,8 +23,11 @@ The installers for all releases are available at the [Python Package Index (PyPI
 To install run:
 
 ```sh
-pip install pyElli
+pip install pyElli[fitting]
 ```
+
+This installs pyElli with the additional fitting capabilities and interactive widgets.
+If don't want to have this functionality just drop the `[fitting]` in the end.
 
 A complete environment for pyElli is also available as a [Docker Container](https://hub.docker.com/r/domna/pyelli).
 To pull and run it directly just execute
@@ -40,7 +43,7 @@ to a jupyter server with the latest release of pyElli available.
 To install the latest development version use:
 
 ```sh
-pip install git+https://github.com/PyEllips/pyElli.git
+pip install "pyElli[fitting] @ git+https://github.com/PyEllips/pyElli.git"
 ```
 
 The source code is hosted on [GitHub](https://github.com/PyEllips/pyElli), to manually install from source, clone the repository and run `pip install -e .` in
@@ -49,7 +52,7 @@ the folder to install it in development mode:
 ```sh
 git clone https://github.com/PyEllips/pyElli
 cd pyElli
-pip install -e .
+pip install -e .[fitting]
 ```
 
 ## Acknowledgements

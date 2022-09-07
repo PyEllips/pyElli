@@ -6,15 +6,17 @@ from typing import Callable
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from lmfit import Parameters, minimize
 
 try:
+    from lmfit import Parameters, minimize
     import plotly.graph_objects as go
     from IPython.display import display
     from ipywidgets import widgets
 except ImportError as e:
     raise ImportError(
-        "This module requires plotly, ipywidgets and ipython to be installed."
+        "This module requires lmfit, plotly, ipywidgets and ipython to be installed.\n"
+        "Try installing this package with the additional fitting requirement, "
+        "i.e. pip install pyElli[fitting]"
     ) from e
 
 from ..result import Result

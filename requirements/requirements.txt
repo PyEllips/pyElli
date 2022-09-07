@@ -4,18 +4,11 @@
 #
 #    pip-compile --output-file=requirements/requirements.txt
 #
-asteval==0.9.27
-    # via lmfit
-future==0.18.2
-    # via uncertainties
 h5py==3.7.0
-    # via pyElli (setup.py)
-lmfit==1.0.3
     # via pyElli (setup.py)
 numpy==1.23.2
     # via
     #   h5py
-    #   lmfit
     #   pandas
     #   pyElli (setup.py)
     #   scipy
@@ -26,10 +19,6 @@ python-dateutil==2.8.2
 pytz==2022.2.1
     # via pandas
 scipy==1.9.1
-    # via
-    #   lmfit
-    #   pyElli (setup.py)
+    # via pyElli (setup.py)
 six==1.16.0
     # via python-dateutil
-uncertainties==3.1.7
-    # via lmfit
