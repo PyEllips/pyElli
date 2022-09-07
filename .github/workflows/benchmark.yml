@@ -19,7 +19,7 @@ jobs:
           python-version: 3.9
       - name: Install deps
         run: |
-          pip install -r requirements/plot-requirements.txt
+          pip install -r requirements/fitting-requirements.txt
           pip install pytest pytest-benchmark pytest-coverage
       - name: Install module
         run: |

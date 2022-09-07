@@ -27,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
       - name: Install module
         run: |
-          pip install .[plot,testing]
+          pip install .[fitting,testing]
       - name: Test with pytest
         run: |
           pytest --nbmake
