@@ -38,7 +38,7 @@ def _convert_index(index: str) -> int:
                 's', 'R' -> 1
     """
     if index in ["1", "2", "3", "4"]:
-        return int(index)-1
+        return int(index) - 1
     if index in ["p", "L"]:
         return 0
     if index in ["s", "R"]:
