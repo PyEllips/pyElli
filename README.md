@@ -1,3 +1,5 @@
+# <img src="./logo/logo_light.svg" width="400">
+
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyElli) [![PyPI](https://img.shields.io/pypi/v/pyElli)](https://pypi.org/project/pyElli/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5702469.svg)](https://doi.org/10.5281/zenodo.5702469) [![Pytest](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml/badge.svg)](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/pyelli/badge/?version=latest)](https://pyelli.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # pyElli
@@ -11,7 +13,7 @@ of scientists working with spectral ellipsometry.
 ## Features
 
 - A multitude of models to approximate the dielectric function of your material.
-- Build up your structure easily from materials and layers.
+- Build up your stru#cture easily from materials and layers.
 - Simulate reflection and transmission spectra, ellipsometric parameters and Mueller matrices.
 - Utilities to quickly convert, plot and fit your measurement data.
 - Powerful when necessary, editable and expandable.
@@ -58,4 +60,4 @@ pip install -e .[fitting]
 ## Acknowledgements
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
-- Solver2x2 based on Steve Byrnes's [tmm](https://github.com/sbyrnes321/tmm)
+- Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
