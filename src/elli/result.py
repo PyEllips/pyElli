@@ -15,7 +15,7 @@ These can be accessed by different methods:
 
 For Matrix properties, a specific value can be requested using a ``property_ij`` notation.
 As i and j the respective polarization identifiers or
-numerical indices can be used (r/s or R/L or 0...3).
+numerical indices can be used (r/s or R/L or 1...4).
 
 To make handling multiple experiments easier, they can be grouped into a list and provided
 to a ResultList object. It provides the same methods for data output as the single Result.
@@ -28,17 +28,17 @@ import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
 
-def _polar_index(index: str) -> int:
-    """Return polarization index for character 'index'.
+def _convert_index(index: str) -> int:
+    """Return index for character 'index'.
 
     Args:
-        index (str): Polarization index, valid are: 'p', 's', 'R', 'L' and '0' till '3'.
+        index (str): Polarization index, valid are: 'p', 's', 'R', 'L' or numerical indices '1' till '4'.
     Returns:
         int: 'p', 'L' -> 0
                 's', 'R' -> 1
     """
-    if index in ["0", "1", "2", "3"]:
-        return int(index)
+    if index in ["1", "2", "3", "4"]:
+        return int(index)-1
     if index in ["p", "L"]:
         return 0
     if index in ["s", "R"]:
@@ -395,7 +395,7 @@ class Result:
             raise AttributeError(f"'Result' object has no attribute '{name}'")
 
         if len(names) > 1:
-            (i, j) = map(_polar_index, names[1])
+            (i, j) = map(_convert_index, names[1])
 
         if names[0] in ["psi", "delta", "rho", "R", "T"]:
             if len(names) == 1:
