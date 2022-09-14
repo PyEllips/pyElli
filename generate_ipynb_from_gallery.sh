@@ -23,3 +23,11 @@ cp Si_Aspnes.mat ../TiO2\ Fit/
 # Copy Bragg-Mirror
 sphx_glr_python_to_jupyter.py plot_bragg_mirror.py
 mv plot_bragg_mirror.ipynb ../Bragg-mirror/Bragg-Mirror.ipynb
+
+# Copy Interface Reflection
+sphx_glr_python_to_jupyter.py plot_interface_reflection.py
+mv plot_interface_reflection.ipynb ../Interfaces/interface-reflection.ipynb
+
+# Copy Cholesteric Liquid
+sphx_glr_python_to_jupyter.py plot_cholesteric_lq.py
+mv plot_cholesteric_lq.ipynb ../Liquid\ crystals/cholesteric-liquid.ipynb

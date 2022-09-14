@@ -8,7 +8,7 @@ Basic usage of building a model and fitting it to measurement data of SiO2 on Si
 # %%
 import elli
 from elli.fitting import ParamsHist, fit
-from elli.nexus import read_psi_delta
+from elli.importer.nexus import read_nexus_psi_delta
 
 # sphinx_gallery_thumbnail_path = '_static/basic_usage.png'
 
@@ -26,7 +26,7 @@ from elli.nexus import read_psi_delta
 # This is because we're using literature values for Si,
 # which are only defined in this wavelength range.
 ANGLE = 70
-psi_delta = read_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE].loc[210:800]
+psi_delta = read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE].loc[210:800]
 
 # %%
 # Setting parameters
@@ -100,8 +100,8 @@ params.add("SiO2_d", value=20, min=0, max=40000, vary=True)
 @fit(psi_delta, params)
 def model(lbda, params):
     # Load the literature values for Si
-    sr = elli.SpectraRay("./")
-    Si = elli.IsotropicMaterial(sr.loadDispersionTable("Si_Aspnes.mat"))
+    sr = elli.TableSpectraRay("./")
+    Si = elli.IsotropicMaterial(sr.load_dispersion_table("Si_Aspnes.mat"))
 
     # Generate the cauchy model from the current lmfit parameters
     SiO2 = elli.Cauchy(

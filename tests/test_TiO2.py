@@ -7,6 +7,7 @@ from distutils import dir_util
 import elli
 import numpy as np
 from elli.fitting import ParamsHist
+from elli.importer.spectraray import read_spectraray_rho
 from pytest import fixture
 
 
@@ -29,14 +30,14 @@ def datadir(tmpdir, request):
 @fixture
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
-    return elli.SpectraRay.read_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
+    return read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
 
 
 @fixture
 def si_dispersion(datadir):
     """Fixture to load the silicon dispersion from file."""
-    sr = elli.SpectraRay(datadir)
-    silicon = elli.IsotropicMaterial(sr.loadDispersionTable(f"{os.sep}Si_Aspnes.mat"))
+    sr = elli.TableSpectraRay(datadir)
+    silicon = elli.IsotropicMaterial(sr.load_dispersion_table(f"{os.sep}Si_Aspnes.mat"))
 
     return silicon
 
