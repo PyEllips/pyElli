@@ -1,5 +1,8 @@
 Reading and writing
 ===================
 
-.. automodule:: elli.nexus
+.. automodule:: elli.importer.nexus
+    :members:
+
+.. automodule:: elli.importer.spectraray
     :members:

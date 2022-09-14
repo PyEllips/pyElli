@@ -15,5 +15,4 @@ API Reference
    result
    plot
    read_write
-   spectraray
    helpers
