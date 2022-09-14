@@ -1,6 +1,6 @@
 # Encoding: utf-8
 import sys
-from .dispersions.dispersions import *
+from .dispersions import *
 from .dispersions.base_dispersion import *
 from .experiment import Experiment
 from .materials import *
