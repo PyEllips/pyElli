@@ -8,10 +8,10 @@ import h5py
 import numpy as np
 import pandas as pd
 
-from .utils import calc_rho
+from ..utils import calc_rho
 
 
-def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
+def read_nexus_psi_delta(nxs_filename: str) -> pd.DataFrame:
     """Read a NeXus file containing Psi and Delta data.
 
     Args:
@@ -50,7 +50,7 @@ def read_psi_delta(nxs_filename: str) -> pd.DataFrame:
     return psi_delta_df.rename(columns={"psi": "Ψ", "delta": "Δ"})
 
 
-def read_rho(nxs_filename: str) -> pd.DataFrame:
+def read_nexus_rho(nxs_filename: str) -> pd.DataFrame:
     """Reads rho value from NeXus datafile.
     Currently, this works only with psi / delta representation in the NeXus file.
 
@@ -62,4 +62,4 @@ def read_rho(nxs_filename: str) -> pd.DataFrame:
         The index is a multiindex consisting of the angle of incidents as first column
         and the wavelength as second column.
     """
-    return calc_rho(read_psi_delta(nxs_filename))
+    return calc_rho(read_nexus_psi_delta(nxs_filename))
