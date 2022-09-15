@@ -23,7 +23,7 @@ from elli.fitting import ParamsHist, fit_mueller_matrix
 # The data is scaled by the M11 element, such that :math:`M_{11} = 1` for all wavelengths.
 # To show the structure we print the `MM` dataframe.
 # If you load your data from another source make sure it adheres to this form.
-MM = elli.importer.spectraray.read_spectraray_mmatrix("Wafer_MM_70.txt").loc[210:820]
+MM = elli.read_spectraray_mmatrix("Wafer_MM_70.txt").loc[210:820]
 print(MM)
 
 # %%
