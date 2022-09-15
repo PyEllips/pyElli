@@ -7,7 +7,6 @@ from distutils import dir_util
 import elli
 import numpy as np
 from elli.fitting import ParamsHist
-from elli.importer.spectraray import read_spectraray_rho
 from pytest import fixture
 
 
@@ -30,7 +29,7 @@ def datadir(tmpdir, request):
 @fixture
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
-    return read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
+    return elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
 
 
 @fixture
