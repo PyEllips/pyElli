@@ -1,3 +1,4 @@
+# Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
 from typing import Union
@@ -8,7 +9,7 @@ import pandas as pd
 from numpy.lib.scimath import sqrt
 
 from .. import materials
-from . import dispersions
+from .. import dispersions
 
 
 class InvalidParameters(Exception):

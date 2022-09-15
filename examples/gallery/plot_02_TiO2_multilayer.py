@@ -19,7 +19,7 @@ from elli.fitting import ParamsHist, fit
 #
 # The sample is an ALD grown TiO2 sample (with 400 cycles)
 # on commercially available SiO2 / Si substrate.
-tss = elli.SpectraRay.read_psi_delta_file("TiO2_400cycles.txt").loc[400:800]
+tss = elli.read_spectraray_psi_delta("TiO2_400cycles.txt").loc[400:800]
 
 # %%
 # Set start parameters
@@ -57,8 +57,8 @@ params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 # with which you can select the start parameters before fitting the data.
 @fit(tss, params)
 def model(lbda, params):
-    sr = elli.SpectraRay("./")
-    Si = elli.IsotropicMaterial(sr.loadDispersionTable("Si_Aspnes.mat"))
+    sr = elli.TableSpectraRay("./")
+    Si = elli.IsotropicMaterial(sr.load_dispersion_table("Si_Aspnes.mat"))
 
     SiO2 = elli.Cauchy(
         params["SiO2_n0"],

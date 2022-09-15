@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import os
 from distutils import dir_util
 
-from elli.nexus import read_psi_delta, read_rho
+import elli
 from pytest import fixture
 
 
@@ -36,10 +36,10 @@ def nexus_psi_delta_file(datadir):
 # pylint: disable=redefined-outer-name
 def test_reading_of_psi_delta_nxs(nexus_psi_delta_file):
     """Psi/delta NeXus file is read w/o errors"""
-    read_psi_delta(nexus_psi_delta_file)
+    elli.read_nexus_psi_delta(nexus_psi_delta_file)
 
 
 # pylint: disable=redefined-outer-name
 def test_reading_and_conv_to_rho(nexus_psi_delta_file):
     """Rho values are read from Psi / Delta file"""
-    read_rho(nexus_psi_delta_file)
+    elli.read_nexus_rho(nexus_psi_delta_file)

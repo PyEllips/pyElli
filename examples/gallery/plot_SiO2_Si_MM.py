@@ -23,7 +23,7 @@ from elli.fitting import ParamsHist, fit_mueller_matrix
 # The data is scaled by the M11 element, such that :math:`M_{11} = 1` for all wavelengths.
 # To show the structure we print the `MM` dataframe.
 # If you load your data from another source make sure it adheres to this form.
-MM = elli.SpectraRay.read_mmatrix("Wafer_MM_70.txt").loc[210:820]
+MM = elli.read_spectraray_mmatrix("Wafer_MM_70.txt").loc[210:820]
 print(MM)
 
 # %%
@@ -49,8 +49,8 @@ params.add("SiO2_d", value=120, min=0, max=40000, vary=True)
 # with which you can select the start parameters before fitting the data.
 @fit_mueller_matrix(MM, params, display_single=False, sharex=True, full_scale=False)
 def model(lbda, params):
-    sr = elli.SpectraRay("./")
-    Si = elli.IsotropicMaterial(sr.loadDispersionTable("Si_Aspnes.mat"))
+    sr = elli.TableSpectraRay("./")
+    Si = elli.IsotropicMaterial(sr.load_dispersion_table("Si_Aspnes.mat"))
 
     SiO2 = elli.Cauchy(
         params["SiO2_n0"],

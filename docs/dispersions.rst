@@ -2,20 +2,61 @@
 Dispersions
 ===========
 
-.. automodule:: elli.dispersions.dispersions
+The dispersions are the central part of pyElli and the transfer-matrix method.
+They describe the change of dielectric function or refractive index with the wavelength.
+In pyElli the default wavelength unit is nm.
+Each dispersion has two distinct sets of parameters:
+
+    * Parameters which can be given only once (single parameters).
+    * Parameters which can be given in multiple sets (repeated parameters),
+      e.g. a set of oscillator parameters.
+
+The syntax for each of the parameter sets is different.
+For the single parameters they are given in the class constructor:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        Cauchy(n0=1.458, n1=3.54e-3, n2=0, k0=0, k1=0, k2=0)
+
+Repeated parameters are added via the add() function:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        Sellmeier().add(A=1, B=1).add(A=1, B=2)
+
+For dispersions having both, single and repeated parameters can be used together:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        TaucLorentz(Eg=2).add(A=10, E=2.5, C=0.1)
+
+If parameters are not fully provided, they are set to their respective default values.
+The available parameters and their respective default values
+are given in the respective class documentation.
+
+All classes inherit from the abstract base class `Dispersion`_.
+It provides basic functionality, such as returning dataframes or arrays
+containing the wavelength dependent dielectric function of the
+dispersion relation at current parameter set.
+
+Dispersions can be added with the `+` operator, or if you want to chain
+more than two dispersions together you may have a look at the `DispersionSum`_ class.
 
 
 Constant Refractive Index
 =========================
-.. autoclass:: elli.dispersions.dispersions.ConstantRefractiveIndex
+.. autoclass:: elli.dispersions.ConstantRefractiveIndex
 
 Epsilon Infinity
 ================
-.. autoclass:: elli.dispersions.dispersions.EpsilonInf
+.. autoclass:: elli.dispersions.EpsilonInf
 
 Cauchy
 ======
-.. autoclass:: elli.dispersions.dispersions.Cauchy
+.. autoclass:: elli.dispersions.Cauchy
 
 .. plotly::
 
@@ -28,7 +69,7 @@ Cauchy
 
 Sellmeier
 =========
-.. autoclass:: elli.dispersions.dispersions.Sellmeier
+.. autoclass:: elli.dispersions.Sellmeier
 
 .. plotly::
 
@@ -43,7 +84,7 @@ Drude
 
 Energy parameters
 -----------------
-.. autoclass:: elli.dispersions.dispersions.DrudeEnergy
+.. autoclass:: elli.dispersions.DrudeEnergy
 
 .. plotly::
 
@@ -54,7 +95,7 @@ Energy parameters
 
 Resistivity parameters
 ----------------------
-.. autoclass:: elli.dispersions.dispersions.DrudeResistivity
+.. autoclass:: elli.dispersions.DrudeResistivity
 
 .. plotly::
 
@@ -68,7 +109,7 @@ Lorentz
 
 Wavelength parameters
 ---------------------
-.. autoclass:: elli.dispersions.dispersions.LorentzLambda
+.. autoclass:: elli.dispersions.LorentzLambda
 
 .. plotly::
 
@@ -80,7 +121,7 @@ Wavelength parameters
 
 Energy parameters
 -----------------
-.. autoclass:: elli.dispersions.dispersions.LorentzEnergy
+.. autoclass:: elli.dispersions.LorentzEnergy
 
 .. plotly::
 
@@ -91,7 +132,7 @@ Energy parameters
 
 Tauc-Lorentz
 ============
-.. autoclass:: elli.dispersions.dispersions.TaucLorentz
+.. autoclass:: elli.dispersions.TaucLorentz
 
 .. plotly::
 
@@ -103,7 +144,7 @@ Tauc-Lorentz
 
 Gaussian
 ========
-.. autoclass:: elli.dispersions.dispersions.Gaussian
+.. autoclass:: elli.dispersions.Gaussian
 
 .. plotly::
 
@@ -114,7 +155,7 @@ Gaussian
 
 Tanguy
 ======
-.. autoclass:: elli.dispersions.dispersions.Tanguy
+.. autoclass:: elli.dispersions.Tanguy
 
 .. plotly::
 
@@ -125,7 +166,7 @@ Tanguy
 
 Poles
 =====
-.. autoclass:: elli.dispersions.dispersions.Poles
+.. autoclass:: elli.dispersions.Poles
 
 .. plotly::
 
@@ -140,13 +181,17 @@ Tabulated values
 
 Refractive index values
 -----------------------
-.. autoclass:: elli.dispersions.dispersions.Table
+.. autoclass:: elli.dispersions.Table
 
 Epsilon values
 --------------
-.. autoclass:: elli.dispersions.dispersions.TableEpsilon
+.. autoclass:: elli.dispersions.TableEpsilon
    :members:
 
+Spectraray tables
+-----------------
+.. autoclass:: elli.dispersions.TableSpectraRay
+   :members:
 
 Abstract classes
 ================
