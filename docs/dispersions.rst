@@ -193,6 +193,11 @@ Spectraray tables
 .. autoclass:: elli.dispersions.TableSpectraRay
    :members:
 
+Refractiveindex.info tables
+-----------------
+.. autoclass:: elli.dispersions.TableRII
+   :members:
+
 Abstract classes
 ================
 These classes serve as basic interfaces for dispersions and
