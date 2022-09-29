@@ -1,7 +1,7 @@
 # Encoding: utf-8
 """Helper classes to use the refractiveindex.info database.
 
-For now the database from https://github.com/polyanskiy/refractiveindex.info-database 
+For now the database from https://github.com/polyanskiy/refractiveindex.info-database
 needs to be downloaded manually.
 
 After initialization the Class provides a dataframe at Table_RII.catalog .
