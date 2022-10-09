@@ -62,3 +62,4 @@ pip install -e .[fitting]
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
 - Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
+- Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database)
