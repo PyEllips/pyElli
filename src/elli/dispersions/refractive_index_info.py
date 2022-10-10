@@ -4,10 +4,11 @@
 For now the database from https://github.com/polyanskiy/refractiveindex.info-database
 needs to be downloaded manually.
 
-After initialization the Class provides a dataframe at Table_RII.catalog .
-It can be searched similar to catalog.loc[df['book']=='Ag'] .
+After initialization the Class provides a dataframe at DatabaseRII.catalog .
+It can be searched similar to catalog.loc[catalog['book']=='Ag'] .
 """
 
+import importlib.resources
 import io
 import os
 from collections import namedtuple
@@ -34,18 +35,14 @@ nt_entry = namedtuple(
 )
 
 
-class TableRII:
+class DatabaseRII:
     """Helper class to load tabulated dielectric functions from the refractiveindex.info database."""
 
-    def __init__(self, path: str) -> None:
-        """
-        Args:
-            path (str): Defines the folder where the repository of refractiveindex are saved.
-        """
-        self.rii_path = path
+    def __init__(self) -> None:
+        self.rii_path = importlib.resources.files("elli.refractiveindexinfo-database.database")
 
         with open(
-            os.path.join(self.rii_path, "database", "library.yml"),
+            self.rii_path.joinpath("library.yml"),
             "rt",
             encoding="utf-8",
         ) as f:
@@ -90,7 +87,7 @@ class TableRII:
             Dispersion: A dispersion object containing the tabulated data.
         """
         with open(
-            os.path.join(self.rii_path, "database", self.catalog.loc[index]["path"]),
+            self.rii_path.joinpath(self.catalog.loc[index]["path"]),
             "rt",
             encoding="utf-8",
         ) as f:

@@ -8,7 +8,7 @@ from .gaussian import Gaussian
 from .lorentz_energy import LorentzEnergy
 from .lorentz_lambda import LorentzLambda
 from .poles import Poles
-from .refractive_index_info import TableRII
+from .refractive_index_info import DatabaseRII
 from .sellmeier import Sellmeier
 from .table_epsilon import TableEpsilon
 from .table_index import Table
