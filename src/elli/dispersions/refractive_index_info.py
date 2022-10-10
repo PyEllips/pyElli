@@ -8,11 +8,11 @@ After initialization the Class provides a dataframe at DatabaseRII.catalog .
 It can be searched similar to catalog.loc[catalog['book']=='Ag'] .
 """
 
-import importlib.resources
 import io
 import os
 from collections import namedtuple
 
+from importlib_resources import files
 import pandas as pd
 import yaml
 
@@ -39,7 +39,7 @@ class DatabaseRII:
     """Helper class to load tabulated dielectric functions from the refractiveindex.info database."""
 
     def __init__(self) -> None:
-        self.rii_path = importlib.resources.files("elli.refractiveindexinfo-database.database")
+        self.rii_path = files("elli.refractiveindexinfo-database.database")
 
         with open(
             self.rii_path.joinpath("library.yml"),
