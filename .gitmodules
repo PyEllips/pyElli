@@ -1,3 +1,0 @@
-[submodule "src/elli/refractiveindexinfo-database"]
-	path = src/elli/refractiveindexinfo-database
-	url = https://github.com/polyanskiy/refractiveindex.info-database
