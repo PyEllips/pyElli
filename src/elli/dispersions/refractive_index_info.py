@@ -41,12 +41,9 @@ class DatabaseRII:
     def __init__(self) -> None:
         self.rii_path = files("elli.refractiveindexinfo-database.database")
 
-        with open(
-            self.rii_path.joinpath("library.yml"),
-            "rt",
-            encoding="utf-8",
-        ) as f:
-            yml_file = yaml.load(f, yaml.SafeLoader)
+        yml_file = yaml.load(
+            self.rii_path.joinpath("library.yml").read_text(), yaml.SafeLoader
+        )
 
         entries = []
         for sh in yml_file:
@@ -86,12 +83,10 @@ class DatabaseRII:
         Returns:
             Dispersion: A dispersion object containing the tabulated data.
         """
-        with open(
-            self.rii_path.joinpath(self.catalog.loc[index]["path"]),
-            "rt",
-            encoding="utf-8",
-        ) as f:
-            yml_file = yaml.load(f, yaml.SafeLoader)
+        yml_file = yaml.load(
+            self.rii_path.joinpath(self.catalog.loc[index]["path"]).read_text(),
+            yaml.SafeLoader,
+        )
 
         if yml_file["DATA"][0]["type"] == "tabulated nk":
             df = pd.read_table(
