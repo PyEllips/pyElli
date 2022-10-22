@@ -19,7 +19,9 @@ from importlib_resources import files
 from rapidfuzz import process
 
 from .base_dispersion import Dispersion, DispersionSum
+from .cauchy_custom import CauchyCustomExponent
 from .constant_refractive_index import ConstantRefractiveIndex
+from .polynomial import Polynomial
 from .sellmeier import Sellmeier
 from .table_index import Table
 
@@ -237,6 +239,32 @@ class DatabaseRII:
 
                 dispersion = sell + ConstantRefractiveIndex(coeffs[0])
 
+            elif dispersion_relation["type"] == "formula 3":
+                coeffs = list(
+                    map(float, dispersion_relation["coefficients"].split(" "))
+                )
+                a = coeffs[slice(1, len(coeffs), 2)]
+                b = coeffs[slice(2, len(coeffs), 2)]
+
+                poly = Polynomial(coeffs[0])
+                for a_i, b_i in zip(a, b):
+                    poly.add(a_i / 1e3**b_i, b_i)
+
+                dispersion = poly
+
+            elif dispersion_relation["type"] == "formula 5":
+                coeffs = list(
+                    map(float, dispersion_relation["coefficients"].split(" "))
+                )
+                a = coeffs[slice(1, len(coeffs), 2)]
+                b = coeffs[slice(2, len(coeffs), 2)]
+
+                cauchy = CauchyCustomExponent(coeffs[0])
+                for a_i, b_i in zip(a, b):
+                    cauchy.add(a_i / 1e3**b_i, b_i)
+
+                dispersion = cauchy
+
             else:
                 raise ValueError("Unimplemented Format.")
 
@@ -244,5 +272,4 @@ class DatabaseRII:
 
         if len(dispersion_list) == 1:
             return dispersion_list[0]
-        else:
-            return DispersionSum(*dispersion_list)
+        return DispersionSum(*dispersion_list)
