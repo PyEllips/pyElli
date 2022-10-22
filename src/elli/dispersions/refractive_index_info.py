@@ -13,12 +13,14 @@ import os
 from collections import namedtuple
 from typing import Tuple
 
-from importlib_resources import files
 import pandas as pd
 import yaml
+from importlib_resources import files
 from rapidfuzz import process
 
 from .base_dispersion import Dispersion, DispersionSum
+from .constant_refractive_index import ConstantRefractiveIndex
+from .sellmeier import Sellmeier
 from .table_index import Table
 
 nt_entry = namedtuple(
@@ -208,6 +210,32 @@ class DatabaseRII:
                 df.set_index("Wavelength", inplace=True)
 
                 dispersion = Table(lbda=df.index, n=0 + 1j * df["k"])
+
+            elif dispersion_relation["type"] == "formula 1":
+                coeffs = list(
+                    map(float, dispersion_relation["coefficients"].split(" "))
+                )
+                a = coeffs[slice(1, len(coeffs), 2)]
+                b = coeffs[slice(2, len(coeffs), 2)]
+
+                sell = Sellmeier()
+                for a_i, b_i in zip(a, b):
+                    sell.add(a_i, b_i**2)
+
+                dispersion = sell + ConstantRefractiveIndex(coeffs[0])
+
+            elif dispersion_relation["type"] == "formula 2":
+                coeffs = list(
+                    map(float, dispersion_relation["coefficients"].split(" "))
+                )
+                a = coeffs[slice(1, len(coeffs), 2)]
+                b = coeffs[slice(2, len(coeffs), 2)]
+
+                sell = Sellmeier()
+                for a_i, b_i in zip(a, b):
+                    sell.add(a_i, b_i)
+
+                dispersion = sell + ConstantRefractiveIndex(coeffs[0])
 
             else:
                 raise ValueError("Unimplemented Format.")
