@@ -18,7 +18,7 @@ import pandas as pd
 import yaml
 from rapidfuzz import process
 
-from .base_dispersion import Dispersion
+from .base_dispersion import Dispersion, DispersionSum
 from .table_index import Table
 
 nt_entry = namedtuple(
@@ -124,7 +124,7 @@ class DatabaseRII:
             )
 
             if len(suggestions) == 0:
-                return self.catalog.loc[self.catalog[subcatalog] == None]
+                return self.catalog.loc[self.catalog[subcatalog] == ""]
 
             result = pd.concat(
                 [
@@ -173,15 +173,48 @@ class DatabaseRII:
             yaml.SafeLoader,
         )
 
-        if yml_file["DATA"][0]["type"] == "tabulated nk":
-            df = pd.read_table(
-                io.StringIO(yml_file["DATA"][0]["data"]),
-                sep="\\s+",
-                names=["Wavelength", "n", "k"],
-            )
-            df["Wavelength"] = df["Wavelength"] * 1000
-            df.set_index("Wavelength", inplace=True)
-        else:
-            raise ValueError("Unimplemented Format.")
+        dispersion_list = []
 
-        return Table(lbda=df.index, n=df["n"] + 1j * df["k"])
+        for dispersion_relation in yml_file["DATA"]:
+            if dispersion_relation["type"] == "tabulated nk":
+                df = pd.read_table(
+                    io.StringIO(dispersion_relation["data"]),
+                    sep="\\s+",
+                    names=["Wavelength", "n", "k"],
+                )
+                df["Wavelength"] = df["Wavelength"] * 1000
+                df.set_index("Wavelength", inplace=True)
+
+                dispersion = Table(lbda=df.index, n=df["n"] + 1j * df["k"])
+
+            elif dispersion_relation["type"] == "tabulated n":
+                df = pd.read_table(
+                    io.StringIO(dispersion_relation["data"]),
+                    sep="\\s+",
+                    names=["Wavelength", "n"],
+                )
+                df["Wavelength"] = df["Wavelength"] * 1000
+                df.set_index("Wavelength", inplace=True)
+
+                dispersion = Table(lbda=df.index, n=df["n"])
+
+            elif dispersion_relation["type"] == "tabulated k":
+                df = pd.read_table(
+                    io.StringIO(dispersion_relation["data"]),
+                    sep="\\s+",
+                    names=["Wavelength", "k"],
+                )
+                df["Wavelength"] = df["Wavelength"] * 1000
+                df.set_index("Wavelength", inplace=True)
+
+                dispersion = Table(lbda=df.index, n=0 + 1j * df["k"])
+
+            else:
+                raise ValueError("Unimplemented Format.")
+
+            dispersion_list.append(dispersion)
+
+        if len(dispersion_list) == 1:
+            return dispersion_list[0]
+        else:
+            return DispersionSum(*dispersion_list)
