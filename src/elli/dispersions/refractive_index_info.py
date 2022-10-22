@@ -16,6 +16,7 @@ from typing import Tuple
 from importlib_resources import files
 import pandas as pd
 import yaml
+from rapidfuzz import process
 
 from .base_dispersion import Dispersion
 from .table_index import Table
@@ -72,7 +73,70 @@ class DatabaseRII:
                 else:
                     b_div = b["DIVIDER"]
 
-        self.catalog = pd.DataFrame(entries)
+        self.catalog = pd.DataFrame(entries, dtype=pd.StringDtype())
+        self.books = self.catalog["book"].unique().tolist()
+        self.book_longnames = self.catalog["book_longname"].unique().tolist()
+        self.pages = self.catalog["page"].unique().tolist()
+
+    def search_material(
+        self, query: str, fuzzy: bool = False, longname: bool = False
+    ) -> pd.DataFrame:
+        """Search the catalog by the query string in the book field.
+        Optionally able to search approximate entries and the book_longname field.
+
+        Args:
+            query (str): String to search.
+            fuzzy (bool, optional): Search approximate entries. Defaults to False.
+            longname (bool, optional): Search book_longname instead. Defaults to False.
+
+        Returns:
+            pd.DataFrame: Filtered Catalog dataframe.
+        """
+
+        if longname:
+            name_list = "book_longnames"
+            subcatalog = "book_longname"
+        else:
+            name_list = "books"
+            subcatalog = "book"
+
+        return self._search(query, name_list, subcatalog, fuzzy)
+
+    def search_source(self, query: str, fuzzy: bool = False) -> pd.DataFrame:
+        """Search the catalog by the query string in the page field.
+        Optionally able to search approximate entries.
+
+        Args:
+            query (str): String to search.
+            fuzzy (bool, optional): Search approximate entries. Defaults to False.
+
+        Returns:
+            pd.DataFrame: Filtered Catalog dataframe.
+        """
+        return self._search(query, "pages", "page", fuzzy)
+
+    def _search(
+        self, query: str, name_list: str, subcatalog: str, fuzzy: bool
+    ) -> pd.DataFrame:
+        if fuzzy:
+            suggestions = process.extract(
+                query, getattr(self, name_list), limit=10, score_cutoff=80
+            )
+
+            if len(suggestions) == 0:
+                return self.catalog.loc[self.catalog[subcatalog] == None]
+
+            result = pd.concat(
+                [
+                    self.catalog.loc[self.catalog[subcatalog] == s]
+                    for s, _, _ in suggestions
+                ]
+            )
+
+        else:
+            result = self.catalog.loc[self.catalog[subcatalog] == query]
+
+        return result
 
     def load_dispersion(self, entry: Tuple[str, str]) -> Dispersion:
         """Load a dispersion from the refractive index database.
