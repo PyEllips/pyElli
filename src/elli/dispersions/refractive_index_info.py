@@ -11,6 +11,7 @@ It can be searched similar to catalog.loc[catalog['book']=='Ag'] .
 import io
 import os
 from collections import namedtuple
+from typing import Tuple
 
 from importlib_resources import files
 import pandas as pd
@@ -73,7 +74,27 @@ class DatabaseRII:
 
         self.catalog = pd.DataFrame(entries)
 
-    def load_dispersion(self, index: int) -> Dispersion:
+    def load_dispersion(self, entry: Tuple[str, str]) -> Dispersion:
+        """Load a dispersion from the refractive index database.
+        Selection by tuple of material and source.
+
+        Args:
+            entry (Tuple[str, str]): Tuple of material and source to select an entry.
+                E.g. ('Au', 'Johnson').
+
+        Returns:
+            Dispersion: A dispersion object containing the tabulated data.
+        """
+        index = self.catalog.loc[
+            (self.catalog["book"] == entry[0]) & (self.catalog["page"] == entry[1])
+        ].index
+
+        if len(index) == 1:
+            return self.load_dispersion_index(index[0])
+        else:
+            raise ValueError("No entry found.")
+
+    def load_dispersion_index(self, index: int) -> Dispersion:
         """Load a dispersion from the refractive index database.
         Currently only tabulated data is supported.
 
