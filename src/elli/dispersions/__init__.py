@@ -12,6 +12,7 @@ from .poles import Poles
 from .polynomial import Polynomial
 from .refractive_index_info import DatabaseRII
 from .sellmeier import Sellmeier
+from .sellmeier_custom import SellmeierCustomExponent
 from .table_epsilon import TableEpsilon
 from .table_index import Table
 from .table_spectraray import TableSpectraRay

@@ -25,7 +25,6 @@ class Polynomial(Dispersion):
     rep_params_template = {"f": 0, "e": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        return (
-            self.single_params.get("e0") + sum(c.get("f") * lbda ** c.get("e"))
-            for c in self.rep_params
+        return self.single_params.get("e0") + sum(
+            c.get("f") * lbda ** c.get("e") for c in self.rep_params
         )

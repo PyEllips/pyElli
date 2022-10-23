@@ -25,9 +25,8 @@ class CauchyCustomExponent(Dispersion):
     rep_params_template = {"f": 0, "e": 0}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        refr_index = (
-            self.single_params.get("n0") + sum(c.get("f") * lbda ** c.get("e"))
-            for c in self.rep_params
+        refr_index = self.single_params.get("n0") + sum(
+            c.get("f") * lbda ** c.get("e") for c in self.rep_params
         )
 
         return refr_index**2

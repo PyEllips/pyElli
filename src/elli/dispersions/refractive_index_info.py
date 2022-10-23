@@ -23,6 +23,7 @@ from .cauchy_custom import CauchyCustomExponent
 from .constant_refractive_index import ConstantRefractiveIndex
 from .polynomial import Polynomial
 from .sellmeier import Sellmeier
+from .sellmeier_custom import SellmeierCustomExponent
 from .table_index import Table
 
 nt_entry = namedtuple(
@@ -243,25 +244,47 @@ class DatabaseRII:
                 coeffs = list(
                     map(float, dispersion_relation["coefficients"].split(" "))
                 )
-                a = coeffs[slice(1, len(coeffs), 2)]
-                b = coeffs[slice(2, len(coeffs), 2)]
+                f = coeffs[slice(1, len(coeffs), 2)]
+                e = coeffs[slice(2, len(coeffs), 2)]
 
                 poly = Polynomial(coeffs[0])
-                for a_i, b_i in zip(a, b):
-                    poly.add(a_i / 1e3**b_i, b_i)
+                for f_i, e_i in zip(f, e):
+                    poly.add(f_i / 1e3**e_i, e_i)
 
                 dispersion = poly
+
+            elif dispersion_relation["type"] == "formula 4":
+                coeffs = list(
+                    map(float, dispersion_relation["coefficients"].split(" "))
+                )
+                a = coeffs[slice(1, 6, 4)]
+                e1 = coeffs[slice(2, 7, 4)]
+                b = coeffs[slice(3, 8, 4)]
+                e2 = coeffs[slice(4, 9, 4)]
+                f = coeffs[slice(9, len(coeffs), 2)]
+                e = coeffs[slice(10, len(coeffs), 2)]
+
+                poly = Polynomial(coeffs[0])
+                sell = SellmeierCustomExponent()
+
+                for a_i, e1_i, b_i, e2_i in zip(a, e1, b, e2):
+                    sell.add(a_i, e1_i, b_i, e2_i)
+
+                for f_i, e_i in zip(f, e):
+                    poly.add(f_i / 1e3**e_i, e_i)
+
+                dispersion = poly + sell
 
             elif dispersion_relation["type"] == "formula 5":
                 coeffs = list(
                     map(float, dispersion_relation["coefficients"].split(" "))
                 )
-                a = coeffs[slice(1, len(coeffs), 2)]
-                b = coeffs[slice(2, len(coeffs), 2)]
+                f = coeffs[slice(1, len(coeffs), 2)]
+                e = coeffs[slice(2, len(coeffs), 2)]
 
                 cauchy = CauchyCustomExponent(coeffs[0])
-                for a_i, b_i in zip(a, b):
-                    cauchy.add(a_i / 1e3**b_i, b_i)
+                for f_i, e_i in zip(f, e):
+                    cauchy.add(f_i / 1e3**e_i, e_i)
 
                 dispersion = cauchy
 
