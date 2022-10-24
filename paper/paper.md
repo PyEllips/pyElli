@@ -23,18 +23,16 @@ bibliography: paper.bib
 
 # Summary
 
-- Offers two different algorithms 2x2, 4x4
-- Power comes from extensibility
-- We want to enable collaborative work for an ellipsometry platform
-- So far: Different solutions from different companies with their own set of models
-  - Can lead to non-reproducibility
-- Inclusion of open available data (refractiveindex.info)
-
-<!-- Refactor according to nature summary http://www.cbs.umn.edu/sites/default/files/public/downloads/Annotated_Nature_abstract.pdf -->
-
-Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. It is important in alot of different fields since optical constants are often deduced by ellipsometry analysis.
-However, the software to analyise data is shipped together with the instruments and hence each vendor implements their own dispersion models and fitting models. The open source ellipsometry software pyElli, written in python tries to solve this issue by supplying an open platform for ellipsometry. A major goal in designing the software was to keep it open to extensions from a broader community.
-This applies to the optical models used, which try to stay as close as possible to formulas documented in literature [fujiwara]. It also applies to the solving algorithms. It already comes with a 2x2 algorithm which is often used for simple problems and a 4x4 algorithm based on the berreman transfer matrix formulation [berreman], which is able to solve anisotropic materials as well.
+Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. It is used throughout various scientific fields to determine the optical constants of materials.
+However, ellipsometry always needs numerical analysis to deduce material properties from a measurement.
+The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system.
+Typically, software for such calculations is shipped together with ellipsometers, where each hardware vendor supplies their own version.
+Therefore, through different implementation details and different optical models the dispersion models for materials in literature cannot readily be adapted in the lab.
+Further, if the supplied software does not support a specific kind of analysis (e.g. anisotropy) scientists need to use third party software, anyways.
+In this paper we present the open source python software pyElli, which tackles these problems by offering an open source platform, which is by design easily extendable and adaptable with new optical models or analysis algorithms. It supports querying the popular database for optical constants [refractiveindex.info], too.
+The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. It is possible to include vendor-specific models or self-designed models, too. PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is often used for simple problems and a 4x4 matrix algorithm based on the berreman transfer matrix formulation [berreman]. While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. Accordingly, it allows to solve more complex problems like anisotropy (... more examples??).
+An [example] in the NORTH analysis toolkit within the research data management software NOMAD by the german FAIRmat consortium shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
+We hope that the software contributes to easier analysis and reproducibility, as well as FAIR data management within the ellipsometry community.
 
 # Example
 
