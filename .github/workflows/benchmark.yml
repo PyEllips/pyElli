@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    branches-ignore:
+      - joss-paper
 
 permissions:
   contents: write
