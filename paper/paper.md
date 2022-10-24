@@ -5,14 +5,14 @@ tags:
   - spectroscopy
   - ellipsometry
   - solid state physics
-  - milky way
+  - transfer matrix method
 authors:
   - name: Marius Müller
     equal-contrib: true
     affiliation: 1
   - name: Florian Dobener
     orcid: 0000-0003-1987-6224
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
+    equal-contrib: true
     affiliation: 1
 affiliations:
   - name: Institute of Experimental Physics I and Center for Materials Research (ZfM/LaMa), Justus Liebig University Giessen, Heinrich-Buff-Ring 16, Giessen, D-35392 Germany
@@ -23,12 +23,31 @@ bibliography: paper.bib
 
 # Summary
 
-A short summary of the program
-See [this](https://joss.readthedocs.io/en/latest/submitting.html#example-paper-and-bibliography) for more an example.
+- Offers two different algorithms 2x2, 4x4
+- Power comes from extensibility
+- We want to enable collaborative work for an ellipsometry platform
+- So far: Different solutions from different companies with their own set of models
+  - Can lead to non-reproducibility
+- Inclusion of open available data (refractiveindex.info)
+
+<!-- Refactor according to nature summary http://www.cbs.umn.edu/sites/default/files/public/downloads/Annotated_Nature_abstract.pdf -->
+
+Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. It is important in alot of different fields since optical constants are often deduced by ellipsometry analysis.
+However, the software to analyise data is shipped together with the instruments and hence each vendor implements their own dispersion models and fitting models. The open source ellipsometry software pyElli, written in python tries to solve this issue by supplying an open platform for ellipsometry. A major goal in designing the software was to keep it open to extensions from a broader community.
+This applies to the optical models used, which try to stay as close as possible to formulas documented in literature [fujiwara]. It also applies to the solving algorithms. It already comes with a 2x2 algorithm which is often used for simple problems and a 4x4 algorithm based on the berreman transfer matrix formulation [berreman], which is able to solve anisotropic materials as well.
+
+# Example
+
+- Show a walkthrough of the SiO2 on Si example.
+- Show a Mueller matrix example?
+- Show an anisotropy example?
 
 # Statement of need
 
-Why is it necessary?
+- Analysis tools should be as open as the research data
+- Often hard to translate optical models between different programs, we aim to make it easier
+- Keep interoperability with other formats
+- Extend basic functionality of vendor fitting programs
 
 # Mathematics
 
