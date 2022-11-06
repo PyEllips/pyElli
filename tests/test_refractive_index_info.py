@@ -7,7 +7,7 @@ import numpy as np
 class TestRefractiveIndexInfo:
     """Test if the refractive index.info parser works."""
 
-    RII = elli.DatabaseRII()
+    RII = elli.db.RII()
 
     def test_tabular_nk(self):
         disp = self.RII.load_dispersion(("Au", "Johnson"))  # tabular nk

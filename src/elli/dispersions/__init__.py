@@ -10,7 +10,6 @@ from .lorentz_energy import LorentzEnergy
 from .lorentz_lambda import LorentzLambda
 from .poles import Poles
 from .polynomial import Polynomial
-from .refractive_index_info import DatabaseRII
 from .sellmeier import Sellmeier
 from .sellmeier_custom import SellmeierCustomExponent
 from .table_epsilon import TableEpsilon

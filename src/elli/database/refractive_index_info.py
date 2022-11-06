@@ -18,13 +18,15 @@ import yaml
 from importlib_resources import files
 from rapidfuzz import process
 
-from .base_dispersion import Dispersion, DispersionSum
-from .cauchy_custom import CauchyCustomExponent
-from .constant_refractive_index import ConstantRefractiveIndex
-from .polynomial import Polynomial
-from .sellmeier import Sellmeier
-from .sellmeier_custom import SellmeierCustomExponent
-from .table_index import Table
+from ..dispersions.base_dispersion import Dispersion, DispersionSum
+from ..dispersions import (
+    CauchyCustomExponent,
+    ConstantRefractiveIndex,
+    Polynomial,
+    Sellmeier,
+    SellmeierCustomExponent,
+    Table,
+)
 
 nt_entry = namedtuple(
     "Entry",
@@ -42,11 +44,11 @@ nt_entry = namedtuple(
 )
 
 
-class DatabaseRII:
+class RII:
     """Helper class to load tabulated dielectric functions from the refractiveindex.info database."""
 
     def __init__(self) -> None:
-        self.rii_path = files("elli.refractiveindexinfo-database.database")
+        self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
         yml_file = yaml.load(
             self.rii_path.joinpath("library.yml").read_text(), yaml.SafeLoader
