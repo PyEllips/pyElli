@@ -118,7 +118,7 @@ def model(lbda, params):
     # We build the structure coming from air, through the layers,
     # represented as an array, and having Si as bulk material.
     structure = elli.Structure(
-        elli.AIR,  # Input medium
+        elli.db.AIR,  # Input medium
         [elli.Layer(SiO2, params["SiO2_d"])],  # Overlayer structure
         Si,
     )  # Output medium / Substrate

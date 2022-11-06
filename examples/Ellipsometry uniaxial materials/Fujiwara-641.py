@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 # %%
 # Front half-space (air)
-air = elli.AIR
+air = elli.db.AIR
 
 # Anisotropic substrate
 n_o = 2.0  #  ordinary index of thin layer

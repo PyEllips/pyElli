@@ -8,7 +8,6 @@ from .experiment import Experiment
 from .importer.nexus import *
 from .importer.spectraray import *
 from .materials import *
-from .materials_db import *
 from .result import Result, ResultList
 from .solver2x2 import Solver2x2
 from .solver4x4 import *
