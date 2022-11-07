@@ -349,3 +349,28 @@ class RII:
         )
 
         return yml_file["REFERENCES"]
+
+    def get_comment(self, book: str, page: str) -> str:
+        """Reads the measurement/calculation information of the selected dispersion.
+
+        Args:
+            book (str): Name of the Material, named 'Book' on the website and the database. E.g. 'Au'
+            page (str): Name of the Source, named 'Page' on the website and the database. E.g. 'Johnson'
+
+        Returns:
+            str: Dispersion information.
+        """
+
+        index = self.catalog.loc[
+            (self.catalog["book"] == book) & (self.catalog["page"] == page)
+        ].index
+
+        if len(index) != 1:
+            raise ValueError("No entry found.")
+
+        yml_file = yaml.load(
+            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
+            yaml.SafeLoader,
+        )
+
+        return yml_file["COMMENTS"]
