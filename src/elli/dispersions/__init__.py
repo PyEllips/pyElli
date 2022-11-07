@@ -14,3 +14,4 @@ from .table_index import Table
 from .table_spectraray import TableSpectraRay
 from .tanguy import Tanguy
 from .tauc_lorentz import TaucLorentz
+from .cody_lorentz import CodyLorentz
