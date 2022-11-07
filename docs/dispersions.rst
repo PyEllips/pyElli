@@ -143,14 +143,14 @@ Tauc-Lorentz
 
 Cody-Lorentz
 ============
-.. autoclass:: elli.dispersion.CodyLorentz
+.. autoclass:: elli.dispersions.CodyLorentz
 
 .. plotly::
 
    fig = elli.CodyLorentz().get_dielectric_df().plot(backend="plotly")
    fig.update_xaxes(title="Wavelength (nm")
-   fig.updtade_yaxes(title="Dielectric function")
-   fig.update_layour(title="Cody-Lorentz dispersion with default values")
+   fig.update_yaxes(title="Dielectric function")
+   fig.update_layout(title="Cody-Lorentz dispersion with default values")
 
 
 Gaussian
