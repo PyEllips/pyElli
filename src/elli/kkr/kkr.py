@@ -1,4 +1,31 @@
-"""Calculate kramers-kronig-relation according to Maclaurin's formula"""
+r"""Calculate Kramers-Kronig relations according to Maclaurin's formula [1]_.
+Here, the differential formulation is used,
+which means that the transformation always diverges to zero at infinity,
+leaving a free infinity offset.
+This offset is typically referred to as :math:`\epsilon(\infty)` in spectroscopy.
+
+Since the Kramers-Kronig relation integrates over the whole spectrum for each point,
+it is very sensitive to sampling changes and non-zero values.
+To obtain best values the y-axis
+should be zero anywhere outside the integration range.
+However, since this is not possible for every dispersion
+relation the calculation should be done on a much wider
+range than the actual interval used.
+Additionally, the discretisation steps of the x-axis should be kept constant.
+
+For the transformation of the real to imaginary part you need to be especially cautios.
+Typically, in spectroscopy the real part of the dielectric
+function is non-zero throughout the whole spectrum
+and especially :math:`\epsilon(\infty) \ne 0`.
+This makes the Kramers-Kronig transformation virtually impossible in these cases
+as it suffers from major uncertanties.
+Hence, this transformation is included in pyElli only for completeness and for the
+special cases it may be applicable.
+
+.. rubric:: References
+
+.. [1] Ohta and Ishida, Appl. Spectroscopy 42, 952 (1988), https://doi.org/10.1366/0003702884430380
+"""
 # pylint: disable=invalid-name
 from typing import Callable
 import numpy as np
@@ -102,9 +129,15 @@ def _calc_kkr(
 
 
 def re2im(re: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """Calculates the kramers-kronig relation from the
+    r"""Calculates the differential Kramers-Kronig relation from the
     real to imaginary part
     according to Maclaurin's formula.
+
+    The underlying formula reads:
+
+    .. math::
+        \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
+        \frac{2}{\pi} \int_0^\infty \frac{x_i \Re(x)}{x^2 - x_i^2} dx
 
     Args:
         re (numpy.ndarray): The real values to transform.
@@ -117,9 +150,15 @@ def re2im(re: np.ndarray, x: np.ndarray) -> np.ndarray:
 
 
 def im2re(im: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """Calculates the kramers-kronig relation from the
+    r"""Calculates the differential Kramers-Kronig relation from the
     imaginary to real part
     according to Maclaurin's formula.
+
+    The underlying formula reads:
+
+    .. math::
+        \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
+        \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{x^2 - x_i^2} dx
 
     Args:
         im (numpy.ndarray): The imaginary values to transform.
@@ -132,10 +171,16 @@ def im2re(im: np.ndarray, x: np.ndarray) -> np.ndarray:
 
 
 def re2im_reciprocal(re: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """Calculates the kramers-kronig relation from the
+    r"""Calculates the differential Kramers-Kronig relation from the
     real to imaginary part
     according to Maclaurin's formula.
     This function assumes a reciprocal x-axis, e.g. wavelength in spectroscopy.
+
+    The underlying formula reads:
+
+    .. math::
+        \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
+        \frac{2}{\pi} \int_0^\infty \frac{\Re(x)}{x_i - \frac{x^2}{x_i}} dx
 
     Args:
         re (numpy.ndarray): The real values to transform.
@@ -148,10 +193,16 @@ def re2im_reciprocal(re: np.ndarray, x: np.ndarray) -> np.ndarray:
 
 
 def im2re_reciprocal(im: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """Calculates the kramers-kronig relation from the
+    r"""Calculates the differential Kramers-Kronig relation from the
     imaginary to real part
     according to Maclaurin's formula.
     This function assumes a reciprocal x-axis, e.g. wavelength in spectroscopy.
+
+     The underlying formula reads:
+
+    .. math::
+        \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
+        \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{1 - \frac{x^2}{x_i^2}} dx
 
     Args:
         im (numpy.ndarray): The imaginary values to transform.
