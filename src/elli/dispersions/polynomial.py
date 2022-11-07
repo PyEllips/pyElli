@@ -6,7 +6,7 @@ from .base_dispersion import Dispersion
 
 
 class Polynomial(Dispersion):
-    r"""Polynomial dispersion.
+    r"""Polynomial expression for the dielectric function.
 
     Single parameters:
         :e0: Defaults to 1.
@@ -18,7 +18,7 @@ class Polynomial(Dispersion):
     Output:
         .. math::
             \varepsilon^{1/2}(\lambda) =
-            \boldsymbol{\varepsilon_0} + \sum_j \boldsymbol{f}_j /cdot \lambda^{\boldsymbol{e}_j}
+            \boldsymbol{\varepsilon_0} + \sum_j \boldsymbol{f}_j \cdot \lambda^{\boldsymbol{e}_j}
     """
 
     single_params_template = {"e0": 1}
