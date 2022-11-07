@@ -1,24 +1,15 @@
 # Encoding: utf-8
-"""Helper classes to use the refractiveindex.info database.
-
-For now the database from https://github.com/polyanskiy/refractiveindex.info-database
-needs to be downloaded manually.
-
-After initialization the Class provides a dataframe at DatabaseRII.catalog .
-It can be searched similar to catalog.loc[catalog['book']=='Ag'] .
-"""
+"""Helper class to use the refractiveindex.info database."""
 
 import io
 import os
 from collections import namedtuple
-from typing import Tuple
 
 import pandas as pd
 import yaml
 from importlib_resources import files
 from rapidfuzz import process
 
-from ..dispersions.base_dispersion import Dispersion, DispersionSum
 from ..dispersions import (
     CauchyCustomExponent,
     ConstantRefractiveIndex,
@@ -27,6 +18,8 @@ from ..dispersions import (
     SellmeierCustomExponent,
     Table,
 )
+from ..dispersions.base_dispersion import Dispersion, DispersionSum
+from ..materials import IsotropicMaterial
 
 nt_entry = namedtuple(
     "Entry",
@@ -45,7 +38,38 @@ nt_entry = namedtuple(
 
 
 class RII:
-    """Helper class to load tabulated dielectric functions from the refractiveindex.info database."""
+    """Helper class to load tabulated dielectric functions from the https://refractiveindex.info database.
+
+    The database object has to be initialized to load the entire catalog:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        RII = elli.db.RII()
+
+    After initialization the Class provides a dataframe with all entries at RII.catalog,
+    it follows the naming schema used on the website: Entries are categorized by Shelf, Book and Page.
+
+    Shelfs are broad categories (inorganics, organics, glasses, other), and ignored in the following.
+
+    Book and Page are used to access entries with this helper: For inorganic and organic materials Book uses the
+    sum formula of the compound and Page is an identifier of the author of the publication.
+    In the case of glasses, book is the manufacturer and page the name of the glass.
+
+    Both field can be searched by the methods search_book and search_page.
+    They return a dataframe with results ordered by likelihood of matching the search term.
+
+    Additionally search_book has a longname option which allows to search
+    for full names (e.g. 'Gold') instead of the chemical symbol.
+
+    Dispersions or respective materials can be loaded by calling these methods:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        gold_material = RII.get_mat("Au", "Johnson")
+        gold_dispersion = RII.load_dispersion("Au", "Johnson")
+    """
 
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
@@ -85,16 +109,16 @@ class RII:
         self.book_longnames = self.catalog["book_longname"].unique().tolist()
         self.pages = self.catalog["page"].unique().tolist()
 
-    def search_material(
-        self, query: str, fuzzy: bool = False, longname: bool = False
+    def search_book(
+        self, query: str, longname: bool = False, fuzzy: bool = True
     ) -> pd.DataFrame:
         """Search the catalog by the query string in the book field.
         Optionally able to search approximate entries and the book_longname field.
 
         Args:
             query (str): String to search.
-            fuzzy (bool, optional): Search approximate entries. Defaults to False.
             longname (bool, optional): Search book_longname instead. Defaults to False.
+            fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
         Returns:
             pd.DataFrame: Filtered Catalog dataframe.
@@ -109,13 +133,13 @@ class RII:
 
         return self._search(query, name_list, subcatalog, fuzzy)
 
-    def search_source(self, query: str, fuzzy: bool = False) -> pd.DataFrame:
+    def search_page(self, query: str, fuzzy: bool = True) -> pd.DataFrame:
         """Search the catalog by the query string in the page field.
         Optionally able to search approximate entries.
 
         Args:
             query (str): String to search.
-            fuzzy (bool, optional): Search approximate entries. Defaults to False.
+            fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
         Returns:
             pd.DataFrame: Filtered Catalog dataframe.
@@ -145,38 +169,40 @@ class RII:
 
         return result
 
-    def load_dispersion(self, entry: Tuple[str, str]) -> Dispersion:
-        """Load a dispersion from the refractive index database.
-        Selection by tuple of material and source.
+    def get_mat(self, book: str, page: str) -> IsotropicMaterial:
+        """Load a dispersion from the refractive index database and generates an isotropic material.
+        Selection by material and source identifiers.
 
         Args:
-            entry (Tuple[str, str]): Tuple of material and source to select an entry.
-                E.g. ('Au', 'Johnson').
+            book (str): Name of the Material, named 'Book' on the website and the database. E.g. 'Au'
+            page (str): Name of the Source, named 'Page' on the website and the database. E.g. 'Johnson'
+
+        Returns:
+            IsotropicMaterial: A material object build from the tabulated dispersion data.
+        """
+        return IsotropicMaterial(self.load_dispersion(book, page))
+
+    def load_dispersion(self, book: str, page: str) -> Dispersion:
+        """Load a dispersion from the refractive index database.
+        Selection by material and source identifiers.
+
+        Args:
+            book (str): Name of the Material, named 'Book' on the website and the database. E.g. 'Au'
+            page (str): Name of the Source, named 'Page' on the website and the database. E.g. 'Johnson'
 
         Returns:
             Dispersion: A dispersion object containing the tabulated data.
         """
+
         index = self.catalog.loc[
-            (self.catalog["book"] == entry[0]) & (self.catalog["page"] == entry[1])
+            (self.catalog["book"] == book) & (self.catalog["page"] == page)
         ].index
 
-        if len(index) == 1:
-            return self.load_dispersion_index(index[0])
-        else:
+        if len(index) != 1:
             raise ValueError("No entry found.")
 
-    def load_dispersion_index(self, index: int) -> Dispersion:
-        """Load a dispersion from the refractive index database.
-        Currently only tabulated data is supported.
-
-        Args:
-            index (int): The index of the dispersion in the catalog.
-
-        Returns:
-            Dispersion: A dispersion object containing the tabulated data.
-        """
         yml_file = yaml.load(
-            self.rii_path.joinpath(self.catalog.loc[index]["path"]).read_text(),
+            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
             yaml.SafeLoader,
         )
 
@@ -298,3 +324,28 @@ class RII:
         if len(dispersion_list) == 1:
             return dispersion_list[0]
         return DispersionSum(*dispersion_list)
+
+    def get_reference(self, book: str, page: str) -> str:
+        """Reads the reference information from the selected dispersion.
+
+        Args:
+            book (str): Name of the Material, named 'Book' on the website and the database. E.g. 'Au'
+            page (str): Name of the Source, named 'Page' on the website and the database. E.g. 'Johnson'
+
+        Returns:
+            str: Reference information.
+        """
+
+        index = self.catalog.loc[
+            (self.catalog["book"] == book) & (self.catalog["page"] == page)
+        ].index
+
+        if len(index) != 1:
+            raise ValueError("No entry found.")
+
+        yml_file = yaml.load(
+            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
+            yaml.SafeLoader,
+        )
+
+        return yml_file["REFERENCES"]

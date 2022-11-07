@@ -45,6 +45,9 @@ dispersion relation at current parameter set.
 Dispersions can be added with the `+` operator, or if you want to chain
 more than two dispersions together you may have a look at the `DispersionSum`_ class.
 
+PyElli also provides tabulated dispersions from the Refractiveindex.info database.
+They can be accessed with the :class:`RII<elli.database.RII>` class.
+
 
 Constant Refractive Index
 =========================
@@ -191,11 +194,6 @@ Epsilon values
 Spectraray tables
 -----------------
 .. autoclass:: elli.dispersions.TableSpectraRay
-   :members:
-
-Refractiveindex.info tables
------------------
-.. autoclass:: elli.dispersions.TableRII
    :members:
 
 Abstract classes
