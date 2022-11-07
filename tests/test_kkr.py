@@ -2,7 +2,7 @@
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 import elli
-from elli.kkr import im2re_reciprocal
+from elli.kkr import im2re, im2re_reciprocal
 
 
 def test_tauc_lorentz():
@@ -13,6 +13,20 @@ def test_tauc_lorentz():
         im2re_reciprocal(g.get_dielectric(lbda).imag, lbda),
         g.get_dielectric(lbda).real,
         decimal=6,
+    )
+
+
+def test_tauc_lorentz_energy():
+    """Test whether the kkr in non reciprocal formulation reproduces the analyitical expression
+    of Tauc-Lorentz"""
+    energy = np.linspace(0, 10, 5000)
+    amp = 20
+    osc_energy = 5
+    gamma = 0.1
+    lorentz = amp / (osc_energy**2 - energy**2 - 1j * gamma * energy)
+
+    assert_array_almost_equal(
+        im2re(lorentz.imag, energy)[10:], lorentz.real[10:], decimal=2
     )
 
 
