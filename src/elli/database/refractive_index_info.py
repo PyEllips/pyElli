@@ -105,9 +105,9 @@ class RII:
                     b_div = b["DIVIDER"]
 
         self.catalog = pd.DataFrame(entries, dtype=pd.StringDtype())
-        self.books = self.catalog["book"].unique().tolist()
-        self.book_longnames = self.catalog["book_longname"].unique().tolist()
-        self.pages = self.catalog["page"].unique().tolist()
+        self.books = self.catalog["book"].unique()
+        self.book_longnames = self.catalog["book_longname"].unique()
+        self.pages = self.catalog["page"].unique()
 
     def search_book(
         self, query: str, longname: bool = False, fuzzy: bool = True
