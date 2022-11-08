@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1663342550987,
+  "lastUpdate": 1667889648862,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -8192,6 +8192,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00013408934059044864",
             "extra": "mean: 5.256352099993933 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3d2bc42058871e806efcdae8c404e7ea8129b407",
+          "message": "Kramers-Kronig relations (#89)\n\n* Adds kkrs\r\n\r\n* Adds kkr tests\r\n\r\n* Adds energy formulation of kkr's\r\n\r\n* Fixes kkr tests\r\n\r\n* Adds cody lorentz dispersion model\r\n\r\n* Adds test for energy form of kkr\r\n\r\n* Corrects typos in cody-lorentz docs\r\n\r\n* Adds docs for kkrs",
+          "timestamp": "2022-11-08T07:39:36+01:00",
+          "tree_id": "ca25896ccb4d2e811ac5b46e2b1a0e0fce4c6901",
+          "url": "https://github.com/PyEllips/pyElli/commit/3d2bc42058871e806efcdae8c404e7ea8129b407"
+        },
+        "date": 1667889648008,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 30.097214333370403,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0018298823647963853",
+            "extra": "mean: 33.22566629999528 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.263486244982048,
+            "unit": "iter/sec",
+            "range": "stddev: 0.016468109380258993",
+            "extra": "mean: 159.6554954999931 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 167.8984057489475,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004867148748944657",
+            "extra": "mean: 5.955982700010054 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 203.00784956269223,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00006463426285876842",
+            "extra": "mean: 4.925917899993237 msec\nrounds: 10"
           }
         ]
       }
