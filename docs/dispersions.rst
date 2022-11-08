@@ -45,6 +45,9 @@ dispersion relation at current parameter set.
 Dispersions can be added with the `+` operator, or if you want to chain
 more than two dispersions together you may have a look at the `DispersionSum`_ class.
 
+PyElli also provides tabulated dispersions from the Refractiveindex.info database.
+They can be accessed with the :class:`RII<elli.database.RII>` class.
+
 
 Constant Refractive Index
 =========================
@@ -66,6 +69,7 @@ Cauchy
    fig.data[1].visible = "legendonly"
    fig.update_layout(title="Cauchy dispersion with n0=1.45 and n1=36")
 
+.. autoclass:: elli.dispersions.CauchyCustomExponent
 
 Sellmeier
 =========
@@ -78,6 +82,8 @@ Sellmeier
    fig.update_yaxes(title="Dielectric function")
    fig.data[1].visible = "legendonly"
    fig.update_layout(title="Sellmeier dispersion with A=1 and B=1e-2")
+
+.. autoclass:: elli.dispersions.SellmeierCustomExponent
 
 Drude
 =====
@@ -186,6 +192,18 @@ Poles
    fig.update_yaxes(title="Dielectric function")
    fig.data[1].visible = "legendonly"
    fig.update_layout(title="Poles dispersion with A_ir=10, A_uv=100, E_uv=8")
+
+Polynomial
+==========
+.. autoclass:: elli.dispersions.Polynomial
+
+.. plotly::
+
+   fig = elli.Polynomial(e0=2.5).add(f=500, e=-2).get_dielectric_df().plot(backend="plotly")
+   fig.update_xaxes(title="Wavelength (nm)")
+   fig.update_yaxes(title="Dielectric function")
+   fig.data[1].visible = "legendonly"
+   fig.update_layout(title="Polynomial dispersion with e0=2.5, f_1=500, e_1=-2")
 
 Tabulated values
 =================

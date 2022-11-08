@@ -224,7 +224,7 @@ class DispersionSum(Dispersion):
         self.dispersions = disps
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        dielectric_function = np.sum(
+        dielectric_function = sum(
             disp.dielectric_function(lbda) for disp in self.dispersions
         )
         return dielectric_function
