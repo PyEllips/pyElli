@@ -16,3 +16,4 @@ API Reference
    plot
    read_write
    helpers
+   kkr
