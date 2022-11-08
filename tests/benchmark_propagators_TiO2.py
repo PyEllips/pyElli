@@ -49,7 +49,7 @@ Layer = [
     elli.Layer(SiO2, params["SiO2_d"]),
 ]
 
-s = elli.Structure(elli.db.AIR, Layer, elli.db.AIR)
+s = elli.Structure(elli.AIR, Layer, elli.AIR)
 lbda = np.linspace(400, 800, 500)
 PHI = 70
 

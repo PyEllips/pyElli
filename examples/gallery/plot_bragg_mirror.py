@@ -21,7 +21,7 @@ np.set_printoptions(suppress=True, precision=3)
 # -------------------
 # We define air as incidence material and glass as exit material.
 # SiO2 and TiO2 are defined by simplified dispersion relations.
-air = elli.db.AIR
+air = elli.AIR
 glass = elli.ConstantRefractiveIndex(1.5).get_mat()
 
 n_SiO2 = 1.47

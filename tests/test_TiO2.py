@@ -105,7 +105,7 @@ class TestTiO2:
     def test_solver2x2(self, si_dispersion, meas_data):
         """The solver2x2 is within chi square accuracy"""
         sim_data = (
-            elli.Structure(elli.db.AIR, self.Layer, si_dispersion)
+            elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(meas_data.index, 70, solver=elli.Solver2x2)
             .rho
         )
@@ -115,7 +115,7 @@ class TestTiO2:
     def test_solver4x4_expm(self, si_dispersion, meas_data):
         """The solver4x4 with scipy propagator is within chi square accuracy"""
         sim_data = (
-            elli.Structure(elli.db.AIR, self.Layer, si_dispersion)
+            elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
                 meas_data.index,
                 70,
@@ -130,7 +130,7 @@ class TestTiO2:
     def test_solver4x4_eig(self, si_dispersion, meas_data):
         """The solver4x4 with eig propagator is within chi square accuracy"""
         sim_data = (
-            elli.Structure(elli.db.AIR, self.Layer, si_dispersion)
+            elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
                 meas_data.index,
                 70,

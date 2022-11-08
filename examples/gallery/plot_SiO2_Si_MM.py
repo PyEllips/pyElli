@@ -63,7 +63,7 @@ def model(lbda, params):
 
     Layer = [elli.Layer(SiO2, params["SiO2_d"])]
 
-    return elli.Structure(elli.db.AIR, Layer, Si).evaluate(
+    return elli.Structure(elli.AIR, Layer, Si).evaluate(
         lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpm()
     )
 

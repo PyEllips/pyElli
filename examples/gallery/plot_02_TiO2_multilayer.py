@@ -79,9 +79,7 @@ def model(lbda, params):
 
     Layer = [elli.Layer(TiO2, params["TiO2_d"]), elli.Layer(SiO2, params["SiO2_d"])]
 
-    return elli.Structure(elli.db.AIR, Layer, Si).evaluate(
-        lbda, 70, solver=elli.Solver2x2
-    )
+    return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver2x2)
     # Alternative: Use 4x4 Solver with scipy propagator
     # return elli.Structure(elli.AIR, Layer, Si).evaluate(lbda, 70, solver=elli.Solver4x4, propagator=elli.PropagatorExpm())
 

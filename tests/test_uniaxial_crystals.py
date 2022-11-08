@@ -27,7 +27,7 @@ class TestUniaxial:
     epsilon = filmMaterial.get_tensor(lbda)
     Delta = elli.Solver4x4.build_delta_matrix(Kx, epsilon)
 
-    air = elli.db.AIR
+    air = elli.AIR
     epsilon_air = air.get_tensor(lbda)
 
     Tp = elli.PropagatorExpm().calculate_propagation(Delta, -d, np.array([lbda]))
