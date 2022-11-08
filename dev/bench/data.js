@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1667889648862,
+  "lastUpdate": 1667927692732,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -8244,6 +8244,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00006463426285876842",
             "extra": "mean: 4.925917899993237 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fb8dd83fae9ddfe6fc4fde83d26023a5f65fe5e8",
+          "message": "Merge pull request #87 from PyEllips/rii-importer\n\nInclude refractiveindex.info database and utilities to read dispersions.",
+          "timestamp": "2022-11-08T18:13:18+01:00",
+          "tree_id": "396097f51dae6c88f924c3939bb4adc93781768a",
+          "url": "https://github.com/PyEllips/pyElli/commit/fb8dd83fae9ddfe6fc4fde83d26023a5f65fe5e8"
+        },
+        "date": 1667927692091,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.672770047101807,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0020711676045683234",
+            "extra": "mean: 40.530511899999055 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.312554595114948,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024309928612012793",
+            "extra": "mean: 158.4144714999951 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 84.8882987982904,
+            "unit": "iter/sec",
+            "range": "stddev: 0.004033722692551262",
+            "extra": "mean: 11.78018659999509 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 167.71782134030548,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001524239124124416",
+            "extra": "mean: 5.962395599993897 msec\nrounds: 10"
           }
         ]
       }
