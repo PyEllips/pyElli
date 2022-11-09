@@ -27,7 +27,7 @@ class TableSpectraRay:
             fname (str): The filename of the spectraray ascii file.
 
         Returns:
-            TableEpsilon: A dispersion class containing the tabulated data.
+            TableEpsilon: A dispersion object containing the tabulated data.
         """
         start = 0
         stop = 0

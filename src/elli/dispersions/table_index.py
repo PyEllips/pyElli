@@ -14,7 +14,7 @@ class Table(Dispersion):
 
     Single parameters:
         :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
-        :epsilon: Complex refractive index values in the convention n + ik.
+        :n: Complex refractive index values in the convention n + ik.
             Defaults to np.ones(1000).
 
     Repeated parameters:

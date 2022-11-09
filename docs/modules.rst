@@ -7,6 +7,7 @@ API Reference
 .. toctree::
    :maxdepth: 2
 
+   database
    dispersions
    materials
    structure
@@ -16,3 +17,4 @@ API Reference
    plot
    read_write
    helpers
+   kkr
