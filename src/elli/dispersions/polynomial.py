@@ -17,7 +17,7 @@ class Polynomial(Dispersion):
 
     Output:
         .. math::
-            \varepsilon^{1/2}(\lambda) =
+            \varepsilon(\lambda) =
             \boldsymbol{\varepsilon_0} + \sum_j \boldsymbol{f}_j \cdot \lambda^{\boldsymbol{e}_j}
     """
 
