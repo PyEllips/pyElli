@@ -1,5 +1,27 @@
 # Changelog
 
+## Version 0.15.0
+
+### New
+- Include the Refractiveindex.info database and import and search scripts to access it
+- Kramers-Kronig-Relationship conversions for dielectric functions
+- Add Cody-Lorentz dispersion model
+
+## Version 0.14.1
+
+### Bug fixes:
+- Installs the correct extra requirements in the docker container
+
+## Version 0.14.0
+
+### Breaking changes:
+- Moved importers into the importers submodule
+- Split the spectraray class into a class to load a dispersion table and an importer
+
+### Bug fixes:
+- Introduced proper dependency management
+- Changed the dependency of extra install requirements for fitting and testing
+
 ## Version 0.13.0
 
 ### Breaking Changes:

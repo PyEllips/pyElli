@@ -11,9 +11,14 @@ and aims to make optical model generation standardized and reproducible.
 
 PyElli is build to be easily extendable by optical models.
 However, pyElli comes with batteries included and already offers a wide range
-of :doc:`dispersion models<dispersions>`. Most of the models presented in the
+of :doc:`dispersion models<dispersions>` and the material database of Refractiveindex.info.
+
+Most of the models presented in the
 comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
 a lot of other models used by ellipsometry vendor softwares are included.
+
+The material database offers the dispersions seen on the `website <https://refractiveindex.info/>`_
+and can be accessed by using the :class:`elli.db.RII<elli.db.RII>` module.
 
 To start you may want to dive into :ref:`install<installation>`.
 The bast way to start is to have a look at the :doc:`basic usage<auto_examples/plot_01_basic_usage>` or

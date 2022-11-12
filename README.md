@@ -14,7 +14,8 @@ of scientists working with spectral ellipsometry.
 ## Features
 
 - A multitude of models to approximate the dielectric function of your material.
-- Build up your stru#cture easily from materials and layers.
+- Use the vast library of materials from refractiveindex.info as reference materials.
+- Build up your structure easily from materials and layers.
 - Simulate reflection and transmission spectra, ellipsometric parameters and Mueller matrices.
 - Utilities to quickly convert, plot and fit your measurement data.
 - Powerful when necessary, editable and expandable.
@@ -62,4 +63,4 @@ pip install -e .[fitting]
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
 - Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
-- Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database)
+- Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database) and Pavel Dmitriev's [pyTMM](https://github.com/kitchenknif/PyTMM) for his importer script for the database
