@@ -49,6 +49,20 @@ params.add("TiO2_k2", value=0, min=-40000, max=40000, vary=False)
 params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 
 # %%
+# Load silicon dispersion from the refractiveindexinfo database
+# -------------------------------------------------------------
+# You can load any material from the index
+# `refractiveindex.info <https://refractiveindex.info>`__, which is
+# embedded into the software (so you may use it offline, too). Here, we
+# are interested in the literature values for the silicon substrate.
+# First we need to load the database with ``rii_db = elli.db.RII()`` and
+# then we can query it with ``rii_db.get_mat("Si", "Aspnes")`` to load
+# this
+# `entry <https://refractiveindex.info/?shelf=main&book=Si&page=Aspnes>`__.
+rii_db = elli.db.RII()
+Si = rii_db.get_mat("Si", "Aspnes")
+
+# %%
 # Building the model
 # ------------------
 # Here the model is build and the experimental structure is returned.
@@ -57,9 +71,6 @@ params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 # with which you can select the start parameters before fitting the data.
 @fit(tss, params)
 def model(lbda, params):
-    sr = elli.TableSpectraRay("./")
-    Si = elli.IsotropicMaterial(sr.load_dispersion_table("Si_Aspnes.mat"))
-
     SiO2 = elli.Cauchy(
         params["SiO2_n0"],
         params["SiO2_n1"],
