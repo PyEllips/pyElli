@@ -25,20 +25,14 @@ bibliography: paper.bib
 
 Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. It is used throughout various scientific fields to determine the optical constants of materials.
 However, ellipsometry always needs numerical analysis to deduce material properties from a measurement.
-The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system.
+The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system. The matrix describes the whole light matter interaction - reflection, transmission and absorption - of the sample.
 Typically, software for such calculations is shipped together with ellipsometers, where each hardware vendor supplies their own version.
 Therefore, through different implementation details and different optical models the dispersion models for materials in literature cannot readily be adapted in the lab.
 Further, if the supplied software does not support a specific kind of analysis (e.g. anisotropy) scientists need to use third party software, anyways.
 In this paper we present the open source python software pyElli, which tackles these problems by offering an open source platform, which is by design easily extendable and adaptable with new optical models or analysis algorithms. It supports querying the popular database for optical constants [refractiveindex.info], too.
-The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. It is possible to include vendor-specific models or self-designed models, too. PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is often used for simple problems and a 4x4 matrix algorithm based on the berreman transfer matrix formulation [berreman]. While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. Accordingly, it allows to solve more complex problems like anisotropy (... more examples??).
+The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. But it is possible to include vendor-specific models or self-designed models, too. PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is faster, but only applicable for simple problems and a 4x4 matrix algorithm based on the berreman transfer matrix formulation [berreman]. While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. Accordingly, it allows to solve more complex problems like anisotropic samples (... more examples?? I don't know any.).
 An [example] in the NORTH analysis toolkit within the research data management software NOMAD by the german FAIRmat consortium shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
 We hope that the software contributes to easier analysis and reproducibility, as well as FAIR data management within the ellipsometry community.
-
-# Example
-
-- Show a walkthrough of the SiO2 on Si example.
-- Show a Mueller matrix example?
-- Show an anisotropy example?
 
 # Statement of need
 
@@ -46,6 +40,19 @@ We hope that the software contributes to easier analysis and reproducibility, as
 - Often hard to translate optical models between different programs, we aim to make it easier
 - Keep interoperability with other formats
 - Extend basic functionality of vendor fitting programs
+- Performant calculations to enable interactive data fitting and advanced  minimizer algorithms
+
+Other Packages:
+- pyGTM (more extensive calculations, provides electric field etc., not vectorized)
+- pyllama (TMM and SM, not vectorized)
+- RayFlare (specialized for solar cells, provides [byrnes] and a scattering matrix algorithm)
+- mentions: refellips, EMpy, dtmm, py_matrix
+
+# Example
+
+- Show a walkthrough of the SiO2 on Si example.
+- Show a Mueller matrix example?
+- Show an anisotropy example? (Maybe quote my paper about SiPh4 and show the code in a seperate git repo)
 
 # Mathematics
 
