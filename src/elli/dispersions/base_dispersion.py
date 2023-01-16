@@ -105,6 +105,10 @@ class Dispersion(ABC):
         """Add up the dielectric function of multiple models"""
         if isinstance(other, (int, float)):
             return DispersionSum(self, dispersions.EpsilonInf(eps=other))
+
+        if not isinstance(other, Dispersion):
+            raise TypeError(f"Invalid type {type(other)} added to dispersion")
+
         return DispersionSum(self, other)
 
     def get_dielectric(self, lbda: npt.ArrayLike) -> npt.NDArray:
