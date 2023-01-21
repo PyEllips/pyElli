@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1673889698829,
+  "lastUpdate": 1674314943770,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -8816,6 +8816,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00007221296522289753",
             "extra": "mean: 5.081908100001442 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1ceb7b887dbf5afbf2b9085286b740e1d63e735e",
+          "message": "Change built process to pyproject.toml (#104)\n\n* Update setup.cfg\r\n\r\n* Changes package method to pyproject.toml (fixes #103)\r\n\r\n* Corrects rii include path\r\n\r\n* Update actions to newer versions\r\n\r\n* Fix tests\r\n\r\nCo-authored-by: Marius Müller <49639740+MarJMue@users.noreply.github.com>",
+          "timestamp": "2023-01-21T16:27:28+01:00",
+          "tree_id": "182413aff6a84bd89b8bc2b5aa0b4b500a0354a1",
+          "url": "https://github.com/PyEllips/pyElli/commit/1ceb7b887dbf5afbf2b9085286b740e1d63e735e"
+        },
+        "date": 1674314942648,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 22.41231049046639,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011127317133105587",
+            "extra": "mean: 44.618336000002046 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.242060818163154,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024869226271464068",
+            "extra": "mean: 190.76466960000005 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 83.0543523794545,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0041900155590991715",
+            "extra": "mean: 12.040308199999572 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 159.70816080596862,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004899289665960167",
+            "extra": "mean: 6.261420799998518 msec\nrounds: 10"
           }
         ]
       }
