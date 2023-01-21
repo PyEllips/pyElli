@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674342352669,
+  "lastUpdate": 1674342358811,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9024,6 +9024,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0027522384199005208",
             "extra": "mean: 8.022098600002892 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "373788f02004fe8d799c0e9f1a3be1b7b20c3055",
+          "message": "Bump jupyter-core from 4.11.1 to 4.11.2 in /requirements (#105)\n\nBumps [jupyter-core](https://github.com/jupyter/jupyter_core) from 4.11.1 to 4.11.2.\r\n- [Release notes](https://github.com/jupyter/jupyter_core/releases)\r\n- [Changelog](https://github.com/jupyter/jupyter_core/blob/main/CHANGELOG.md)\r\n- [Commits](https://github.com/jupyter/jupyter_core/compare/4.11.1...4.11.2)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: jupyter-core\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2023-01-22T00:04:28+01:00",
+          "tree_id": "65cbc9059aef97f26017fcc80f02a04f422a21a4",
+          "url": "https://github.com/PyEllips/pyElli/commit/373788f02004fe8d799c0e9f1a3be1b7b20c3055"
+        },
+        "date": 1674342357624,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.239907523005055,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003238027701838348",
+            "extra": "mean: 41.254282800004205 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.975530177630255,
+            "unit": "iter/sec",
+            "range": "stddev: 0.03379890835361012",
+            "extra": "mean: 167.34916740000045 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 139.2557543054379,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00022421626548790264",
+            "extra": "mean: 7.181031799997584 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 182.19829383690129,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00042652862312686014",
+            "extra": "mean: 5.48852559999915 msec\nrounds: 10"
           }
         ]
       }
