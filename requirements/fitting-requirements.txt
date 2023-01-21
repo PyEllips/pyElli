@@ -175,8 +175,8 @@ fonttools==4.37.1 \
     --hash=sha256:4606e1a88ee1f6699d182fea9511bd9a8a915d913eab4584e5226da1180fcce7 \
     --hash=sha256:fff6b752e326c15756c819fe2fe7ceab69f96a1dbcfe8911d0941cdb49905007
     # via matplotlib
-future==0.18.2 \
-    --hash=sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d
+future==0.18.3 \
+    --hash=sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307
     # via uncertainties
 h5py==3.7.0 \
     --hash=sha256:03d64fb86bb86b978928bad923b64419a23e836499ec6363e305ad28afd9d287 \
