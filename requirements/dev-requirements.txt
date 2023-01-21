@@ -358,9 +358,9 @@ jupyter-client==7.3.5 \
     #   ipykernel
     #   nbclient
     #   notebook
-jupyter-core==4.11.1 \
-    --hash=sha256:2e5f244d44894c4154d06aeae3419dd7f1b0ef4494dc5584929b398c61cfd314 \
-    --hash=sha256:715e22bb6cc7db3718fddfac1f69f1c7e899ca00e42bdfd4bf3705452b9fd84a
+jupyter-core==4.11.2 \
+    --hash=sha256:3815e80ec5272c0c19aad087a0d2775df2852cfca8f5a17069e99c9350cecff8 \
+    --hash=sha256:c2909b9bc7dca75560a6c5ae78c34fd305ede31cd864da3c0d0bb2ed89aa9337
     # via
     #   -r requirements/fitting-requirements.txt
     #   jupyter-client
