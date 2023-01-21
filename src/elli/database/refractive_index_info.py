@@ -3,6 +3,7 @@
 
 import io
 import os
+import re
 from collections import namedtuple
 
 import pandas as pd
@@ -31,7 +32,11 @@ nt_entry = namedtuple(
         "book_longname",
         "page",
         "page_type",
-        "page_longname",
+        "author",
+        "year",
+        "comment",
+        "lower_range",
+        "upper_range",
         "path",
     ],
 )
@@ -78,6 +83,10 @@ class RII:
             self.rii_path.joinpath("library.yml").read_text(), yaml.SafeLoader
         )
 
+        pagename_pattern = re.compile(
+            r"(?P<authors>.*) (?P<year>\d{4})[^:]*?: ((?P<comment1>.*); )?(?P<type1>.+) (?P<lower_range1>\d+(\.\d*)?(e\W?\d+)?)\W(?P<upper_range1>\d+(\.\d*)?(e\W?\d+)?) µm(, (?P<type2>.+) (?P<lower_range2>\d+(\.\d*)?(e\W?\d+)?).(?P<upper_range2>\d+(\.\d*)?(e\W?\d+)?) µm)?(; (?P<comment2>.*))?"
+        )
+
         entries = []
         for sh in yml_file:
             b_div = pd.NA
@@ -86,19 +95,43 @@ class RII:
                     p_div = pd.NA
                     for p in b["content"]:
                         if "DIVIDER" not in p:
-                            entries.append(
-                                nt_entry(
-                                    sh["SHELF"],
-                                    sh["name"],
-                                    b_div,
-                                    b["BOOK"],
-                                    b["name"],
-                                    p["PAGE"],
-                                    p_div,
-                                    p["name"],
-                                    os.path.join("data", os.path.normpath(p["data"])),
+                            infos = pagename_pattern.match(p["name"])
+                            if infos is None:
+                                entries.append(
+                                    nt_entry(
+                                        sh["SHELF"],
+                                        sh["name"],
+                                        b_div,
+                                        b["BOOK"],
+                                        b["name"],
+                                        p["PAGE"],
+                                        p_div,
+                                        None,
+                                        None,
+                                        p["name"],
+                                        None,
+                                        None,
+                                        os.path.join("data", os.path.normpath(p["data"])),
+                                    )
                                 )
-                            )
+                            else:
+                                entries.append(
+                                    nt_entry(
+                                        sh["SHELF"],
+                                        sh["name"],
+                                        b_div,
+                                        b["BOOK"],
+                                        b["name"],
+                                        p["PAGE"],
+                                        p_div,
+                                        infos.group("authors"),
+                                        infos.group("year"),
+                                        ' '.join(filter(None, (infos.group("comment1"), infos.group("comment2")))),
+                                        infos.group("lower_range1"),
+                                        infos.group("upper_range1"),
+                                        os.path.join("data", os.path.normpath(p["data"])),
+                                    )
+                                )
                         else:
                             p_div = p["DIVIDER"]
                 else:
