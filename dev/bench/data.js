@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674316705595,
+  "lastUpdate": 1674342352669,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -8972,6 +8972,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00008376022442836337",
             "extra": "mean: 5.159503899999152 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2c00bf9268a897a1bd34e26fd8077470b7633570",
+          "message": "Bump future from 0.18.2 to 0.18.3 in /requirements (#106)\n\nBumps [future](https://github.com/PythonCharmers/python-future) from 0.18.2 to 0.18.3.\r\n- [Release notes](https://github.com/PythonCharmers/python-future/releases)\r\n- [Changelog](https://github.com/PythonCharmers/python-future/blob/master/docs/changelog.rst)\r\n- [Commits](https://github.com/PythonCharmers/python-future/compare/v0.18.2...v0.18.3)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: future\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2023-01-22T00:04:13+01:00",
+          "tree_id": "41385813cb96762b5a9acb2b127342d43df5720d",
+          "url": "https://github.com/PyEllips/pyElli/commit/2c00bf9268a897a1bd34e26fd8077470b7633570"
+        },
+        "date": 1674342351615,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 22.624055564174522,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002008694648868758",
+            "extra": "mean: 44.20074009999837 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.219673026768041,
+            "unit": "iter/sec",
+            "range": "stddev: 0.020533958536451787",
+            "extra": "mean: 191.58288170000333 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 123.00331183961566,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001509186814271779",
+            "extra": "mean: 8.129862399997023 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 124.65566055241948,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0027522384199005208",
+            "extra": "mean: 8.022098600002892 msec\nrounds: 10"
           }
         ]
       }
