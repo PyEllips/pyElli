@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674342358811,
+  "lastUpdate": 1674763774376,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9076,6 +9076,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00042652862312686014",
             "extra": "mean: 5.48852559999915 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7132704347474ca6ba0fe9028771895ed721dc7a",
+          "message": "Merge pull request #111 from PyEllips/eps-inf-in-rii-reader\n\nChanges ConstantRefInd to EpsilonInf in rii reader",
+          "timestamp": "2023-01-26T21:08:07+01:00",
+          "tree_id": "313491a369c28673235145e627063e053bb6a292",
+          "url": "https://github.com/PyEllips/pyElli/commit/7132704347474ca6ba0fe9028771895ed721dc7a"
+        },
+        "date": 1674763773709,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.509352060428217,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006061756656126372",
+            "extra": "mean: 40.80075219999628 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.41787883032094,
+            "unit": "iter/sec",
+            "range": "stddev: 0.021149810973184083",
+            "extra": "mean: 155.81472109999197 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 133.98849598877993,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00097454876384148",
+            "extra": "mean: 7.46332730000745 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 194.12561899869766,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00022318188137447132",
+            "extra": "mean: 5.151303599998869 msec\nrounds: 10"
           }
         ]
       }
