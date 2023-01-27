@@ -5,10 +5,10 @@ import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class TaucLorentz(Dispersion):
+class TaucLorentz(AdditiveDispersion):
     """Tauc-Lorentz dispersion law. Model by Jellison and Modine.
 
     Single parameters:

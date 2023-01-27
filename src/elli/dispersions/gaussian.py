@@ -8,10 +8,10 @@ from numpy.lib.scimath import sqrt
 from scipy.special import dawsn
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class Gaussian(Dispersion):
+class Gaussian(AdditiveDispersion):
     r"""Dispersion law with gaussian oscillators.
 
     Single parameters:

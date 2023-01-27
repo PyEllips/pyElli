@@ -73,6 +73,21 @@ class Dispersion(ABC):
             self.single_params_template, *args, **kwargs
         )
 
+    summation_error_message = ""
+
+    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
+        return self.__add__(other)
+
+    def __add__(
+        self, other: Union[int, float, "AdditiveDispersion"]
+    ) -> "AdditiveDispersion":
+        raise TypeError(
+            f"unsupported operand type(s) for +: {type(self)} and {type(other)}."
+            f"\n{self.summation_error_message}"
+            if self.summation_error_message
+            else ""
+        )
+
     @abstractmethod
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Calculates the dielectric function in a given wavelength window.
@@ -100,26 +115,6 @@ class Dispersion(ABC):
         self.rep_params.append(rep_param_set)
 
         return self
-
-    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
-        """Add up the dielectric function of multiple models"""
-        return self.__add__(other)
-
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
-        """Add up the dielectric function of multiple models"""
-        if isinstance(other, UnsummableDispersion):
-            other.__add__(self)
-
-        if isinstance(other, DispersionSum):
-            return other.__add__(self)
-
-        if isinstance(other, (int, float)):
-            return DispersionSum(self, dispersions.EpsilonInf(eps=other))
-
-        if not isinstance(other, Dispersion):
-            raise TypeError(f"Invalid type {type(other)} added to dispersion")
-
-        return DispersionSum(self, other)
 
     def get_dielectric(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
@@ -205,17 +200,31 @@ class Dispersion(ABC):
         )
 
 
-class UnsummableDispersion(Dispersion):
-    """This denotes a dispersion which is not summable"""
+class AdditiveDispersion(Dispersion):
+    """An additive dispersion"""
 
-    @property
-    @abstractmethod
-    def summation_error_message(self):
-        """The message being displayed when someone tries
-        to perform an addition with this dispersion."""
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        """Add up the dielectric function of multiple models"""
+        if not isinstance(other, Dispersion) and not isinstance(other, (int, float)):
+            raise TypeError(
+                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+            )
 
-    def __add__(self, _: Union[int, float, "Dispersion"]) -> "Dispersion":
-        raise ValueError(self.summation_error_message)
+        if isinstance(self, DispersionSum) and isinstance(other, DispersionSum):
+            self.dispersions += other.dispersions  # pylint: disable=no-member
+            return self
+
+        if isinstance(self, AdditiveDispersion) and isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
+
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, dispersions.EpsilonInf(eps=other))
+
+        if not isinstance(other, AdditiveDispersion):
+            other.__add__(self)
+
+        return DispersionSum(self, other)
 
 
 class DispersionFactory:
@@ -240,30 +249,15 @@ class DispersionFactory:
         raise ValueError(f"No such dispersion: {identifier}")
 
 
-class DispersionSum(Dispersion):
+class DispersionSum(AdditiveDispersion):
     """Represents a sum of two dispersions"""
 
     single_params_template = {}
     rep_params_template = {}
 
-    def __init__(self, *disps: Dispersion) -> None:
+    def __init__(self, *disps: AdditiveDispersion) -> None:
         super().__init__()
         self.dispersions = disps
-
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
-        if isinstance(other, UnsummableDispersion):
-            other.__add__(self)
-
-        if isinstance(other, DispersionSum):
-            self.dispersions += other.dispersions
-            return self
-
-        if isinstance(other, (int, float)):
-            self.dispersions.append(dispersions.EpsilonInf(eps=other))
-            return self
-
-        self.dispersions.append(other)
-        return self
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         dielectric_function = sum(

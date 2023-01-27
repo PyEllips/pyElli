@@ -2,10 +2,10 @@
 """Lorentz dispersion law with parameters in units of wavelengths."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class LorentzLambda(Dispersion):
+class LorentzLambda(AdditiveDispersion):
     r"""Lorentz dispersion law with parameters in units of wavelengths.
 
     Single parameters:

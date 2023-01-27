@@ -8,10 +8,10 @@ from numpy.lib.scimath import sqrt
 from scipy.special import digamma, gamma
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class Tanguy(Dispersion):
+class Tanguy(AdditiveDispersion):
     r"""Fractional dimensional Tanguy model.
     This model is an analytical expression of Wannier excitons, including
     bound and unbound states.

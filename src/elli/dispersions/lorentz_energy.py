@@ -3,10 +3,10 @@
 import numpy.typing as npt
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class LorentzEnergy(Dispersion):
+class LorentzEnergy(AdditiveDispersion):
     r"""Lorentz dispersion law with parameters in units of energy.
 
     Single parameters:

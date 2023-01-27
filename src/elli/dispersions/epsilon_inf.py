@@ -2,10 +2,10 @@
 """Constant epsilon infinity."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class EpsilonInf(Dispersion):
+class EpsilonInf(AdditiveDispersion):
     r"""Constant epsilon infinity.
 
     Single parameters:

@@ -6,11 +6,11 @@ import numpy.typing as npt
 from scipy.interpolate import interp1d
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 from ..kkr import im2re_reciprocal
 
 
-class CodyLorentz(Dispersion):
+class CodyLorentz(AdditiveDispersion):
     """Tauc-Lorentz dispersion law. Model by Ferlauto et al.
 
     Single parameters:

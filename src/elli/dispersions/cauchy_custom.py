@@ -2,10 +2,10 @@
 """Cauchy dispersion with custom exponents."""
 import numpy.typing as npt
 
-from .base_dispersion import UnsummableDispersion
+from .base_dispersion import Dispersion
 
 
-class CauchyCustomExponent(UnsummableDispersion):
+class CauchyCustomExponent(Dispersion):
     r"""Cauchy dispersion with custom exponents.
 
     Single parameters:
@@ -22,7 +22,7 @@ class CauchyCustomExponent(UnsummableDispersion):
     """
 
     summation_error_message = (
-        "The cauchy dispersion cannot be added to other dispersions. "
+        "The Cauchy dispersion cannot be added to other dispersions. "
         "Try the Poles or Lorentz model instead."
     )
 

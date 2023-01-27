@@ -3,10 +3,10 @@
 import numpy.typing as npt
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class Poles(Dispersion):
+class Poles(AdditiveDispersion):
     r"""Dispersion law for an UV and IR pole,
     i.e. Lorentz oscillators outside the fitting spectral range and zero broadening.
 

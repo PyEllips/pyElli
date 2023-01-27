@@ -3,10 +3,10 @@
 import numpy.typing as npt
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class DrudeEnergy(Dispersion):
+class DrudeEnergy(AdditiveDispersion):
     r"""Drude dispersion model with parameters in units of energy.
     Drude models in the literature typically contain an additional epsilon infinity value.
     Use `EpsilonInf` to add this parameter or simply add a number, e.g. DrudeEnergy() + 2, where

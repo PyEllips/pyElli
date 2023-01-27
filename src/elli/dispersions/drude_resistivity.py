@@ -5,10 +5,10 @@ import numpy.typing as npt
 import scipy.constants as sc
 
 from ..utils import conversion_wavelength_energy
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class DrudeResistivity(Dispersion):
+class DrudeResistivity(AdditiveDispersion):
     r"""Drude dispersion model with resistivity based parameters.
     Drude models in the literature typically contain an additional epsilon infinity value.
     Use `EpsilonInf` to add this parameter or simply do DrudeEnergy() + eps_inf.

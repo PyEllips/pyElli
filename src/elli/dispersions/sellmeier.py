@@ -2,10 +2,10 @@
 """Sellmeier dispersion."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import AdditiveDispersion
 
 
-class Sellmeier(Dispersion):
+class Sellmeier(AdditiveDispersion):
     r"""Sellmeier dispersion.
 
     Single parameters:

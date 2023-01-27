@@ -2,10 +2,10 @@
 """Constant refractive index."""
 import numpy.typing as npt
 
-from .base_dispersion import UnsummableDispersion
+from .base_dispersion import Dispersion
 
 
-class ConstantRefractiveIndex(UnsummableDispersion):
+class ConstantRefractiveIndex(Dispersion):
     r"""Constant refractive index.
 
     Single parameters:
