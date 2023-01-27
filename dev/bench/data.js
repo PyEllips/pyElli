@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674763774376,
+  "lastUpdate": 1674814666463,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9128,6 +9128,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00022318188137447132",
             "extra": "mean: 5.151303599998869 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7dc8f174cf9644b0cedf3956a36c76ae8eade4ea",
+          "message": "Python 3.11 compatibility (#90)\n\n* Updates actions with py3.11\r\n\r\n* Updates setup.cfg\r\n\r\n* Updates pyproject\r\n\r\n* Removes duplicate submodule\r\n\r\n* Tune setuptools version in pyproject to support pyproject installs (support pep660 and pep518)",
+          "timestamp": "2023-01-27T11:15:39+01:00",
+          "tree_id": "4ebd92ae8160bc4116d34bf8b9edd184a8b2d7e3",
+          "url": "https://github.com/PyEllips/pyElli/commit/7dc8f174cf9644b0cedf3956a36c76ae8eade4ea"
+        },
+        "date": 1674814665724,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 16.011469592081063,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0053754016797916875",
+            "extra": "mean: 62.45522900000253 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 3.729295423100699,
+            "unit": "iter/sec",
+            "range": "stddev: 0.020010681096500196",
+            "extra": "mean: 268.1471662999968 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 87.10657834804884,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003130615468326437",
+            "extra": "mean: 11.480189199997426 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 127.05912494363108,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007184463296019359",
+            "extra": "mean: 7.870351699995125 msec\nrounds: 10"
           }
         ]
       }
