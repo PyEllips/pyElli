@@ -101,8 +101,18 @@ class Dispersion(ABC):
 
         return self
 
+    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
+        """Add up the dielectric function of multiple models"""
+        return self.__add__(other)
+
     def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
         """Add up the dielectric function of multiple models"""
+        if isinstance(other, UnsummableDispersion):
+            other.__add__(self)
+
+        if isinstance(other, DispersionSum):
+            return other.__add__(self)
+
         if isinstance(other, (int, float)):
             return DispersionSum(self, dispersions.EpsilonInf(eps=other))
 
@@ -195,6 +205,19 @@ class Dispersion(ABC):
         )
 
 
+class UnsummableDispersion(Dispersion):
+    """This denotes a dispersion which is not summable"""
+
+    @property
+    @abstractmethod
+    def summation_error_message(self):
+        """The message being displayed when someone tries
+        to perform an addition with this dispersion."""
+
+    def __add__(self, _: Union[int, float, "Dispersion"]) -> "Dispersion":
+        raise ValueError(self.summation_error_message)
+
+
 class DispersionFactory:
     """A factory class for dispersion objects"""
 
@@ -226,6 +249,21 @@ class DispersionSum(Dispersion):
     def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
         self.dispersions = disps
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
+        if isinstance(other, UnsummableDispersion):
+            other.__add__(self)
+
+        if isinstance(other, DispersionSum):
+            self.dispersions += other.dispersions
+            return self
+
+        if isinstance(other, (int, float)):
+            self.dispersions.append(dispersions.EpsilonInf(eps=other))
+            return self
+
+        self.dispersions.append(other)
+        return self
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         dielectric_function = sum(

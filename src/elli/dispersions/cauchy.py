@@ -2,10 +2,10 @@
 """Cauchy dispersion."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import UnsummableDispersion
 
 
-class Cauchy(Dispersion):
+class Cauchy(UnsummableDispersion):
     r"""Cauchy dispersion.
 
     Single parameters:
@@ -26,6 +26,11 @@ class Cauchy(Dispersion):
             + i (\boldsymbol{k_0} + 100 \boldsymbol{k_1}/\lambda^2
             + 10^7 \boldsymbol{k_2}/\lambda^4)
     """
+
+    summation_error_message = (
+        "The cauchy dispersion cannot be added to other dispersions. "
+        "Try the Poles or Lorentz model instead."
+    )
 
     single_params_template = {"n0": 1.5, "n1": 0, "n2": 0, "k0": 0, "k1": 0, "k2": 0}
     rep_params_template = {}

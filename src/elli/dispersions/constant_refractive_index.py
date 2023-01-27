@@ -2,10 +2,10 @@
 """Constant refractive index."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import UnsummableDispersion
 
 
-class ConstantRefractiveIndex(Dispersion):
+class ConstantRefractiveIndex(UnsummableDispersion):
     r"""Constant refractive index.
 
     Single parameters:
@@ -18,6 +18,10 @@ class ConstantRefractiveIndex(Dispersion):
         .. math::
             \varepsilon(\lambda) = \boldsymbol{n}^2
     """
+    summation_error_message = (
+        "The constant refractive index cannot be added to other dispersions. "
+        "Try EpsilonInf instead."
+    )
 
     single_params_template = {"n": 1}
     rep_params_template = {}
