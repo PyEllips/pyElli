@@ -2,10 +2,10 @@
 """Cauchy dispersion."""
 import numpy.typing as npt
 
-from .base_dispersion import UnsummableDispersion
+from .base_dispersion import IndexDispersion
 
 
-class Cauchy(UnsummableDispersion):
+class Cauchy(IndexDispersion):
     r"""Cauchy dispersion.
 
     Single parameters:
@@ -27,16 +27,11 @@ class Cauchy(UnsummableDispersion):
             + 10^7 \boldsymbol{k_2}/\lambda^4)
     """
 
-    summation_error_message = (
-        "The cauchy dispersion cannot be added to other dispersions. "
-        "Try the Poles or Lorentz model instead."
-    )
-
     single_params_template = {"n0": 1.5, "n1": 0, "n2": 0, "k0": 0, "k1": 0, "k2": 0}
     rep_params_template = {}
 
-    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        refr_index = (
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        return (
             self.single_params.get("n0")
             + 1e2 * self.single_params.get("n1") / lbda**2
             + 1e7 * self.single_params.get("n2") / lbda**4
@@ -47,4 +42,3 @@ class Cauchy(UnsummableDispersion):
                 + 1e7 * self.single_params.get("k2") / lbda**4
             )
         )
-        return refr_index**2

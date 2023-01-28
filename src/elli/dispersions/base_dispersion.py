@@ -1,7 +1,7 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import List, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -101,23 +101,32 @@ class Dispersion(ABC):
 
         return self
 
-    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
+    def _check_valid_operand(self, other: Union[int, float, "Dispersion"]):
+        if not isinstance(other, (int, float, Dispersion)):
+            raise TypeError(
+                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+            )
+
+    def _is_non_diel_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
+        return isinstance(other, IndexDispersion)
+
+    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
         """Add up the dielectric function of multiple models"""
         return self.__add__(other)
 
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
         """Add up the dielectric function of multiple models"""
-        if isinstance(other, UnsummableDispersion):
-            other.__add__(self)
+        self._check_valid_operand(other)
 
-        if isinstance(other, DispersionSum):
+        if self._is_non_diel_dispersion(other):
             return other.__add__(self)
 
-        if isinstance(other, (int, float)):
-            return DispersionSum(self, dispersions.EpsilonInf(eps=other))
+        if isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
 
-        if not isinstance(other, Dispersion):
-            raise TypeError(f"Invalid type {type(other)} added to dispersion")
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, dispersions.EpsilonInf(other))
 
         return DispersionSum(self, other)
 
@@ -205,17 +214,34 @@ class Dispersion(ABC):
         )
 
 
-class UnsummableDispersion(Dispersion):
-    """This denotes a dispersion which is not summable"""
+class IndexDispersion(Dispersion):
+    """A dispersion based on a refractive index formulation."""
 
-    @property
     @abstractmethod
-    def summation_error_message(self):
-        """The message being displayed when someone tries
-        to perform an addition with this dispersion."""
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Calculates the refractive index in a given wavelength window.
 
-    def __add__(self, _: Union[int, float, "Dispersion"]) -> "Dispersion":
-        raise ValueError(self.summation_error_message)
+        Args:
+            lbda (npt.ArrayLike): The wavelength window with unit nm.
+
+        Returns:
+            npt.NDArray: The refractive index for each wavelength point.
+        """
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        self._check_valid_operand(other)
+
+        if isinstance(other, IndexDispersion):
+            raise NotImplementedError(
+                "Adding of index based dispersions is not supported yet"
+            )
+
+        raise TypeError(
+            "Cannot add refractive index and dielectric function based dispersions."
+        )
+
+    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        return self.refractive_index(lbda) ** 2
 
 
 class DispersionFactory:
@@ -243,16 +269,19 @@ class DispersionFactory:
 class DispersionSum(Dispersion):
     """Represents a sum of two dispersions"""
 
-    single_params_template = {}
-    rep_params_template = {}
+    single_params_template: dict = {}
+    rep_params_template: dict = {}
+    dispersions: List[Dispersion]
 
     def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
-        self.dispersions = disps
+        self.dispersions = list(disps)
 
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
-        if isinstance(other, UnsummableDispersion):
-            other.__add__(self)
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        self._check_valid_operand(other)
+
+        if self._is_non_diel_dispersion(other):
+            return other.__add__(self)
 
         if isinstance(other, DispersionSum):
             self.dispersions += other.dispersions

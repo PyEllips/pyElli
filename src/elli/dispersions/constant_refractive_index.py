@@ -2,10 +2,10 @@
 """Constant refractive index."""
 import numpy.typing as npt
 
-from .base_dispersion import UnsummableDispersion
+from .base_dispersion import IndexDispersion
 
 
-class ConstantRefractiveIndex(UnsummableDispersion):
+class ConstantRefractiveIndex(IndexDispersion):
     r"""Constant refractive index.
 
     Single parameters:
@@ -18,13 +18,8 @@ class ConstantRefractiveIndex(UnsummableDispersion):
         .. math::
             \varepsilon(\lambda) = \boldsymbol{n}^2
     """
-    summation_error_message = (
-        "The constant refractive index cannot be added to other dispersions. "
-        "Try EpsilonInf instead."
-    )
-
     single_params_template = {"n": 1}
     rep_params_template = {}
 
-    def dielectric_function(self, _: npt.ArrayLike) -> npt.NDArray:
-        return self.single_params.get("n") ** 2
+    def refractive_index(self, _: npt.ArrayLike) -> npt.NDArray:
+        return self.single_params.get("n")
