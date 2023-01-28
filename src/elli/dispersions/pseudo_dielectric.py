@@ -40,9 +40,7 @@ class PseudoDielectricFunction(Dispersion):
 
         for param in self.single_params:
             if not self.single_params[param]:
-                raise InvalidParameters(
-                    f"Please specify parameter {self.single_params[param]}"
-                )
+                raise InvalidParameters(f"Please specify parameter {param}")
 
         rho = np.tan(np.deg2rad(self.single_params.get("psi"))) * np.exp(
             -1j * np.deg2rad(self.single_params.get("delta"))
