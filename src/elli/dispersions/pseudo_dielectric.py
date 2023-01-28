@@ -9,7 +9,13 @@ from .base_dispersion import Dispersion, InvalidParameters
 
 
 class PseudoDielectricFunction(Dispersion):
-    r"""
+    r"""A pseudo dielectric function generated from experimental psi/delta values.
+    Please note that the pseudo dielectric function can lead to unphysical behaviour, such
+    as negative refractive indices or other spurious artifacts.
+    Additionally, this formula is only valid for a bulk absorbing material and yields wrong
+    results for layered materials.
+    Therefore, it is preferable to use the pseudo dielectric function only as a helper for
+    constructing other dispersion models.
 
     Single parameters:
         :angle: The measurement angle in degree under which the psi/delta values where obtained.
