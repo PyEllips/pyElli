@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and dielectric function values."""
+from typing import Union
 import numpy as np
 import numpy.typing as npt
 import scipy.interpolate
@@ -48,6 +49,9 @@ class TableEpsilon(Dispersion):
             self.single_params.get("epsilon"),
             kind="cubic",
         )
+
+    def __add__(self, _: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        raise NotImplementedError("Adding of tabular dispersions is not yet supported")
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.interpolation(lbda)

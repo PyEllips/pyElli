@@ -3,6 +3,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 from elli import Cauchy, Sellmeier
 from elli.dispersions.base_dispersion import DispersionSum
+from elli.dispersions.table_epsilon import TableEpsilon
 
 
 def test_fail_on_adding_index_dispersion():
@@ -63,3 +64,10 @@ def test_flat_dispersion_sum_on_multiple_add():
 
 def test_adding_of_tabular_dispersions():
     """Tests correct adding of tabular dispersions"""
+
+    with pytest.raises(NotImplementedError) as not_impl_err:
+        _ = TableEpsilon() + 1
+
+    assert (
+        str(not_impl_err.value) == "Adding of tabular dispersions is not yet supported"
+    )
