@@ -212,9 +212,10 @@ def test_correct_reconstruction_with_pseudo_dielectric():
         gaussian.get_mat(),
     ).evaluate(lbda, 70, solver=elli.Solver2x2)
 
+    check_lbda = np.linspace(200, 1000, 5000)
     assert_frame_equal(
         elli.PseudoDielectricFunction(
             angle=70, lbda=lbda, psi=result.psi, delta=result.delta
-        ).get_dielectric_df(),
-        gaussian.get_dielectric_df(),
+        ).get_dielectric_df(check_lbda),
+        gaussian.get_dielectric_df(check_lbda),
     )
