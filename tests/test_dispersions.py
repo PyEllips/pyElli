@@ -197,3 +197,24 @@ def test_fail_parameterless_pseudo_dielectric():
     without single parameters"""
     with raises(InvalidParameters):
         _ = elli.DispersionFactory.get_dispersion("PseudoDielectricFunction")
+
+
+def test_correct_reconstruction_with_pseudo_dielectric():
+    """Checks whether the pseudo dielectric function
+    reconstructs a predefined model"""
+
+    gaussian = elli.Gaussian().add(A=10, E=2, sigma=0.3)
+    lbda = gaussian.get_dielectric_df().index.values
+
+    result = elli.Structure(
+        elli.AIR,
+        [],
+        gaussian.get_mat(),
+    ).evaluate(lbda, 70, solver=elli.Solver2x2)
+
+    assert_frame_equal(
+        elli.PseudoDielectricFunction(
+            angle=70, lbda=lbda, psi=result.psi, delta=result.delta
+        ).get_dielectric_df(),
+        gaussian.get_dielectric_df(),
+    )
