@@ -18,7 +18,7 @@ def loop_dispersions_default():
         "Cauchy",
         "DrudeEnergy",
         "DrudeResistivity",
-        "Gauss",
+        "Gaussian",
         "LorentzEnergy",
         "LorentzLambda",
         "Poles",
@@ -76,7 +76,7 @@ def loop_dispersions_custom_values():
             ],
         },
         {
-            "name": "Gauss",
+            "name": "Gaussian",
             "single_params": {},
             "rep_params": [
                 {"A": 100, "E": 3, "sigma": 0.1},
@@ -124,6 +124,16 @@ def loop_dispersions_custom_values():
             "single_params": {
                 "lbda": np.linspace(400, 1000, 100),
                 "epsilon": np.linspace(1, 1.5, 100) + 1j * np.linspace(0, 1, 100),
+            },
+            "rep_params": [],
+        },
+        {
+            "name": "PseudoDielectricFunction",
+            "single_params": {
+                "angle": 70,
+                "lbda": np.linspace(400, 1000, 100),
+                "psi": np.linspace(0, 90, 100),
+                "delta": np.linspace(0, 90, 100),
             },
             "rep_params": [],
         },
