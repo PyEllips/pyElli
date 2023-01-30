@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675097948867,
+  "lastUpdate": 1675101133196,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9388,6 +9388,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0004245580927965944",
             "extra": "mean: 5.855973499998868 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "florian.dobener@physik.hu-berlin.de",
+            "name": "domna",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "florian.dobener@physik.hu-berlin.de",
+            "name": "domna",
+            "username": "domna"
+          },
+          "distinct": true,
+          "id": "7d4700d54a9564419995f077e07215f766bc2519",
+          "message": "Fixes docs for pseudo dielectric",
+          "timestamp": "2023-01-30T18:50:30+01:00",
+          "tree_id": "80c94d3987c8d02e63ddaabfc6e07a25be8702b8",
+          "url": "https://github.com/PyEllips/pyElli/commit/7d4700d54a9564419995f077e07215f766bc2519"
+        },
+        "date": 1675101131914,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 21.591624948964167,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0014625159754917654",
+            "extra": "mean: 46.31425390000459 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.096145891168093,
+            "unit": "iter/sec",
+            "range": "stddev: 0.022539541756014445",
+            "extra": "mean: 196.22672140000077 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 83.07370930018955,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0015540886203173122",
+            "extra": "mean: 12.037502699999436 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 144.75100084817012,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0009545687795947455",
+            "extra": "mean: 6.908415100002685 msec\nrounds: 10"
           }
         ]
       }
