@@ -1,8 +1,22 @@
 # Changelog
 
+## Version 0.15.1
+
+### New
+
+- Support for Python 3.11
+- Pseudo dielectric dispersion
+
+### Bug fixes
+
+- Small fix in reading of rii dispersions
+- Don't allow adding of refractive index based dispersions
+- Don't allow adding of tabular dispersions
+
 ## Version 0.15.0
 
 ### New
+
 - Include the Refractiveindex.info database and import and search scripts to access it
 - Kramers-Kronig-Relationship conversions for dielectric functions
 - Add Cody-Lorentz dispersion model
@@ -10,41 +24,49 @@
 ## Version 0.14.1
 
 ### Bug fixes:
+
 - Installs the correct extra requirements in the docker container
 
 ## Version 0.14.0
 
 ### Breaking changes:
+
 - Moved importers into the importers submodule
 - Split the spectraray class into a class to load a dispersion table and an importer
 
 ### Bug fixes:
+
 - Introduced proper dependency management
 - Changed the dependency of extra install requirements for fitting and testing
 
 ## Version 0.13.0
 
 ### Breaking Changes:
+
 - Moved math submodule into utils, to avoid name conflict with Python's math module
 
 ### Bug fixes:
+
 - Fix error in eigenvalue sorting (PropergatorEig and non-isotropic backmaterials)
 - Pin version of ipywidgets to keep plotly working
 
 ## Version 0.12.0
 
 ### Breaking Changes:
+
 - Renamed the conversion functions and added more
 - result.R and .T now return the reflectance/transmittance instead of the respective matrix, which can be accessed with .R_matrix/.T_matrix
 - Renamed PropagatorExpmScipy to PropagatorExpm
 - Removed Torch and Tensorflow Solvers
 
 ### New:
+
 - Added a lot of documentation
 - Added a Bruggeman EMA Material
 - Support for transmissive Ellipsometry
 
 ### Bug fixes:
+
 - Fix nan values in MaxwellGarnettEMA
 
 ## Version 0.11.0
