@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675073422812,
+  "lastUpdate": 1675073441480,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9232,6 +9232,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0029137322625180156",
             "extra": "mean: 7.065259899999887 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e8a0789bcac64962ec25f700fd2938af0ccc4207",
+          "message": "Prevents refractive index dispersions from being summed (#113)\n\n* Adds unsummable dispersion\r\n\r\n* Replaces UnsummableDispersion with IndexDispersion\r\n\r\n* Lets IndexTable inherit from IndexDispersion\r\n\r\n* Raise error on adding of tabular dispersions\r\n\r\n* Offload add to table dispersion",
+          "timestamp": "2023-01-30T11:09:08+01:00",
+          "tree_id": "0e4daf423c4038681ee0287a79ff9d31cf9fd312",
+          "url": "https://github.com/PyEllips/pyElli/commit/e8a0789bcac64962ec25f700fd2938af0ccc4207"
+        },
+        "date": 1675073440464,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.306605938521443,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011207043369197362",
+            "extra": "mean: 41.14107920000407 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.633011984332232,
+            "unit": "iter/sec",
+            "range": "stddev: 0.018549035769544177",
+            "extra": "mean: 150.76107240000312 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 144.8230600367822,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00033074313350051326",
+            "extra": "mean: 6.90497770000178 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 196.50934168076316,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000057370318269309956",
+            "extra": "mean: 5.088816599999291 msec\nrounds: 10"
           }
         ]
       }
