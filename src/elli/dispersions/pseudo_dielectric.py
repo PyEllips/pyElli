@@ -1,5 +1,5 @@
 # Encoding: utf-8
-"""Sellmeier dispersion."""
+"""Pseudo dielectric function dispersion."""
 from typing import Union
 import numpy as np
 import numpy.typing as npt
