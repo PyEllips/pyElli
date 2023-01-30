@@ -107,8 +107,8 @@ class Dispersion(ABC):
                 f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
             )
 
-    def _is_non_diel_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
-        return isinstance(other, IndexDispersion)
+    def _is_non_std_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
+        return isinstance(other, (IndexDispersion, dispersions.Table))
 
     def __radd__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
         """Add up the dielectric function of multiple models"""
@@ -118,7 +118,7 @@ class Dispersion(ABC):
         """Add up the dielectric function of multiple models"""
         self._check_valid_operand(other)
 
-        if self._is_non_diel_dispersion(other):
+        if self._is_non_std_dispersion(other):
             return other.__add__(self)
 
         if isinstance(other, DispersionSum):
@@ -280,7 +280,7 @@ class DispersionSum(Dispersion):
     def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
         self._check_valid_operand(other)
 
-        if self._is_non_diel_dispersion(other):
+        if self._is_non_std_dispersion(other):
             return other.__add__(self)
 
         if isinstance(other, DispersionSum):
