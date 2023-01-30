@@ -32,6 +32,7 @@ class PseudoDielectricFunction(Dispersion):
             \left( 1 + \tan^2 (\Theta) \left( \frac{1 - \rho}{1 + \rho} \right) \right)
 
         With
+
         .. math::
             \rho = \tan(\Psi) \cdot \exp (-i \Delta)
 
