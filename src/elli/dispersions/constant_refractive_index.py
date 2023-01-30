@@ -2,10 +2,10 @@
 """Constant refractive index."""
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion
+from .base_dispersion import IndexDispersion
 
 
-class ConstantRefractiveIndex(Dispersion):
+class ConstantRefractiveIndex(IndexDispersion):
     r"""Constant refractive index.
 
     Single parameters:
@@ -18,9 +18,8 @@ class ConstantRefractiveIndex(Dispersion):
         .. math::
             \varepsilon(\lambda) = \boldsymbol{n}^2
     """
-
     single_params_template = {"n": 1}
     rep_params_template = {}
 
-    def dielectric_function(self, _: npt.ArrayLike) -> npt.NDArray:
-        return self.single_params.get("n") ** 2
+    def refractive_index(self, _: npt.ArrayLike) -> npt.NDArray:
+        return self.single_params.get("n")
