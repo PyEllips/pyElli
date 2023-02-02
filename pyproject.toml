@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyElli"
-description = "Python implementation of Berremans 4x4 matrix method"
+description = "An ellipsometry analysis tool for reproducible and comprehensible building of optical models."
 dynamic = ["version"]
 authors = [
     { name = "Marius Müller", email = "marius.mueller@physik.uni-giessen.de" },

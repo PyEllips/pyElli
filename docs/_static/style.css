@@ -17,3 +17,7 @@ p.sphx-glr-signature {
     height: 0px;
     visibility: hidden;
 }
+
+dl.field-list .colon {
+    display: none;
+}
