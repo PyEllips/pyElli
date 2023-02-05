@@ -26,6 +26,10 @@ class CauchyUrbach(IndexDispersion):
             n(E) =
             \boldsymbol{n_0} + \boldsymbol{B} E^2 + \boldsymbol{C} E^4
             + i \boldsymbol{D} \exp (\frac{E - \boldsymbol{E_g}}{\boldsymbol{E_u}})
+
+    References:
+        * Fujiwara: Spectroscopic Ellipsometry: Principles and Applications,
+          John Wiley & Sons Ltd, 2007, p. 258
     """
 
     single_params_template = {"n0": 1.5, "B": 0, "C": 0, "D": 0, "Eg": 2, "Eu": 0.5}
