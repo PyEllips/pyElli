@@ -12,7 +12,7 @@ from rapidfuzz import process
 
 from ..dispersions import (
     CauchyCustomExponent,
-    ConstantRefractiveIndex,
+    EpsilonInf,
     Polynomial,
     Sellmeier,
     SellmeierCustomExponent,
@@ -253,7 +253,7 @@ class RII:
                 for a_i, b_i in zip(a, b):
                     sell.add(a_i, b_i**2)
 
-                dispersion = sell + ConstantRefractiveIndex(coeffs[0])
+                dispersion = sell + EpsilonInf(coeffs[0])
 
             elif dispersion_relation["type"] == "formula 2":
                 coeffs = list(
@@ -266,7 +266,7 @@ class RII:
                 for a_i, b_i in zip(a, b):
                     sell.add(a_i, b_i)
 
-                dispersion = sell + ConstantRefractiveIndex(coeffs[0])
+                dispersion = sell + EpsilonInf(coeffs[0])
 
             elif dispersion_relation["type"] == "formula 3":
                 coeffs = list(

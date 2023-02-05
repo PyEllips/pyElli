@@ -7,7 +7,6 @@ from scipy.constants import pi
 
 
 class TestBragg:
-
     n_a = 1.0
     n_g = 1.5
     air = elli.IsotropicMaterial(elli.ConstantRefractiveIndex(n=n_a))

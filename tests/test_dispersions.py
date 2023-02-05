@@ -1,13 +1,14 @@
 """Tests for dispersion models"""
 import os
-
-import elli
 import numpy as np
 import pandas as pd
 from numpy.testing import assert_array_equal
 from pandas.testing import assert_frame_equal
-from pytest import fixture
+from pytest import fixture, raises
 from setuptools import distutils
+
+import elli
+from elli.dispersions.base_dispersion import InvalidParameters
 
 
 @fixture
@@ -164,6 +165,16 @@ def test_regression_dispersions_custom_values(datadir):
             },
             "rep_params": [],
         },
+        {
+            "name": "PseudoDielectricFunction",
+            "single_params": {
+                "angle": 70,
+                "lbda": np.linspace(400, 1000, 100),
+                "psi": np.linspace(0, 90, 100),
+                "delta": np.linspace(0, 90, 100),
+            },
+            "rep_params": [],
+        },
     ]
     lbda = np.linspace(400, 1000, 500)
 
@@ -179,3 +190,32 @@ def test_regression_dispersions_custom_values(datadir):
             disp.add(**rep_param)
 
         assert_frame_equal(prototype, disp.get_dielectric_df(lbda))
+
+
+def test_fail_parameterless_pseudo_dielectric():
+    """Checks whether calling the pseudo dielectric function fails when called
+    without single parameters"""
+    with raises(InvalidParameters):
+        _ = elli.DispersionFactory.get_dispersion("PseudoDielectricFunction")
+
+
+def test_correct_reconstruction_with_pseudo_dielectric():
+    """Checks whether the pseudo dielectric function
+    reconstructs a predefined model"""
+
+    gaussian = elli.Gaussian().add(A=10, E=2, sigma=0.3)
+    lbda = gaussian.get_dielectric_df().index.values
+
+    result = elli.Structure(
+        elli.AIR,
+        [],
+        gaussian.get_mat(),
+    ).evaluate(lbda, 70, solver=elli.Solver2x2)
+
+    check_lbda = np.linspace(200, 1000, 5000)
+    assert_frame_equal(
+        elli.PseudoDielectricFunction(
+            angle=70, lbda=lbda, psi=result.psi, delta=result.delta
+        ).get_dielectric_df(check_lbda),
+        gaussian.get_dielectric_df(check_lbda),
+    )

@@ -1,7 +1,7 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import List, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -101,13 +101,32 @@ class Dispersion(ABC):
 
         return self
 
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "Dispersion":
-        """Add up the dielectric function of multiple models"""
-        if isinstance(other, (int, float)):
-            return DispersionSum(self, dispersions.EpsilonInf(eps=other))
+    def _check_valid_operand(self, other: Union[int, float, "Dispersion"]):
+        if not isinstance(other, (int, float, Dispersion)):
+            raise TypeError(
+                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+            )
 
-        if not isinstance(other, Dispersion):
-            raise TypeError(f"Invalid type {type(other)} added to dispersion")
+    def _is_non_std_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
+        return isinstance(other, (IndexDispersion, dispersions.Table))
+
+    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        """Add up the dielectric function of multiple models"""
+        return self.__add__(other)
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        """Add up the dielectric function of multiple models"""
+        self._check_valid_operand(other)
+
+        if self._is_non_std_dispersion(other):
+            return other.__add__(self)
+
+        if isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
+
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, dispersions.EpsilonInf(other))
 
         return DispersionSum(self, other)
 
@@ -195,6 +214,36 @@ class Dispersion(ABC):
         )
 
 
+class IndexDispersion(Dispersion):
+    """A dispersion based on a refractive index formulation."""
+
+    @abstractmethod
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        """Calculates the refractive index in a given wavelength window.
+
+        Args:
+            lbda (npt.ArrayLike): The wavelength window with unit nm.
+
+        Returns:
+            npt.NDArray: The refractive index for each wavelength point.
+        """
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        self._check_valid_operand(other)
+
+        if isinstance(other, IndexDispersion):
+            raise NotImplementedError(
+                "Adding of index based dispersions is not supported yet"
+            )
+
+        raise TypeError(
+            "Cannot add refractive index and dielectric function based dispersions."
+        )
+
+    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        return self.refractive_index(lbda) ** 2
+
+
 class DispersionFactory:
     """A factory class for dispersion objects"""
 
@@ -220,12 +269,30 @@ class DispersionFactory:
 class DispersionSum(Dispersion):
     """Represents a sum of two dispersions"""
 
-    single_params_template = {}
-    rep_params_template = {}
+    single_params_template: dict = {}
+    rep_params_template: dict = {}
+    dispersions: List[Dispersion]
 
     def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
-        self.dispersions = disps
+        self.dispersions = list(disps)
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        self._check_valid_operand(other)
+
+        if self._is_non_std_dispersion(other):
+            return other.__add__(self)
+
+        if isinstance(other, DispersionSum):
+            self.dispersions += other.dispersions
+            return self
+
+        if isinstance(other, (int, float)):
+            self.dispersions.append(dispersions.EpsilonInf(eps=other))
+            return self
+
+        self.dispersions.append(other)
+        return self
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         dielectric_function = sum(

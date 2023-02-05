@@ -422,7 +422,7 @@ class Structure:
         lbda: npt.ArrayLike,
         theta_i: float,
         solver: Solver = Solver4x4,
-        **solver_kwargs
+        **solver_kwargs,
     ) -> Result:
         """Return the Evaluation of the structure for the given parameters with standard settings.
 

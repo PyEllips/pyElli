@@ -217,6 +217,11 @@ Epsilon values
 .. autoclass:: elli.dispersions.TableEpsilon
    :members:
 
+Pseudo dielectric function
+--------------------------
+.. autoclass:: elli.dispersions.PseudoDielectricFunction
+   :members:
+
 Spectraray tables
 -----------------
 .. autoclass:: elli.dispersions.TableSpectraRay

@@ -4,10 +4,10 @@ import numpy as np
 import numpy.typing as npt
 import scipy.interpolate
 
-from .base_dispersion import Dispersion, InvalidParameters
+from .base_dispersion import IndexDispersion, InvalidParameters
 
 
-class Table(Dispersion):
+class Table(IndexDispersion):
     """Dispersion specified by a table of wavelengths (nm) and refractive index values.
     Please not that this model will produce errors for wavelengths outside the provided
     wavelength range.
@@ -40,9 +40,9 @@ class Table(Dispersion):
 
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
-            self.single_params.get("n") ** 2,
+            self.single_params.get("n"),
             kind="cubic",
         )
 
-    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.interpolation(lbda)

@@ -74,7 +74,7 @@ class FitDecorator(ABC):
         fname: str,
         params: Parameters = None,
         append_exp_data: bool = False,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Saves the current model to csv. This is just a wrapper to
         pandas Dataframe and any argument to pandas to_csv may be passed

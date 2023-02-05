@@ -64,6 +64,7 @@ params.add("SiO2_d", value=20, min=0, max=40000, vary=True)
 rii_db = elli.db.RII()
 Si = rii_db.get_mat("Si", "Aspnes")
 
+
 # %%
 # Building the model
 # ------------------------

@@ -48,6 +48,7 @@ class CodyLorentz(Dispersion):
     @staticmethod
     def eps2(E, Eg, A, Et, gamma, Ep, E0, Eu):
         """The imaginary part of the cody lorentz dispersion"""
+
         # pylint: disable=invalid-name
         def G(E):
             return (E - Eg) ** 2 / ((E - Eg) ** 2 + Ep**2)
