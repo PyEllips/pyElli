@@ -69,6 +69,15 @@ Cauchy
    fig.data[1].visible = "legendonly"
    fig.update_layout(title="Cauchy dispersion with n0=1.45 and n1=36")
 
+.. autoclass:: elli.dispersions.CauchyUrbach
+
+.. plotly::
+
+   fig = elli.CauchyUrbach(n0=1.45, B=0.005, D=0.0001).get_dielectric_df().plot(backend="plotly")
+   fig.update_xaxes(title="Wavelength (nm)")
+   fig.update_yaxes(title="Dielectric function")
+   fig.update_layout(title="CauchyUrbach dispersion with n0=1.45, B=0.005, D=0.0001, Eg=2 and Eu=0.5")
+
 .. autoclass:: elli.dispersions.CauchyCustomExponent
 
 Sellmeier
