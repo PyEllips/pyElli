@@ -49,6 +49,7 @@ def test_regression_dispersions_default(datadir):
     """Test dispersions against their prior values"""
     dispersions = [
         "Cauchy",
+        "CauchyUrbach",
         "DrudeEnergy",
         "DrudeResistivity",
         "Gaussian",
@@ -82,6 +83,18 @@ def test_regression_dispersions_custom_values(datadir):
                 "k0": 0.6,
                 "k1": 0.2,
                 "k2": 0.1,
+            },
+            "rep_params": [],
+        },
+        {
+            "name": "CauchyUrbach",
+            "single_params": {
+                "n0": 1.5,
+                "B": 0.005,
+                "C": 0.0001,
+                "D": 0.0001,
+                "Eg": 3,
+                "Eu": 0.4,
             },
             "rep_params": [],
         },
