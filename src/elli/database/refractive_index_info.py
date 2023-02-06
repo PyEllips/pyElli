@@ -79,9 +79,8 @@ class RII:
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
-        yml_file = yaml.load(
-            self.rii_path.joinpath("library.yml").read_text(), yaml.SafeLoader
-        )
+        with open(self.rii_path.joinpath("library.yml"), "r", encoding="utf8") as f:
+            yml_file = yaml.load(f, yaml.SafeLoader)
 
         pagename_pattern = re.compile(
             r"(?P<authors>.*) (?P<year>\d{4})[^:]*?: ((?P<comment1>.*); )?(?P<type1>.+) (?P<lower_range1>\d+(\.\d*)?(e\W?\d+)?)\W(?P<upper_range1>\d+(\.\d*)?(e\W?\d+)?) µm(, (?P<type2>.+) (?P<lower_range2>\d+(\.\d*)?(e\W?\d+)?).(?P<upper_range2>\d+(\.\d*)?(e\W?\d+)?) µm)?(; (?P<comment2>.*))?"
