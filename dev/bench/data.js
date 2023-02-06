@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675365484160,
+  "lastUpdate": 1675671482323,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9648,6 +9648,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0019661298385167006",
             "extra": "mean: 6.428041000000917 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "928df3cdf9ec4aebed671285801a7cd70400f5ff",
+          "message": "Add Cauchy urbach dispersion (#117)\n\n* cauchy urbach model\r\n* Update to new IndexDispersion\r\n* CauchyUrbach: docs\r\n* CauchyUrbach: tests\r\n* add reference",
+          "timestamp": "2023-02-06T09:16:09+01:00",
+          "tree_id": "324f8181d46291f8450b45579a32c17f5513534b",
+          "url": "https://github.com/PyEllips/pyElli/commit/928df3cdf9ec4aebed671285801a7cd70400f5ff"
+        },
+        "date": 1675671481070,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 20.7491175068336,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002705486056715816",
+            "extra": "mean: 48.19482080000057 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.023528580246969,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02014217709430702",
+            "extra": "mean: 199.06326479998597 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 118.55957420615394,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002977228207850642",
+            "extra": "mean: 8.434578199995713 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 121.03435475438334,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003025409155209766",
+            "extra": "mean: 8.26211699999817 msec\nrounds: 10"
           }
         ]
       }
