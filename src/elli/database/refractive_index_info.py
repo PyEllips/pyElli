@@ -83,7 +83,12 @@ class RII:
             yml_file = yaml.load(f, yaml.SafeLoader)
 
         pagename_pattern = re.compile(
-            r"(?P<authors>.*) (?P<year>\d{4})[^:]*?: ((?P<comment1>.*); )?(?P<type1>.+) (?P<lower_range1>\d+(\.\d*)?(e\W?\d+)?)\W(?P<upper_range1>\d+(\.\d*)?(e\W?\d+)?) µm(, (?P<type2>.+) (?P<lower_range2>\d+(\.\d*)?(e\W?\d+)?).(?P<upper_range2>\d+(\.\d*)?(e\W?\d+)?) µm)?(; (?P<comment2>.*))?"
+            r"(?P<authors>.*) "
+            r"(?P<year>\d{4})[^:]*?: "
+            r"((?P<comment1>.*); )?"
+            r"(?P<type1>.+) (?P<lower_range1>\d+(\.\d*)?(e\W?\d+)?)\W(?P<upper_range1>\d+(\.\d*)?(e\W?\d+)?) µm"
+            r"(, (?P<type2>.+) (?P<lower_range2>\d+(\.\d*)?(e\W?\d+)?).(?P<upper_range2>\d+(\.\d*)?(e\W?\d+)?) µm)?"
+            r"(; (?P<comment2>.*))?"
         )
 
         entries = []
@@ -110,7 +115,9 @@ class RII:
                                         p["name"],
                                         None,
                                         None,
-                                        os.path.join("data", os.path.normpath(p["data"])),
+                                        os.path.join(
+                                            "data", os.path.normpath(p["data"])
+                                        ),
                                     )
                                 )
                             else:
@@ -125,10 +132,20 @@ class RII:
                                         p_div,
                                         infos.group("authors"),
                                         infos.group("year"),
-                                        ' '.join(filter(None, (infos.group("comment1"), infos.group("comment2")))),
+                                        " ".join(
+                                            filter(
+                                                None,
+                                                (
+                                                    infos.group("comment1"),
+                                                    infos.group("comment2"),
+                                                ),
+                                            )
+                                        ),
                                         infos.group("lower_range1"),
                                         infos.group("upper_range1"),
-                                        os.path.join("data", os.path.normpath(p["data"])),
+                                        os.path.join(
+                                            "data", os.path.normpath(p["data"])
+                                        ),
                                     )
                                 )
                         else:
@@ -137,6 +154,17 @@ class RII:
                     b_div = b["DIVIDER"]
 
         self.catalog = pd.DataFrame(entries, dtype=pd.StringDtype())
+
+        self.catalog["year"] = pd.to_numeric(
+            self.catalog["year"], errors="coerce"
+        ).convert_dtypes()
+        self.catalog["lower_range"] = pd.to_numeric(
+            self.catalog["lower_range"], errors="coerce"
+        )
+        self.catalog["upper_range"] = pd.to_numeric(
+            self.catalog["upper_range"], errors="coerce"
+        )
+
         self.books = self.catalog["book"].unique()
         self.book_longnames = self.catalog["book_longname"].unique()
         self.pages = self.catalog["page"].unique()
