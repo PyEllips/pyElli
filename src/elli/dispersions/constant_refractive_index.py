@@ -16,7 +16,7 @@ class ConstantRefractiveIndex(IndexDispersion):
 
     Output:
         .. math::
-            \varepsilon(\lambda) = \boldsymbol{n}^2
+            \boldsymbol{n}
     """
     single_params_template = {"n": 1}
     rep_params_template = {}
