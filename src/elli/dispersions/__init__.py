@@ -1,6 +1,7 @@
 # Encoding: utf-8
 from .cauchy import Cauchy
 from .cauchy_custom import CauchyCustomExponent
+from .cauchy_urbach import CauchyUrbach
 from .constant_refractive_index import ConstantRefractiveIndex
 from .drude_energy import DrudeEnergy
 from .drude_resistivity import DrudeResistivity
