@@ -5,6 +5,7 @@ import io
 import os
 import re
 from collections import namedtuple
+from typing import Union, List
 
 import pandas as pd
 import yaml
@@ -158,10 +159,10 @@ class RII:
         self.catalog["year"] = pd.to_numeric(
             self.catalog["year"], errors="coerce"
         ).convert_dtypes()
-        self.catalog["lower_range"] = pd.to_numeric(
+        self.catalog["lower_range"] = 1000 * pd.to_numeric(
             self.catalog["lower_range"], errors="coerce"
         )
-        self.catalog["upper_range"] = pd.to_numeric(
+        self.catalog["upper_range"] = 1000 * pd.to_numeric(
             self.catalog["upper_range"], errors="coerce"
         )
 
@@ -170,13 +171,18 @@ class RII:
         self.pages = self.catalog["page"].unique()
 
     def search_book(
-        self, query: str, longname: bool = False, fuzzy: bool = True
+        self,
+        query: str,
+        wavelength_filter: Union[None, float, int, List[Union[float, int]]] = None,
+        longname: bool = False,
+        fuzzy: bool = True,
     ) -> pd.DataFrame:
         """Search the catalog by the query string in the book field.
         Optionally able to search approximate entries and the book_longname field.
 
         Args:
             query (str): String to search.
+            wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
             longname (bool, optional): Search book_longname instead. Defaults to False.
             fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
@@ -191,23 +197,34 @@ class RII:
             name_list = "books"
             subcatalog = "book"
 
-        return self._search(query, name_list, subcatalog, fuzzy)
+        return self._search(query, name_list, subcatalog, wavelength_filter, fuzzy)
 
-    def search_page(self, query: str, fuzzy: bool = True) -> pd.DataFrame:
+    def search_page(
+        self,
+        query: str,
+        wavelength_filter: Union[None, float, int, List[Union[float, int]]] = None,
+        fuzzy: bool = True,
+    ) -> pd.DataFrame:
         """Search the catalog by the query string in the page field.
         Optionally able to search approximate entries.
 
         Args:
             query (str): String to search.
+            wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
             fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
         Returns:
             pd.DataFrame: Filtered Catalog dataframe.
         """
-        return self._search(query, "pages", "page", fuzzy)
+        return self._search(query, "pages", "page", wavelength_filter, fuzzy)
 
     def _search(
-        self, query: str, name_list: str, subcatalog: str, fuzzy: bool
+        self,
+        query: str,
+        name_list: str,
+        subcatalog: str,
+        wavelength_filter: Union[None, float, int, List[Union[float, int]]],
+        fuzzy: bool,
     ) -> pd.DataFrame:
         if fuzzy:
             suggestions = process.extract(
@@ -227,7 +244,25 @@ class RII:
         else:
             result = self.catalog.loc[self.catalog[subcatalog] == query]
 
-        return result
+        if wavelength_filter is None:
+            return result
+        elif isinstance(wavelength_filter, (int, float)):
+            return result.loc[
+                (result.lower_range <= wavelength_filter)
+                & (result.upper_range >= wavelength_filter)
+            ]
+        elif isinstance(wavelength_filter, list):
+            for wl in wavelength_filter:
+                result = result.loc[
+                    (result["lower_range"] <= wl) & (result["upper_range"] >= wl)
+                ]
+            return result
+        else:
+            raise (
+                ValueError(
+                    "Wavelength_filter only takes numeric values or a list of numeric values."
+                )
+            )
 
     def get_mat(self, book: str, page: str) -> IsotropicMaterial:
         """Load a dispersion from the refractive index database and generates an isotropic material.
