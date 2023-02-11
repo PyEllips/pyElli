@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675671482323,
+  "lastUpdate": 1676102705325,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9700,6 +9700,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.003025409155209766",
             "extra": "mean: 8.26211699999817 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2a83d2a349a622a34477230753f6c1a584668a9a",
+          "message": "Bump ipython from 8.5.0 to 8.10.0 in /requirements (#121)\n\nBumps [ipython](https://github.com/ipython/ipython) from 8.5.0 to 8.10.0.\r\n- [Release notes](https://github.com/ipython/ipython/releases)\r\n- [Commits](https://github.com/ipython/ipython/compare/8.5.0...8.10.0)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: ipython\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2023-02-11T09:03:42+01:00",
+          "tree_id": "60a14383d19e64f23bbdc9539131408cb292ca31",
+          "url": "https://github.com/PyEllips/pyElli/commit/2a83d2a349a622a34477230753f6c1a584668a9a"
+        },
+        "date": 1676102704764,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 25.09878121046426,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0021073973868249813",
+            "extra": "mean: 39.84257209999811 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.7745740099932075,
+            "unit": "iter/sec",
+            "range": "stddev: 0.017186070293828827",
+            "extra": "mean: 147.61075730000073 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 143.5849689108566,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001651480913160131",
+            "extra": "mean: 6.964517300002626 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 180.55066689560863,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006057016097709017",
+            "extra": "mean: 5.538611499996193 msec\nrounds: 10"
           }
         ]
       }
