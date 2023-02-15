@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1676102705325,
+  "lastUpdate": 1676459125678,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -9752,6 +9752,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0006057016097709017",
             "extra": "mean: 5.538611499996193 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d4d5dd649b884192d9fbc9d39f18b489b31e9c38",
+          "message": "RII Database: Filtering by range (#108)\n\n* Regex parsing of database\r\n* specify encoding\r\n* convert to correct dtypes\r\n* implement wavelength filtering for searches\r\n* allow more iterable types and improve readability\r\n* correct naming scheme for typevar",
+          "timestamp": "2023-02-15T12:03:57+01:00",
+          "tree_id": "51a5291f223e8e6fb601a9cf2afc26b4b971796b",
+          "url": "https://github.com/PyEllips/pyElli/commit/d4d5dd649b884192d9fbc9d39f18b489b31e9c38"
+        },
+        "date": 1676459124970,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 25.384755469412237,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001055281761989704",
+            "extra": "mean: 39.3937219999998 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.1509026233088075,
+            "unit": "iter/sec",
+            "range": "stddev: 0.026726992558970805",
+            "extra": "mean: 162.5777647999996 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 89.44975155285614,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003420657907138816",
+            "extra": "mean: 11.179460900001459 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 192.5554408031219,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001431214284540575",
+            "extra": "mean: 5.1933095000023854 msec\nrounds: 10"
           }
         ]
       }
