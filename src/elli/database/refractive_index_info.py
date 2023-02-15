@@ -3,8 +3,11 @@
 
 import io
 import os
+import re
 from collections import namedtuple
+from typing import List, Tuple, Union
 
+import numpy as np
 import pandas as pd
 import yaml
 from importlib_resources import files
@@ -21,6 +24,10 @@ from ..dispersions import (
 from ..dispersions.base_dispersion import Dispersion, DispersionSum
 from ..materials import IsotropicMaterial
 
+WavelengthFilterType = Union[
+    None, float, int, List[Union[float, int]], Tuple[Union[float, int]]
+]
+
 nt_entry = namedtuple(
     "Entry",
     [
@@ -31,7 +38,11 @@ nt_entry = namedtuple(
         "book_longname",
         "page",
         "page_type",
-        "page_longname",
+        "author",
+        "year",
+        "comment",
+        "lower_range",
+        "upper_range",
         "path",
     ],
 )
@@ -74,8 +85,16 @@ class RII:
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
-        yml_file = yaml.load(
-            self.rii_path.joinpath("library.yml").read_text(), yaml.SafeLoader
+        with open(self.rii_path.joinpath("library.yml"), "r", encoding="utf8") as f:
+            yml_file = yaml.load(f, yaml.SafeLoader)
+
+        pagename_pattern = re.compile(
+            r"(?P<authors>.*) "
+            r"(?P<year>\d{4})[^:]*?: "
+            r"((?P<comment1>.*); )?"
+            r"(?P<type1>.+) (?P<lower_range1>\d+(\.\d*)?(e\W?\d+)?)\W(?P<upper_range1>\d+(\.\d*)?(e\W?\d+)?) µm"
+            r"(, (?P<type2>.+) (?P<lower_range2>\d+(\.\d*)?(e\W?\d+)?).(?P<upper_range2>\d+(\.\d*)?(e\W?\d+)?) µm)?"
+            r"(; (?P<comment2>.*))?"
         )
 
         entries = []
@@ -86,37 +105,89 @@ class RII:
                     p_div = pd.NA
                     for p in b["content"]:
                         if "DIVIDER" not in p:
-                            entries.append(
-                                nt_entry(
-                                    sh["SHELF"],
-                                    sh["name"],
-                                    b_div,
-                                    b["BOOK"],
-                                    b["name"],
-                                    p["PAGE"],
-                                    p_div,
-                                    p["name"],
-                                    os.path.join("data", os.path.normpath(p["data"])),
+                            infos = pagename_pattern.match(p["name"])
+                            if infos is None:
+                                entries.append(
+                                    nt_entry(
+                                        sh["SHELF"],
+                                        sh["name"],
+                                        b_div,
+                                        b["BOOK"],
+                                        b["name"],
+                                        p["PAGE"],
+                                        p_div,
+                                        None,
+                                        None,
+                                        p["name"],
+                                        None,
+                                        None,
+                                        os.path.join(
+                                            "data", os.path.normpath(p["data"])
+                                        ),
+                                    )
                                 )
-                            )
+                            else:
+                                entries.append(
+                                    nt_entry(
+                                        sh["SHELF"],
+                                        sh["name"],
+                                        b_div,
+                                        b["BOOK"],
+                                        b["name"],
+                                        p["PAGE"],
+                                        p_div,
+                                        infos.group("authors"),
+                                        infos.group("year"),
+                                        " ".join(
+                                            filter(
+                                                None,
+                                                (
+                                                    infos.group("comment1"),
+                                                    infos.group("comment2"),
+                                                ),
+                                            )
+                                        ),
+                                        infos.group("lower_range1"),
+                                        infos.group("upper_range1"),
+                                        os.path.join(
+                                            "data", os.path.normpath(p["data"])
+                                        ),
+                                    )
+                                )
                         else:
                             p_div = p["DIVIDER"]
                 else:
                     b_div = b["DIVIDER"]
 
         self.catalog = pd.DataFrame(entries, dtype=pd.StringDtype())
+
+        self.catalog["year"] = pd.to_numeric(
+            self.catalog["year"], errors="coerce"
+        ).convert_dtypes()
+        self.catalog["lower_range"] = 1000 * pd.to_numeric(
+            self.catalog["lower_range"], errors="coerce"
+        )
+        self.catalog["upper_range"] = 1000 * pd.to_numeric(
+            self.catalog["upper_range"], errors="coerce"
+        )
+
         self.books = self.catalog["book"].unique()
         self.book_longnames = self.catalog["book_longname"].unique()
         self.pages = self.catalog["page"].unique()
 
     def search_book(
-        self, query: str, longname: bool = False, fuzzy: bool = True
+        self,
+        query: str,
+        wavelength_filter: WavelengthFilterType = None,
+        longname: bool = False,
+        fuzzy: bool = True,
     ) -> pd.DataFrame:
         """Search the catalog by the query string in the book field.
         Optionally able to search approximate entries and the book_longname field.
 
         Args:
             query (str): String to search.
+            wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
             longname (bool, optional): Search book_longname instead. Defaults to False.
             fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
@@ -131,23 +202,34 @@ class RII:
             name_list = "books"
             subcatalog = "book"
 
-        return self._search(query, name_list, subcatalog, fuzzy)
+        return self._search(query, name_list, subcatalog, wavelength_filter, fuzzy)
 
-    def search_page(self, query: str, fuzzy: bool = True) -> pd.DataFrame:
+    def search_page(
+        self,
+        query: str,
+        wavelength_filter: WavelengthFilterType = None,
+        fuzzy: bool = True,
+    ) -> pd.DataFrame:
         """Search the catalog by the query string in the page field.
         Optionally able to search approximate entries.
 
         Args:
             query (str): String to search.
+            wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
             fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
         Returns:
             pd.DataFrame: Filtered Catalog dataframe.
         """
-        return self._search(query, "pages", "page", fuzzy)
+        return self._search(query, "pages", "page", wavelength_filter, fuzzy)
 
     def _search(
-        self, query: str, name_list: str, subcatalog: str, fuzzy: bool
+        self,
+        query: str,
+        name_list: str,
+        subcatalog: str,
+        wavelength_filter: WavelengthFilterType,
+        fuzzy: bool,
     ) -> pd.DataFrame:
         if fuzzy:
             suggestions = process.extract(
@@ -167,7 +249,25 @@ class RII:
         else:
             result = self.catalog.loc[self.catalog[subcatalog] == query]
 
-        return result
+        if wavelength_filter is None:
+            return result
+        elif isinstance(wavelength_filter, (int, float)):
+            return result.loc[
+                (result.lower_range <= wavelength_filter)
+                & (result.upper_range >= wavelength_filter)
+            ]
+        elif isinstance(wavelength_filter, (list, tuple, np.ndarray)):
+            for wl in wavelength_filter:
+                result = result.loc[
+                    (result["lower_range"] <= wl) & (result["upper_range"] >= wl)
+                ]
+            return result
+        else:
+            raise (
+                ValueError(
+                    "Wavelength_filter only takes numeric values or a list of numeric values."
+                )
+            )
 
     def get_mat(self, book: str, page: str) -> IsotropicMaterial:
         """Load a dispersion from the refractive index database and generates an isotropic material.
