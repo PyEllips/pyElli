@@ -24,7 +24,7 @@ from ..dispersions import (
 from ..dispersions.base_dispersion import Dispersion, DispersionSum
 from ..materials import IsotropicMaterial
 
-wl_filter_type = Union[
+WavelengthFilterType = Union[
     None, float, int, List[Union[float, int]], Tuple[Union[float, int]]
 ]
 
@@ -178,7 +178,7 @@ class RII:
     def search_book(
         self,
         query: str,
-        wavelength_filter: wl_filter_type = None,
+        wavelength_filter: WavelengthFilterType = None,
         longname: bool = False,
         fuzzy: bool = True,
     ) -> pd.DataFrame:
@@ -207,7 +207,7 @@ class RII:
     def search_page(
         self,
         query: str,
-        wavelength_filter: wl_filter_type = None,
+        wavelength_filter: WavelengthFilterType = None,
         fuzzy: bool = True,
     ) -> pd.DataFrame:
         """Search the catalog by the query string in the page field.
@@ -228,7 +228,7 @@ class RII:
         query: str,
         name_list: str,
         subcatalog: str,
-        wavelength_filter: wl_filter_type,
+        wavelength_filter: WavelengthFilterType,
         fuzzy: bool,
     ) -> pd.DataFrame:
         if fuzzy:
