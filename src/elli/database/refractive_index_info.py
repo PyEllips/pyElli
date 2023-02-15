@@ -5,8 +5,9 @@ import io
 import os
 import re
 from collections import namedtuple
-from typing import Union, List
+from typing import List, Tuple, Union
 
+import numpy as np
 import pandas as pd
 import yaml
 from importlib_resources import files
@@ -22,6 +23,10 @@ from ..dispersions import (
 )
 from ..dispersions.base_dispersion import Dispersion, DispersionSum
 from ..materials import IsotropicMaterial
+
+wl_filter_type = Union[
+    None, float, int, List[Union[float, int]], Tuple[Union[float, int]]
+]
 
 nt_entry = namedtuple(
     "Entry",
@@ -173,7 +178,7 @@ class RII:
     def search_book(
         self,
         query: str,
-        wavelength_filter: Union[None, float, int, List[Union[float, int]]] = None,
+        wavelength_filter: wl_filter_type = None,
         longname: bool = False,
         fuzzy: bool = True,
     ) -> pd.DataFrame:
@@ -202,7 +207,7 @@ class RII:
     def search_page(
         self,
         query: str,
-        wavelength_filter: Union[None, float, int, List[Union[float, int]]] = None,
+        wavelength_filter: wl_filter_type = None,
         fuzzy: bool = True,
     ) -> pd.DataFrame:
         """Search the catalog by the query string in the page field.
@@ -223,7 +228,7 @@ class RII:
         query: str,
         name_list: str,
         subcatalog: str,
-        wavelength_filter: Union[None, float, int, List[Union[float, int]]],
+        wavelength_filter: wl_filter_type,
         fuzzy: bool,
     ) -> pd.DataFrame:
         if fuzzy:
@@ -251,7 +256,7 @@ class RII:
                 (result.lower_range <= wavelength_filter)
                 & (result.upper_range >= wavelength_filter)
             ]
-        elif isinstance(wavelength_filter, list):
+        elif isinstance(wavelength_filter, (list, tuple, np.ndarray)):
             for wl in wavelength_filter:
                 result = result.loc[
                     (result["lower_range"] <= wl) & (result["upper_range"] >= wl)
