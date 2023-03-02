@@ -23,9 +23,11 @@ bibliography: paper.bib
 
 # Summary
 
-Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. It is used throughout various scientific fields to determine the optical constants of materials.
+Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. 
+It is used throughout various scientific fields to determine the optical constants of materials.
 However, ellipsometry always needs numerical analysis to deduce material properties from a measurement.
-The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system. The matrix describes the whole light matter interaction - reflection, transmission and absorption - of the sample.
+The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system. 
+The matrix describes the whole light matter interaction - reflection, transmission and absorption - of the sample.
 
 Typically, software for such calculations is shipped together with ellipsometers, where each hardware vendor supplies their own version.
 Therefore, through different implementation details and different optical models the dispersion models for materials in literature cannot readily be adapted in the lab.
@@ -34,20 +36,29 @@ Further, if the supplied software does not support a specific kind of analysis (
 
 In this paper we present the open source python software pyElli, which tackles these problems by offering an open source platform, which is by design easily extendable and adaptable with new optical models or analysis algorithms.
 
-The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. But it is possible to include vendor-specific models or self-designed models, too.
+The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. 
+But it is possible to include vendor-specific models or self-designed models, too.
 
 It leverages the popular public domain database for optical constants [refractiveindex.info] to use citeable reference materials.
 
-PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is faster, but only applicable for simple problems and a 4x4 matrix algorithm based on the Berreman's transfer matrix formulation [berreman]. While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. Accordingly, it allows to solve more complex problems like anisotropic samples.
+PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is faster, but only applicable for simple problems and a 4x4 matrix algorithm based on the Berreman's transfer matrix formulation [berreman]. 
+While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. 
+Accordingly, it allows to solve more complex problems like anisotropic samples.
 
 # Statement of need
 
-As it is more and more common to publish research data for reuse and review after the FAIR data guidelines [FAIR]. The same benefits apply to research software and were summerized in the FAIR4RS principles [FAIR4RS]. This is especially important for ellisometric data as the results are tightly related and dependant on the algorithms and models used for evaluation.
+As it is more and more common to publish research data for reuse and review after the FAIR data guidelines [FAIR]. 
+The same benefits apply to research software and were summarized in the FAIR4RS principles [FAIR4RS]. 
+This is especially important for ellisometric data as the results are tightly related and dependant on the algorithms and models used for evaluation.
 
-Opposite to the vendor provided software, an open source toolkit has many inherent benefits. The optical models used can vary between vendors and the translation may be difficult, if the information is not clearly documented. pyElli's open source nature makes the models extendable, auditable and occurring changes comprehensible. It allows the handling of files from many different measurement devices as importer scripts can be developed as plugins.
+Opposite to the vendor provided software, an open source toolkit has many inherent benefits. 
+The optical models used can vary between vendors and the translation may be difficult, if the information is not clearly documented. 
+PyElli's open source nature makes the models extendable, auditable and occurring changes comprehensible. 
+It allows the handling of files from many different measurement devices as importer scripts can be developed as plugins.
 
-To provide fast processing of measurement data PyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
-This allows the use advanced fitting algorithms like global optimizers in reasonable evaluation times. On the other hand this makes realtime, in-situ monitoring of layered material growth possible. 
+To provide fast processing of measurement data, PyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
+This allows the use advanced fitting algorithms like global optimizers in reasonable evaluation times. 
+On the other hand this makes realtime, in-situ monitoring of layered material growth possible. 
 
 An [example] in the NORTH analysis toolkit within the research data management software NOMAD by the german FAIRmat consortium shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
 We hope that the software contributes to easier analysis and reproducibility, as well as FAIR data management within the ellipsometry community.
