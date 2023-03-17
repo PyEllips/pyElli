@@ -1,8 +1,11 @@
 """A formula dispersion to parse dispersion values from a formula string."""
 from typing import Dict, List, Optional
+
+import numpy as np
 import numpy.typing as npt
 
-from .base_dispersion import Dispersion, IndexDispersion
+from elli.dispersions.base_dispersion import Dispersion, IndexDispersion
+from elli.formula_parser.parser import transformation_formula_parser
 
 
 class FormulaDispersion(Dispersion):
@@ -19,10 +22,12 @@ class FormulaDispersion(Dispersion):
     def __init__(
         self,
         formula: str,
+        wavelength_axis_name: str,
         single_params: Dict[str, float],
         rep_params: Dict[str, List[float]],
     ):
         self.f_single_params: Dict[str, float] = single_params
+        self.f_axis_name: str = wavelength_axis_name
         rep_params_len: Optional[int] = None
         rep_params_sets: List[Dict[str, float]] = []
 
@@ -50,10 +55,16 @@ class FormulaDispersion(Dispersion):
         for rep_params_set in rep_params_sets:
             self.add(**rep_params_set)
 
+        self.rep_params_dl = {
+            k: np.array([dic[k] for dic in self.rep_params]) for k in self.rep_params[0]
+        }
+
         self.formula = formula
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        pass
+        return transformation_formula_parser(
+            self.f_axis_name, lbda, self.single_params, self.rep_params_dl
+        ).parse(self.formula)[1]
 
 
 class FormulaIndexDispersion(IndexDispersion):

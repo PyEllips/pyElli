@@ -28,7 +28,8 @@ dependencies = [
     "h5py",
     "pyyaml",
     "importlib-resources",
-    "rapidfuzz"
+    "rapidfuzz",
+    "lark>=1.1.5",
 ]
 
 [project.optional-dependencies]
