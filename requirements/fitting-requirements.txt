@@ -689,6 +689,12 @@ pillow==9.3.0 \
     --hash=sha256:ebf2029c1f464c59b8bdbe5143c79fa2045a581ac53679733d3a91d400ff9efb \
     --hash=sha256:f1ff2ee69f10f13a9596480335f406dd1f70c3650349e2be67ca3139280cade0
     # via matplotlib
+pint==0.20.1 \
+    --hash=sha256:387cf04078dc7dfe4a708033baad54ab61d82ab06c4ee3d4922b1e45d5626067 \
+    --hash=sha256:68afe65665542ee3ec99f69f043b1d39bfe7c6d61b786940157138fd08b838fb
+    # via
+    #   -r requirements/requirements.txt
+    #   pyElli (pyproject.toml)
 plotly==5.10.0 \
     --hash=sha256:4d36d9859b7a153b273562deeed8c292587a472eb1fd57cd4158ec89d9defadb \
     --hash=sha256:989b13825cc974390aa0169479485d9257d37848a47bc63957251f8e1a7046ba
