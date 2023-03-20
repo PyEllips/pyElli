@@ -67,7 +67,7 @@ class FormulaTransformer(Transformer):
 
     def _check_and_set_single(self, single_params):
         for name, param in single_params.items():
-            if not isinstance(param, float):
+            if not isinstance(param, (float, int)):
                 raise TypeError(
                     f"Expected {name} to be of type float but found type {type(param)}."
                 )

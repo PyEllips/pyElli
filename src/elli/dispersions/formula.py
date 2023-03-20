@@ -5,10 +5,10 @@ import numpy as np
 import numpy.typing as npt
 
 from elli.dispersions.base_dispersion import Dispersion, IndexDispersion
-from elli.formula_parser.parser import transformation_formula_parser
+from elli.formula_parser.parser import formula_parser, transformation_formula_parser
 
 
-class FormulaDispersion(Dispersion):
+class FormulaParser(Dispersion):
     r"""A formula dispersion"""
 
     @property
@@ -49,23 +49,53 @@ class FormulaDispersion(Dispersion):
                     f"but previous length was {rep_params_len}."
                 )
 
-        self.f_rep_params = rep_params_sets[0]
+        self.f_rep_params = {}
+        if rep_params_sets:
+            self.f_rep_params = rep_params_sets[0]
         super().__init__()
 
         for rep_params_set in rep_params_sets:
             self.add(**rep_params_set)
 
-        self.rep_params_dl = {
-            k: np.array([dic[k] for dic in self.rep_params]) for k in self.rep_params[0]
-        }
+        self.rep_params_dl = {}
+        if self.rep_params:
+            self.rep_params_dl = {
+                k: np.array([dic[k] for dic in self.rep_params])
+                for k in self.rep_params[0]
+            }
 
         self.formula = formula
 
-    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        self._check_repr()
+
+    def _check_repr(self):
+        representation = formula_parser().parse(self.formula).data
+
+        if isinstance(self, FormulaIndex) and not representation == "n":
+            raise ValueError(
+                f"Representation `{representation}` not supported by FormulaIndex"
+            )
+
+        if isinstance(self, Formula) and not representation == "eps":
+            raise ValueError(
+                f"Representation `{representation}` not supported by Formula"
+            )
+
+    def _dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return transformation_formula_parser(
             self.f_axis_name, lbda, self.single_params, self.rep_params_dl
         ).parse(self.formula)[1]
 
 
-class FormulaIndexDispersion(IndexDispersion):
+class Formula(FormulaParser):
+    r"A formula dispersion"
+
+    def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        return self._dispersion_function(lbda)
+
+
+class FormulaIndex(IndexDispersion, FormulaParser):
     r"""A formula dispersion in refractive index formulation"""
+
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        return self._dispersion_function(lbda)

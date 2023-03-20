@@ -20,3 +20,4 @@ from .tanguy import Tanguy
 from .tauc_lorentz import TaucLorentz
 from .cody_lorentz import CodyLorentz
 from .pseudo_dielectric import PseudoDielectricFunction
+from .formula import Formula, FormulaIndex
