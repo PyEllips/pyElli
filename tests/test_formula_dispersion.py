@@ -45,3 +45,14 @@ def test_formula_reproduces_predefined(
     assert_array_almost_equal(
         disp.get_dielectric(lbda), formula_disp.get_dielectric(lbda)
     )
+
+
+def test_formula_fails_on_wrong_repr():
+    """The formula dispersion fails when it is tried to be
+    initialized with the wrong represenation"""
+
+    with pytest.raises(ValueError):
+        Formula("n = 1", "", {}, {})
+
+    with pytest.raises(ValueError):
+        FormulaIndex("eps = 1", "", {}, {})
