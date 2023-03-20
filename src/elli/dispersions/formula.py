@@ -4,6 +4,7 @@ from typing import Dict, List, Optional
 import numpy as np
 import numpy.typing as npt
 
+from elli.units import ureg
 from elli.dispersions.base_dispersion import Dispersion, IndexDispersion
 from elli.formula_parser.parser import formula_parser, transformation_formula_parser
 
@@ -24,7 +25,8 @@ class FormulaParser(Dispersion):
         formula: str,
         wavelength_axis_name: str,
         single_params: Dict[str, float],
-        rep_params: Dict[str, List[float]],
+        rep_params: Dict[str, npt.ArrayLike],
+        unit: str = "nm",
     ):
         self.f_single_params: Dict[str, float] = single_params
         self.f_axis_name: str = wavelength_axis_name
@@ -32,8 +34,10 @@ class FormulaParser(Dispersion):
         rep_params_sets: List[Dict[str, float]] = []
 
         for key, values in rep_params.items():
-            if not isinstance(values, list):
-                raise ValueError("Repeated parameters must be given as dict of lists")
+            if not isinstance(values, (np.ndarray, list)):
+                raise ValueError(
+                    "Repeated parameters must be given as dict of lists or numpy arrays"
+                )
             for i, value in enumerate(values):
                 if i >= len(rep_params_sets):
                     rep_params_sets.append({})
@@ -68,6 +72,28 @@ class FormulaParser(Dispersion):
 
         self._check_repr()
 
+        self._dispersion_function = self.__dispersion_function
+        self._set_unit_conversion(unit)
+
+    def _set_unit_conversion(self, unit: str):
+        if unit != "nm":
+            quantity = ureg(unit)
+            if quantity.check("[length]"):
+                scaling = ureg("nm").to(unit).magnitude
+                self._dispersion_function = lambda lbda: self.__dispersion_function(
+                    scaling * lbda
+                )
+                return
+
+            if quantity.check("[energy]"):
+                scaling = ureg("nm").to(unit).magnitude
+                self._dispersion_function = lambda lbda: self.__dispersion_function(
+                    scaling / lbda
+                )
+                return
+
+            raise ValueError(f"Unsupported unit `{unit}`.")
+
     def _check_repr(self):
         representation = formula_parser().parse(self.formula).data
 
@@ -81,7 +107,13 @@ class FormulaParser(Dispersion):
                 f"Representation `{representation}` not supported by Formula"
             )
 
-    def _dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def __dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        if hasattr(self, "scaling"):
+            if hasattr(self, "reciprocal") and self.reciprocal:
+                lbda = self.scaling / lbda
+            else:
+                lbda = self.scaling * lbda
+
         return transformation_formula_parser(
             self.f_axis_name, lbda, self.single_params, self.rep_params_dl
         ).parse(self.formula)[1]

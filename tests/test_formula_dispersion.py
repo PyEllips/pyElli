@@ -9,7 +9,7 @@ from elli.dispersions.formula import FormulaIndex
 
 
 @pytest.mark.parametrize(
-    "ref_model, formula_model, formula, single_params, rep_params",
+    "ref_model, formula_model, formula, single_params, rep_params, unit",
     [
         (
             Sellmeier,
@@ -17,6 +17,15 @@ from elli.dispersions.formula import FormulaIndex
             "eps = 1 + sum[A * (lbda * 1e-3)**2 / ((lbda * 1e-3)  ** 2 - B)]",
             {},
             {"A": [1, 1, 1], "B": [0.1, 0.1, 0.1]},
+            "nm",
+        ),
+        (
+            Sellmeier,
+            Formula,
+            "eps = 1 + sum[A * lbda**2 / (lbda** 2 - B)]",
+            {},
+            {"A": [1, 1, 1], "B": [0.1, 0.1, 0.1]},
+            "micrometer",
         ),
         (
             Cauchy,
@@ -27,11 +36,12 @@ from elli.dispersions.formula import FormulaIndex
             ),
             {"n0": 1.5, "n1": 1, "n2": 1, "k0": 1, "k1": 1, "k2": 1},
             {},
+            "nm",
         ),
     ],
 )
 def test_formula_reproduces_predefined(
-    ref_model, formula_model, formula, single_params, rep_params
+    ref_model, formula_model, formula, single_params, rep_params, unit
 ):
     """The formula dispersion reproduces other dispersion models"""
     lbda = np.linspace(400, 1500, 500)
@@ -40,7 +50,7 @@ def test_formula_reproduces_predefined(
     for params in zip(*rep_params.values()):
         disp.add(*params)
 
-    formula_disp = formula_model(formula, "lbda", single_params, rep_params)
+    formula_disp = formula_model(formula, "lbda", single_params, rep_params, unit)
 
     assert_array_almost_equal(
         disp.get_dielectric(lbda), formula_disp.get_dielectric(lbda)
