@@ -108,12 +108,6 @@ class FormulaParser(Dispersion):
             )
 
     def __dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        if hasattr(self, "scaling"):
-            if hasattr(self, "reciprocal") and self.reciprocal:
-                lbda = self.scaling / lbda
-            else:
-                lbda = self.scaling * lbda
-
         return transformation_formula_parser(
             self.f_axis_name, lbda, self.single_params, self.rep_params_dl
         ).parse(self.formula)[1]
