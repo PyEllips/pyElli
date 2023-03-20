@@ -26,7 +26,7 @@ class FormulaParser(Dispersion):
         wavelength_axis_name: str,
         single_params: Dict[str, float],
         rep_params: Dict[str, npt.ArrayLike],
-        unit: str = "nm",
+        unit: Optional[str] = None,
     ):
         self.f_single_params: Dict[str, float] = single_params
         self.f_axis_name: str = wavelength_axis_name
@@ -73,26 +73,26 @@ class FormulaParser(Dispersion):
         self._check_repr()
 
         self._dispersion_function = self.__dispersion_function
-        self._set_unit_conversion(unit)
+        if unit is not None:
+            self._set_unit_conversion(unit)
 
     def _set_unit_conversion(self, unit: str):
-        if unit != "nm":
-            quantity = ureg(unit)
-            if quantity.check("[length]"):
-                scaling = ureg("nm").to(unit).magnitude
-                self._dispersion_function = lambda lbda: self.__dispersion_function(
-                    scaling * lbda
-                )
-                return
+        quantity = ureg(unit)
+        if quantity.check("[length]"):
+            scaling = ureg("nm").to(unit).magnitude
+            self._dispersion_function = lambda lbda: self.__dispersion_function(
+                scaling * lbda
+            )
+            return
 
-            if quantity.check("[energy]"):
-                scaling = ureg("nm").to(unit).magnitude
-                self._dispersion_function = lambda lbda: self.__dispersion_function(
-                    scaling / lbda
-                )
-                return
+        if quantity.check("[energy]"):
+            scaling = ureg("nm").to(unit).magnitude
+            self._dispersion_function = lambda lbda: self.__dispersion_function(
+                scaling / lbda
+            )
+            return
 
-            raise ValueError(f"Unsupported unit `{unit}`.")
+        raise ValueError(f"Unsupported unit `{unit}`.")
 
     def _check_repr(self):
         representation = formula_parser().parse(self.formula).data
