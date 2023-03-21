@@ -171,7 +171,7 @@ def read_nexus_materials(filename: str):
             return IsotropicMaterial(dispersions["dispersion_x"])
         if len(dispersions) == 2:
             return UniaxialMaterial(
-                dispersions["dispersion_x"], dispersions["dispersion_y"]
+                dispersions["dispersion_x"], dispersions["dispersion_z"]
             )
         if len(dispersions) == 3:
             return BiaxialMaterial(**dispersions)
