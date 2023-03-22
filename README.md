@@ -26,7 +26,7 @@ of scientists working with spectral ellipsometry.
 
 ## Got a question?
 
-If you have questions using pyElli please feel free to open a discussion in the [Q&A](https://github.com/PyEllips/pyElli/discussions/categories/q-a) or join our [discord channel](https://discord.gg/YfP92CZT).
+If you have questions using pyElli please feel free to open a discussion in the [Q&A](https://github.com/PyEllips/pyElli/discussions/categories/q-a) or join our [discord channel](https://discord.gg/zCBNMtBFAQ).
 
 ## How to get it
 
