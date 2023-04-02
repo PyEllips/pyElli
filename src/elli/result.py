@@ -63,6 +63,9 @@ class Result:
         """
         rho = np.dot(self.rho_matrix, self.experiment.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
+
+        if self._abs_delta:
+            rho.imag = -abs(rho.imag)
         return rho
 
     @property
@@ -70,6 +73,8 @@ class Result:
         r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction."""
         rho_t = np.dot(self.rho_matrix_t, self.experiment.jones_vector)
         rho_t = rho_t[:, 0] / rho_t[:, 1]
+        if self._abs_delta:
+            rho_t.imag = -abs(rho_t.imag)
         return rho_t
 
     @property
@@ -338,6 +343,7 @@ class Result:
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
         self._jones_matrix_t = jones_matrix_t
+        self._abs_delta = False
         if power_correction is None:
             self._power_correction = np.ones_like(self.experiment.lbda)
         else:
@@ -413,6 +419,16 @@ class Result:
             return self.__getattribute__(names[0] + "_matrix")[:, i, j]
 
         return self.__getattribute__(names[0])[:, i, j]
+
+    def as_abs_delta_range(self):
+        """Return this result in the reduced delta range from 0 to 180 degrees."""
+        self._abs_delta = True
+        return self
+
+    def as_full_delta_range(self):
+        """Return this result in the full delta range from -180 to 180 degrees."""
+        self._abs_delta = False
+        return self
 
 
 class ResultList:
