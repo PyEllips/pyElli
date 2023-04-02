@@ -64,7 +64,7 @@ class Result:
         rho = np.dot(self.rho_matrix, self.experiment.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
 
-        if self._abs_delta:
+        if self._delta_range == (0, 180):
             rho.imag = -abs(rho.imag)
         return rho
 
@@ -73,7 +73,7 @@ class Result:
         r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction."""
         rho_t = np.dot(self.rho_matrix_t, self.experiment.jones_vector)
         rho_t = rho_t[:, 0] / rho_t[:, 1]
-        if self._abs_delta:
+        if self._delta_range == (0, 180):
             rho_t.imag = -abs(rho_t.imag)
         return rho_t
 
@@ -108,6 +108,8 @@ class Result:
         .. math::
             \rho = \tan \psi \exp(-i \Delta)
         """
+        if self._delta_range == (0, 360):
+            return np.mod(-np.angle(self.rho, deg=True), 360)
         return -np.angle(self.rho, deg=True)
 
     @property
@@ -119,6 +121,8 @@ class Result:
         .. math::
             \rho_\text{t} = \tan \psi_\text{t} \exp(-i \Delta_\text{t})
         """
+        if self._delta_range == (0, 360):
+            return np.mod(-np.angle(self.rho_t, deg=True), 360)
         return -np.angle(self.rho_t, deg=True)
 
     @property
@@ -343,7 +347,7 @@ class Result:
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
         self._jones_matrix_t = jones_matrix_t
-        self._abs_delta = False
+        self._delta_range = (-180, 180)
         if power_correction is None:
             self._power_correction = np.ones_like(self.experiment.lbda)
         else:
@@ -420,15 +424,28 @@ class Result:
 
         return self.__getattribute__(names[0])[:, i, j]
 
-    def as_abs_delta_range(self):
-        """Return this result in the reduced delta range from 0 to 180 degrees."""
-        self._abs_delta = True
-        return self
+    def as_delta_range(self, lower: int, upper: int):
+        """Returns this result in another delta range
 
-    def as_full_delta_range(self):
-        """Return this result in the full delta range from -180 to 180 degrees."""
-        self._abs_delta = False
-        return self
+        Args:
+            lower (int): The lower delta range. Should either be -180 or 0.
+            upper (int): The upper delta range. Should either be 180 or 360.
+
+        Raises:
+            TypeError: Raised when either lower or upper is not an integer.
+            ValueError: Range must be (-180, 180), (0, 180) or (0, 360).
+                Otherwise a ValueError is raised.
+        """
+        if not isinstance(lower, int):
+            raise TypeError("lower delta range must be an integer")
+
+        if not isinstance(upper, int):
+            raise TypeError("upper delta range must be an integer")
+
+        if (lower, upper) not in [(-180, 180), (0, 180), (0, 360)]:
+            raise ValueError(f"Invalid delta range ({lower}, {upper})")
+
+        self._delta_range = (lower, upper)
 
 
 class ResultList:
