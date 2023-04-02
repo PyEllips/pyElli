@@ -1,6 +1,5 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and refractive index values."""
-import numpy as np
 import numpy.typing as npt
 import scipy.interpolate
 
@@ -13,9 +12,9 @@ class Table(IndexDispersion):
     wavelength range.
 
     Single parameters:
-        :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
+        :lbda (list): Wavelengths in nm. This value must be provided.
         :n: Complex refractive index values in the convention n + ik.
-            Defaults to np.ones(1000).
+            This value must be provided.
 
     Repeated parameters:
         --
@@ -24,7 +23,7 @@ class Table(IndexDispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": np.linspace(0, 3000, 1000), "n": np.ones(1000)}
+    single_params_template = {"lbda": None, "n": None}
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
@@ -43,6 +42,8 @@ class Table(IndexDispersion):
             self.single_params.get("n"),
             kind="cubic",
         )
+
+        self.default_lbda_range = self.single_params.get("lbda")
 
     def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.interpolation(lbda)

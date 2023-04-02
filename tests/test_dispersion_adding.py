@@ -1,5 +1,6 @@
 """Test adding of dispersions"""
 import pytest
+import numpy as np
 from numpy.testing import assert_array_almost_equal
 from elli import Cauchy, Sellmeier
 from elli.dispersions.base_dispersion import DispersionSum
@@ -18,7 +19,7 @@ def test_fail_on_adding_index_dispersion():
 def test_fail_on_adding_index_and_diel_dispersion():
     """Test whether the adding fails for an index based and dielectric dispersion"""
 
-    for disp in [1, Sellmeier()]:
+    for disp in [Sellmeier()]:
         with pytest.raises(TypeError) as sum_err:
             _ = disp + Cauchy()
 
@@ -66,7 +67,7 @@ def test_adding_of_tabular_dispersions():
     """Tests correct adding of tabular dispersions"""
 
     with pytest.raises(NotImplementedError) as not_impl_err:
-        _ = TableEpsilon() + 1
+        _ = TableEpsilon(lbda=np.linspace(200, 1000, 801), epsilon=np.ones(801)) + 1
 
     assert (
         str(not_impl_err.value) == "Adding of tabular dispersions is not yet supported"

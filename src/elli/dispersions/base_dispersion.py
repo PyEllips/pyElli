@@ -1,7 +1,7 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -16,12 +16,14 @@ class InvalidParameters(Exception):
     """Exception for invalid dispersion parameters."""
 
 
-class Dispersion(ABC):
+class BaseDispersion(ABC):
     """Dispersion (abstract class).
 
     Functions provided for derived classes:
     * dielectric_function(lbda) : returns dielectric constant for wavelength 'lbda'
     """
+
+    default_lbda_range = np.linspace(200, 1000, 801)
 
     @property
     @abstractmethod
@@ -43,7 +45,7 @@ class Dispersion(ABC):
 
     @staticmethod
     def _fill_params_dict(template: dict, *args, **kwargs) -> dict:
-        Dispersion._guard_invalid_params(list(kwargs.keys()), list(template.keys()))
+        BaseDispersion._guard_invalid_params(list(kwargs.keys()), list(template.keys()))
 
         if (len(kwargs) + len(args)) > len(template):
             raise InvalidParameters("Too many parameters")
@@ -73,6 +75,10 @@ class Dispersion(ABC):
             self.single_params_template, *args, **kwargs
         )
 
+        for param in self.single_params:
+            if self.single_params[param] is None:
+                raise InvalidParameters(f"Please specify parameter {param}")
+
     @abstractmethod
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Calculates the dielectric function in a given wavelength window.
@@ -101,47 +107,23 @@ class Dispersion(ABC):
 
         return self
 
-    def _check_valid_operand(self, other: Union[int, float, "Dispersion"]):
-        if not isinstance(other, (int, float, Dispersion)):
-            raise TypeError(
-                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
-            )
-
-    def _is_non_std_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
-        return isinstance(other, (IndexDispersion, dispersions.Table))
-
-    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
-        """Add up the dielectric function of multiple models"""
-        return self.__add__(other)
-
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
-        """Add up the dielectric function of multiple models"""
-        self._check_valid_operand(other)
-
-        if self._is_non_std_dispersion(other):
-            return other.__add__(self)
-
-        if isinstance(other, DispersionSum):
-            other.dispersions.append(self)
-            return other
-
-        if isinstance(other, (int, float)):
-            return DispersionSum(self, dispersions.EpsilonInf(other))
-
-        return DispersionSum(self, other)
-
-    def get_dielectric(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_dielectric(self, lbda: Optional[npt.ArrayLike] = None) -> npt.NDArray:
         """Returns the dielectric constant for wavelength 'lbda' default unit (nm)
         in the convention ε1 + iε2."""
+        lbda = self.default_lbda_range if lbda is None else lbda
         return np.asarray(self.dielectric_function(lbda), dtype=np.complex128)
 
-    def get_refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+    def get_refractive_index(self, lbda: Optional[npt.ArrayLike] = None) -> npt.NDArray:
         """Returns the refractive index for wavelength 'lbda' default unit (nm)
         in the convention n + ik."""
+        lbda = self.default_lbda_range if lbda is None else lbda
+
+        if isinstance(self, IndexDispersion):
+            return self.refractive_index(lbda)
         return sqrt(self.dielectric_function(lbda))
 
     def get_dielectric_df(
-        self, lbda: npt.ArrayLike = None, conjugate=False
+        self, lbda: Optional[npt.ArrayLike] = None, conjugate=False
     ) -> pd.DataFrame:
         """Returns the dielectric function as a pandas dataframe
 
@@ -159,7 +141,7 @@ class Dispersion(ABC):
                 A pandas dataframe containing the wavelength as index
                 and two rows containing ε1 and ε2.
         """
-        lbda = np.linspace(200, 1000, 801) if lbda is None else lbda
+        lbda = self.default_lbda_range if lbda is None else lbda
         eps = self.get_dielectric(lbda)
 
         return pd.DataFrame(
@@ -168,7 +150,7 @@ class Dispersion(ABC):
         )
 
     def get_refractive_index_df(
-        self, lbda: npt.ArrayLike = None, conjugate=False
+        self, lbda: Optional[npt.ArrayLike] = None, conjugate=False
     ) -> pd.DataFrame:
         """Returns the refractive index as a pandas dataframe
 
@@ -186,7 +168,7 @@ class Dispersion(ABC):
                 A pandas dataframe containing the wavelength as index
                 and two rows containing n and k.
         """
-        lbda = np.linspace(200, 1000, 801) if lbda is None else lbda
+        lbda = self.default_lbda_range if lbda is None else lbda
         nk = self.get_refractive_index(lbda)
 
         return pd.DataFrame(
@@ -214,7 +196,44 @@ class Dispersion(ABC):
         )
 
 
-class IndexDispersion(Dispersion):
+class Dispersion(BaseDispersion):
+    """A dispersion based on a dielectric function formulation."""
+
+    def _check_valid_operand(self, other: Union[int, float, "Dispersion"]):
+        if not isinstance(other, (int, float, Dispersion)):
+            raise TypeError(
+                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+            )
+
+    def _is_non_std_dispersion(self, other: Union[int, float, "Dispersion"]) -> bool:
+        return isinstance(other, (IndexDispersion, dispersions.Table))
+
+    def __radd__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        """Add up the dielectric function of multiple models"""
+        return self.__add__(other)
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        """Add up the dielectric function of multiple models"""
+        if isinstance(other, IndexDispersion):
+            raise TypeError(
+                "Cannot add refractive index and dielectric function based dispersions."
+            )
+        self._check_valid_operand(other)
+
+        if self._is_non_std_dispersion(other):
+            return other.__add__(self)
+
+        if isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
+
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, dispersions.EpsilonInf(other))
+
+        return DispersionSum(self, other)
+
+
+class IndexDispersion(BaseDispersion):
     """A dispersion based on a refractive index formulation."""
 
     @abstractmethod
@@ -228,16 +247,30 @@ class IndexDispersion(Dispersion):
             npt.NDArray: The refractive index for each wavelength point.
         """
 
-    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
-        self._check_valid_operand(other)
-
-        if isinstance(other, IndexDispersion):
-            raise NotImplementedError(
-                "Adding of index based dispersions is not supported yet"
+    def _check_valid_operand(self, other: Union[int, float, "IndexDispersion"]):
+        if not isinstance(other, (int, float, IndexDispersion)):
+            raise TypeError(
+                f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
             )
 
-        raise TypeError(
-            "Cannot add refractive index and dielectric function based dispersions."
+    def __radd__(
+        self, other: Union[int, float, "IndexDispersion"]
+    ) -> "IndexDispersionSum":
+        """Add up the dielectric function of multiple models"""
+        return self.__add__(other)
+
+    def __add__(
+        self, other: Union[int, float, "IndexDispersion"]
+    ) -> "IndexDispersionSum":
+        if isinstance(other, Dispersion):
+            raise TypeError(
+                "Cannot add refractive index and dielectric function based dispersions."
+            )
+
+        self._check_valid_operand(other)
+
+        raise NotImplementedError(
+            "Adding of index based dispersions is not supported yet"
         )
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
@@ -249,8 +282,8 @@ class DispersionFactory:
 
     @staticmethod
     def get_dispersion(identifier: str, *args, **kwargs) -> Dispersion:
-        """Creates a Dispersion object identified by its string name and initializes it with the
-        given parameters.
+        """Creates a Dispersion object identified by its string name and initializes it
+        with the given parameters.
 
         Args:
             identifier (str): Identifier of the Dispersion object, e.g. Cauchy.
@@ -275,6 +308,10 @@ class DispersionSum(Dispersion):
 
     def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
+
+        # for disp in disps:
+        #     if isinstance(disp, DispersionSum):
+        #         self.dispersions += disp.dispersions
         self.dispersions = list(disps)
 
     def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
@@ -307,3 +344,21 @@ class DispersionSum(Dispersion):
             + "\n\n"
             + "\n\n".join(map(str, self.dispersions))
         )
+
+
+class IndexDispersionSum(IndexDispersion):
+    """Represents the sum of two index dispersions"""
+
+    single_param_template: dict = {}
+    rep_params_template: dict = {}
+    dispersions: List[IndexDispersion]
+
+    def __init__(self, *disps: Dispersion) -> None:
+        super().__init__(*disps)
+
+        iter_disps = iter(disps)
+        dispersion_sum = next(iter_disps) + next(iter_disps)
+
+        for disp in iter_disps:
+            dispersion_sum += disp
+        self.dispersions = list(disps)

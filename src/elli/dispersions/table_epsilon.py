@@ -1,11 +1,10 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and dielectric function values."""
 from typing import Union
-import numpy as np
 import numpy.typing as npt
 import scipy.interpolate
 
-from .base_dispersion import Dispersion, InvalidParameters
+from .base_dispersion import Dispersion, InvalidParameters, DispersionSum
 
 
 class TableEpsilon(Dispersion):
@@ -14,9 +13,9 @@ class TableEpsilon(Dispersion):
     wavelength range.
 
     Single parameters:
-        :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
+        :lbda (list): Wavelengths in nm. This value must be provided.
         :epsilon: Complex dielectric function values in the convention ε1 + iε2.
-            Defaults to np.ones(1000).
+            This value must be provided.
 
     Repeated parameters:
         --
@@ -25,10 +24,7 @@ class TableEpsilon(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {
-        "lbda": np.linspace(0, 3000, 1000),
-        "epsilon": np.ones(1000),
-    }
+    single_params_template = {"lbda": None, "epsilon": None}
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
@@ -49,6 +45,8 @@ class TableEpsilon(Dispersion):
             self.single_params.get("epsilon"),
             kind="cubic",
         )
+
+        self.default_lbda_range = self.single_params.get("lbda")
 
     def __add__(self, _: Union[int, float, "Dispersion"]) -> "DispersionSum":
         raise NotImplementedError("Adding of tabular dispersions is not yet supported")
