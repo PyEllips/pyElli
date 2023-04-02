@@ -447,6 +447,8 @@ class Result:
 
         self._delta_range = (lower, upper)
 
+        return self
+
 
 class ResultList:
     """Class to make a row of Results easier to handle."""
