@@ -309,10 +309,9 @@ class DispersionSum(Dispersion):
     def __init__(self, *disps: Dispersion) -> None:
         super().__init__()
 
-        # for disp in disps:
-        #     if isinstance(disp, DispersionSum):
-        #         self.dispersions += disp.dispersions
-        self.dispersions = list(disps)
+        self.dispersions = []
+        for disp in disps:
+            self += disp
 
     def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
         self._check_valid_operand(other)
@@ -335,7 +334,7 @@ class DispersionSum(Dispersion):
         dielectric_function = sum(
             disp.dielectric_function(lbda) for disp in self.dispersions
         )
-        return dielectric_function
+        return np.array(dielectric_function)
 
     def __repr__(self):
         return (
@@ -351,14 +350,41 @@ class IndexDispersionSum(IndexDispersion):
 
     single_param_template: dict = {}
     rep_params_template: dict = {}
-    dispersions: List[IndexDispersion]
+    index_dispersions: List[IndexDispersion]
 
-    def __init__(self, *disps: Dispersion) -> None:
-        super().__init__(*disps)
+    def __init__(self, *disps: IndexDispersion) -> None:
+        super().__init__()
 
-        iter_disps = iter(disps)
-        dispersion_sum = next(iter_disps) + next(iter_disps)
+        self.index_dispersions = []
+        for disp in disps:
+            self += disp
 
-        for disp in iter_disps:
-            dispersion_sum += disp
-        self.dispersions = list(disps)
+    def __add__(
+        self, other: Union[int, float, "IndexDispersion"]
+    ) -> "IndexDispersionSum":
+        self._check_valid_operand(other)
+
+        if isinstance(other, IndexDispersionSum):
+            self.index_dispersions += other.index_dispersions
+            return self
+
+        if isinstance(other, (int, float)):
+            self.index_dispersions.append(dispersions.ConstantRefractiveIndex(n=other))
+            return self
+
+        self.index_dispersions.append(other)
+        return self
+
+    def refractive_index(self, lbda: npt.ArrayLike) -> npt.NDArray:
+        refractive_index = sum(
+            disp.refractive_index(lbda) for disp in self.index_dispersions
+        )
+        return np.array(refractive_index)
+
+    def __repr__(self):
+        return (
+            "IndexDispersionSum\n"
+            + "=" * 13
+            + "\n\n"
+            + "\n\n".join(map(str, self.index_dispersions))
+        )

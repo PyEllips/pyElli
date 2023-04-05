@@ -29,6 +29,20 @@ def test_fail_on_adding_index_and_diel_dispersion():
         )
 
 
+def test_fail_on_adding_index_and_diel_dispersion_as_args():
+    """
+    The adding of dispersion fails for an index based and dielectric dispersion
+    when provided as args to DispersionSum
+    """
+    with pytest.raises(TypeError) as sum_err:
+        DispersionSum(Sellmeier(), Cauchy())
+
+        assert (
+            "Cannot add refractive index and dielectric function based dispersions."
+            in str(sum_err.value)
+        )
+
+
 def test_adding_of_diel_dispersions():
     """Test if dielectric dispersions are added correctly"""
 
@@ -50,6 +64,38 @@ def test_flat_dispersion_sum_on_multiple_add():
     """Test whether the DispersionSum stays flat on multiple adds"""
 
     dispersion_sum = Sellmeier() + Sellmeier() + Sellmeier()
+
+    assert isinstance(dispersion_sum, DispersionSum)
+    assert len(dispersion_sum.dispersions) == 3
+
+    for disp in dispersion_sum.dispersions:
+        assert isinstance(disp, Sellmeier)
+
+    assert_array_almost_equal(
+        dispersion_sum.get_dielectric_df().values,
+        3 * Sellmeier().get_dielectric_df().values,
+    )
+
+
+def test_multiple_dispersion_sum_args():
+    """Multiple Dispersions can be provided via the DispersionSum args"""
+    dispersion_sum = DispersionSum(Sellmeier(), Sellmeier(), Sellmeier())
+
+    assert isinstance(dispersion_sum, DispersionSum)
+    assert len(dispersion_sum.dispersions) == 3
+
+    for disp in dispersion_sum.dispersions:
+        assert isinstance(disp, Sellmeier)
+
+    assert_array_almost_equal(
+        dispersion_sum.get_dielectric_df().values,
+        3 * Sellmeier().get_dielectric_df().values,
+    )
+
+
+def test_flattening_of_dispersion_sum_args():
+    """When a DispersionSum is passed via a DisperionSum arg it is flattened."""
+    dispersion_sum = DispersionSum(Sellmeier(), DispersionSum(Sellmeier(), Sellmeier()))
 
     assert isinstance(dispersion_sum, DispersionSum)
     assert len(dispersion_sum.dispersions) == 3
