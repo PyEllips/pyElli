@@ -1,6 +1,7 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from typing import List, Optional, Union
 
 import numpy as np
@@ -232,6 +233,23 @@ class Dispersion(BaseDispersion):
 
         return DispersionSum(self, other)
 
+    def as_index(self):
+        """
+        Returns this class as IndexDispersion.
+        This method may be used to add dielectric and index based dispersions.
+        Please ensure that you know what you are doing as building dielectric
+        and index based dispersions is normally mathematically wrong.
+        """
+        index_class = deepcopy(self)
+        # pylint: disable=attribute-defined-outside-init
+        index_class.refractive_index = lambda lbda: sqrt(
+            index_class.dielectric_function(lbda)
+        )
+        index_class.__class__ = IndexDispersion  # pylint: disable=invalid-name
+        index_class.dielectric_function = self.dielectric_function
+
+        return index_class
+
 
 class IndexDispersion(BaseDispersion):
     """A dispersion based on a refractive index formulation."""
@@ -275,6 +293,17 @@ class IndexDispersion(BaseDispersion):
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.refractive_index(lbda) ** 2
+
+    def as_dielectric(self):
+        """
+        Returns this class as Dispersion.
+        This method may be used to add dielectric and index based dispersions.
+        Please ensure that you know what you are doing as building dielectric
+        and index based dispersions is normally mathematically wrong.
+        """
+        diel_disp = deepcopy(self)
+        diel_disp.__class__ = Dispersion  # pylint: disable=invalid-name
+        return diel_disp
 
 
 class DispersionFactory:
