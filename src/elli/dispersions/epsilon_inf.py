@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Constant epsilon infinity."""
+from typing import Any, Dict
 import numpy.typing as npt
 
 from .base_dispersion import Dispersion
@@ -20,7 +21,7 @@ class EpsilonInf(Dispersion):
     """
 
     single_params_template = {"eps": 1}
-    rep_params_template = {}
+    rep_params_template: Dict[str, Any] = {}
 
     def dielectric_function(self, _: npt.ArrayLike) -> npt.NDArray:
         return self.single_params.get("eps")

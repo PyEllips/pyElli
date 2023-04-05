@@ -1,9 +1,10 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and dielectric function values."""
-from typing import Union
+from typing import Any, Dict, Union
 import numpy.typing as npt
 import scipy.interpolate
 
+from .epsilon_inf import EpsilonInf
 from .base_dispersion import Dispersion, InvalidParameters, DispersionSum
 
 
@@ -25,7 +26,7 @@ class TableEpsilon(Dispersion):
     """
 
     single_params_template = {"lbda": None, "epsilon": None}
-    rep_params_template = {}
+    rep_params_template: Dict[str, Any] = {}
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -48,8 +49,25 @@ class TableEpsilon(Dispersion):
 
         self.default_lbda_range = self.single_params.get("lbda")
 
-    def __add__(self, _: Union[int, float, "Dispersion"]) -> "DispersionSum":
-        raise NotImplementedError("Adding of tabular dispersions is not yet supported")
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, EpsilonInf(eps=other))
+
+        if isinstance(other, TableEpsilon):
+            raise NotImplementedError(
+                "Adding of tabular dispersions is not yet supported"
+            )
+
+        if isinstance(other, Dispersion):
+            return DispersionSum(self, other)
+
+        if isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
+
+        raise TypeError(
+            f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+        )
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.interpolation(lbda)
