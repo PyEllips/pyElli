@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 from elli import Cauchy, Sellmeier
-from elli.dispersions.base_dispersion import DispersionSum
+from elli.dispersions.base_dispersion import DispersionSum, IndexDispersionSum
 from elli.dispersions.table_epsilon import TableEpsilon
 
 
@@ -20,14 +20,35 @@ def test_adding_index_dispersion():
 def test_fail_on_adding_index_and_diel_dispersion():
     """Test whether the adding fails for an index based and dielectric dispersion"""
 
-    for disp in [Sellmeier()]:
-        with pytest.raises(TypeError) as sum_err:
-            _ = disp + Cauchy()
+    with pytest.raises(TypeError) as sum_err:
+        _ = Sellmeier() + Cauchy()
 
-        assert (
-            "Cannot add refractive index and dielectric function based dispersions."
-            in str(sum_err.value)
-        )
+    assert (
+        "Cannot add refractive index and dielectric function based dispersions."
+        in str(sum_err.value)
+    )
+
+
+@pytest.mark.parametrize(
+    "dispersions",
+    [
+        (DispersionSum(Sellmeier(), Sellmeier()), Cauchy()),
+        (IndexDispersionSum(Cauchy(), Cauchy()), Sellmeier()),
+        (
+            DispersionSum(Sellmeier(), Sellmeier()),
+            IndexDispersionSum(Cauchy(), Cauchy()),
+        ),
+        (Sellmeier(), Cauchy()),
+    ],
+)
+def test_fail_on_adding_index_and_diel_dispersion_sum(dispersions):
+    """Adding of index based and diel based dispersion sums fails"""
+
+    with pytest.raises(TypeError):
+        _ = dispersions[0] + dispersions[1]
+
+    with pytest.raises(TypeError):
+        _ = dispersions[1] + dispersions[0]
 
 
 def test_fail_on_adding_index_and_diel_dispersion_as_args():
