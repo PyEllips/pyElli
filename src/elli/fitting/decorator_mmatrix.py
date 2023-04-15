@@ -330,11 +330,15 @@ class FitMuellerMatrix(FitDecorator):
         self.fitted_params = params.copy()
         self.initial_params = params.copy()
         self.model = model
-        self.display_single = kwargs.get("display_single")
-        self.sharex = kwargs.get("sharex")
-        self.full_scale = kwargs.get("full_scale")
         self.param_widgets = {}
         self.show_residual = False
+
+        mm_kwargs = ("display_single", "sharex", "full_scale")
+        for kwarg in mm_kwargs:
+            if kwarg in kwargs:
+                setattr(self, kwarg, kwargs[kwarg])
+                del kwargs[kwarg]
+        self.fit_kwargs = kwargs
 
         model_df = mmatrix_to_dataframe(
             exp_mm, model(exp_mm.index.values, params).mueller_matrix
