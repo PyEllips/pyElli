@@ -13,7 +13,7 @@ class Sellmeier(Dispersion):
 
     Repeated parameters:
         :A: Coefficient for n\ :sup:`2` contribution. Defaults to 0.
-        :B: Resonance wavelength. Defaults to 0. Unit in µm\ :sup:`-2`.
+        :B: Resonance wavelength. Defaults to 0. Unit in µm\ :sup:`2`.
 
     Output:
         .. math::

@@ -308,6 +308,7 @@ class IndexDispersion(BaseDispersion):
         """
         diel_disp = deepcopy(self)
         diel_disp.__class__ = Dispersion  # pylint: disable=invalid-name
+        diel_disp.dielectric_function = self.dielectric_function
         return diel_disp
 
 
