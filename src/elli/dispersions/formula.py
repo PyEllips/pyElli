@@ -5,11 +5,11 @@ import numpy as np
 import numpy.typing as npt
 
 from elli.units import ureg
-from elli.dispersions.base_dispersion import Dispersion, IndexDispersion
+from elli.dispersions.base_dispersion import BaseDispersion, Dispersion, IndexDispersion
 from elli.formula_parser.parser import formula_parser, transformation_formula_parser
 
 
-class FormulaParser(Dispersion):
+class FormulaParser(BaseDispersion):
     r"""A formula dispersion"""
 
     @property
@@ -113,7 +113,7 @@ class FormulaParser(Dispersion):
         ).parse(self.formula)[1]
 
 
-class Formula(FormulaParser):
+class Formula(Dispersion, FormulaParser):
     r"A formula dispersion"
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
