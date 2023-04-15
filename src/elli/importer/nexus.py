@@ -8,7 +8,12 @@ import h5py
 import numpy as np
 import pandas as pd
 
-from ..utils import calc_rho
+from elli.dispersions.formula import Formula, FormulaIndex
+from elli.dispersions.table_epsilon import TableEpsilon
+from elli.dispersions.table_index import Table
+from elli.materials import BiaxialMaterial, IsotropicMaterial, UniaxialMaterial
+
+from ..utils import calc_rho, conversion_wavelength_energy
 
 
 def read_nexus_psi_delta(nxs_filename: str) -> pd.DataFrame:
@@ -63,3 +68,119 @@ def read_nexus_rho(nxs_filename: str) -> pd.DataFrame:
         and the wavelength as second column.
     """
     return calc_rho(read_nexus_psi_delta(nxs_filename))
+
+
+def read_nexus_materials(filename: str):
+    """Read the optical materials from a nexus file.
+
+    Args:
+        filename (str): The nexus filename.
+    """
+
+    def get_dispersion_function(dataset: h5py.Dataset):
+        single_params = {}
+        rep_params = {}
+
+        def get_params(_: str, dataset: h5py.Dataset):
+            if dataset.attrs.get("NX_class", "") in ["NXdispersion_single_parameter"]:
+                param_name = dataset["name"][()].decode("utf-8")
+                single_params[param_name] = dataset["value"][()]
+
+            if dataset.attrs.get("NX_class", "") in ["NXdispersion_repeated_parameter"]:
+                param_name = dataset["name"][()].decode("utf-8")
+                rep_params[param_name] = dataset["values"][()]
+
+        identifier = None
+        if "wavelength_identifier" in dataset:
+            identifier = dataset["wavelength_identifier"][()].decode("utf-8")
+            unit = (
+                f"{dataset['wavelength_unit'][()]} "
+                f"{dataset['wavelength_unit'].attrs.get('units', '')}"
+            )
+
+        if "energy_identifier" in dataset:
+            raise NotImplementedError(
+                "Using dispersions with an energy axis is not yet supported."
+            )
+
+        representation = dataset["representation"][()].decode("utf-8")
+        formula = dataset["formula"][()].decode("utf-8")
+        dataset.visititems(get_params)
+
+        if representation == "eps":
+            return Formula(formula, identifier, single_params, rep_params, unit)
+
+        if representation == "n":
+            return FormulaIndex(formula, identifier, single_params, rep_params, unit)
+
+        raise ValueError(f"Unsupported representation {representation}")
+
+    def get_dispersion_table(dataset: h5py.Dataset):
+        wavelength = None
+        if "wavelength" in dataset:
+            wavelength = dataset["wavelength"]
+
+        if "energy" in dataset:
+            wavelength = conversion_wavelength_energy(dataset["energy"])
+
+        if wavelength is None:
+            raise ValueError("No wavelength array found in dataset.")
+
+        if "refractive_index" in dataset:
+            return Table(lbda=wavelength, n=dataset["refractive_index"][()])
+
+        if "dielectric_function" in dataset:
+            return TableEpsilon(
+                lbda=wavelength, epsilon=dataset["dielectric_function"][()]
+            )
+
+        raise ValueError(
+            "Invalid dispersion table, neither `refractive_index` "
+            "nor `dielectric_function` found."
+        )
+
+    def get_dispersion(dataset: h5py.Dataset):
+        dispersion = None
+        for data in dataset.values():
+            if data.attrs.get("NX_class") in ["NXdispersion_function"]:
+                dispersion = (
+                    get_dispersion_function(data)
+                    if dispersion is None
+                    else dispersion + get_dispersion_function(data)
+                )
+
+            if data.attrs.get("NX_class") in ["NXdispersion_table"]:
+                dispersion = (
+                    get_dispersion_table(data)
+                    if dispersion is None
+                    else dispersion + get_dispersion_table(data)
+                )
+
+        return dispersion
+
+    def get_material(dataset: h5py.Dataset):
+        dispersions = {}
+        for dispersion in [f"dispersion_{axis}" for axis in ["x", "y", "z"]]:
+            if dispersion not in dataset:
+                if dispersion == "dispersion_x":
+                    raise ValueError("Invalid dispersion file. `dispersion_x` missing")
+                continue
+            dispersions[dispersion] = get_dispersion(dataset[dispersion])
+
+        if len(dispersions) == 1:
+            return IsotropicMaterial(dispersions["dispersion_x"])
+        if len(dispersions) == 2:
+            return UniaxialMaterial(
+                dispersions["dispersion_x"], dispersions["dispersion_z"]
+            )
+        if len(dispersions) == 3:
+            return BiaxialMaterial(**dispersions)
+
+        raise ValueError("Could not create material from nexus file.")
+
+    entries = {}
+    with h5py.File(filename) as h5file:
+        for entry, data in h5file.items():
+            entries[entry] = get_material(data)
+
+    return entries

@@ -21,7 +21,12 @@ from ..dispersions import (
     SellmeierCustomExponent,
     Table,
 )
-from ..dispersions.base_dispersion import Dispersion, DispersionSum
+from ..dispersions.base_dispersion import (
+    Dispersion,
+    DispersionSum,
+    IndexDispersion,
+    IndexDispersionSum,
+)
 from ..materials import IsotropicMaterial
 
 WavelengthFilterType = Union[
@@ -282,7 +287,9 @@ class RII:
         """
         return IsotropicMaterial(self.load_dispersion(book, page))
 
-    def load_dispersion(self, book: str, page: str) -> Dispersion:
+    def load_dispersion(
+        self, book: str, page: str
+    ) -> Union[Dispersion, IndexDispersion]:
         """Load a dispersion from the refractive index database.
         Selection by material and source identifiers.
 
@@ -307,6 +314,7 @@ class RII:
         )
 
         dispersion_list = []
+        contains_index_dispersion = False
 
         for dispersion_relation in yml_file["DATA"]:
             if dispersion_relation["type"] == "tabulated nk":
@@ -319,6 +327,7 @@ class RII:
                 df.set_index("Wavelength", inplace=True)
 
                 dispersion = Table(lbda=df.index, n=df["n"] + 1j * df["k"])
+                contains_index_dispersion = True
 
             elif dispersion_relation["type"] == "tabulated n":
                 df = pd.read_table(
@@ -330,6 +339,7 @@ class RII:
                 df.set_index("Wavelength", inplace=True)
 
                 dispersion = Table(lbda=df.index, n=df["n"])
+                contains_index_dispersion = True
 
             elif dispersion_relation["type"] == "tabulated k":
                 df = pd.read_table(
@@ -341,6 +351,7 @@ class RII:
                 df.set_index("Wavelength", inplace=True)
 
                 dispersion = Table(lbda=df.index, n=0 + 1j * df["k"])
+                contains_index_dispersion = True
 
             elif dispersion_relation["type"] == "formula 1":
                 coeffs = list(
@@ -415,6 +426,7 @@ class RII:
                     cauchy.add(f_i / 1e3**e_i, e_i)
 
                 dispersion = cauchy
+                contains_index_dispersion = True
 
             else:
                 raise ValueError("Unimplemented Format.")
@@ -423,6 +435,13 @@ class RII:
 
         if len(dispersion_list) == 1:
             return dispersion_list[0]
+
+        if contains_index_dispersion:
+            for i, dispersion in enumerate(dispersion_list):
+                if not isinstance(dispersion, IndexDispersion):
+                    dispersion_list[i] = dispersion.as_index()
+
+            return IndexDispersionSum(*dispersion_list)
         return DispersionSum(*dispersion_list)
 
     def get_reference(self, book: str, page: str) -> str:

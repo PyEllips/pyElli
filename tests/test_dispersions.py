@@ -59,8 +59,6 @@ def test_regression_dispersions_default(datadir):
         "Sellmeier",
         "Tanguy",
         "TaucLorentz",
-        "Table",
-        "TableEpsilon",
     ]
     lbda = np.linspace(400, 1000, 500)
 

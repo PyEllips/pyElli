@@ -64,7 +64,7 @@ the folder to install it in development mode:
 ```sh
 git clone https://github.com/PyEllips/pyElli
 cd pyElli
-pip install -e .[fitting]
+pip install -e ".[fitting]"
 ```
 
 ## Acknowledgements
