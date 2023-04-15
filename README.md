@@ -5,7 +5,7 @@
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyElli) [![PyPI](https://img.shields.io/pypi/v/pyElli)](https://pypi.org/project/pyElli/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5702469.svg)](https://doi.org/10.5281/zenodo.5702469) [![Pytest](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml/badge.svg)](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/pyelli/badge/?version=latest)](https://pyelli.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-[![](https://dcbadge.vercel.app/api/server/YfP92CZT?compact=true)](https://discord.gg/YfP92CZT)
+[![](https://dcbadge.vercel.app/api/server/zCBNMtBFAQ?compact=true)](https://discord.gg/zCBNMtBFAQ)
 
 # pyElli
 
@@ -26,7 +26,7 @@ of scientists working with spectral ellipsometry.
 
 ## Got a question?
 
-If you have questions using pyElli please feel free to open a discussion in the [Q&A](https://github.com/PyEllips/pyElli/discussions/categories/q-a) or join our [discord channel](https://discord.gg/YfP92CZT).
+If you have questions using pyElli please feel free to open a discussion in the [Q&A](https://github.com/PyEllips/pyElli/discussions/categories/q-a) or join our [discord channel](https://discord.gg/zCBNMtBFAQ).
 
 ## How to get it
 
