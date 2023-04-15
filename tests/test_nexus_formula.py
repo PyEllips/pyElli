@@ -81,16 +81,27 @@ def test_read_nexus_for_sellmeier_table_sum(datadir):
     """A sum of sellmeier and a table is read correctly"""
     nexus = datadir / "Si-Chandler-Horowitz.nxs"
 
+    def read_sellmeier(h5file: h5py.File):
+        sellmeier_path = "/entry/dispersion_x/sellmeier"
+        params_A = h5file[f"{sellmeier_path}/A/values"][()]
+        params_B = h5file[f"{sellmeier_path}/B/values"][()]
+        params_e1 = h5file[f"{sellmeier_path}/e1/values"][()]
+        params_e2 = h5file[f"{sellmeier_path}/e2/values"][()]
+        eps_inf = h5file["/entry/dispersion_x/sellmeier/eps_inf/value"][()]
+
+        sellmeier = SellmeierCustomExponent()
+        for A, B, e1, e2 in zip(params_A, params_B, params_e1, params_e2):
+            sellmeier.add(A, e1, B, e2)
+
+        return (sellmeier + eps_inf).as_index()
+
     with h5py.File(nexus, "r") as h5file:
         table_path = "/entry/dispersion_x/dispersion_table_k"
         lbda = h5file[f"{table_path}/wavelength"][()]
 
-        table = Table(
-            lbda=lbda, n=h5file[f"{table_path}/refractive_index"][()]
-        ).as_dielectric()
-        sellmeier = Sellmeier().add(1, 0).add(4.483e-3, 1.108) + 11.67316
+        table = Table(lbda=lbda, n=h5file[f"{table_path}/refractive_index"][()])
 
-        dispersion = table + sellmeier
+        dispersion = table + read_sellmeier(h5file)
 
     nexus_material = read_nexus_materials(nexus)["entry"]
 
@@ -168,7 +179,7 @@ def test_read_nexus_dispersion_sum(datadir):
     nexus = datadir / "YVO4-Shi-e-20C.nxs"
     lbda = np.linspace(480, 1340, 100)
 
-    def read_sellmeier(h5file):
+    def read_sellmeier(h5file: h5py.File):
         sellmeier_path = "/entry/dispersion_x/sellmeier"
         params_A = h5file[f"{sellmeier_path}/A/values"][()]
         params_B = h5file[f"{sellmeier_path}/B/values"][()]
@@ -182,7 +193,7 @@ def test_read_nexus_dispersion_sum(datadir):
 
         return sellmeier + eps_inf
 
-    def read_poly(h5file):
+    def read_poly(h5file: h5py.File):
         polynomial_path = "/entry/dispersion_x/polynomial"
         params_e = h5file[f"{polynomial_path}/e/values"][()]
         params_f = h5file[f"{polynomial_path}/f/values"][()]
