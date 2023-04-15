@@ -72,10 +72,10 @@ class TestRefractiveIndexInfo:
         disp = self.RII.load_dispersion("AgCl", "Tilton")  # formula 4
 
         np.testing.assert_almost_equal(
-            disp.get_refractive_index(1024), 2.0213900020277, decimal=3
+            disp.get_refractive_index(1024), 2.0213900020277, decimal=12
         )
         np.testing.assert_almost_equal(
-            disp.get_refractive_index(10080), 1.9799748188746, decimal=4
+            disp.get_refractive_index(10080), 1.9799748188746, decimal=12
         )
 
     def test_formula_5(self):

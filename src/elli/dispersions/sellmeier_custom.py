@@ -26,7 +26,7 @@ class SellmeierCustomExponent(Dispersion):
     """
 
     single_params_template = {}
-    rep_params_template = {"A": 0, "B": 0, "e_A": 1, "e_B": 1}
+    rep_params_template = {"A": 0, "e_A": 1, "B": 0, "e_B": 1}
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         lbda = lbda / 1e3
