@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 0.16.0
+
+# New
+
+- Support for nexus dispersion files
+- Formula based dispersions
+- Cauchy Urbach dispersion
+- Filtering by range for the refractive index database
+
+# Bugfixes
+
+- Fixed a bug where incompatible dispersions were created in refractive index database
+- Created separated index and dielectric dispersions
+- Fixed checks for DispersionSums when dispersions are entered via \*args
+
 ## Version 0.15.1
 
 ### New
