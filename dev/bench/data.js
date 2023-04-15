@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1680504577992,
+  "lastUpdate": 1681569879804,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -10012,6 +10012,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0020998416362442984",
             "extra": "mean: 6.343929700001638 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5b9d41b2fb384d40c1e723e9c078c820b7ac3d15",
+          "message": "Formula dispersion (#122)\n\n* Adds draft for formula dispersion init function\r\n\r\n* Adds working diel-func formula dispersion\r\n\r\n* Adds FormulaIndex dispersion\r\n\r\n* Adds formula dispersion represenation test\r\n\r\n* Adds nexus dispersive material load function\r\n\r\n* Adds grammar file to manifest\r\n\r\n* Clean unit check for formula dispersion\r\n\r\n* Removes unecessary code\r\n\r\n* Regenerate requirements\r\n\r\n* Adds nexus dispersive material testing files\r\n\r\n* Dispersions remodelling\r\n\r\n* Correctly add dispersions via *args\r\n\r\n* Adds quoting for fitting install in README\r\n\r\n* Adds converter functions between index and dielectric dispersions\r\n\r\n* Adds index based adding and fixes rii\r\n\r\n* Re-enable index based nexus file\r\n\r\n* Adds parametrization for adding tests\r\n\r\n* Adds nexus dispersion tests\r\n\r\n* Fix parameter order in custom sellmeier (#127)\r\n\r\n* Update discord link\r\n\r\n* Update discord badge\r\n\r\n* Adds absolute delta range\r\n\r\n* Adds support for 0,360 delta range\r\n\r\n* Return self in `as_delta_range`\r\n\r\n* Adds tests\r\n\r\n* Fix parameter order in custom sellmeier\r\n\r\nFixes #126\r\n\r\n* Fix documentation\r\n\r\n---------\r\n\r\nCo-authored-by: domna <florian.dobener@physik.hu-berlin.de>\r\n\r\n---------\r\n\r\nCo-authored-by: Marius Müller <49639740+MarJMue@users.noreply.github.com>",
+          "timestamp": "2023-04-15T16:43:10+02:00",
+          "tree_id": "f546e2376d5d2b5efae8f686a48faaa7e7f54632",
+          "url": "https://github.com/PyEllips/pyElli/commit/5b9d41b2fb384d40c1e723e9c078c820b7ac3d15"
+        },
+        "date": 1681569878742,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 22.097175484670892,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007744204400052887",
+            "extra": "mean: 45.25465259999919 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.842471205142379,
+            "unit": "iter/sec",
+            "range": "stddev: 0.017373641845688164",
+            "extra": "mean: 171.16044990000603 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 101.18005693324432,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003125197022451405",
+            "extra": "mean: 9.88337059999651 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 197.2767833910055,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009436337702559358",
+            "extra": "mean: 5.069020199999841 msec\nrounds: 10"
           }
         ]
       }
