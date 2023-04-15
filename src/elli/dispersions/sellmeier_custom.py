@@ -13,9 +13,9 @@ class SellmeierCustomExponent(Dispersion):
 
     Repeated parameters:
         :A: Coefficient for n\ :sup:`2` contribution. Defaults to 0.
+        :e_A: Exponent for the wavelength in the numerator. Defaults to 1.
         :B: Resonance wavelength. Defaults to 0. Unit in µm\ :sup:`-2`.
-        :e_A:
-        :e_B:
+        :e_B: Exponent for B. Defaults to 1.
 
     Output:
         .. math::
