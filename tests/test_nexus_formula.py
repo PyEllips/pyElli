@@ -178,7 +178,7 @@ def test_read_nexus_dispersion_sum(datadir):
 
         sellmeier = SellmeierCustomExponent()
         for A, B, e1, e2 in zip(params_A, params_B, params_e1, params_e2):
-            sellmeier.add(A, B, e1, e2)
+            sellmeier.add(A, e1, B, e2)
 
         return sellmeier + eps_inf
 
@@ -196,11 +196,7 @@ def test_read_nexus_dispersion_sum(datadir):
     with h5py.File(nexus, "r") as h5file:
         disp = read_sellmeier(h5file) + read_poly(h5file)
 
-        print(disp)
-
     nexus_material = read_nexus_materials(nexus)["entry"]
-
-    print(nexus_material.dispersion_x)
 
     assert isinstance(nexus_material, IsotropicMaterial)
 
