@@ -1,4 +1,4 @@
-"""Testing benchmark for each solver"""
+"""Benchmark for using the formula dispersion"""
 from pytest import fixture
 import numpy as np
 
@@ -6,9 +6,13 @@ import elli
 from elli.fitting import ParamsHist
 
 
+wavelength = np.linspace(400, 800, 500)
+PHI = 70
+
+
 @fixture
 def structure():
-    """Build a structure"""
+    """Build a structure with a formula dispersion"""
     params = ParamsHist()
     params.add("SiO2_n0", value=1.452, min=-100, max=100, vary=False)
     params.add("SiO2_n1", value=36.0, min=-40000, max=40000, vary=False)
@@ -27,21 +31,35 @@ def structure():
 
     params.add("TiO2_d", value=20, min=0, max=40000, vary=True)
 
-    SiO2 = elli.Cauchy(
-        params["SiO2_n0"],
-        params["SiO2_n1"],
-        params["SiO2_n2"],
-        params["SiO2_k0"],
-        params["SiO2_k1"],
-        params["SiO2_k2"],
+    SiO2 = elli.FormulaIndex(
+        "n = n0 + 1e2 * n1 / lbda ** 2 + 1e7 * n2 / lbda ** 4 + "
+        "1j * (k0 + 1e2 * k1 / lbda ** 2 + 1e7 * k2 / lbda ** 4)",
+        "lbda",
+        {
+            "n0": params["SiO2_n0"].value,
+            "n1": params["SiO2_n1"].value,
+            "n2": params["SiO2_n2"].value,
+            "k0": params["SiO2_k0"].value,
+            "k1": params["SiO2_k1"].value,
+            "k2": params["SiO2_k2"].value,
+        },
+        {},
+        "nm",
     ).get_mat()
-    TiO2 = elli.Cauchy(
-        params["TiO2_n0"],
-        params["TiO2_n1"],
-        params["TiO2_n2"],
-        params["TiO2_k0"],
-        params["TiO2_k1"],
-        params["TiO2_k2"],
+    TiO2 = elli.FormulaIndex(
+        "n = n0 + 1e2 * n1 / lbda ** 2 + 1e7 * n2 / lbda ** 4 + "
+        "1j * (k0 + 1e2 * k1 / lbda ** 2 + 1e7 * k2 / lbda ** 4)",
+        "lbda",
+        {
+            "n0": params["TiO2_n0"].value,
+            "n1": params["TiO2_n1"].value,
+            "n2": params["TiO2_n2"].value,
+            "k0": params["TiO2_k0"].value,
+            "k1": params["TiO2_k1"].value,
+            "k2": params["TiO2_k2"].value,
+        },
+        {},
+        "nm",
     ).get_mat()
 
     Layer = [
@@ -58,49 +76,23 @@ def structure():
     return elli.Structure(elli.AIR, Layer, elli.AIR)
 
 
-lbda = np.linspace(400, 800, 500)
-PHI = 70
-
-
-def test_solver4x4_eig(benchmark, structure):
-    """Benchmarks eignvalue propagator with solver4x4"""
-    benchmark.pedantic(
-        structure.evaluate,
-        args=(lbda, PHI),
-        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorEig()},
-        iterations=1,
-        rounds=10,
-    )
-
-
-def test_solver4x4_expm(benchmark, structure):
-    """Benchmarks expm-scipy propagator with solver4x4"""
-    benchmark.pedantic(
-        structure.evaluate,
-        args=(lbda, PHI),
-        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpm()},
-        iterations=1,
-        rounds=10,
-    )
-
-
-def test_solver4x4_linear(benchmark, structure):
-    """Benchmarks linear propagator with solver4x4"""
-    benchmark.pedantic(
-        structure.evaluate,
-        args=(lbda, PHI),
-        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorLinear()},
-        iterations=1,
-        rounds=10,
-    )
-
-
-def test_solver2x2(benchmark, structure):
+def test_formula_solver2x2(benchmark, structure):
     """Benchmarks solver2x2"""
     benchmark.pedantic(
         structure.evaluate,
-        args=(lbda, PHI),
+        args=(wavelength, PHI),
         kwargs={"solver": elli.Solver2x2},
+        iterations=1,
+        rounds=10,
+    )
+
+
+def test_formula_solver4x4_expm(benchmark, structure):
+    """Benchmarks solver2x2"""
+    benchmark.pedantic(
+        structure.evaluate,
+        args=(wavelength, PHI),
+        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpm()},
         iterations=1,
         rounds=10,
     )

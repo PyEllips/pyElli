@@ -3,6 +3,9 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 import pytest
 
+from benchmark_formula_dispersion import structure as formula_structure
+from benchmark_propagators_TiO2 import structure
+import elli
 from elli.dispersions import Sellmeier, Formula
 from elli.dispersions.cauchy import Cauchy
 from elli.dispersions.formula import FormulaIndex
@@ -66,3 +69,23 @@ def test_formula_fails_on_wrong_repr():
 
     with pytest.raises(ValueError):
         FormulaIndex("eps = 1", "", {}, {})
+
+
+def test_formula_against_predefined_model(structure, formula_structure):
+    """A formula dispersion evaluates to the same values as a predefined model"""
+    lbda = np.linspace(400, 800, 500)
+    PHI = 70
+
+    predefined4x4 = structure.evaluate(
+        lbda, PHI, solver=elli.Solver4x4, propagator=elli.PropagatorExpm()
+    )
+    formula4x4 = formula_structure.evaluate(
+        lbda, PHI, solver=elli.Solver4x4, propagator=elli.PropagatorExpm()
+    )
+
+    assert_array_almost_equal(predefined4x4.rho, formula4x4.rho)
+
+    predefined2x2 = structure.evaluate(lbda, PHI, solver=elli.Solver2x2)
+    formula2x2 = formula_structure.evaluate(lbda, PHI, solver=elli.Solver2x2)
+
+    assert_array_almost_equal(predefined2x2.rho, formula2x2.rho)
