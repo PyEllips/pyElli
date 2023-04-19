@@ -93,6 +93,7 @@ class BaseDispersion(ABC):
     def get_mat(self):
         """Returns this dispersion as an isotropic material"""
         from ..materials import IsotropicMaterial
+
         return IsotropicMaterial(self)
 
     def add(self, *args, **kwargs) -> "BaseDispersion":
