@@ -27,10 +27,12 @@ class TableEpsilon(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {"lbda": None, "epsilon": None, "kind": "linear"}
+    single_params_template = {"lbda": None, "epsilon": None}
     rep_params_template: Dict[str, Any] = {}
 
     def __init__(self, *args, **kwargs) -> None:
+        self.kind = kwargs.pop("kind", "linear")
+
         super().__init__(*args, **kwargs)
 
         if len(self.single_params.get("lbda")) == 0:
@@ -46,7 +48,7 @@ class TableEpsilon(Dispersion):
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("epsilon"),
-            kind=self.single_params.get("kind"),
+            kind=self.kind,
         )
 
         self.default_lbda_range = self.single_params.get("lbda")
