@@ -59,8 +59,8 @@ class Solver2x2(Solver):
             if np.any(np.logical_and(layer.real > 0, layer.imag < 0)):
                 raise (
                     ValueError(
-                        """Solver2x2 can't handle active (n>0 and k<0) media. 
-                Check if all materials are defined correctly. 
+                        """Solver2x2 can't handle active (n>0 and k<0) media.
+                Check if all materials are defined correctly.
                 Switch to Solver4x4 instead."""
                     )
                 )
