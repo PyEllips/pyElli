@@ -9,7 +9,6 @@ import numpy.typing as npt
 import pandas as pd
 from numpy.lib.scimath import sqrt
 
-from .. import materials
 from .. import dispersions
 
 
@@ -18,7 +17,7 @@ class InvalidParameters(Exception):
 
 
 class BaseDispersion(ABC):
-    """Dispersion (abstract class).
+    """BaseDispersion (abstract class).
 
     Functions provided for derived classes:
     * dielectric_function(lbda) : returns dielectric constant for wavelength 'lbda'
@@ -93,9 +92,10 @@ class BaseDispersion(ABC):
 
     def get_mat(self):
         """Returns this dispersion as an isotropic material"""
-        return materials.IsotropicMaterial(self)
+        from ..materials import IsotropicMaterial
+        return IsotropicMaterial(self)
 
-    def add(self, *args, **kwargs) -> "Dispersion":
+    def add(self, *args, **kwargs) -> "BaseDispersion":
         """Adds a set of parameters to the dispersion.
 
         Returns:
