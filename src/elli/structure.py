@@ -91,6 +91,15 @@ class RepeatedLayers(AbstractLayer):
                 Number of additional layers before the first period. Defaults to 0.
             after (int, optional): Number of additional layers after the last period. Defaults to 0.
         """
+        if repetitions < 1:
+            raise ValueError("Number of repetitions need to be at least 1.")
+
+        if before < 0:
+            raise ValueError("Before value needs to be 0 or more.")
+
+        if after < 0:
+            raise ValueError("Divisions needs to be 0 or more.")
+
         self.repetitions = repetitions
         self.before = before
         self.after = after
@@ -155,6 +164,9 @@ class Layer(AbstractLayer):
         Args:
             thickness (float): Thickness of the layer in nm.
         """
+        if thickness < 0:
+            raise ValueError("Thickness value can't be negative.")
+
         self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
@@ -202,6 +214,9 @@ class InhomogeneousLayer(AbstractLayer):
         Args:
             thickness (float): Thickness of the layer in nm.
         """
+        if thickness < 0:
+            raise ValueError("Thickness value can't be negative.")
+
         self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
@@ -223,6 +238,9 @@ class InhomogeneousLayer(AbstractLayer):
         Args:
             div (int): Number of slices for the layer
         """
+        if div < 1:
+            raise ValueError("Number of slices need to be at least 1.")
+
         self.div = div
 
     def get_slices(self) -> npt.NDArray:
