@@ -3,12 +3,6 @@ name: Linting
 on:
   push:
     branches: [master]
-    branches-ignore:
-      - joss-paper
-  pull_request:
-    branches: [master]
-    branches-ignore:
-      - joss-paper
 
 jobs:
   black-lint:

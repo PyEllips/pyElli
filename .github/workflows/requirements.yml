@@ -3,14 +3,6 @@ name: Check requirements
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
-    branches-ignore:
-      - joss-paper
-  pull_request:
-    branches: [master]
-    branches-ignore:
-      - joss-paper
 
 jobs:
   test_python:
