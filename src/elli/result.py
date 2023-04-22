@@ -278,7 +278,7 @@ class Result:
         r"""Returns the absolute reflectance for unpolarized light.
 
         .. math::
-            R = R_{pp} / R_{ss}
+            R = (R_{pp} + R_{ss}) / 2
         """
         return (self.R_matrix[:, 0, 0] + self.R_matrix[:, 1, 1]) / 2
 
