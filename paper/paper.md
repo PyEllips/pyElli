@@ -23,58 +23,103 @@ bibliography: paper.bib
 
 # Summary
 
-Spectroscopic ellipsometry is an easy applicable and useful tool for todays materials research. 
-It is used throughout various scientific fields to determine the optical constants of materials.
-However, ellipsometry always needs numerical analysis to deduce material properties from a measurement.
-The algorithm of choice for such analysis is the so-called transfer-matrix approach, using matrices for each layer to construct a full matrix for the complete system. 
-The matrix describes the whole light matter interaction - reflection, transmission and absorption - of the sample.
+PyElli is an open source analysis tool for linear optical interaction of layered materials written in python.
+It mainly targets spectroscopic ellipsometry, but is easily adaptable to transmission or reflection experiments.
 
-Typically, software for such calculations is shipped together with ellipsometers, where each hardware vendor supplies their own version.
-Therefore, through different implementation details and different optical models the dispersion models for materials in literature cannot readily be adapted in the lab.
+Spectroscopic ellipsometry (SE) is used throughout various scientific fields to determine the optical constants of layered material stacks.
+To deduce actual material parameters from an SE experiment, numerical analysis needs to be performed.
+This is typically done with the transfer-matrix method (tmm), which associates an interaction matrix to the optical response of each material layer. The full optical response of a material system is then determined by matrix multiplication of the layers interaction matrices.
 
-Further, if the supplied software does not support a specific kind of analysis (e.g. anisotropic materials or simultaneous fitting of multiple measurements) scientists need to use third party software, anyways.
+Proprietary software for such calculations is mostly shipped with ellipsometers, where each ellipsometer manufacturer supplies their own adapted version.
+While this is great for the workflow in the laboratory, it ties scientists to the optical models and experiments available in the software, is hard to reproduce with other systems and makes data interchange cumbersome.
+If such software does not support a specific kind of analysis, e.g., calculating anisotropic materials or simultaneous fitting of multiple measurements, scientists need to use third party software, anyways.
 
-In this paper we present the open source python software pyElli, which tackles these problems by offering an open source platform, which is by design easily extendable and adaptable with new optical models or analysis algorithms.
+PyElli offers an open source alternative and tries to stay as compatible as possible to existing solutions.
+This allows scientist to adapt pyElli to their needs, either for single experiments not covered by other software or as a full FAIR data [FAIRpaper] analysis pipeline for SE measurements.
+It is designed with extensibility and adaptability in mind, to quickly allow scientists developing their custom analysis pipelines.
+It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
-The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara]. 
-But it is possible to include vendor-specific models or self-designed models, too.
+The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara].
+It is easily possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
 
-It leverages the popular public domain database for optical constants [refractiveindex.info] to use citeable reference materials.
+To quickly build models pyElli includes the popular public domain database for optical constants [refractiveindex.info], which allows users to load literature dispersions with a single line of code.
 
-PyElli currently supports two solving algorithms, one based on a 2x2 matrix algorithm [byrnes] which is faster, but only applicable for simple problems and a 4x4 matrix algorithm based on the Berreman's transfer matrix formulation [berreman]. 
-While the 2x2 algorithm splits the two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field. 
-Accordingly, it allows to solve more complex problems like anisotropic samples.
+PyElli supports using mutliple solving algorithms, which allows for specialized applications.
+Currently, two algorithms using different formulations are available.
+The first one is a simple algorithm based on a 2x2 matrix formulation [byrnes] and second one a more complex 4x4 formulation [berreman].
+While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, which allows solving more complex problems, e.g., anistropic materials or active media.
 
 # Statement of need
 
-As it is more and more common to publish research data for reuse and review after the FAIR data guidelines [FAIR]. 
-The same benefits apply to research software and were summarized in the FAIR4RS principles [FAIR4RS]. 
+As it is more and more common to publish research data for reuse and review after the FAIR data guidelines [FAIR].
+The same benefits apply to research software and were summarized in the FAIR4RS principles [FAIR4RS].
 This is especially important for ellisometric data as the results are tightly related and dependant on the algorithms and models used for evaluation.
 
-Opposite to the vendor provided software, an open source toolkit has many inherent benefits. 
-The optical models used can vary between vendors and the translation may be difficult, if the information is not clearly documented. 
-PyElli's open source nature makes the models extendable, auditable and occurring changes comprehensible. 
+Opposite to the vendor provided software, an open source toolkit has many inherent benefits.
+The optical models used can vary between vendors and the translation may be difficult, if the information is not clearly documented.
+PyElli's open source nature makes the models extendable, auditable and occurring changes comprehensible.
 It allows the handling of files from many different measurement devices as importer scripts can be developed as plugins.
 
 To provide fast processing of measurement data, PyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
-This allows the use advanced fitting algorithms like global optimizers in reasonable evaluation times. 
-On the other hand this makes realtime, in-situ monitoring of layered material growth possible. 
+This allows the use advanced fitting algorithms like global optimizers in reasonable evaluation times.
+On the other hand this makes realtime, in-situ monitoring of layered material growth possible.
 
-An [example] in the NORTH analysis toolkit within the research data management software NOMAD by the german FAIRmat consortium shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
+An [example] in the NORTH analysis toolkit within the research data management software NOMAD [NOMADpaper] by the german FAIRmat consortium [link_to_fairmat] shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
 We hope that the software contributes to easier analysis and reproducibility, as well as FAIR data management within the ellipsometry community.
+
+# Software with similar functionalities
 
 Other notable python open source software for solving transfer-matrices are available, but tend to focus on different aspects:
 
-* [PyGTM]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
-* [PyLlama]: Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
-* [RayFlare]: Complete toolkit to simulate solar cells. Provides the same 2x2 [byrnes] algorithm and a scattering matrix approach.
-* Additional mentions: [refellips][EMpy][dtmm][py_matrix]
+- [PyGTM]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
+- [PyLlama]: Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
+- [RayFlare]: Complete toolkit to simulate solar cells. Provides the same 2x2 [byrnes] algorithm and a scattering matrix approach.
+- Additional mentions: [refellips][EMpy][dtmm][py_matrix]
+- Fast TMM -> AI stuff
 
-# Example
+# Application
 
-* Show a walkthrough of the SiO2 on Si example.
-* Show a Mueller matrix example?
-* Show an anisotropy example? (Maybe quote my paper about SiPh4 and show the code in a separate git repo)
+Here the SiPh example?
+
+# Example: Building a simple model
+
+```python
+import numpy as np
+import elli
+from elli.fitting import ParamsHist, fit
+```
+
+```python
+params = ParamsHist()
+params.add("n0", value=1.452)
+params.add("n1", value=36.0)
+params.add("thickness", value=20)
+```
+
+```python
+SiO2 = elli.Cauchy(
+  params["n0"],
+  params["n1"],
+).get_mat()
+```
+
+```python
+rii_db = elli.db.RII()
+Si = rii_db.get_mat("Si", "Aspnes")
+```
+
+```python
+structure = elli.Structure(
+    elli.AIR,
+    [elli.Layer(SiO2, params["thickness"])],
+    Si,
+)
+```
+
+```python
+wavelengths = np.linspace(210, 800, 100)
+structure.evaluate(wavelengths, 70)
+```
 
 # Citations
 
@@ -87,9 +132,9 @@ citation) then you can do it with the example BibTeX entry below for @fidgit.
 
 For a quick reference, the following citation commands can be used:
 
-* `@author:2001` -> "Author et al. (2001)"
-* `[@author:2001]` -> "(Author et al., 2001)"
-* `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
+- `@author:2001` -> "Author et al. (2001)"
+- `[@author:2001]` -> "(Author et al., 2001)"
+- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
 # Figures
 
