@@ -18,6 +18,8 @@ class Table(IndexDispersion):
         :lbda (list): Wavelengths in nm. This value must be provided.
         :n: Complex refractive index values in the convention n + ik.
             This value must be provided.
+        :kind: Type of interpolation
+            (see scipy.interpolate.interp1d for more information). Defaults to 'linear'.
 
     Repeated parameters:
         --
@@ -30,6 +32,8 @@ class Table(IndexDispersion):
     rep_params_template = {}
 
     def __init__(self, *args, **kwargs) -> None:
+        self.kind = kwargs.pop("kind", "linear")
+
         super().__init__(*args, **kwargs)
 
         if len(self.single_params.get("lbda")) == 0:
@@ -43,7 +47,7 @@ class Table(IndexDispersion):
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("n"),
-            kind="cubic",
+            kind=self.kind,
         )
 
         self.default_lbda_range = self.single_params.get("lbda")

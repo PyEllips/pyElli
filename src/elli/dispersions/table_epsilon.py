@@ -17,6 +17,8 @@ class TableEpsilon(Dispersion):
         :lbda (list): Wavelengths in nm. This value must be provided.
         :epsilon: Complex dielectric function values in the convention ε1 + iε2.
             This value must be provided.
+        :kind: Type of interpolation
+            (see scipy.interpolate.interp1d for more information). Defaults to 'linear'.
 
     Repeated parameters:
         --
@@ -29,6 +31,8 @@ class TableEpsilon(Dispersion):
     rep_params_template: Dict[str, Any] = {}
 
     def __init__(self, *args, **kwargs) -> None:
+        self.kind = kwargs.pop("kind", "linear")
+
         super().__init__(*args, **kwargs)
 
         if len(self.single_params.get("lbda")) == 0:
@@ -44,7 +48,7 @@ class TableEpsilon(Dispersion):
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("epsilon"),
-            kind="cubic",
+            kind=self.kind,
         )
 
         self.default_lbda_range = self.single_params.get("lbda")
