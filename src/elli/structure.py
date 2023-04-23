@@ -91,6 +91,15 @@ class RepeatedLayers(AbstractLayer):
                 Number of additional layers before the first period. Defaults to 0.
             after (int, optional): Number of additional layers after the last period. Defaults to 0.
         """
+        if repetitions < 1:
+            raise ValueError("Number of repetitions need to be at least 1.")
+
+        if before < 0:
+            raise ValueError("Before value needs to be 0 or more.")
+
+        if after < 0:
+            raise ValueError("Divisions needs to be 0 or more.")
+
         self.repetitions = repetitions
         self.before = before
         self.after = after
@@ -101,6 +110,14 @@ class RepeatedLayers(AbstractLayer):
         Args:
             layers (List[AbstractLayer]): List of the repeated layers, starting from z=0
         """
+        if not isinstance(layers, list):
+            raise TypeError("Provide a list of layers.")
+        for layer in layers:
+            if not isinstance(layer, AbstractLayer):
+                raise TypeError(
+                    f"Expected a list of Layer objects but found an item of type {type(layer)}."
+                )
+
         self.layers = layers
 
     def get_permittivity_profile(
@@ -147,6 +164,9 @@ class Layer(AbstractLayer):
         Args:
             thickness (float): Thickness of the layer in nm.
         """
+        if thickness < 0:
+            raise ValueError("Thickness value can't be negative.")
+
         self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
@@ -155,6 +175,11 @@ class Layer(AbstractLayer):
         Args:
             material (Material): Material object
         """
+        if not isinstance(material, Material):
+            raise TypeError(
+                f"Expected material to be an Material object but found type {type(material)}."
+            )
+
         self.material = material
 
     def get_permittivity_profile(
@@ -189,6 +214,9 @@ class InhomogeneousLayer(AbstractLayer):
         Args:
             thickness (float): Thickness of the layer in nm.
         """
+        if thickness < 0:
+            raise ValueError("Thickness value can't be negative.")
+
         self.thickness = thickness
 
     def set_material(self, material: Material) -> None:
@@ -197,6 +225,11 @@ class InhomogeneousLayer(AbstractLayer):
         Args:
             material (Material): Material object
         """
+        if not isinstance(material, Material):
+            raise TypeError(
+                f"Expected material to be an Material object but found type {type(material)}."
+            )
+
         self.material = material
 
     def set_divisions(self, div: int) -> None:
@@ -205,6 +238,9 @@ class InhomogeneousLayer(AbstractLayer):
         Args:
             div (int): Number of slices for the layer
         """
+        if div < 1:
+            raise ValueError("Number of slices need to be at least 1.")
+
         self.div = div
 
     def get_slices(self) -> npt.NDArray:
@@ -311,6 +347,19 @@ class VaryingMixtureLayer(InhomogeneousLayer):
         self.set_divisions(div)
         self.set_fraction_modulation(fraction_modulation)
 
+    def set_material(self, material: MixtureMaterial) -> None:
+        """Defines the material for the varying mixture layer.
+
+        Args:
+            material (MixtureMaterial): Material object
+        """
+        if not isinstance(material, MixtureMaterial):
+            raise TypeError(
+                f"Expected material to be an MixtureMaterial object but found type {type(material)}."
+            )
+
+        self.material = material
+
     def set_fraction_modulation(
         self, fraction_modulation: Callable[[float], float] = lambda x: x
     ) -> None:
@@ -379,6 +428,11 @@ class Structure:
         Args:
             material (IsotropicMaterial): IsotropicMaterial used as front half space
         """
+        if not isinstance(material, Material):
+            raise TypeError(
+                f"Expected front material to be an Material object but found type {type(material)}."
+            )
+
         self.front_material = material
 
     def set_back_material(self, material: Material) -> None:
@@ -387,6 +441,11 @@ class Structure:
         Args:
             material (Material): Material used as back half space
         """
+        if not isinstance(material, Material):
+            raise TypeError(
+                f"Expected back material to be an Material object but found type {type(material)}."
+            )
+
         self.back_material = material
 
     def set_layers(self, layers: List[Layer]) -> None:
@@ -395,6 +454,14 @@ class Structure:
         Args:
             layers (List[Layer]): List of Layers, starting from z=0
         """
+        if not isinstance(layers, list):
+            raise TypeError("Provide a list of layers.")
+        for layer in layers:
+            if not isinstance(layer, AbstractLayer):
+                raise TypeError(
+                    f"Expected a list of Layer objects but found an item of type {type(layer)}."
+                )
+
         self.layers = layers
 
     def get_permittivity_profile(
