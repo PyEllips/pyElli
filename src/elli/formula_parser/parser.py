@@ -1,5 +1,5 @@
 """This modules creates a formula parser"""
-from functools import cache
+from functools import lru_cache
 import os
 from operator import add, mul, neg, sub, truediv
 from typing import Dict
@@ -168,7 +168,7 @@ with open(
     )
 
 
-@cache
+@lru_cache
 def parse_formula(formula: str):
     """
     Parses a dispersion formula string into an abstract syntax tree.
