@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1682279890333,
+  "lastUpdate": 1682281237454,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -10522,6 +10522,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00007600306482972138",
             "extra": "mean: 5.071425899996029 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "48e3b7d241b629c452825fea0a22e572bd13219b",
+          "message": "Merge pull request #134 from PyEllips/selectable-interpolation-order\n\nMake interpolation order selectable and set linear as default",
+          "timestamp": "2023-04-23T22:18:35+02:00",
+          "tree_id": "e6c5ead664a1710a468c3b3bca1064b0fc5dabc5",
+          "url": "https://github.com/PyEllips/pyElli/commit/48e3b7d241b629c452825fea0a22e572bd13219b"
+        },
+        "date": 1682281236118,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 76.64430214036061,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011499976084012157",
+            "extra": "mean: 13.047284299994999 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 4.0641556953727145,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02444531589437912",
+            "extra": "mean: 246.05356559999905 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 19.29180691255264,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003185114612171298",
+            "extra": "mean: 51.83547630001044 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 3.848752660136417,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02686205978967062",
+            "extra": "mean: 259.82443880001256 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 89.45012761368203,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0016749656208344126",
+            "extra": "mean: 11.179413899986912 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 124.23186814738948,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001475764732817254",
+            "extra": "mean: 8.04946440001686 msec\nrounds: 10"
           }
         ]
       }
