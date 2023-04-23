@@ -6,7 +6,7 @@ import numpy.typing as npt
 
 from elli.units import ureg
 from elli.dispersions.base_dispersion import BaseDispersion, Dispersion, IndexDispersion
-from elli.formula_parser.parser import formula_parser, transformation_formula_parser
+from elli.formula_parser.parser import parse_formula, FormulaTransformer
 
 
 class FormulaParser(BaseDispersion):
@@ -95,7 +95,7 @@ class FormulaParser(BaseDispersion):
         raise ValueError(f"Unsupported unit `{unit}`.")
 
     def _check_repr(self):
-        representation = formula_parser().parse(self.formula).data
+        representation = parse_formula(self.formula).data
 
         if isinstance(self, FormulaIndex) and not representation == "n":
             raise ValueError(
@@ -108,9 +108,12 @@ class FormulaParser(BaseDispersion):
             )
 
     def __dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        return transformation_formula_parser(
-            self.f_axis_name, lbda, self.single_params, self.rep_params_dl
-        ).parse(self.formula)[1]
+        return FormulaTransformer(
+            x_axis_name=self.f_axis_name,
+            x_axis_values=lbda,
+            single_params=self.single_params,
+            repeated_params=self.rep_params_dl,
+        ).transform(parse_formula(self.formula))[1]
 
 
 class Formula(Dispersion, FormulaParser):
