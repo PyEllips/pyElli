@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1682281237454,
+  "lastUpdate": 1682281299411,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -10588,6 +10588,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.001475764732817254",
             "extra": "mean: 8.04946440001686 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5cfb61252467d3eea0019ad4dbf7acf1e16218e6",
+          "message": "Add more type-checking and error messages (#135)\n\n* Add type-checking for layers and structure\r\n* Add type-guarding to materials\r\n* Add tests for materials\r\n* Add tests for structure type checking",
+          "timestamp": "2023-04-23T22:19:32+02:00",
+          "tree_id": "2c2fdfd451ef1ffc07058de0f59b70b66744682d",
+          "url": "https://github.com/PyEllips/pyElli/commit/5cfb61252467d3eea0019ad4dbf7acf1e16218e6"
+        },
+        "date": 1682281298036,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 78.89017989165798,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005433991294772493",
+            "extra": "mean: 12.67584889999398 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 3.810486133643613,
+            "unit": "iter/sec",
+            "range": "stddev: 0.03866569025238249",
+            "extra": "mean: 262.43370660000096 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 18.833846850094268,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007923759850571466",
+            "extra": "mean: 53.09589740000433 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 4.01291403087533,
+            "unit": "iter/sec",
+            "range": "stddev: 0.017264893624400392",
+            "extra": "mean: 249.19547049999267 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 71.24817512049862,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005489140302670404",
+            "extra": "mean: 14.03544719999843 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 123.70714283554342,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007980833543740683",
+            "extra": "mean: 8.083607600002551 msec\nrounds: 10"
           }
         ]
       }
