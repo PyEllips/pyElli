@@ -168,7 +168,7 @@ with open(
     )
 
 
-@lru_cache
+@lru_cache(maxsize=128)
 def parse_formula(formula: str):
     """
     Parses a dispersion formula string into an abstract syntax tree.
