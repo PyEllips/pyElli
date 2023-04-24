@@ -83,7 +83,7 @@ Other notable python open source software for solving transfer-matrices are avai
 
 # Application
 
-Here the SiPh example?
+Here the SiPh example? [@eberheim2022]
 
 # Example: Building a simple model
 
