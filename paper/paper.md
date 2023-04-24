@@ -35,22 +35,22 @@ While this is great for a laboratory workflow, it ties scientists to the optical
 If software does not support a specific kind of analysis, e.g., calculating anisotropic materials or simultaneous fitting of external experimental parameters, scientists need to use third party software.
 
 PyElli offers an open source alternative to existing solutions while staying as compatible as possible.
-This allows scientist to adapt pyElli to their needs, either for custom experiments not covered by other software or as a full FAIR data [FAIRpaper] analysis pipeline for SE measurements.
+This allows scientist to adapt pyElli to their needs, either for custom experiments not covered by other software or as a full FAIR data [@Wilkinson2016] analysis pipeline for SE measurements.
 It is designed with extensibility and adaptability in mind, to allow scientists to easily develop their custom analysis pipelines.
 It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
-The optical models used try to stay as close as possible to literature [fujiwara].
+The optical models used try to stay as close as possible to literature [@Hilfiker2018].
 It is possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
 
 To analyse materials it is helpful to have a database of pre-defined models to use.
-For this purpose, pyElli includes the popular public domain database for optical constants [refractiveindex.info], which allows users to load literature dispersions with a single line of code.
+For this purpose, pyElli includes the popular public domain database for optical constants [refractiveindex.info](https://refractiveindex.info) [@rii], which allows users to load literature dispersions with a single line of code.
 
 PyElli supports using mutliple solving algorithms, which allows for specialized applications.
 Currently, two algorithms using different formulations are available.
-The first one is a simple algorithm based on a 2x2 matrix formulation [byrnes] and second one a more complex 4x4 formulation [berreman].
+The first one is a simple algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and the second one a more complex 4x4 formulation [@Berreman72].
 While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, which allows solving more complex problems, e.g., anistropic materials or active media.
 
-For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
+For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
 This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth.
 The usage of python and vectorization libraries allows for easy adoption for artificial intelligence based analysis of SE data.
 
@@ -65,9 +65,9 @@ An open source toolkit has many inherent benefits over proprietary software.
 For SE the optical models vary between manufacturers and the translation may be difficult, if clear documentation is not available.
 PyElli's open source nature makes optical models extendable, auditable and occurring changes comprehensible.
 Each version of pyElli is associated a doi and a zenodo upload, which allows for reliable referencing and reproducing of analysis results.
-It supports NXellipsometry [NXellipsometry], a recent advancement in standardization of SE data.
-The standard is developed by the german consortium FAIRmat [link_to_fairmat] within the german National Research Data Infrastracture (NFDI) and is accepted by the NeXus International Advisory Committee (NIAC), which is maintaining beamline-standards in the NeXus format since 20+ years.
-PyElli is also available as an example [example] and a cloud-based analysis tool [link_to_north] in the research data management software NOMAD [NOMADpaper].
+It supports [NXellipsometry](https://fairmat-experimental.github.io/nexus-fairmat-proposal/9636feecb79bb32b828b1a9804269573256d7696/classes/contributed_definitions/NXellipsometry.html#nxellipsometry), a recent advancement in standardization of SE data.
+The standard is developed by the german consortium [FAIRmat](https://www.fair-di.eu/fairmat) within the german National Research Data Infrastracture (NFDI) and is accepted by the [NeXus International Advisory Committee (NIAC)](https://www.nexusformat.org/NIAC.html), which is maintaining beamline-standards in the [NeXus format](https://www.nexusformat.org) since 20+ years [@Konnecke2015].
+PyElli is also available as an [example](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-remote-tools-hub/-/tree/develop/docker/ellips/example) and a cloud-based [analysis tool](https://nomad-lab.eu/prod/v1/staging/gui/analyze/north) in the research data management software [NOMAD](https://nomad-lab.eu/nomad-lab/) [@Scheffler2022].
 
 In summary, we believe and hope that pyElli will further contribute to easier analysis, reproducibility as well as FAIR data management within the ellipsometry community.
 
@@ -92,7 +92,7 @@ Here, we will show the process by creating a standard model for SiO2 on Si.
 We will use a cauchy dispersion function for SiO2 and tabulated literature values for Si loaded from the refractiveindex.info database.
 
 Before we dive into the actual building we need to import the necessary libraries.
-PyElli is imported from the module `elli` and here we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from lmfit [lmfit], adding history to it. This way you can revert your model to an earlier set of parameters.
+PyElli is imported from the module `elli` and here we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from [lmfit](https://lmfit.github.io/lmfit-py/index.html) [@matt_newville_2023_7810964], adding history to it. This way you can revert your model to an earlier set of parameters.
 We also import `linspace` from `numpy`, which we'll need for generating a wavelength axis.
 
 ```python
@@ -115,7 +115,7 @@ params.add("thickness", value=20)
 ```
 
 Now, the cauchy model is created by using the `Cauchy` class.
-Each dispersion has it's own class and you'll find a list of different dispersions in our documentation [link_to_dispersions].
+Each dispersion has it's own class and you'll find a list of different dispersions in our [documentation](https://pyelli.readthedocs.io/en/stable/dispersions.html).
 It is important to note that there are two types of parameters for dispersions.
 **Single parameters**, which only appear once in the formula, e.g., `n0` and `n1` are single parameters and **repeated parameters** which represent one element of a sum and may be used in an setwise arbitrary amount.
 Single parameters are added to the class constructor, like `Cauchy(param1, ...)` and repeated parameters are added via the `.add(...)` method, like `Sellmeier().add(A=param_a, B=param_b)`.
