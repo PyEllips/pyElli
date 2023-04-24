@@ -87,11 +87,25 @@ Here the SiPh example?
 
 # Example: Building a simple model
 
+Building an optical model in pyElli is simple and straightforward.
+Here, we will show the process by creating a standard model for SiO2 on Si.
+We will use a cauchy dispersion function for SiO2 and tabulated literature values for Si loaded from the refractiveindex.info database.
+
+Before we dive into the actual building we need to import the necessary libraries.
+PyElli is imported from the module `elli` and here we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from lmfit [lmfit], adding history to it. This way you can revert your model to an earlier set of parameters.
+We also import `linspace` from `numpy`, which we'll need for generating a wavelength axis.
+
 ```python
-import numpy as np
+from numpy import linspace
 import elli
 from elli.fitting import ParamsHist, fit
 ```
+
+First, we instantiate the paramters.
+We only need `n0` and `n1` for SiO2, so we keep all other values to default, which is zero in this case.
+Additionally, we introduce the thickness of SiO2 in nanometers.
+Here, you may also add additional settings for lmfit parameters.
+For details which parameters to use, you may refer to their documentation or consult our verbose basic example [link_to_basic_example].
 
 ```python
 params = ParamsHist()
@@ -100,6 +114,15 @@ params.add("n1", value=36.0)
 params.add("thickness", value=20)
 ```
 
+Now, the cauchy model is created by using the `Cauchy` class.
+Each dispersion has it's own class and you'll find a list of different dispersions in our documentation [link_to_dispersions].
+It is important to note that there are two types of parameters for dispersions.
+**Single parameters**, which only appear once in the formula, e.g., `n0` and `n1` are single parameters and **repeated parameters** which represent one element of a sum and may be used in an arbitrary number.
+Single parameters are added to the class constructor, like `Cauchy(param1, ...)` and repeated parameters are added via the `.add(...)` method, like `Sellmeier().add(A=param_a, B=param_b)`.
+The possible single and repeated parameters for each dispersion are listed in the documentation.
+Since we are using a cauchy dispersion here, we only need to specify single parameters.
+Subsequently, the `.get_mat()` function is called to automatically convert the dispersion into an isotropic material.
+
 ```python
 SiO2 = elli.Cauchy(
   params["n0"],
@@ -107,10 +130,23 @@ SiO2 = elli.Cauchy(
 ).get_mat()
 ```
 
+To request tabulated literature values for silicon, we instantiate the refractiveindex.info database and query it for the material (`Si`) and author (`Aspnes`).
+
 ```python
 rii_db = elli.db.RII()
 Si = rii_db.get_mat("Si", "Aspnes")
 ```
+
+With all materials instantiated, we are able to build the layerd structure.
+The class `Structure` takes three arguments:
+
+- The incident half-space, this is air in most cases.
+- The layer stack as an array of `Layer` objects. Typically, the `Layer` object is created by adding the material and the thickness of the layer.
+- The lower half-space, this is typically the substrate.
+
+The incident and lower half-space are modeled as infinite to terminate the calculation.
+Therfore, no backside scattering will be introduced into the calculation.
+As for most SE experiments, the incident half-space will be air and the lower half-space an opaque substrate.
 
 ```python
 structure = elli.Structure(
@@ -120,10 +156,20 @@ structure = elli.Structure(
 )
 ```
 
+Eventually, everything left to do is triggering a calculation with calling `evaluation(...)` on the structure.
+We use a `wavelengths` array from $$210\;nm$$ to $$800\;nm$$ for the calculation range and an angle of incidence of $$70$$ degree (second parameter of evaluate).
+
 ```python
 wavelengths = np.linspace(210, 800, 100)
-structure.evaluate(wavelengths, 70)
+result = structure.evaluate(wavelengths, 70)
 ```
+
+The calculation is stored in the `result` variable, which is an `Result` object [link_to_docs_result].
+This objects holds the calculation results and you simple can call `psi`, `delta`, 'R', etc. to get your desired output.
+We may also use the `@fit` decorator in `elli.fitting` to automatically show a widget-based fitting gui for jupyter notebooks.
+Figure \autoref{fig:fit_dec_example} shows the output when used with this example model and some experimental data.
+![The ipywidgets based fitting gui.\label{fig:fit_dec_example}](fit_decorator_example.png)
+You find additional information on how this is done in our examples [link_to_examples].
 
 # Citations
 
