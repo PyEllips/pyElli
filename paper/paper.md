@@ -180,9 +180,6 @@ Probably sbyrnes and the original creator of the base we used.
 
 # References
 
-- @Wilkinson2016
-- @Barker2022
-
 <!-- Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
 format.
