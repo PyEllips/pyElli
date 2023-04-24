@@ -1,5 +1,5 @@
 ---
-title: "pyElli: A reproducibly and comprehensible open source ellipsometry analysis tool"
+title: "pyElli: An open source ellipsometry analysis tool for FAIR data"
 tags:
   - Python
   - spectroscopy
@@ -17,7 +17,7 @@ authors:
 affiliations:
   - name: Institute of Experimental Physics I and Center for Materials Research (ZfM/LaMa), Justus Liebig University Giessen, Heinrich-Buff-Ring 16, Giessen, D-35392 Germany
     index: 1
-date: 31 July 2022
+date: 24 April 2023
 bibliography: paper.bib
 ---
 
@@ -157,7 +157,7 @@ structure = elli.Structure(
 ```
 
 Eventually, everything left to do is triggering a calculation with calling `evaluation(...)` on the structure.
-We use a `wavelengths` array from $$210\;nm$$ to $$800\;nm$$ for the calculation range and an angle of incidence of $$70$$ degree (second parameter of evaluate).
+We use a `wavelengths` array from $210\;nm$ to $800\;nm$ for the calculation range and an angle of incidence of $70$ degree (second parameter of evaluate).
 
 ```python
 wavelengths = np.linspace(210, 800, 100)
@@ -171,9 +171,13 @@ Figure \autoref{fig:fit_dec_example} shows the output when used with this exampl
 ![The ipywidgets based fitting gui.\label{fig:fit_dec_example}](fit_decorator_example.png)
 You find additional information on how this is done in our examples [link_to_examples].
 
-# Citations
+# Acknowledgements
 
-Citations to entries in paper.bib should be in
+Probably sbyrnes and the original creator of the base we used.
+
+# References
+
+<!-- Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
 format.
 
@@ -184,20 +188,4 @@ For a quick reference, the following citation commands can be used:
 
 - `@author:2001` -> "Author et al. (2001)"
 - `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
-
-# Acknowledgements
-
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
-
-# References
+- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)" -->
