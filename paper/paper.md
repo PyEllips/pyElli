@@ -28,44 +28,48 @@ It mainly targets spectroscopic ellipsometry, but is easily adaptable to transmi
 
 Spectroscopic ellipsometry (SE) is used throughout various scientific fields to determine the optical constants of layered material stacks.
 To deduce actual material parameters from an SE experiment, numerical analysis needs to be performed.
-This is typically done with the transfer-matrix method (tmm), which associates an interaction matrix to the optical response of each material layer. The full optical response of a material system is then determined by matrix multiplication of the layers interaction matrices.
+This is typically done with the transfer-matrix method (tmm), which associates an interaction matrix to the optical response of each material layer. The full optical response of a material system is then determined by matrix multiplication of the layers matrices.
 
-Proprietary software for such calculations is mostly shipped with ellipsometers, where each ellipsometer manufacturer supplies their own adapted version.
-While this is great for the workflow in the laboratory, it ties scientists to the optical models and experiments available in the software, is hard to reproduce with other systems and makes data interchange cumbersome.
-If such software does not support a specific kind of analysis, e.g., calculating anisotropic materials or simultaneous fitting of multiple measurements, scientists need to use third party software, anyways.
+Proprietary software for such analysis is mostly shipped with ellipsometers, where each ellipsometer manufacturer supplies their own adapted version.
+While this is great for a laboratory workflow, it ties scientists to the optical models and experiments available in the software, is hard to reproduce with other systems and makes data interchange cumbersome.
+If software does not support a specific kind of analysis, e.g., calculating anisotropic materials or simultaneous fitting of external experimental parameters, scientists need to use third party software.
 
-PyElli offers an open source alternative and tries to stay as compatible as possible to existing solutions.
-This allows scientist to adapt pyElli to their needs, either for single experiments not covered by other software or as a full FAIR data [FAIRpaper] analysis pipeline for SE measurements.
-It is designed with extensibility and adaptability in mind, to quickly allow scientists developing their custom analysis pipelines.
+PyElli offers an open source alternative to existing solutions while staying as compatible as possible.
+This allows scientist to adapt pyElli to their needs, either for custom experiments not covered by other software or as a full FAIR data [FAIRpaper] analysis pipeline for SE measurements.
+It is designed with extensibility and adaptability in mind, to allow scientists to easily develop their custom analysis pipelines.
 It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
-The optical models used, try to stay as close as possible to formulas documented in literature [fujiwara].
-It is easily possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
+The optical models used, try to stay as close as possible to literature [fujiwara].
+It is possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
 
-To quickly build models pyElli includes the popular public domain database for optical constants [refractiveindex.info], which allows users to load literature dispersions with a single line of code.
+To analyse materials it is helpful to have a database of pre-defined models to use.
+For this purpose, pyElli includes the popular public domain database for optical constants [refractiveindex.info], which allows users to load literature dispersions with a single line of code.
 
 PyElli supports using mutliple solving algorithms, which allows for specialized applications.
 Currently, two algorithms using different formulations are available.
 The first one is a simple algorithm based on a 2x2 matrix formulation [byrnes] and second one a more complex 4x4 formulation [berreman].
 While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, which allows solving more complex problems, e.g., anistropic materials or active media.
 
+For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
+This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth possible.
+The usage of python and vectorization libraries allows for easy adoption for artificial intelligence based analysis of SE data.
+
 # Statement of need
 
-As it is more and more common to publish research data for reuse and review after the FAIR data guidelines [FAIR].
-The same benefits apply to research software and were summarized in the FAIR4RS principles [FAIR4RS].
-This is especially important for ellisometric data as the results are tightly related and dependant on the algorithms and models used for evaluation.
+The importance of publishing data according to the FAIR principles [FAIRpaper] is growing.
+Many research journals already require authors to add supporting data and sponsors are starting to demand data governance from institutes and researchers.
+Since not only the data itself is necessary to reproduce data, but also the software the data was created with, the FAIR principles were recently extended to apply to research software, too [FAIR4RS].
+We believe that producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE as the results are tightly related and dependent on the algorithms and models used for evaluation.
 
-Opposite to the vendor provided software, an open source toolkit has many inherent benefits.
-The optical models used can vary between vendors and the translation may be difficult, if the information is not clearly documented.
-PyElli's open source nature makes the models extendable, auditable and occurring changes comprehensible.
-It allows the handling of files from many different measurement devices as importer scripts can be developed as plugins.
+An open source toolkit has many inherent benefits over proprietary software.
+For SE the optical models vary between manufacturers and the translation may be difficult, if clear documentation is not available.
+PyElli's open source nature makes optical models extendable, auditable and occurring changes comprehensible.
+Each version of pyElli is associated a doi and a zenodo upload, which allows for reliable referencing and reproducing of analysis results.
+It supports NXellipsometry [NXellipsometry], a recent advancement in standardization of SE data.
+The standard is developed by the german consortium FAIRmat [link_to_fairmat] within the german National Research Data Infrastracture (NFDI) and is accepted by the NeXus International Advisory Committee (NIAC), which is maintaining beamline-standards in the NeXus format since 20+ years.
+PyElli is also available as an example [example] and a cloud-based analysis tool [link_to_north] in the research data management software NOMAD [NOMADpaper].
 
-To provide fast processing of measurement data, PyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
-This allows the use advanced fitting algorithms like global optimizers in reasonable evaluation times.
-On the other hand this makes realtime, in-situ monitoring of layered material growth possible.
-
-An [example] in the NORTH analysis toolkit within the research data management software NOMAD [NOMADpaper] by the german FAIRmat consortium [link_to_fairmat] shows that the software can easily be integrated in emerging cloud-based analysis tools for science and supports a standardization of ellipsometry data formats within this project [NXellispometry].
-We hope that the software contributes to easier analysis and reproducibility, as well as FAIR data management within the ellipsometry community.
+In summary, we believe and hope that pyElli will further contribute to easier analysis, reproducibility as well as FAIR data management within the ellipsometry community.
 
 # Software with similar functionalities
 
