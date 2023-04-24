@@ -39,7 +39,7 @@ This allows scientist to adapt pyElli to their needs, either for custom experime
 It is designed with extensibility and adaptability in mind, to allow scientists to easily develop their custom analysis pipelines.
 It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
-The optical models used, try to stay as close as possible to literature [fujiwara].
+The optical models used try to stay as close as possible to literature [fujiwara].
 It is possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
 
 To analyse materials it is helpful to have a database of pre-defined models to use.
@@ -51,14 +51,14 @@ The first one is a simple algorithm based on a 2x2 matrix formulation [byrnes] a
 While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, which allows solving more complex problems, e.g., anistropic materials or active media.
 
 For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy] and [SciPy].
-This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth possible.
+This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth.
 The usage of python and vectorization libraries allows for easy adoption for artificial intelligence based analysis of SE data.
 
 # Statement of need
 
-The importance of publishing data according to the FAIR principles [FAIRpaper] is growing.
+The importance of publishing data according to the FAIR principles `[@Wilkinson2016]` is growing.
 Many research journals already require authors to add supporting data and sponsors are starting to demand data governance from institutes and researchers.
-Since not only the data itself is necessary to reproduce data, but also the software the data was created with, the FAIR principles were recently extended to apply to research software, too [FAIR4RS].
+Since not only the data itself is necessary to reproduce data, but also the software the data was created with, the FAIR principles were recently extended to apply to research software, too `[@Barker2022]`.
 We believe that producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE as the results are tightly related and dependent on the algorithms and models used for evaluation.
 
 An open source toolkit has many inherent benefits over proprietary software.
@@ -105,7 +105,7 @@ First, we instantiate the paramters.
 We only need `n0` and `n1` for SiO2, so we keep all other values to default, which is zero in this case.
 Additionally, we introduce the thickness of SiO2 in nanometers.
 Here, you may also add additional settings for lmfit parameters.
-For details which parameters to use, you may refer to their documentation or consult our verbose basic example [link_to_basic_example].
+For a list of parameter arguments you may refer to lmfit's documentation or consult our verbose [basic example](https://pyelli.readthedocs.io/en/stable/auto_examples/plot_01_basic_usage.html#sphx-glr-auto-examples-plot-01-basic-usage-py).
 
 ```python
 params = ParamsHist()
@@ -117,11 +117,12 @@ params.add("thickness", value=20)
 Now, the cauchy model is created by using the `Cauchy` class.
 Each dispersion has it's own class and you'll find a list of different dispersions in our documentation [link_to_dispersions].
 It is important to note that there are two types of parameters for dispersions.
-**Single parameters**, which only appear once in the formula, e.g., `n0` and `n1` are single parameters and **repeated parameters** which represent one element of a sum and may be used in an arbitrary number.
+**Single parameters**, which only appear once in the formula, e.g., `n0` and `n1` are single parameters and **repeated parameters** which represent one element of a sum and may be used in an setwise arbitrary amount.
 Single parameters are added to the class constructor, like `Cauchy(param1, ...)` and repeated parameters are added via the `.add(...)` method, like `Sellmeier().add(A=param_a, B=param_b)`.
-The possible single and repeated parameters for each dispersion are listed in the documentation.
-Since we are using a cauchy dispersion here, we only need to specify single parameters.
-Subsequently, the `.get_mat()` function is called to automatically convert the dispersion into an isotropic material.
+The available single and repeated parameters are listed in the documentation for each dispersion.
+We are using a cauchy model here, which only takes single parameters.
+Therefore, we pass all parameters to the class constructor.
+Subsequently, the `.get_mat()` function is called on the created object to automatically convert the dispersion into an isotropic material.
 
 ```python
 SiO2 = elli.Cauchy(
@@ -131,6 +132,8 @@ SiO2 = elli.Cauchy(
 ```
 
 To request tabulated literature values for silicon, we instantiate the refractiveindex.info database and query it for the material (`Si`) and author (`Aspnes`).
+It is possible to search the database first to get a list of matching entries.
+See the [documentation](https://pyelli.readthedocs.io/en/stable/database.html) for details.
 
 ```python
 rii_db = elli.db.RII()
@@ -164,18 +167,21 @@ wavelengths = np.linspace(210, 800, 100)
 result = structure.evaluate(wavelengths, 70)
 ```
 
-The calculation is stored in the `result` variable, which is an `Result` object [link_to_docs_result].
+The calculation is stored in the `result` variable, which is an [`Result` object](https://pyelli.readthedocs.io/en/stable/result.html).
 This objects holds the calculation results and you simple can call `psi`, `delta`, 'R', etc. to get your desired output.
 We may also use the `@fit` decorator in `elli.fitting` to automatically show a widget-based fitting gui for jupyter notebooks.
 Figure \autoref{fig:fit_dec_example} shows the output when used with this example model and some experimental data.
 ![The ipywidgets based fitting gui.\label{fig:fit_dec_example}](fit_decorator_example.png)
-You find additional information on how this is done in our examples [link_to_examples].
+You find additional information on how this is done in our [examples](https://pyelli.readthedocs.io/en/stable/auto_examples/index.html).
 
 # Acknowledgements
 
 Probably sbyrnes and the original creator of the base we used.
 
 # References
+
+- `@Wilkinson2016`
+- `@Barker2022`
 
 <!-- Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
