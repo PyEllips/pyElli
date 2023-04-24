@@ -56,9 +56,9 @@ The usage of python and vectorization libraries allows for easy adoption for art
 
 # Statement of need
 
-The importance of publishing data according to the FAIR principles `[@Wilkinson2016]` is growing.
+The importance of publishing data according to the FAIR principles [@Wilkinson2016] is growing.
 Many research journals already require authors to add supporting data and sponsors are starting to demand data governance from institutes and researchers.
-Since not only the data itself is necessary to reproduce data, but also the software the data was created with, the FAIR principles were recently extended to apply to research software, too `[@Barker2022]`.
+Since not only the data itself is necessary to reproduce data, but also the software the data was created with, the FAIR principles were recently extended to apply to research software, too [@Barker2022].
 We believe that producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE as the results are tightly related and dependent on the algorithms and models used for evaluation.
 
 An open source toolkit has many inherent benefits over proprietary software.
@@ -180,8 +180,8 @@ Probably sbyrnes and the original creator of the base we used.
 
 # References
 
-- `@Wilkinson2016`
-- `@Barker2022`
+- @Wilkinson2016
+- @Barker2022
 
 <!-- Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
