@@ -35,7 +35,7 @@ While this is great for a laboratory workflow, it ties scientists to the optical
 If software does not support a specific kind of analysis, e.g., calculating anisotropic materials or simultaneous fitting of external experimental parameters, scientists need to use third party software.
 
 PyElli offers an open source alternative to existing solutions while staying as compatible as possible.
-This allows scientist to adapt pyElli to their needs, either for custom experiments not covered by other software or as a full FAIR data [@Wilkinson2016] analysis pipeline for SE measurements.
+This allows scientist to adapt pyElli to their needs, either for custom experiments not covered by other software [@eberheim2022] or as a full FAIR data [@Wilkinson2016] analysis pipeline for SE measurements.
 It is designed with extensibility and adaptability in mind, to allow scientists to easily develop their custom analysis pipelines.
 It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
@@ -75,15 +75,15 @@ In summary, we believe and hope that pyElli will further contribute to easier an
 
 Other notable python open source software for solving transfer-matrices are available, but tend to focus on different aspects:
 
-- [PyGTM]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
-- [PyLlama]: Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
-- [RayFlare]: Complete toolkit to simulate solar cells. Provides the same 2x2 [byrnes] algorithm and a scattering matrix approach.
-- Additional mentions: [refellips][EMpy][dtmm][py_matrix]
-- Fast TMM -> AI stuff
-
-# Application
-
-Here the SiPh example? [@eberheim2022]
+- [PyGTM](https://pygtm.readthedocs.io) [@Passler17,Passler19]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
+- [PyLlama](https://pyllama.readthedocs.io): Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
+- [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021]: Complete toolkit to simulate solar cells. Provides the same 2x2 [@byrnes2020multilayer] algorithm and a scattering matrix approach.
+- Additional mentions:
+  - [refellips](https://refellips.readthedocs.io/en/latest/)
+  - [EMpy](http://lbolla.github.io/EMpy/)
+  - [dtmm](https://github.com/IJSComplexMatter/dtmm)
+  - [py_matrix](https://github.com/gevero/py_matrix)
+- [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] -> AI stuff
 
 # Example: Building a simple model
 
