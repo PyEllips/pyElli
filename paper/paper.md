@@ -75,7 +75,7 @@ In summary, we believe and hope that pyElli will further contribute to easier an
 
 Other notable python open source software for solving transfer-matrices are available, but tend to focus on different aspects:
 
-- [PyGTM](https://pygtm.readthedocs.io) [@Passler17,Passler19]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
+- [PyGTM](https://pygtm.readthedocs.io) [@Passler17; Passler19]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
 - [PyLlama](https://pyllama.readthedocs.io): Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
 - [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021]: Complete toolkit to simulate solar cells. Provides the same 2x2 [@byrnes2020multilayer] algorithm and a scattering matrix approach.
 - Additional mentions:
