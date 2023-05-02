@@ -1,4 +1,6 @@
 # Encoding: utf-8
+import warnings
+
 import numpy as np
 from numpy.lib.scimath import arcsin, sqrt
 
@@ -57,12 +59,9 @@ class Solver2x2(Solver):
 
         for layer in n_list:
             if np.any(np.logical_and(layer.real > 0, layer.imag < 0)):
-                raise (
-                    ValueError(
-                        """Solver2x2 can't handle active (n>0 and k<0) media.
-                Check if all materials are defined correctly.
-                Switch to Solver4x4 instead."""
-                    )
+                warnings.warn(
+                    """Solver2x2 can't handle active (n>0 and k<0) media.
+                    Check if all materials are defined correctly or switch to Solver4x4 instead."""
                 )
 
         num_layers = n_list.shape[0]
