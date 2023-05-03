@@ -87,3 +87,10 @@ class TestRefractiveIndexInfo:
         np.testing.assert_almost_equal(
             disp.get_refractive_index(1000), 1.00072017, decimal=6
         )
+
+    def test_search(self):
+        assert len(self.RII.search("")) == 0
+        assert len(self.RII.search("C")) > len(self.RII.search("C", fuzzy=False))
+        assert len(self.RII.search("Au", "book")) > len(
+            self.RII.search("Au", "book", fuzzy=False)
+        )
