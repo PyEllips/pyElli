@@ -60,7 +60,12 @@ class Solver2x2(Solver):
         for layer in n_list:
             if np.any(np.logical_and(layer.real > 0, layer.imag < 0)):
                 warnings.warn(
-                    """Solver2x2 can't handle active (n>0 and k<0) media.
+                    """Solver2x2 can't handle active media (n > 0 and k < 0).
+                    Check if all materials are defined correctly or switch to Solver4x4 instead."""
+                )
+            elif np.any(np.logical_and(layer.real < 0, layer.imag > 0)):
+                warnings.warn(
+                    """Solver2x2 can't handle media with n < 0 and k > 0.
                     Check if all materials are defined correctly or switch to Solver4x4 instead."""
                 )
 
