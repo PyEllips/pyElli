@@ -16,3 +16,4 @@ sphinx-plotly-directive
 sphinxcontrib-mermaid 
 matplotlib
 h5py
+importlib-resources
