@@ -1,2 +1,1 @@
 recursive-include src/elli/database/refractiveindexinfo-database *.yml
-include src/elli/formula_parser/dispersion_function_grammer.lark

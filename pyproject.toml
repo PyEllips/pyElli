@@ -29,8 +29,8 @@ dependencies = [
     "pyyaml",
     "importlib-resources",
     "rapidfuzz",
-    "lark>=1.1.5",
     "pint",
+    "formula-dispersion",
 ]
 
 [project.optional-dependencies]
