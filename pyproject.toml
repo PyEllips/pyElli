@@ -30,7 +30,7 @@ dependencies = [
     "importlib-resources",
     "rapidfuzz",
     "pint",
-    "formula-dispersion",
+    "formula-dispersion>=0.1.2",
 ]
 
 [project.optional-dependencies]
