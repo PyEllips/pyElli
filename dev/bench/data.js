@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1685049388667,
+  "lastUpdate": 1686777350012,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -11116,6 +11116,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0018569441145847038",
             "extra": "mean: 7.40575279999689 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c34b2df2c5a3494d94fec806cb5694c2b96058af",
+          "message": "Adds support for reading NXopt based nexus file (#144)\n\n* Adds support for reading NXopt based nexus file\r\n\r\n* Index both observables for nexus file\r\n\r\n* Clean up errors",
+          "timestamp": "2023-06-14T23:14:08+02:00",
+          "tree_id": "e051e00ce9bdc0480ee301b0bf9b897c55bda7fa",
+          "url": "https://github.com/PyEllips/pyElli/commit/c34b2df2c5a3494d94fec806cb5694c2b96058af"
+        },
+        "date": 1686777348597,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 92.61988715876835,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00040851352461282963",
+            "extra": "mean: 10.796817300001749 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.98141879667767,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01866893697963567",
+            "extra": "mean: 167.18441460000122 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 20.85331215315184,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01439775896192163",
+            "extra": "mean: 47.95401290000143 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.217317230338421,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024268566632392127",
+            "extra": "mean: 160.8410770999967 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 91.93827977333507,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0045507135446987675",
+            "extra": "mean: 10.876862200004211 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 151.19032597198176,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00043004326971231337",
+            "extra": "mean: 6.614179800004649 msec\nrounds: 10"
           }
         ]
       }
