@@ -110,12 +110,15 @@ def read_nexus_psi_delta(
     h5file = h5py.File(nxs_filename, "r")
     if f"{group_names.entry}/sample/data_type" in h5file:
         data_type = h5file[f"{group_names.entry}/sample/data_type"][()].decode("utf-8")
-    elif f"{group_names.entry}/data_collection/data_type":
+    elif f"{group_names.entry}/data_collection/data_type" in h5file:
         data_type = h5file[f"{group_names.entry}/data_collection/data_type"][()].decode(
             "utf-8"
         )
     else:
-        raise ValueError()
+        raise ValueError(
+            "Could not resolve a proper definition "
+            f"from the provided nexus file: {nxs_filename}"
+        )
 
     # Currently, the appdef version can only be determined
     # reliably by the case in the data_type field.
@@ -125,7 +128,7 @@ def read_nexus_psi_delta(
     }
 
     if data_type not in def_mapping:
-        return NotImplementedError(
+        raise NotImplementedError(
             f"Unsupported data type: {data_type}. "
             "Only 'psi/delta' values are supported yet."
         )
