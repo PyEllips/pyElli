@@ -4,8 +4,11 @@ NeXus is a format originating from large beam line facitilies and is adapted for
 other smaller labratory experiments to supply an agreed standard for data sharing.
 For now only reading is supported but in the future there will also be a writer
 to store the whole optical model and fit inside the NeXus file."""
+from typing import Optional, Callable
+from dataclasses import dataclass
 import h5py
 import numpy as np
+from numpy.lib.index_tricks import IndexExpression
 import pandas as pd
 
 from elli.dispersions.formula import Formula, FormulaIndex
@@ -16,7 +19,28 @@ from elli.materials import BiaxialMaterial, IsotropicMaterial, UniaxialMaterial
 from ..utils import calc_rho, conversion_wavelength_energy
 
 
-def read_nexus_psi_delta(nxs_filename: str) -> pd.DataFrame:
+@dataclass
+class NexusGroupNames:
+    """Contains nexus group names to read from the nexus file"""
+
+    entry: str = "entry"
+    sample: str = "sample"
+    instrument: str = "instrument"
+
+    @property
+    def full_instrument_path(self):
+        """Get the full instrument path with prepended entry name, e.g. entry/instrument"""
+        return f"{self.entry}/{self.instrument}"
+
+    @property
+    def full_sample_path(self):
+        """Get the full sample path with prepended entry name, e.g. entry/sample"""
+        return f"{self.entry}/{self.sample}"
+
+
+def read_nexus_psi_delta(
+    nxs_filename: str, group_names: Optional[NexusGroupNames] = None
+) -> pd.DataFrame:
     """Read a NeXus file containing Psi and Delta data.
 
     Args:
@@ -30,29 +54,86 @@ def read_nexus_psi_delta(nxs_filename: str) -> pd.DataFrame:
         The index is a multiindex consisting of the angle of incidents as first column
         and the wavelength as second column.
     """
+
+    def read_data(
+        wavelength_path: str,
+        aois_path: str,
+        data_path: str,
+        indexing: Callable[[int, int], IndexExpression],
+    ):
+        aois = np.array(h5file[aois_path])
+        wavelength = np.array(h5file[wavelength_path]) / 10
+        psi_delta_df = pd.DataFrame(
+            {},
+            columns=["Ψ", "Δ"],
+            index=pd.MultiIndex.from_product(
+                [aois, wavelength], names=["Angle of Incidence", "Wavelength"]
+            ),
+            dtype=float,
+        )
+
+        data = np.array(h5file[data_path])
+
+        for i, aoi in enumerate(aois):
+            psi_delta_df.loc[aoi, "Ψ"] = data[indexing(i, 0)]
+            psi_delta_df.loc[aoi, "Δ"] = data[indexing(i, 1)]
+
+        return psi_delta_df
+
+    def read_legacy() -> pd.DataFrame:
+        return read_data(
+            wavelength_path=f"{group_names.full_instrument_path}/spectrometer/wavelength",
+            aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
+            data_path=f"{group_names.full_sample_path}/measured_data",
+            indexing=lambda aoi_idx, observable_idx: np.s_[
+                0, 0, aoi_idx, observable_idx, :
+            ],
+        )
+
+    def read_nx_opt_def() -> pd.DataFrame:
+        return read_data(
+            wavelength_path=f"{group_names.entry}/data_collection/wavelength_spectrum",
+            aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
+            data_path=f"{group_names.entry}/data_collection/measured_data",
+            indexing=lambda aoi_idx, observable_idx: np.s_[aoi_idx, observable_idx, :],
+        )
+
+    if group_names is not None and not isinstance(group_names, NexusGroupNames):
+        raise ValueError(
+            f"Invalid type for for group_names: {type(group_names)}. "
+            "Should be an instance of NexusGroupNames."
+        )
+
+    if group_names is None:
+        group_names = NexusGroupNames()
+
     h5file = h5py.File(nxs_filename, "r")
-    if h5file["entry/sample/data_type"].asstr()[()] != "psi/delta":
-        raise ValueError("Data type is not psi / delta")
+    if f"{group_names.entry}/sample/data_type" in h5file:
+        data_type = h5file[f"{group_names.entry}/sample/data_type"][()].decode("utf-8")
+    elif f"{group_names.entry}/data_collection/data_type" in h5file:
+        data_type = h5file[f"{group_names.entry}/data_collection/data_type"][()].decode(
+            "utf-8"
+        )
+    else:
+        raise ValueError(
+            "Could not resolve a proper definition "
+            f"from the provided nexus file: {nxs_filename}"
+        )
 
-    aois = np.array(h5file["entry/instrument/angle_of_incidence"])
-    wavelength = np.array(h5file["entry/instrument/spectrometer/wavelength"]) / 10
-    column_names = np.array(h5file["/entry/sample/column_names"].asstr())
-    psi_delta_df = pd.DataFrame(
-        {},
-        columns=column_names,
-        index=pd.MultiIndex.from_product(
-            [aois, wavelength], names=["Angle of Incidence", "Wavelength"]
-        ),
-        dtype=float,
-    )
+    # Currently, the appdef version can only be determined
+    # reliably by the case in the data_type field.
+    def_mapping = {
+        "psi/delta": read_legacy,
+        "Psi/Delta": read_nx_opt_def,
+    }
 
-    data = np.array(h5file["/entry/sample/measured_data"])
+    if data_type not in def_mapping:
+        raise NotImplementedError(
+            f"Unsupported data type: {data_type}. "
+            "Only 'psi/delta' values are supported yet."
+        )
 
-    for i, aoi in enumerate(aois):
-        psi_delta_df.loc[aoi, column_names[1]] = data[0, 0, i, 1, :]
-        psi_delta_df.loc[aoi, column_names[0]] = data[0, 0, i, 0, :]
-
-    return psi_delta_df.rename(columns={"psi": "Ψ", "delta": "Δ"})
+    return def_mapping.get(data_type)()
 
 
 def read_nexus_rho(nxs_filename: str) -> pd.DataFrame:
