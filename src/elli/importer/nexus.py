@@ -59,7 +59,7 @@ def read_nexus_psi_delta(
         wavelength_path: str,
         aois_path: str,
         data_path: str,
-        indexing: Callable[[float], IndexExpression],
+        indexing: Callable[[int, int], IndexExpression],
     ):
         aois = np.array(h5file[aois_path])
         wavelength = np.array(h5file[wavelength_path]) / 10
@@ -75,8 +75,8 @@ def read_nexus_psi_delta(
         data = np.array(h5file[data_path])
 
         for i, aoi in enumerate(aois):
-            psi_delta_df.loc[aoi, "Δ"] = data[indexing(i)]
-            psi_delta_df.loc[aoi, "Ψ"] = data[indexing(i)]
+            psi_delta_df.loc[aoi, "Ψ"] = data[indexing(i, 0)]
+            psi_delta_df.loc[aoi, "Δ"] = data[indexing(i, 1)]
 
         return psi_delta_df
 
@@ -85,7 +85,9 @@ def read_nexus_psi_delta(
             wavelength_path=f"{group_names.full_instrument_path}/spectrometer/wavelength",
             aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
             data_path=f"{group_names.full_sample_path}/measured_data",
-            indexing=lambda aoi: np.s_[0, 0, aoi, 1, :],
+            indexing=lambda aoi_idx, observable_idx: np.s_[
+                0, 0, aoi_idx, observable_idx, :
+            ],
         )
 
     def read_nx_opt_def() -> pd.DataFrame:
@@ -93,7 +95,7 @@ def read_nexus_psi_delta(
             wavelength_path=f"{group_names.entry}/data_collection/wavelength_spectrum",
             aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
             data_path=f"{group_names.entry}/data_collection/measured_data",
-            indexing=lambda aoi: np.s_[aoi, 1, :],
+            indexing=lambda aoi_idx, observable_idx: np.s_[aoi_idx, observable_idx, :],
         )
 
     if group_names is not None and not isinstance(group_names, NexusGroupNames):
