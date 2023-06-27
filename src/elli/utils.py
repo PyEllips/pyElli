@@ -7,13 +7,14 @@ from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 
 
-def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
+def calc_pseudo_diel(rho, angle: float = None, output: str = "eps") -> pd.DataFrame:
     """Calculates the pseudo dielectric function of a measurement from rho.
 
     Args:
         rho (pandas.DataFrame):
             Measurement DataFrame containing rho as complex number as column and wavelength as index
-        angle (float): Angle of measurement in degree
+            Optinally the angle of incidence is provided as an additionally multiindex.
+        angle (float, optional): Angle of measurement in degree.
         output (str, optional): Output format for dielectric function.
             'n': refractive index,
             'eps': Dielectric function as two-column pandas.DataFrame,
@@ -23,8 +24,22 @@ def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
     Returns:
         pandas.DataFrame: Frame containing the pseudo dielectric function or refractive index.
     """
-    theta = angle * np.pi / 180
-    eps = np.sin(theta) ** 2 * (1 + np.tan(theta) ** 2 * ((1 - rho) / (1 + rho)) ** 2)
+    if "Angle of Incidence" in rho.index.names:
+        eps = np.sin(
+            rho.index.get_level_values("Angle of Incidence") * np.pi / 180
+        ) ** 2 * (
+            1
+            + np.tan(rho.index.get_level_values("Angle of Incidence") * np.pi / 180)
+            ** 2
+            * ((1 - rho) / (1 + rho)) ** 2
+        )
+    elif angle is not None:
+        theta = angle * np.pi / 180
+        eps = np.sin(theta) ** 2 * (
+            1 + np.tan(theta) ** 2 * ((1 - rho) / (1 + rho)) ** 2
+        )
+    else:
+        raise ValueError("Please provide the angle of incidence.")
 
     if output == "n":
         n = sqrt(eps)
