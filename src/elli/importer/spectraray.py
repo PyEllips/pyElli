@@ -13,12 +13,10 @@ def read_spectraray_psi_delta(
     fname: str, sep: str = r"\s+", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.
-        sep (str, optional): Data separator in the datafile. Defaults to " ".
+        sep (str, optional): Data separator in the datafile. Defaults to "\s+".
         decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
     Returns:
@@ -72,7 +70,7 @@ def read_spectraray_mmatrix(
 
     Args:
         fname (str): Filename of the measurement ascii file.
-        sep (str, optional): Data separator in the datafile. Defaults to " ".
+        sep (str, optional): Data separator in the datafile. Defaults to "\s+".
         decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
     Returns:
@@ -109,12 +107,10 @@ def read_spectraray_rho(
     fname: str, sep: str = r"\s+", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file and converts it to rho values.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.
-        sep (str, optional): Data separator in the datafile. Defaults to " ".
+        sep (str, optional): Data separator in the datafile. Defaults to "\s+".
         decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
 
     Returns:
