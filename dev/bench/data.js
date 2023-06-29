@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1687425318242,
+  "lastUpdate": 1688031186670,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -11248,6 +11248,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0004882341797022071",
             "extra": "mean: 8.687431399999923 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "be11842f8621fc95b9466314395dc3e2557b0c78",
+          "message": "Update spectraray importer (#145)\n\n* Update tests to new data structure\r\n* add new multiangle testfile\r\n* Update spectraray importer\r\n* change splitting to allow regex expressions\r\n* Update docstrings",
+          "timestamp": "2023-06-29T11:31:23+02:00",
+          "tree_id": "27eebd23091879c41b971efaa73f23548006589d",
+          "url": "https://github.com/PyEllips/pyElli/commit/be11842f8621fc95b9466314395dc3e2557b0c78"
+        },
+        "date": 1688031185901,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 101.51673205382352,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004768032461348667",
+            "extra": "mean: 9.850592899994126 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.660078345095265,
+            "unit": "iter/sec",
+            "range": "stddev: 0.026133270463241595",
+            "extra": "mean: 176.67599969999515 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 24.089779079892164,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0025226474928807707",
+            "extra": "mean: 41.51138109999124 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.955389742895079,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02261782986913417",
+            "extra": "mean: 167.91512279998528 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 79.53518239590572,
+            "unit": "iter/sec",
+            "range": "stddev: 0.004050996303277295",
+            "extra": "mean: 12.573052199996937 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 156.94195708899423,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007958130844854814",
+            "extra": "mean: 6.3717823999922985 msec\nrounds: 10"
           }
         ]
       }
