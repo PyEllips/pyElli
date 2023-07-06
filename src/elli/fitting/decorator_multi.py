@@ -41,7 +41,7 @@ class FitRhoMulti(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.lbda, self.angles, self.params)
         self.fig.update_layout(yaxis_title="Ψ/Δ (°)")
         self.fig.data[2].y = data.psi
         self.fig.data[3].y = data.delta
@@ -65,7 +65,7 @@ class FitRhoMulti(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.lbda, self.angles, self.params)
         self.fig.update_layout(yaxis_title="ρ")
         self.fig.data[2].y = data.rho.real
         self.fig.data[3].y = data.rho.imag
@@ -94,7 +94,7 @@ class FitRhoMulti(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.lbda, self.angles, self.params)
         self.fig.update_layout(yaxis_title="Residual")
 
         exp_rho = calc_rho(self.exp_data)
@@ -120,7 +120,7 @@ class FitRhoMulti(FitDecorator):
             update_names (bool, optional): Flag to change the label names.
                                            Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.lbda, self.angles, self.params)
         peps = calc_pseudo_diel(
             pd.DataFrame(data.rho, index=self.exp_data.index).iloc[:, 0], self.angle
         )
@@ -363,7 +363,7 @@ class FitRhoMulti(FitDecorator):
         self,
         exp_data: pd.DataFrame,
         params: Parameters,
-        model: Callable[[npt.NDArray, Parameters], Result],
+        model: Callable[[npt.NDArray, npt.NDArray, Parameters], Result],
         **kwargs,
     ) -> None:
         """Intialize the psi/delta fitting class
@@ -373,9 +373,9 @@ class FitRhoMulti(FitDecorator):
                 The dataframe containing an experimental data.
                 It should contain 2 columns with labels Ψ and Δ.
             params (Parameters): Fitting start parameters
-            model (Callable[[npt.NDArray, Parameters], Result]):
+            model (Callable[[npt.NDArray, npt.NDArray, Parameters], Result]):
                 A function taking wavelengths as first
-                parameter and fitting parameters as second,
+                incidence angle as second parameter and fitting parameters as third,
                 which returns a pyEllis Result object.
                 This function contains the actual model which should be fitted.
             angle (float, optional): The angle of incident of the measurement.
@@ -387,7 +387,8 @@ class FitRhoMulti(FitDecorator):
         self.exp_data = exp_data
         self.params = params
         self.fitted_params = params.copy()
-        self.angle = angle
+        self.angles = exp_data.index.get_level_values(0).unique().values
+        self.lbda = exp_data.index.get_level_values(1).unique().values
         self.param_widgets = {}
         self.selector = widgets.Dropdown()
         self.last_params = None
@@ -399,10 +400,10 @@ class FitRhoMulti(FitDecorator):
                     exp_data,
                     pd.DataFrame(
                         {
-                            "Ψ_calc": model(exp_data.index, params).psi,
-                            "Δ_calc": model(exp_data.index, params).delta,
+                            "Ψ_calc": model(self.lbda, self.angles, params).psi,
+                            "Δ_calc": model(self.lbda, self.angles, params).delta,
                         },
-                        index=exp_data.index,
+                        index=self.lbda,
                     ),
                 ]
             ).plot(backend="plotly")
@@ -421,9 +422,10 @@ class FitRhoMulti(FitDecorator):
 
 def fit_multi(
     exp_data: pd.DataFrame, params: Parameters, **kwargs
-) -> Callable[[npt.NDArray, Parameters], Result]:
-    """A parameters decorator for fitting psi/delta valus. Displays an ipywidget float box for
-    each fitting parameter and an interactive plot to estimate parameters.
+) -> Callable[[npt.NDArray, npt.NDArray, Parameters], Result]:
+    """A parameters decorator for fitting psi/delta valus.
+    Displays an ipywidget float box for each fitting parameter
+    and an interactive plot to estimate parameters.
 
     Args:
         exp_data (pd.DataFrame): The dataframe containing an experimental data.
@@ -437,4 +439,4 @@ def fit_multi(
             should be fitted and is automatically
             provided when used as a decorator.
     """
-    return lambda model: FitRhoMulti(exp_data, params, model, angle, **kwargs)
+    return lambda model: FitRhoMulti(exp_data, params, model, **kwargs)
