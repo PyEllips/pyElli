@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1688458701344,
+  "lastUpdate": 1688973777519,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -11446,6 +11446,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00011112539575196355",
             "extra": "mean: 5.288146399998084 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8e0f70d8c935147d660d907c8a9201776414bb89",
+          "message": "Bump scipy from 1.9.1 to 1.10.0 in /requirements (#147)\n\nBumps [scipy](https://github.com/scipy/scipy) from 1.9.1 to 1.10.0.\r\n- [Release notes](https://github.com/scipy/scipy/releases)\r\n- [Commits](https://github.com/scipy/scipy/compare/v1.9.1...v1.10.0)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: scipy\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2023-07-10T09:21:25+02:00",
+          "tree_id": "fdb742a5d38a1c3e087549434f014207d6604686",
+          "url": "https://github.com/PyEllips/pyElli/commit/8e0f70d8c935147d660d907c8a9201776414bb89"
+        },
+        "date": 1688973776739,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 108.95074969610975,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00040807895601751925",
+            "extra": "mean: 9.178459099999259 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.885877293706934,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024591694002998234",
+            "extra": "mean: 169.89820720000068 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 22.938324865747713,
+            "unit": "iter/sec",
+            "range": "stddev: 0.012319156386131219",
+            "extra": "mean: 43.595162499997286 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.908170502869137,
+            "unit": "iter/sec",
+            "range": "stddev: 0.022851044618381985",
+            "extra": "mean: 169.25713290000317 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 121.48797549069721,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0024289504221623884",
+            "extra": "mean: 8.231267300001832 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 167.73581756340442,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0019039151456005056",
+            "extra": "mean: 5.961755900000298 msec\nrounds: 10"
           }
         ]
       }
