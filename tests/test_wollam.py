@@ -9,8 +9,8 @@ def test_reading_of_psi_delta_woollam(datadir):
     data_wvase = elli.read_woollam_psi_delta(datadir / "wvase_example.dat")
     data_cease = elli.read_woollam_psi_delta(datadir / "complete_ease_example.dat")
 
-    assert data_wvase.shape == (542, 4)
-    assert data_cease.shape == (3263, 4)
+    assert data_wvase.shape == (542, 2)
+    assert data_cease.shape == (3263, 2)
 
 
 # pylint: disable=redefined-outer-name
