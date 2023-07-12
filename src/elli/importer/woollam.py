@@ -165,7 +165,7 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
         data = reader_map.get(file_format)(fobj)
 
     data = scale_to_nm(metadata[-1], data)
-    return data
+    return data.iloc[:, :-2]
 
 
 def read_woollam_rho(fname: str) -> pd.DataFrame:
