@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1688973777519,
+  "lastUpdate": 1689235205310,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -11512,6 +11512,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0019039151456005056",
             "extra": "mean: 5.961755900000298 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d9d48c6d0edf4c0683571cdd0bab824570a49eb7",
+          "message": "Adds woollam importer (#148)\n\n* Adds woollam importer\r\n\r\n* Removes walrus operator\r\n\r\n* Removes error columns from dataframe\r\n\r\n* Corrects shape test w/o errs\r\n\r\n* Show proper error for tan/cos wvase data",
+          "timestamp": "2023-07-13T09:58:27+02:00",
+          "tree_id": "43e6e4da700d47d23717afa92cd90d3e56053e55",
+          "url": "https://github.com/PyEllips/pyElli/commit/d9d48c6d0edf4c0683571cdd0bab824570a49eb7"
+        },
+        "date": 1689235203411,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 111.06565564046002,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00039788365660188465",
+            "extra": "mean: 9.003683399998863 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 6.926795335510276,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01027592897779406",
+            "extra": "mean: 144.3669044000032 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 22.59758855618757,
+            "unit": "iter/sec",
+            "range": "stddev: 0.008341065616317485",
+            "extra": "mean: 44.252509399998985 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.3220974602229,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024441727013504146",
+            "extra": "mean: 158.17535340000006 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 101.40773302312623,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00310603756375299",
+            "extra": "mean: 9.861180900000477 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 179.30261503007182,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008081312813198373",
+            "extra": "mean: 5.577163499998505 msec\nrounds: 10"
           }
         ]
       }
