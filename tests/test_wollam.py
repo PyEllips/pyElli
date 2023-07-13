@@ -1,4 +1,5 @@
 """Tests for reading woollam"""
+import pytest
 from fixtures import datadir  # pylint: disable=unused-import
 import elli
 
@@ -21,3 +22,11 @@ def test_reading_and_conv_to_woollam(datadir):
 
     assert data_wvase.shape == (542,)
     assert data_cease.shape == (3263,)
+
+
+# pylint: disable=redefined-outer-name
+def test_raises_not_implemented_for_tan_cos_format(datadir):
+    """Raises error when a wvase Tan(Psi)/Cos(Delta) file is presented"""
+
+    with pytest.raises(NotImplementedError):
+        elli.read_woollam_psi_delta(datadir / "wvase_trig.dat")

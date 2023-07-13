@@ -25,7 +25,7 @@ def is_wvase_tabular(line: str) -> bool:
     Returns:
         bool: True if the line is in wvase tabular layout.
     """
-    return bool(re.search(r"^(\d+\.\d+\t){5}\d+\.\d+$", line))
+    return bool(re.search(r"^(\d*\.\d*\s+){5}\d*\.\d*$", line))
 
 
 def is_complete_ease_tabular(line: str) -> bool:
@@ -38,7 +38,20 @@ def is_complete_ease_tabular(line: str) -> bool:
     Returns:
         bool: True if the line is in complete ease tabular layout.
     """
-    return bool(re.search(r"^[a-zA-Z]+\t(\d+\.\d+\t){5}\d+\.\d+$", line))
+    return bool(re.search(r"^[a-zA-Z]+\s+(\d+\.\d+\s+){5}\d+\.\d+$", line))
+
+
+def is_tan_cos_format(line: str) -> bool:
+    """
+    Checks whether the line denotes a wvase tan/cos format.
+
+    Args:
+        line (str): The line to check
+
+    Returns:
+        bool: True if the line is of the format {unit} TRIG.
+    """
+    return bool(re.search(r"^[a-zA-Z]+\s+TRIG", line))
 
 
 def scale_to_nm(unit: str, dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -148,6 +161,11 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
                 line_number = fobj.tell()
                 file_format = "complete_ease"
                 break
+            if is_tan_cos_format(line):
+                raise NotImplementedError(
+                    "The wvase Tan(Psi)/Cos(Delta) format is not supported. "
+                    "Please try using wvase's psi/delta format."
+                )
             metadata.append(line)
             line = fobj.readline()
         fobj.seek(line_number)
