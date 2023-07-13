@@ -15,7 +15,7 @@ from ..utils import calc_rho
 logger = logging.getLogger(__name__)
 
 
-def is_wvase_tabular(line: str) -> bool:
+def _is_wvase_tabular(line: str) -> bool:
     """
     Checks whether the provided line is in wvase tabular layout.
 
@@ -28,7 +28,7 @@ def is_wvase_tabular(line: str) -> bool:
     return bool(re.search(r"^(\d*\.\d*\s+){5}\d*\.\d*$", line))
 
 
-def is_complete_ease_tabular(line: str) -> bool:
+def _is_complete_ease_tabular(line: str) -> bool:
     """
     Checks whether the provided line is in complete ease tabular layout.
 
@@ -41,7 +41,7 @@ def is_complete_ease_tabular(line: str) -> bool:
     return bool(re.search(r"^[a-zA-Z]+\s+(\d+\.\d+\s+){5}\d+\.\d+$", line))
 
 
-def is_tan_cos_format(line: str) -> bool:
+def _is_tan_cos_format(line: str) -> bool:
     """
     Checks whether the line denotes a wvase tan/cos format.
 
@@ -89,7 +89,7 @@ def scale_to_nm(unit: str, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe
 
 
-def read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
+def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
     """
     Reads a wvase formated table from a TextIO file object.
     The pointer of the file object should point to the first line
@@ -114,7 +114,7 @@ def read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
     return dframe
 
 
-def read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
+def _read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
     """
     Reads a complete ease formated table from a TextIO file object.
     The pointer of the file object should point to the first line
@@ -153,15 +153,15 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
         file_format = ""
         line = fobj.readline()
         while line:
-            if is_wvase_tabular(line):
+            if _is_wvase_tabular(line):
                 line_number = fobj.tell()
                 file_format = "wvase"
                 break
-            if is_complete_ease_tabular(line):
+            if _is_complete_ease_tabular(line):
                 line_number = fobj.tell()
                 file_format = "complete_ease"
                 break
-            if is_tan_cos_format(line):
+            if _is_tan_cos_format(line):
                 raise NotImplementedError(
                     "The wvase Tan(Psi)/Cos(Delta) format is not supported. "
                     "Please try using wvase's psi/delta format."
@@ -174,8 +174,8 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
             raise ValueError(f"Invalid file format for {fname}")
 
         reader_map = {
-            "wvase": read_wvase_dataframe,
-            "complete_ease": read_complete_ease_dataframe,
+            "wvase": _read_wvase_dataframe,
+            "complete_ease": _read_complete_ease_dataframe,
         }
 
         if file_format not in reader_map:
