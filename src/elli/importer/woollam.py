@@ -81,7 +81,7 @@ def scale_to_nm(unit: str, dataframe: pd.DataFrame) -> pd.DataFrame:
         )
         return dataframe
     except DimensionalityError:
-        logger.warrning(
+        logger.warning(
             "Unit %s is not a valid wavelength unit. "
             "The wavelength axis may not be scaled appropriately.",
             unit,
