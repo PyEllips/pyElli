@@ -69,7 +69,7 @@ def scale_to_nm(unit: str, dataframe: pd.DataFrame) -> pd.DataFrame:
     try:
         scaling = ureg(unit).to("nm").magnitude
         dataframe.index = dataframe.index.set_levels(
-            dataframe.index.levels[1] * scaling, level=1
+            dataframe.index.levels[1].astype(float) * scaling, level=1
         )
 
         return dataframe
@@ -107,10 +107,13 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         file_object,
         sep="\t",
         header=None,
-        names=["Ψ", "Δ", "Ψ_err", "Δ_err"],
-        index_col=(1, 0),
+        names=["Wavelength", "Angle of Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
     )
-    dframe.index.names = ("Angle of Incidence", "Wavelength")
+    dframe = (
+        dframe[dframe.iloc[:, 0] != "dpolE"]
+        .set_index(["Wavelength", "Angle of Incidence"])
+        .swaplevel(0, 1)
+    )
     return dframe
 
 
