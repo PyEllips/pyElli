@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1692083827835,
+  "lastUpdate": 1692181171569,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -11842,6 +11842,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0002224126950318908",
             "extra": "mean: 6.557023300004516 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "da04eb7c1869d62c4a399ce59713bd17e50bcd75",
+          "message": "Fixes wvase importer (#153)\n\n* Adds fix for wvase import when dpolE is present\r\n\r\n* Checks properly for floating point index in woollam index",
+          "timestamp": "2023-08-16T12:17:49+02:00",
+          "tree_id": "11fd21b9c5c78fef0a9c2ae0064155d6c609765b",
+          "url": "https://github.com/PyEllips/pyElli/commit/da04eb7c1869d62c4a399ce59713bd17e50bcd75"
+        },
+        "date": 1692181170412,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 107.59982861931498,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003618329447487551",
+            "extra": "mean: 9.293695099998445 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 6.067893840146453,
+            "unit": "iter/sec",
+            "range": "stddev: 0.023453169622610456",
+            "extra": "mean: 164.80182849999636 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 23.06953012657123,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002970867012559574",
+            "extra": "mean: 43.34722009999723 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.705878396472954,
+            "unit": "iter/sec",
+            "range": "stddev: 0.013119176825923376",
+            "extra": "mean: 149.1228949999993 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 138.97552082395669,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004958949852793174",
+            "extra": "mean: 7.195511800000531 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 180.51273993932398,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012060535778058287",
+            "extra": "mean: 5.539775200000463 msec\nrounds: 10"
           }
         ]
       }
