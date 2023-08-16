@@ -15,6 +15,21 @@ from ..utils import calc_rho
 logger = logging.getLogger(__name__)
 
 
+is_float_regex = re.compile(r"[+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)")
+
+
+def is_float(line: str) -> bool:
+    """Checks whether the given line is a float
+
+    Args:
+        line (str): The line presumably containing a float
+
+    Returns:
+        bool: True if it is a float, False otherwise
+    """
+    return bool(is_float_regex.search(line))
+
+
 def _is_wvase_tabular(line: str) -> bool:
     """
     Checks whether the provided line is in wvase tabular layout.
@@ -69,7 +84,7 @@ def scale_to_nm(unit: str, dataframe: pd.DataFrame) -> pd.DataFrame:
     try:
         scaling = ureg(unit).to("nm").magnitude
         dataframe.index = dataframe.index.set_levels(
-            dataframe.index.levels[1] * scaling, level=1
+            dataframe.index.levels[1].astype(float) * scaling, level=1
         )
 
         return dataframe
@@ -107,10 +122,13 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         file_object,
         sep="\t",
         header=None,
-        names=["Ψ", "Δ", "Ψ_err", "Δ_err"],
-        index_col=(1, 0),
+        names=["Wavelength", "Angle of Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
     )
-    dframe.index.names = ("Angle of Incidence", "Wavelength")
+    dframe = (
+        dframe[dframe.apply(lambda x: is_float(x[0]), axis=1)]
+        .set_index(["Wavelength", "Angle of Incidence"])
+        .swaplevel(0, 1)
+    )
     return dframe
 
 
