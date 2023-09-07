@@ -93,7 +93,7 @@ class RII:
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
-        with open(self.rii_path.joinpath("library-nk.yml"), "r", encoding="utf8") as f:
+        with open(self.rii_path.joinpath("catalog-nk.yml"), "r", encoding="utf8") as f:
             yml_file = yaml.load(f, yaml.SafeLoader)
 
         pagename_pattern = re.compile(
