@@ -2,6 +2,8 @@
 It only supplies a rudimentary loading of standard psi/delta values
 and misses some other features.
 """
+import re
+
 import pandas as pd
 
 from ..utils import calc_rho
@@ -11,8 +13,6 @@ def read_spectraray_psi_delta(
     fname: str, sep: str = r"\s+", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.
@@ -23,21 +23,42 @@ def read_spectraray_psi_delta(
         pd.DataFrame: DataFrame containing the psi/delta data in
         the format to be further processes inside pyElli.
     """
-    psi_delta = pd.read_csv(
+
+    # read data and drop empty column
+    psi_delta_df = pd.read_csv(
         fname,
         index_col=0,
+        header=None,
         sep=sep,
         decimal=decimal,
-        usecols=[0, 1, 2],
-        names=["Wavelength", "Ψ", "Δ"],
         skiprows=1,
     )
+    psi_delta_df.dropna(axis="columns", how="all", inplace=True)
 
-    psi_delta.loc[:, "Δ"] = psi_delta.loc[:, "Δ"].where(
-        psi_delta.loc[:, "Δ"] <= 180, psi_delta.loc[:, "Δ"] - 360
+    # index data correctly
+    psi_delta_df.index.name = "Wavelength"
+
+    with open(fname) as f:
+        header = f.readlines()[0]
+
+    aois = list(map(float, re.split(sep, header)[3::2]))
+    index = pd.MultiIndex.from_product(
+        [aois, ["Ψ", "Δ"]], names=["Angle of Incidence", ""]
+    )
+    psi_delta_df.columns = index
+
+    # reorder dataframe
+    psi_delta_df = psi_delta_df.stack(0)
+    psi_delta_df = psi_delta_df.reorder_levels(["Angle of Incidence", "Wavelength"])
+    psi_delta_df.sort_index(axis=0, inplace=True)
+    psi_delta_df.sort_index(axis=1, ascending=False, inplace=True)
+
+    # convert delta range
+    psi_delta_df.loc[:, "Δ"] = psi_delta_df.loc[:, "Δ"].where(
+        psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
     )
 
-    return psi_delta
+    return psi_delta_df
 
 
 def read_spectraray_mmatrix(
@@ -86,8 +107,6 @@ def read_spectraray_rho(
     fname: str, sep: str = r"\s+", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file and converts it to rho values.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.

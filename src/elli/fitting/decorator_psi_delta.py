@@ -26,7 +26,9 @@ from .params_hist import ParamsHist
 
 
 class FitRho(FitDecorator):
-    """A class to fit psi/delta or rho based ellipsometry data with two degress of freedom"""
+    """
+    A class to fit psi/delta or rho based ellipsometry data with two degress of freedom
+    """
 
     def set_psi_delta(
         self, update_exp: bool = False, update_names: bool = False
@@ -137,7 +139,7 @@ class FitRho(FitDecorator):
             self.fig.data[2].name = "ϵ1_calc"
             self.fig.data[3].name = "ϵ2_calc"
 
-    def update_selection(self, change: dict = None) -> None:
+    def update_selection(self, change=None) -> None:
         """Update plot after selection of displayed data
 
         Args:
@@ -232,14 +234,16 @@ class FitRho(FitDecorator):
         """The fit function to minimize the fitting problem
 
         Args:
-            params (Parameters): The lmfit fitting Parameters to construct the simulation
+            params (Parameters):
+                The lmfit fitting Parameters to construct the simulation
             lbda (npt.NDArray): Wavelengths in nm
             rhor (npt.NDArray): The real part of the experimental rho
             rhoi (npt.NDArray): The imaginary part of the experimental rho
 
         Returns:
             npt.NDArray:
-                Residual between the calculation with current parameters and experimental data
+                Residual between the calculation with
+                current parameters and experimental data
         """
         result = self.model(lbda, params)
 
@@ -361,15 +365,18 @@ class FitRho(FitDecorator):
         params: Parameters,
         model: Callable[[npt.NDArray, Parameters], Result],
         angle: float = 70,
+        **kwargs,
     ) -> None:
         """Intialize the psi/delta fitting class
 
         Args:
-            exp_data (pd.DataFrame): The dataframe containing an experimental mueller matrix.
-                                     It should contain 2 columns with labels Ψ and Δ.
+            exp_data (pd.DataFrame):
+                The dataframe containing an experimental mueller matrix.
+                It should contain 2 columns with labels Ψ and Δ.
             params (Parameters): Fitting start parameters
             model (Callable[[npt.NDArray, Parameters], Result]):
-                A function taking wavelengths as first parameter and fitting parameters as second,
+                A function taking wavelengths as first
+                parameter and fitting parameters as second,
                 which returns a pyEllis Result object.
                 This function contains the actual model which should be fitted.
             angle (float, optional): The angle of incident of the measurement.
@@ -386,6 +393,7 @@ class FitRho(FitDecorator):
         self.selector = widgets.Dropdown()
         self.last_params = None
         self.initial_params = params.copy()
+        self.fit_kwargs = kwargs
         self.fig = go.FigureWidget(
             pd.concat(
                 [
@@ -413,7 +421,7 @@ class FitRho(FitDecorator):
 
 
 def fit(
-    exp_data: pd.DataFrame, params: Parameters, angle: float = 70
+    exp_data: pd.DataFrame, params: Parameters, angle: float = 70, **kwargs
 ) -> Callable[[npt.NDArray, Parameters], Result]:
     """A parameters decorator for fitting psi/delta valus. Displays an ipywidget float box for
     each fitting parameter and an interactive plot to estimate parameters.
@@ -430,7 +438,8 @@ def fit(
         Callable[[npt.NDArray, Parameters], Result]:
             fitting parameters as second,
             which returns a pyEllis Result object.
-            This function contains the actual model which should be fitted and is automatically
+            This function contains the actual model which
+            should be fitted and is automatically
             provided when used as a decorator.
     """
-    return lambda model: FitRho(exp_data, params, model, angle)
+    return lambda model: FitRho(exp_data, params, model, angle, **kwargs)

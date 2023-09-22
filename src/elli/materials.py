@@ -27,14 +27,12 @@ to create mixtures or account for interface roughness.
    https://doi.org/10.1002/9780470060193
 """
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
 
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
 
-if TYPE_CHECKING:
-    from .dispersions.dispersions import Dispersion
+from .dispersions.base_dispersion import BaseDispersion
 
 
 class Material(ABC):
@@ -119,7 +117,7 @@ class SingleMaterial(Material):
 class IsotropicMaterial(SingleMaterial):
     """Isotropic material."""
 
-    def __init__(self, dispersion: "Dispersion") -> None:
+    def __init__(self, dispersion: BaseDispersion) -> None:
         """Creates isotropic material with a dispersion.
 
         Args:
@@ -128,12 +126,17 @@ class IsotropicMaterial(SingleMaterial):
         self.set_dispersion(dispersion)
 
     # pylint: disable=arguments-differ
-    def set_dispersion(self, dispersion: "Dispersion") -> None:
+    def set_dispersion(self, dispersion: BaseDispersion) -> None:
         """Sets dispersion relation of the isotropic material.
 
         Args:
             dispersion (Dispersion): Dispersion relation of all three crystal directions.
         """
+        if not isinstance(dispersion, BaseDispersion):
+            raise TypeError(
+                f"Expected dispersion to be an Dispersion object but found type {type(dispersion)}."
+            )
+
         self.dispersion_x = dispersion
         self.dispersion_y = dispersion
         self.dispersion_z = dispersion
@@ -142,7 +145,9 @@ class IsotropicMaterial(SingleMaterial):
 class UniaxialMaterial(SingleMaterial):
     """Uniaxial material."""
 
-    def __init__(self, dispersion_o: "Dispersion", dispersion_e: "Dispersion") -> None:
+    def __init__(
+        self, dispersion_o: BaseDispersion, dispersion_e: BaseDispersion
+    ) -> None:
         """Creates a uniaxial material with two dispersions.
 
         Args:
@@ -155,7 +160,7 @@ class UniaxialMaterial(SingleMaterial):
 
     # pylint: disable=arguments-differ
     def set_dispersion(
-        self, dispersion_o: "Dispersion", dispersion_e: "Dispersion"
+        self, dispersion_o: BaseDispersion, dispersion_e: BaseDispersion
     ) -> None:
         """Sets dispersion relations of the uniaxial material.
 
@@ -165,6 +170,12 @@ class UniaxialMaterial(SingleMaterial):
             dispersion_e (Dispersion):
                 Dispersion relation for extraordinary crystal axis (z direction).
         """
+        for dispersion in [dispersion_o, dispersion_e]:
+            if not isinstance(dispersion, BaseDispersion):
+                raise TypeError(
+                    f"Expected dispersion to be an Dispersion object but found type {type(dispersion)}."
+                )
+
         self.dispersion_x = dispersion_o
         self.dispersion_y = dispersion_o
         self.dispersion_z = dispersion_e
@@ -175,9 +186,9 @@ class BiaxialMaterial(SingleMaterial):
 
     def __init__(
         self,
-        dispersion_x: "Dispersion",
-        dispersion_y: "Dispersion",
-        dispersion_z: "Dispersion",
+        dispersion_x: BaseDispersion,
+        dispersion_y: BaseDispersion,
+        dispersion_z: BaseDispersion,
     ) -> None:
         """Creates a biaxial material with three dispersions.
 
@@ -191,9 +202,9 @@ class BiaxialMaterial(SingleMaterial):
     # pylint: disable=arguments-differ
     def set_dispersion(
         self,
-        dispersion_x: "Dispersion",
-        dispersion_y: "Dispersion",
-        dispersion_z: "Dispersion",
+        dispersion_x: BaseDispersion,
+        dispersion_y: BaseDispersion,
+        dispersion_z: BaseDispersion,
     ) -> None:
         """Sets dispersion relations of the biaxial material.
 
@@ -202,6 +213,12 @@ class BiaxialMaterial(SingleMaterial):
             dispersion_y (Dispersion): Dispersion relation for y crystal axes.
             dispersion_z (Dispersion): Dispersion relation for z crystal axes.
         """
+        for dispersion in [dispersion_x, dispersion_y, dispersion_z]:
+            if not isinstance(dispersion, BaseDispersion):
+                raise TypeError(
+                    f"Expected dispersion to be an Dispersion object but found type {type(dispersion)}."
+                )
+
         self.dispersion_x = dispersion_x
         self.dispersion_y = dispersion_y
         self.dispersion_z = dispersion_z
@@ -236,6 +253,15 @@ class MixtureMaterial(Material):
             host_material (Material): Host Material.
             guest_material (Material): Material incorporated in the host.
         """
+        if not isinstance(host_material, Material):
+            raise TypeError(
+                f"Expected material to be an Material object but found type {type(host_material)}."
+            )
+        if not isinstance(guest_material, Material):
+            raise TypeError(
+                f"Expected material to be an Material object but found type {type(guest_material)}."
+            )
+
         self.host_material = host_material
         self.guest_material = guest_material
 
@@ -246,7 +272,7 @@ class MixtureMaterial(Material):
             fraction (float): Fraction of the guest material (Range 0 - 1).
         """
         if not 0 <= fraction <= 1:
-            raise ValueError("Fractions not in range from 0 to 1")
+            raise ValueError("Fraction is not in range from 0 to 1")
 
         self.fraction = fraction
 

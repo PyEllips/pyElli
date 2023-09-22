@@ -1,0 +1,51 @@
+?assignment: "eps" "=" kkr_expression -> eps
+             | "n" "=" kkr_expression -> n
+
+?kkr_expression: expression
+                | "<kkr>" "+" "1j" "*" term -> kkr_term
+
+?expression: term
+            | expression "+" term -> add
+            | expression "-" term -> sub
+
+?term: factor
+       | term "*" factor -> mul
+       | term "/" factor -> div
+
+?factor: power
+       | power "**" power -> power
+
+
+?power: "(" expression ")"
+        | FUNC "(" expression ")" -> func
+        | "sum" "[" repeated_expression "]" -> sum_expr
+        | NAME -> single_param_name
+        | SIGNED_NUMBER -> number
+        | BUILTIN -> builtin
+
+?repeated_expression: repeated_term
+                    | repeated_expression "+" repeated_term -> add
+                    | repeated_expression "-" repeated_term -> sub
+
+
+?repeated_term: repeated_factor
+                | repeated_term "*" repeated_factor -> mul
+                | repeated_term "/" repeated_factor -> div
+
+?repeated_factor: repeated_power
+                  | repeated_power "**" repeated_power -> power
+
+?repeated_power: "(" repeated_expression ")"
+                 | FUNC "(" repeated_expression ")" -> func
+                 | SIGNED_NUMBER -> number
+                 | NAME -> param_name
+                 | BUILTIN -> builtin
+
+FUNC.1: "sin" | "cos" | "tan" | "sqrt" | "dawsn" | "ln" | "log" | "heaviside" 
+BUILTIN.1: "1j" | "pi" | "eps_0" | "hbar" | "h" | "c" 
+
+%import common.CNAME -> NAME
+%import common.SIGNED_NUMBER
+%import common.WS_INLINE
+
+%ignore WS_INLINE

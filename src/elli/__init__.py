@@ -8,6 +8,7 @@ from .dispersions.base_dispersion import *
 from .experiment import Experiment
 from .importer.nexus import *
 from .importer.spectraray import *
+from .importer.woollam import read_woollam_psi_delta, read_woollam_rho, scale_to_nm
 from .materials import *
 from .result import Result, ResultList
 from .solver2x2 import Solver2x2

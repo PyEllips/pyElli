@@ -10,9 +10,17 @@ numpy>=1.20
 pandas>=1.0.0
 lmfit
 plotly
+ipython
 ipywidgets
 sphinx-gallery
 sphinx-plotly-directive
 sphinxcontrib-mermaid 
 matplotlib
 h5py
+importlib-resources
+h5py
+pyyaml
+importlib-resources
+rapidfuzz
+lark>=1.1.5
+pint

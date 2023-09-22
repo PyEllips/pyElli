@@ -1,9 +1,12 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/PyEllips/pyElli/blob/master/logo/logo_dark.svg">
-  <img alt="The pyElli logo" src="https://github.com/PyEllips/pyElli/blob/master/logo/logo_light.svg">
-</picture>
+<div align="center">
+ <img alt="The pyElli logo" src="https://raw.githubusercontent.com/PyEllips/pyElli/master/logo/logo_light.svg">
+</div>
+
+--------
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyElli) [![PyPI](https://img.shields.io/pypi/v/pyElli)](https://pypi.org/project/pyElli/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5702469.svg)](https://doi.org/10.5281/zenodo.5702469) [![Pytest](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml/badge.svg)](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/pyelli/badge/?version=latest)](https://pyelli.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+[![](https://dcbadge.vercel.app/api/server/zCBNMtBFAQ?compact=true)](https://discord.gg/zCBNMtBFAQ)
 
 # pyElli
 
@@ -21,6 +24,10 @@ of scientists working with spectral ellipsometry.
 - Simulate reflection and transmission spectra, ellipsometric parameters and Mueller matrices.
 - Utilities to quickly convert, plot and fit your measurement data.
 - Powerful when necessary, editable and expandable.
+
+## Got a question?
+
+If you have questions using pyElli please feel free to open a discussion in the [Q&A](https://github.com/PyEllips/pyElli/discussions/categories/q-a) or join our [discord channel](https://discord.gg/zCBNMtBFAQ).
 
 ## How to get it
 
@@ -58,7 +65,7 @@ the folder to install it in development mode:
 ```sh
 git clone https://github.com/PyEllips/pyElli
 cd pyElli
-pip install -e .[fitting]
+pip install -e ".[fitting]"
 ```
 
 ## Acknowledgements

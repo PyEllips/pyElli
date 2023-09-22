@@ -46,6 +46,7 @@ class FitDecorator(ABC):
         self.last_params = ParamsHist()
         self.initial_params = ParamsHist()
         self.param_widgets = {}
+        self.fit_kwargs = {}
 
     @abstractmethod
     def get_model_data(
@@ -124,7 +125,7 @@ class FitDecorator(ABC):
             selected (dict): Dict containing the current widget information
                 of the selection dropdown.
         """
-        self.fit()
+        self.fit(**self.fit_kwargs)
         if isinstance(self.params, ParamsHist):
             self.params.commit()
         self.params.update_params(self.fitted_params)

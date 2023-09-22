@@ -1,11 +1,11 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and dielectric function values."""
-from typing import Union
-import numpy as np
+from typing import Any, Dict, Union
 import numpy.typing as npt
 import scipy.interpolate
 
-from .base_dispersion import Dispersion, InvalidParameters
+from .epsilon_inf import EpsilonInf
+from .base_dispersion import Dispersion, InvalidParameters, DispersionSum
 
 
 class TableEpsilon(Dispersion):
@@ -14,9 +14,11 @@ class TableEpsilon(Dispersion):
     wavelength range.
 
     Single parameters:
-        :lbda (list): Wavelengths in nm. Defaults to np.linspace(0, 3000, 1000).
+        :lbda (list): Wavelengths in nm. This value must be provided.
         :epsilon: Complex dielectric function values in the convention ε1 + iε2.
-            Defaults to np.ones(1000).
+            This value must be provided.
+        :kind: Type of interpolation
+            (see scipy.interpolate.interp1d for more information). Defaults to 'linear'.
 
     Repeated parameters:
         --
@@ -25,13 +27,12 @@ class TableEpsilon(Dispersion):
         The interpolation in the given wavelength range.
     """
 
-    single_params_template = {
-        "lbda": np.linspace(0, 3000, 1000),
-        "epsilon": np.ones(1000),
-    }
-    rep_params_template = {}
+    single_params_template = {"lbda": None, "epsilon": None}
+    rep_params_template: Dict[str, Any] = {}
 
     def __init__(self, *args, **kwargs) -> None:
+        self.kind = kwargs.pop("kind", "linear")
+
         super().__init__(*args, **kwargs)
 
         if len(self.single_params.get("lbda")) == 0:
@@ -47,11 +48,30 @@ class TableEpsilon(Dispersion):
         self.interpolation = scipy.interpolate.interp1d(
             self.single_params.get("lbda"),
             self.single_params.get("epsilon"),
-            kind="cubic",
+            kind=self.kind,
         )
 
-    def __add__(self, _: Union[int, float, "Dispersion"]) -> "DispersionSum":
-        raise NotImplementedError("Adding of tabular dispersions is not yet supported")
+        self.default_lbda_range = self.single_params.get("lbda")
+
+    def __add__(self, other: Union[int, float, "Dispersion"]) -> "DispersionSum":
+        if isinstance(other, (int, float)):
+            return DispersionSum(self, EpsilonInf(eps=other))
+
+        if isinstance(other, TableEpsilon):
+            raise NotImplementedError(
+                "Adding of tabular dispersions is not yet supported"
+            )
+
+        if isinstance(other, Dispersion):
+            return DispersionSum(self, other)
+
+        if isinstance(other, DispersionSum):
+            other.dispersions.append(self)
+            return other
+
+        raise TypeError(
+            f"unsupported operand type(s) for +: '{type(self)}' and '{type(other)}'"
+        )
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.interpolation(lbda)

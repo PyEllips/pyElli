@@ -29,7 +29,9 @@ def datadir(tmpdir, request):
 @fixture
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
-    return elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
+    return elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[70.06][
+        400:800
+    ]
 
 
 @fixture
