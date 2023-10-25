@@ -7,7 +7,8 @@ tags:
   - solid state physics
   - transfer matrix method
 authors:
-  - name: Marius Müller
+  - name: Marius J. Müller
+    orcid: 0009-0005-2187-0122
     equal-contrib: true
     affiliation: 1
   - name: Florian Dobener
@@ -23,7 +24,7 @@ bibliography: paper.bib
 # Summary
 
 PyElli is an open source analysis tool for linear optical interaction of layered materials written in python.
-It mainly targets spectroscopic ellipsometry, but is easily adaptable to transmission or reflection experiments.
+It mainly targets spectroscopic ellipsometry, but is easily adaptable to various transmission or reflection experiments.
 
 Spectroscopic ellipsometry (SE) is used throughout various scientific fields to determine the optical constants of layered material stacks.
 To deduce actual material parameters from an SE experiment, numerical analysis needs to be performed.
@@ -44,13 +45,13 @@ It is possible to add new dispersions or use a generic formula dispersion, which
 To analyse materials it is helpful to have a database of pre-defined models to use.
 For this purpose, pyElli includes the popular public domain database for optical constants [refractiveindex.info](https://refractiveindex.info) [@rii], which allows users to load literature dispersions with a single line of code.
 
-PyElli supports using mutliple solving algorithms, which allows for specialized applications.
+PyElli supports using multiple solving algorithms, which allows for specialized applications.
 Currently, two algorithms using different formulations are available.
 The first one is a simple algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and the second one a more complex 4x4 formulation [@Berreman72].
 While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, which allows solving more complex problems, e.g., anistropic materials or active media.
 
 For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
-This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth.
+This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth [@hauptmann2023].
 The usage of python and vectorization libraries allows for easy adoption for artificial intelligence based analysis of SE data.
 
 # Statement of need
@@ -75,7 +76,7 @@ In summary, we believe and hope that pyElli will further contribute to easier an
 Other notable python open source software for solving transfer-matrices are available, but tend to focus on different aspects:
 
 - [PyGTM](https://pygtm.readthedocs.io) [@Passler17; @Passler19]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
-- [PyLlama](https://pyllama.readthedocs.io): Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
+- [PyLlama](https://pyllama.readthedocs.io) [@Bay2022]: Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
 - [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021]: Complete toolkit to simulate solar cells. Provides the same 2x2 [@byrnes2020multilayer] algorithm and a scattering matrix approach.
 - Additional mentions:
   - [refellips](https://refellips.readthedocs.io/en/latest/)
@@ -139,7 +140,7 @@ rii_db = elli.db.RII()
 Si = rii_db.get_mat("Si", "Aspnes")
 ```
 
-With all materials instantiated, we are able to build the layerd structure.
+With all materials instantiated, we are able to build the layered structure.
 The class `Structure` takes three arguments:
 
 - The incident half-space, this is air in most cases.
@@ -167,7 +168,7 @@ result = structure.evaluate(wavelengths, 70)
 ```
 
 The calculation is stored in the `result` variable, which is an [`Result` object](https://pyelli.readthedocs.io/en/stable/result.html).
-This objects holds the calculation results and you simple can call `psi`, `delta`, 'R', etc. to get your desired output.
+This objects holds all input paramters and the calculation results. You simple can call `psi`, `delta`, `R`, etc. to get your desired output.
 We may also use the `@fit` decorator in `elli.fitting` to automatically show a widget-based fitting gui for jupyter notebooks.
 Figure \autoref{fig:fit_dec_example} shows the output when used with this example model and some experimental data.
 ![The ipywidgets based fitting gui.\label{fig:fit_dec_example}](fit_decorator_example.png)
@@ -175,7 +176,11 @@ You find additional information on how this is done in our [examples](https://py
 
 # Acknowledgements
 
-Probably sbyrnes and the original creator of the base we used.
+- Steven J. Byrnes
+- Olivier Castany and Céline Molinaro
+- Mikhail Polyanskiy
+
+- Forschergruppe
 
 # References
 
