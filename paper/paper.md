@@ -24,10 +24,10 @@ bibliography: paper.bib
 # Summary
 
 PyElli is an open source analysis tool for linear optical interaction of layered materials written in python.
-It mainly targets spectroscopic ellipsometry, but is easily adaptable to various transmission or reflection experiments.
+It mainly targets spectroscopic ellipsometry, but is easily adaptable to various transmission and reflection experiments.
 
 Spectroscopic ellipsometry (SE) is used throughout various scientific fields to determine the optical constants of layered material stacks.
-To deduce actual material parameters from an SE experiment, numerical analysis needs to be performed.
+SE experiments do not yield directly usable data. To deduce actual material parameters from an SE experiment, numerical analysis needs to be performed.
 This is typically done with the transfer-matrix method (tmm), which associates an interaction matrix to the optical response of each material layer. The full optical response of a material system is then determined by matrix multiplication of the layers matrices.
 
 Proprietary software for such analysis is mostly shipped with ellipsometers, where each ellipsometer manufacturer supplies their own adapted version.
@@ -39,8 +39,8 @@ This allows scientist to adapt pyElli to their needs, either for custom experime
 It is designed with extensibility and adaptability in mind, to allow scientists to easily develop their custom analysis pipelines.
 It also serves the need of FAIR data by supporting recent advances in standardization of ellipsometry data and models.
 
-The optical models used try to stay as close as possible to literature [@Hilfiker2018].
-It is possible to add new dispersions or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
+The optical models used, try to stay as close as possible to literature [@Hilfiker2018].
+It is possible to add new dispersions as code or use a generic formula dispersion, which is able to parse a text-based formula into a fittable dispersion.
 
 To analyse materials it is helpful to have a database of pre-defined models to use.
 For this purpose, pyElli includes the popular public domain database for optical constants [refractiveindex.info](https://refractiveindex.info) [@rii], which allows users to load literature dispersions with a single line of code.
@@ -52,7 +52,7 @@ While the 2x2 algorithm splits the light into two perpendicular polarized beams 
 
 For fast processing pyElli's algorithms are fully vectorized for multiple wavelengths and leverage the numerical algebra libraries [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
 This allows the usage of advanced fitting algorithms, i.e., global optimizers, in reasonable evaluation times and enables embedded in-situ monitoring of overlayer growth [@hauptmann2023].
-The usage of python and vectorization libraries allows for easy adoption for artificial intelligence based analysis of SE data.
+The usage of python and vectorization libraries allows for easy adoption of artificial intelligence based analysis of SE data.
 
 # Statement of need
 
@@ -75,15 +75,15 @@ In summary, we believe and hope that pyElli will further contribute to easier an
 
 Other notable python open source software for solving transfer-matrices are available, but tend to focus on different aspects:
 
-- [PyGTM](https://pygtm.readthedocs.io) [@Passler17; @Passler19]: Slower, but more extensive general transfer matrix approach, calculates additional parameters, like the electric field strengths in the multilayer stack.
-- [PyLlama](https://pyllama.readthedocs.io) [@Bay2022]: Provides transfer and scattering matrix algorithms (RCWA), better suited to simulate liquid crystals. Non vectorized.
-- [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021]: Complete toolkit to simulate solar cells. Provides the same 2x2 [@byrnes2020multilayer] algorithm and a scattering matrix approach.
+- [PyGTM](https://pygtm.readthedocs.io) [@Passler17; @Passler19] provides a slower, but more extensive general transfer matrix approach. It allows to calculate additional parameters, like the local strength of the electric field in any position of the multilayer stack.
+- [PyLlama](https://pyllama.readthedocs.io) [@Bay2022] is focused on the simulation of liquid crystals and uses non-vertorized TMM and a scattering matrix algorithm (rigourous coupled-wave analysis, RCWA).
+- [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021] is a complete toolkit to simulate physical and electrical properties of solar cells. It provides the same 2x2-algorithm[@byrnes2020multilayer] and a scattering matrix approach (S4).
+- [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] is a fast variant of Byrnes algorithm for artificial intelligence based analysis of multilayer stacks.
 - Additional mentions:
   - [refellips](https://refellips.readthedocs.io/en/latest/)
   - [EMpy](http://lbolla.github.io/EMpy/)
   - [dtmm](https://github.com/IJSComplexMatter/dtmm)
   - [py_matrix](https://github.com/gevero/py_matrix)
-- [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] -> AI stuff
 
 # Example: Building a simple model
 
@@ -91,7 +91,7 @@ Building an optical model in pyElli is simple and straightforward.
 Here, we will show the process by creating a standard model for SiO2 on Si.
 We will use a cauchy dispersion function for SiO2 and tabulated literature values for Si loaded from the refractiveindex.info database.
 
-Before we dive into the actual building we need to import the necessary libraries.
+Before we dive into building the model, we need to import the necessary libraries.
 PyElli is imported from the module `elli` and here we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from [lmfit](https://lmfit.github.io/lmfit-py/index.html) [@matt_newville_2023_7810964], adding history to it. This way you can revert your model to an earlier set of parameters.
 We also import `linspace` from `numpy`, which we'll need for generating a wavelength axis.
 
@@ -176,11 +176,9 @@ You find additional information on how this is done in our [examples](https://py
 
 # Acknowledgements
 
-- Steven J. Byrnes
-- Olivier Castany and Céline Molinaro
-- Mikhail Polyanskiy
+M.J.M. acknowledges financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).
 
-- Forschergruppe
+We thank Olivier Castany and Céline Molinaro for their implementation of the Berreman formalism, Steven J. Byrnes for his 2x2 transfer-matrix-method and Mikhail Polyanskiy for curating the refractiveindex.info database.
 
 # References
 
