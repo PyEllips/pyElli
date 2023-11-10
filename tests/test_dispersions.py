@@ -1,11 +1,12 @@
 """Tests for dispersion models"""
 import os
+from shutil import copytree
+
 import numpy as np
 import pandas as pd
 from numpy.testing import assert_array_equal
 from pandas.testing import assert_frame_equal
 from pytest import fixture, raises
-from setuptools import distutils
 
 import elli
 from elli.dispersions.base_dispersion import InvalidParameters
@@ -18,7 +19,7 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        distutils.dir_util.copy_tree(test_dir, str(tmpdir))
+        copytree(test_dir, str(tmpdir), dirs_exist_ok=True)
 
     return tmpdir
 

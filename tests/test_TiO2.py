@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 import os
-from distutils import dir_util
+from shutil import copytree
+
+import numpy as np
+from pytest import fixture
 
 import elli
-import numpy as np
 from elli.fitting import ParamsHist
-from pytest import fixture
 
 
 @fixture
@@ -21,7 +22,7 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        dir_util.copy_tree(test_dir, str(tmpdir))
+        copytree(test_dir, str(tmpdir), dirs_exist_ok=True)
 
     return tmpdir
 
