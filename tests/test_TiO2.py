@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import os
-from shutil import copytree
+from shutil import copytree, rmtree
 
 import numpy as np
 from pytest import fixture
@@ -22,7 +22,8 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        copytree(test_dir, str(tmpdir), dirs_exist_ok=True)
+        rmtree(tmpdir)
+        copytree(test_dir, str(tmpdir))
 
     return tmpdir
 

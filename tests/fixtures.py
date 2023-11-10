@@ -1,5 +1,5 @@
 import os
-from shutil import copytree
+from shutil import copytree, rmtree
 
 from pytest import fixture
 
@@ -15,6 +15,7 @@ def datadir(tmp_path, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        copytree(test_dir, str(tmp_path), dirs_exist_ok=True)
+        rmtree(tmp_path)
+        copytree(test_dir, str(tmp_path))
 
     return tmp_path
