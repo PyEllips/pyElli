@@ -2,6 +2,8 @@
 It only supplies a rudimentary loading of standard psi/delta values
 and misses some other features.
 """
+import re
+
 import pandas as pd
 
 from ..utils import calc_rho
@@ -11,8 +13,6 @@ def read_spectraray_psi_delta(
     fname: str, sep: str = " ", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.
@@ -41,7 +41,7 @@ def read_spectraray_psi_delta(
     with open(fname) as f:
         header = f.readlines()[0]
 
-    aois = list(map(float, header.split(sep)[2::2]))
+    aois = list(map(float, re.split(sep, header)[3::2]))
     index = pd.MultiIndex.from_product(
         [aois, ["Ψ", "Δ"]], names=["Angle of Incidence", ""]
     )
@@ -107,8 +107,6 @@ def read_spectraray_rho(
     fname: str, sep: str = r" ", decimal: str = "."
 ) -> pd.DataFrame:
     r"""Read a psi/delta spectraray ascii file and converts it to rho values.
-    Only reads the first entry and does not support reading multiple angles.
-    For multiple angles you have to save the data in multiple files.
 
     Args:
         fname (str): Filename of the measurement ascii file.

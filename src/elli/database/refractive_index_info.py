@@ -93,7 +93,7 @@ class RII:
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
-        with open(self.rii_path.joinpath("library.yml"), "r", encoding="utf8") as f:
+        with open(self.rii_path.joinpath("catalog-nk.yml"), "r", encoding="utf8") as f:
             yml_file = yaml.load(f, yaml.SafeLoader)
 
         pagename_pattern = re.compile(
@@ -130,7 +130,7 @@ class RII:
                                         None,
                                         None,
                                         os.path.join(
-                                            "data", os.path.normpath(p["data"])
+                                            "data-nk", os.path.normpath(p["data"])
                                         ),
                                     )
                                 )
@@ -158,7 +158,7 @@ class RII:
                                         infos.group("lower_range1"),
                                         infos.group("upper_range1"),
                                         os.path.join(
-                                            "data", os.path.normpath(p["data"])
+                                            "data-nk", os.path.normpath(p["data"])
                                         ),
                                     )
                                 )
