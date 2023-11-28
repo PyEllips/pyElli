@@ -3,10 +3,10 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import numpy.typing as npt
+from formula_dispersion import parse, get_representation
 
 from elli.units import ureg
 from elli.dispersions.base_dispersion import BaseDispersion, Dispersion, IndexDispersion
-from elli.formula_parser.parser import parse_formula, FormulaTransformer
 
 
 class FormulaParser(BaseDispersion):
@@ -95,7 +95,7 @@ class FormulaParser(BaseDispersion):
         raise ValueError(f"Unsupported unit `{unit}`.")
 
     def _check_repr(self):
-        representation = parse_formula(self.formula).data
+        representation = get_representation(self.formula)
 
         if isinstance(self, FormulaIndex) and not representation == "n":
             raise ValueError(
@@ -108,12 +108,9 @@ class FormulaParser(BaseDispersion):
             )
 
     def __dispersion_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
-        return FormulaTransformer(
-            x_axis_name=self.f_axis_name,
-            x_axis_values=lbda,
-            single_params=self.single_params,
-            repeated_params=self.rep_params_dl,
-        ).transform(parse_formula(self.formula))[1]
+        return parse(
+            self.formula, self.f_axis_name, lbda, self.single_params, self.rep_params_dl
+        )
 
 
 class Formula(Dispersion, FormulaParser):
