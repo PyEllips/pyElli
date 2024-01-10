@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1700563741800,
+  "lastUpdate": 1704876308659,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12172,6 +12172,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00004378198281610157",
             "extra": "mean: 4.30809209999552 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "354bed976243bc0890d8a3ddc150e37d97c0687c",
+          "message": "Bump fonttools from 4.37.1 to 4.43.0 in /requirements (#159)\n\nBumps [fonttools](https://github.com/fonttools/fonttools) from 4.37.1 to 4.43.0.\r\n- [Release notes](https://github.com/fonttools/fonttools/releases)\r\n- [Changelog](https://github.com/fonttools/fonttools/blob/main/NEWS.rst)\r\n- [Commits](https://github.com/fonttools/fonttools/compare/4.37.1...4.43.0)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: fonttools\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2024-01-10T09:43:40+01:00",
+          "tree_id": "34935346df57c316d9444434ca3e36453afc8b9e",
+          "url": "https://github.com/PyEllips/pyElli/commit/354bed976243bc0890d8a3ddc150e37d97c0687c"
+        },
+        "date": 1704876308004,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 134.81245605623025,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003633201343476562",
+            "extra": "mean: 7.41771219999805 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.302569583647766,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01883359998350466",
+            "extra": "mean: 188.58781280001153 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 18.081686764764303,
+            "unit": "iter/sec",
+            "range": "stddev: 0.018353759848947448",
+            "extra": "mean: 55.30457489998639 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 4.932216599067418,
+            "unit": "iter/sec",
+            "range": "stddev: 0.06256605507698772",
+            "extra": "mean: 202.74859789999482 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 96.87411451006943,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002788886552102327",
+            "extra": "mean: 10.322674999997616 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 205.4827524456156,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0009633589265137245",
+            "extra": "mean: 4.866588499999125 msec\nrounds: 10"
           }
         ]
       }
