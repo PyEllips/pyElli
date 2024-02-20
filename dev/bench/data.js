@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1708428848423,
+  "lastUpdate": 1708466206731,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12502,6 +12502,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0016253774705745493",
             "extra": "mean: 5.367607700000576 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "903150e8454d68c80f48dffcbc1ae4edd2913102",
+          "message": "Implement averaging of ResultLists (#162)\n\n* Implement averaging of ResultLists\r\n* Move averaging into a new class",
+          "timestamp": "2024-02-20T22:55:25+01:00",
+          "tree_id": "ca72e444c446f16602aefbc007879233d7039ac8",
+          "url": "https://github.com/PyEllips/pyElli/commit/903150e8454d68c80f48dffcbc1ae4edd2913102"
+        },
+        "date": 1708466205937,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 133.31226821745932,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005127755310693415",
+            "extra": "mean: 7.50118509999993 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.269344107492304,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01667449092266024",
+            "extra": "mean: 189.77693990000262 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 18.02492188787442,
+            "unit": "iter/sec",
+            "range": "stddev: 0.019693835029283135",
+            "extra": "mean: 55.47874250000007 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.26427735994144,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01706822897292572",
+            "extra": "mean: 189.95959590000098 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 91.27978641988079,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003639015919016985",
+            "extra": "mean: 10.95532800000285 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 231.62102242422932,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010333364071831432",
+            "extra": "mean: 4.317397400001255 msec\nrounds: 10"
           }
         ]
       }
