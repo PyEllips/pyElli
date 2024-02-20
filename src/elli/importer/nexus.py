@@ -4,6 +4,7 @@ NeXus is a format originating from large beam line facitilies and is adapted for
 other smaller labratory experiments to supply an agreed standard for data sharing.
 For now only reading is supported but in the future there will also be a writer
 to store the whole optical model and fit inside the NeXus file."""
+
 from typing import Optional, Callable
 from dataclasses import dataclass
 import h5py

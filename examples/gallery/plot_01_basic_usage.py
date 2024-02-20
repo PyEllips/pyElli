@@ -5,6 +5,7 @@ Basic usage
 Basic usage of building a model and fitting it to measurement data of SiO2 on Si.
 
 """
+
 # %%
 import elli
 from elli.fitting import ParamsHist, fit

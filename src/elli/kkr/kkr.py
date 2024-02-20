@@ -26,6 +26,7 @@ special cases it may be applicable.
 
 .. [1] Ohta and Ishida, Appl. Spectroscopy 42, 952 (1988), https://doi.org/10.1366/0003702884430380
 """
+
 # pylint: disable=invalid-name
 from typing import Callable
 import numpy as np

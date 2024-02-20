@@ -2,6 +2,7 @@
 A helper class to load data from Woollam ASCII Files.
 It supports loading of standard psi/delta values.
 """
+
 from typing import TextIO
 import re
 import logging
