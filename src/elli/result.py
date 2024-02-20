@@ -20,6 +20,9 @@ numerical indices can be used (r/s or R/L or 1...4).
 To make handling multiple experiments easier, they can be grouped into a list and provided
 to a ResultList object. It provides the same methods for data output as the single Result.
 The Output is returned as array over the list of results.
+
+When setting the mean flag to True the ResultList averages over all results in the list and
+returns an averaged value.
 """
 from typing import List
 
@@ -453,16 +456,19 @@ class Result:
 class ResultList:
     """Class to make a row of Results easier to handle."""
 
-    def __init__(self, results: List[Result] = None) -> None:
+    def __init__(self, results: List[Result] = None, mean: bool = False) -> None:
         """Creates an ResultList object.
 
         Args:
             results (List[Result], optional): List of results to store. Defaults to None.
+            mean (bool, optional): Returns the average of all results. Defaults to False.
         """
         if results is None:
             self.results = []
         else:
             self.results = results
+
+        self.mean = mean
 
     def append(self, result: Result) -> None:
         """Append a single Result to the ResultList.
@@ -498,4 +504,11 @@ class ResultList:
             npt.NDArray: Array of data.
         """
 
+        if self.mean:
+            return np.mean(
+                np.squeeze(
+                    np.array([getattr(result, name) for result in self.results])
+                ),
+                axis=0,
+            )
         return np.squeeze(np.array([getattr(result, name) for result in self.results]))
