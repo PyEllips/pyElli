@@ -87,7 +87,7 @@ class RII:
     .. code-block:: python
 
         gold_material = RII.get_mat("Au", "Johnson")
-        gold_dispersion = RII.load_dispersion("Au", "Johnson")
+        gold_dispersion = RII.get_dispersion("Au", "Johnson")
     """
 
     def __init__(self) -> None:
@@ -272,9 +272,9 @@ class RII:
         Returns:
             IsotropicMaterial: A material object build from the tabulated dispersion data.
         """
-        return IsotropicMaterial(self.load_dispersion(book, page))
+        return IsotropicMaterial(self.get_dispersion(book, page))
 
-    def load_dispersion(
+    def get_dispersion(
         self, book: str, page: str
     ) -> Union[Dispersion, IndexDispersion]:
         """Load a dispersion from the refractive index database.
