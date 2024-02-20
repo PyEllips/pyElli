@@ -2,6 +2,7 @@
 TiO2/SiO2 Bragg mirror
 ======================
 """
+
 # %%
 # Example of a TiO2/SiO2 Bragg mirror with 8.5 periods
 # ----------------------------------------------------

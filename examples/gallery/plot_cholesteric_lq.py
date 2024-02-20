@@ -2,6 +2,7 @@
 Cholesteric Liquid Crystal
 ==========================
 """
+
 # %%
 # Example of a cholesteric liquid crystal
 # ---------------------------------------

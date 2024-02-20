@@ -1,4 +1,5 @@
 """Tests for reading woollam"""
+
 import pytest
 from fixtures import datadir  # pylint: disable=unused-import
 import elli

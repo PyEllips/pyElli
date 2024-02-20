@@ -1,4 +1,5 @@
 """Benchmark for using the formula dispersion"""
+
 from pytest import fixture
 import numpy as np
 

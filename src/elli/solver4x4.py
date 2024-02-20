@@ -144,9 +144,7 @@ class Solver4x4(Solver):
                 [zeros, zeros, -ones, zeros],
                 [
                     eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
-                    k_x**2
-                    - eps[:, 1, 1]
-                    + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+                    k_x**2 - eps[:, 1, 1] + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
                     zeros,
                     k_x * eps[:, 1, 2] / eps[:, 2, 2],
                 ],

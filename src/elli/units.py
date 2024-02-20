@@ -1,4 +1,5 @@
 """The pint unit registry for pyElli"""
+
 from pint import UnitRegistry
 
 ureg = UnitRegistry()

@@ -1,4 +1,5 @@
 """Tests for a TiO2/SiO2/Si reference layer"""
+
 from __future__ import unicode_literals
 
 import os

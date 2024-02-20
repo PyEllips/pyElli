@@ -1,4 +1,5 @@
 """Abstract base class for Decorator functions for convenient fitting"""
+
 # Encoding: utf-8
 from abc import ABC, abstractmethod
 
