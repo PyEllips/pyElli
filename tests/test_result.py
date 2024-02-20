@@ -48,9 +48,5 @@ def test_resultlist_shape(result):
     assert len(result_list) == 3
     assert np.shape(result_list.delta) == (3, 50)
 
-
-def test_resultlist_mean(result):
-    result_list = elli.ResultList([result, result, result], mean=True)
-
-    assert np.shape(result_list.delta) == (50,)
-    assert np.allclose(result_list.delta, result.delta)
+    assert np.shape(result_list.mean.delta) == (50,)
+    assert np.allclose(result_list.mean.delta, result.delta)
