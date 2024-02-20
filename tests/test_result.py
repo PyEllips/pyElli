@@ -1,8 +1,8 @@
 """Tests for the result class"""
 
+import elli
 import numpy as np
 from pytest import fixture, raises
-import elli
 
 
 @fixture
@@ -40,3 +40,13 @@ def test_delta_range_error_on_invalid_range(result):
 
     with raises(ValueError):
         result.as_delta_range(20, 180)
+
+
+def test_resultlist_shape(result):
+    result_list = elli.ResultList([result, result, result])
+
+    assert len(result_list) == 3
+    assert np.shape(result_list.delta) == (3, 50)
+
+    assert np.shape(result_list.mean.delta) == (50,)
+    assert np.allclose(result_list.mean.delta, result.delta)
