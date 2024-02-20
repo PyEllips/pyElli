@@ -1,4 +1,5 @@
 """Testing benchmark for each solver"""
+
 from pytest import fixture
 import numpy as np
 

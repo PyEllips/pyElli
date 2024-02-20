@@ -1,4 +1,5 @@
 """Decorator functions for convenient fitting of Mueller matrices"""
+
 # Encoding: utf-8
 from typing import Callable
 
@@ -256,15 +257,19 @@ class FitMuellerMatrix(FitDecorator):
 
         return plot_mmatrix(
             [self.exp_mm, fit_result],
-            single=self.display_single
-            if kwargs.get("display_single") is None
-            else kwargs.get("display_single"),
-            sharex=self.sharex
-            if kwargs.get("sharex") is None
-            else kwargs.get("sharex"),
-            full_scale=self.full_scale
-            if kwargs.get("full_scale") is None
-            else kwargs.get("full_scale"),
+            single=(
+                self.display_single
+                if kwargs.get("display_single") is None
+                else kwargs.get("display_single")
+            ),
+            sharex=(
+                self.sharex if kwargs.get("sharex") is None else kwargs.get("sharex")
+            ),
+            full_scale=(
+                self.full_scale
+                if kwargs.get("full_scale") is None
+                else kwargs.get("full_scale")
+            ),
         )
 
     def plot_residual(self, **kwargs) -> go.Figure:
@@ -287,15 +292,19 @@ class FitMuellerMatrix(FitDecorator):
 
         return plot_mmatrix(
             [fit_result - self.exp_mm],
-            single=self.display_single
-            if kwargs.get("display_single") is None
-            else kwargs.get("display_single"),
-            sharex=self.sharex
-            if kwargs.get("sharex") is None
-            else kwargs.get("sharex"),
-            full_scale=self.full_scale
-            if kwargs.get("full_scale") is None
-            else kwargs.get("full_scale"),
+            single=(
+                self.display_single
+                if kwargs.get("display_single") is None
+                else kwargs.get("display_single")
+            ),
+            sharex=(
+                self.sharex if kwargs.get("sharex") is None else kwargs.get("sharex")
+            ),
+            full_scale=(
+                self.full_scale
+                if kwargs.get("full_scale") is None
+                else kwargs.get("full_scale")
+            ),
         )
 
     def __init__(

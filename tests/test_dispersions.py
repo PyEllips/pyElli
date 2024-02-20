@@ -1,4 +1,5 @@
 """Tests for dispersion models"""
+
 import os
 from shutil import copytree, rmtree
 

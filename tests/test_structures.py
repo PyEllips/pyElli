@@ -1,4 +1,5 @@
 """Tests for the result class"""
+
 import numpy as np
 import elli
 from pytest import raises

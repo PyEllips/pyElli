@@ -1,4 +1,5 @@
 """Testing cases for the dispersion law factory class."""
+
 import elli
 import pytest
 
