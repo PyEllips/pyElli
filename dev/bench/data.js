@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1712165770341,
+  "lastUpdate": 1714024248240,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12634,6 +12634,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000046657675220857096",
             "extra": "mean: 4.340241199997763 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e76a9e1fa484463f359ddaf4d0a795fae5580a14",
+          "message": "Bump pydantic from 1.10.2 to 1.10.13 in /requirements (#167)\n\nBumps [pydantic](https://github.com/pydantic/pydantic) from 1.10.2 to 1.10.13.\r\n- [Release notes](https://github.com/pydantic/pydantic/releases)\r\n- [Changelog](https://github.com/pydantic/pydantic/blob/main/HISTORY.md)\r\n- [Commits](https://github.com/pydantic/pydantic/compare/v1.10.2...v1.10.13)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: pydantic\r\n  dependency-type: direct:development\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2024-04-25T07:49:27+02:00",
+          "tree_id": "69662a1fb73f6f36eded14075887e21596036f97",
+          "url": "https://github.com/PyEllips/pyElli/commit/e76a9e1fa484463f359ddaf4d0a795fae5580a14"
+        },
+        "date": 1714024247712,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 134.38259622829287,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003738470302222037",
+            "extra": "mean: 7.441439799995919 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.473339237592285,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0629493040849321",
+            "extra": "mean: 182.70382239999776 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 19.03058018982716,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006688575787791498",
+            "extra": "mean: 52.54700540000101 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.371500609697386,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01849004745169841",
+            "extra": "mean: 186.1677160000056 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 82.05045733897776,
+            "unit": "iter/sec",
+            "range": "stddev: 0.005131316595678799",
+            "extra": "mean: 12.187622500002249 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 232.10455326018584,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000632312755021627",
+            "extra": "mean: 4.3084031999967465 msec\nrounds: 10"
           }
         ]
       }
