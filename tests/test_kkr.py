@@ -1,4 +1,4 @@
-"""Test kramers kronig relations"""
+"""Test Kramers Kronig relations"""
 
 import numpy as np
 from numpy.testing import assert_array_almost_equal
@@ -18,7 +18,7 @@ def test_tauc_lorentz():
 
 
 def test_tauc_lorentz_energy():
-    """Test whether the kkr in non reciprocal formulation reproduces the analyitical expression
+    """Test whether the kkr in non reciprocal formulation reproduces the analytical expression
     of Tauc-Lorentz"""
     energy = np.linspace(0, 10, 5000)
     amp = 20
@@ -32,7 +32,7 @@ def test_tauc_lorentz_energy():
 
 
 def test_lorentz():
-    """Test whether the kkr reproduces the analyitical expression of a Lorentz oscillator"""
+    """Test whether the kkr reproduces the analytical expression of a Lorentz oscillator"""
     lbda = np.linspace(1e-2, 5000, 5000)
     g = elli.LorentzEnergy().add(A=20, E=5, gamma=5)
     assert_array_almost_equal(
@@ -43,7 +43,7 @@ def test_lorentz():
 
 
 def test_gauss():
-    """KKR reproduces the analytical epxression of gaussian."""
+    """KKR reproduces the analytical expression of gaussian."""
     lbda = np.linspace(1e-2, 5000, 5000)
     g = elli.Gaussian().add(A=10, E=8, sigma=5)
     assert_array_almost_equal(
