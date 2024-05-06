@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1714024248240,
+  "lastUpdate": 1715001660081,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12700,6 +12700,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000632312755021627",
             "extra": "mean: 4.3084031999967465 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "128370921+IruNikZe@users.noreply.github.com",
+            "name": "IruNikZe",
+            "username": "IruNikZe"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "07fa0b3069f71de19ee5a47e5661bba69bc55d06",
+          "message": "[Issue 168] Vectorized KKR internals (#169)\n\n* fix: fixed typos\r\n\r\n* refactor: vectorized KKR internals; fixed typo",
+          "timestamp": "2024-05-06T15:19:31+02:00",
+          "tree_id": "7380fe448bd0ce9fae8c4bf9a44eb783349990ec",
+          "url": "https://github.com/PyEllips/pyElli/commit/07fa0b3069f71de19ee5a47e5661bba69bc55d06"
+        },
+        "date": 1715001659519,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 134.59885147591498,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00033245199805804354",
+            "extra": "mean: 7.429483900008904 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.592338625378122,
+            "unit": "iter/sec",
+            "range": "stddev: 0.053337335685066295",
+            "extra": "mean: 178.8160672999993 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 19.461797951230473,
+            "unit": "iter/sec",
+            "range": "stddev: 0.004232761768125989",
+            "extra": "mean: 51.382714099997884 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 6.085528283176647,
+            "unit": "iter/sec",
+            "range": "stddev: 0.015994070217085182",
+            "extra": "mean: 164.3242712000017 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 117.02828347744072,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001321820233241734",
+            "extra": "mean: 8.544942900002184 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 203.379376119234,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012433849684594168",
+            "extra": "mean: 4.916919399997255 msec\nrounds: 10"
           }
         ]
       }
