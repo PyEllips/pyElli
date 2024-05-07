@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1715001660081,
+  "lastUpdate": 1715059824643,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12766,6 +12766,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0012433849684594168",
             "extra": "mean: 4.916919399997255 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "95afc4a33c61a4bddb738139ecf79da4eaab2142",
+          "message": "Bump jinja2 from 3.1.3 to 3.1.4 in /requirements (#170)\n\nBumps [jinja2](https://github.com/pallets/jinja) from 3.1.3 to 3.1.4.\r\n- [Release notes](https://github.com/pallets/jinja/releases)\r\n- [Changelog](https://github.com/pallets/jinja/blob/main/CHANGES.rst)\r\n- [Commits](https://github.com/pallets/jinja/compare/3.1.3...3.1.4)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: jinja2\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2024-05-07T07:29:02+02:00",
+          "tree_id": "0193b38063d79cd4cf8d86e791e9308d568012fb",
+          "url": "https://github.com/PyEllips/pyElli/commit/95afc4a33c61a4bddb738139ecf79da4eaab2142"
+        },
+        "date": 1715059823504,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 133.51348218460976,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000382351522333722",
+            "extra": "mean: 7.489880300008167 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 5.442670769054178,
+            "unit": "iter/sec",
+            "range": "stddev: 0.013142391821852999",
+            "extra": "mean: 183.73332550000612 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 15.095864680947196,
+            "unit": "iter/sec",
+            "range": "stddev: 0.024982638583361323",
+            "extra": "mean: 66.2433070999981 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 5.534868250561675,
+            "unit": "iter/sec",
+            "range": "stddev: 0.017882003531069283",
+            "extra": "mean: 180.67277389999674 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 93.31794781662772,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0042651580928689346",
+            "extra": "mean: 10.716052200001513 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 227.51551735481578,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00006165089964435273",
+            "extra": "mean: 4.3953045999955975 msec\nrounds: 10"
           }
         ]
       }
