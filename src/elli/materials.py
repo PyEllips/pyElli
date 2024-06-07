@@ -31,7 +31,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import numpy.typing as npt
-from numpy.lib.scimath import sqrt
+from numpy.lib.scimath import sqrt, power
 
 from .dispersions.base_dispersion import BaseDispersion
 
@@ -419,6 +419,55 @@ class MaxwellGarnettEMA(MixtureMaterial):
 
 
 class BruggemanEMA(MixtureMaterial):
+    r"""Mixture Material approximated with the Bruggeman formula
+    for isotropic spherical inclusions.
+
+    Returns one of the two analytical solutions to this quadratic equation:
+
+    .. math::
+       2 \varepsilon_\text{eff}^2 +
+       [(3f - 2) \varepsilon_a + (1 - 3f)\varepsilon_b] \varepsilon_\text{eff}
+       - \varepsilon_a \cdot \varepsilon_b = 0
+
+    where :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
+    :math:`\varepsilon_a` is the permittivity of the first mixture material,
+    :math:`\varepsilon_b` is the permittivity of the second mixture material
+    and :math:`f` is the volume fraction of material a in the material b.
+
+    References:
+        * Ph.J. Rouseel; J. Vanhellemont; H.E. Maes. (1993) Thin Solid Films, 234, 423-427
+    """
+
+    def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
+        """Gets the permittivity tensor of the material for wavelength 'lbda',
+        while overwriting the set fraction.
+
+        Args:
+            lbda (npt.ArrayLike): Single value or array of wavelengths (in nm).
+            fraction (float): Fraction of the guest material used for evaluation. (Range 0 - 1).
+
+        Returns:
+            npt.NDArray: Permittivity tensor.
+        """
+        e_h = self.host_material.get_tensor(lbda)
+        e_g = self.guest_material.get_tensor(lbda)
+        f = fraction
+
+        mask_equal = np.nonzero(np.equal(e_h, e_g))
+        mask_different = np.nonzero(np.not_equal(e_h, e_g))
+
+        p = sqrt(e_h[mask_different] / e_g[mask_different])
+        b = 0.25 * ((3 * f - 1) * (1 / p - p) + p)
+        z = b + sqrt(b**2 + 0.5)
+
+        e_mix = np.full_like(e_h, np.nan)
+        e_mix[mask_equal] = e_h[mask_equal]
+        e_mix[mask_different] = z * sqrt(e_h[mask_different] * e_g[mask_different])
+
+        return e_mix
+
+
+class BruggemanJanssonEMA(MixtureMaterial):
     r"""Mixture Material approximated with the Bruggeman formula
     for isotropic spherical inclusions.
 
