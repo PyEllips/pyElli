@@ -542,7 +542,7 @@ class BruggemanEMA(MixtureMaterial):
 
             return np.where(
                 np.logical_and(
-                    np.abs(zeta_root1 <= 1),
+                    np.abs(zeta_root1) <= 1,
                     zeta_root1.imag >= np.imag((zeta_1 + zeta_2) / 2),
                 ),
                 root1[mask_general],
