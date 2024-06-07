@@ -313,7 +313,7 @@ class VCAMaterial(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
@@ -346,7 +346,7 @@ class LooyengaEMA(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
 
     References:
         Looyenga, H. (1965). Physica, 31(3), 401–406.
@@ -384,7 +384,7 @@ class MaxwellGarnettEMA(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
@@ -420,14 +420,14 @@ class MaxwellGarnettEMA(MixtureMaterial):
 
 class BruggemanEMA(MixtureMaterial):
     r"""Mixture Material approximated with the Bruggeman formula
-    for spherical inclusions.
+    for isotropic spherical inclusions.
 
     Returns one of the two analytical solutions to this quadratic equation:
 
     .. math::
        2 \varepsilon_\text{eff}^2 +
-       \varepsilon_\text{eff} [(3f - 2) \varepsilon_a
-       + (1 - 3f)\varepsilon_b] - \varepsilon_a \cdot \varepsilon_b = 0
+       [(3f - 2) \varepsilon_a + (1 - 3f)\varepsilon_b] \varepsilon_\text{eff}
+       - \varepsilon_a \cdot \varepsilon_b = 0
 
     where :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     :math:`\varepsilon_a` is the permittivity of the first mixture material,
