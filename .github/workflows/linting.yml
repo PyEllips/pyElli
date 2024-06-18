@@ -19,10 +19,10 @@ jobs:
           pip install sphinx-lint ruff==0.4.8
       - name: ruff
         run: |
-          ruff src/pynxtools tests
+          ruff check src/elli tests
       - name: ruff formatting
         run: |
-          ruff format --check src/pynxtools tests
+          ruff format --check src/elli tests
       - name: Run Sphinx Linting
         run: |
           sphinx-lint .
