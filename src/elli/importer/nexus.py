@@ -11,7 +11,11 @@ from typing import Callable, Optional
 import h5py
 import numpy as np
 import pandas as pd
-from numpy.lib._index_tricks_impl import IndexExpression
+
+if np.version.version < "2.0.0":
+    from numpy.lib.index_tricks import IndexExpression
+else:
+    from numpy.lib._index_tricks_impl import IndexExpression
 
 from elli.dispersions.formula import Formula, FormulaIndex
 from elli.dispersions.table_epsilon import TableEpsilon
