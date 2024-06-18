@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "scipy",
     "numpy>=1.20",
+    "numpy<2.0.0;python_version<'3.10'",
     "pandas>=1.0.0",
     "h5py",
     "pyyaml",
