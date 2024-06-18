@@ -10,12 +10,11 @@ authors = [
     { name = "Marius Müller", email = "marius.mueller@physik.uni-giessen.de" },
     { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" }
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = { file = "LICENSE.txt" }
 readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
