@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and dielectric function values."""
+
 from typing import Any, Dict, Union
 import numpy.typing as npt
 import scipy.interpolate

@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Cauchy dispersion, with Urbach tail."""
+
 import numpy as np
 import numpy.typing as npt
 

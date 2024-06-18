@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Sellmeier dispersion."""
+
 import numpy.typing as npt
 
 from .base_dispersion import Dispersion

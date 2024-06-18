@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Tauc-Lorentz dispersion law. Model by Jellison and Modine."""
+
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt

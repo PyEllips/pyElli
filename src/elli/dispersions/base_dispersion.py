@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
+
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import List, Optional, Union

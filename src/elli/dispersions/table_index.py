@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Dispersion specified by a table of wavelengths (nm) and refractive index values."""
+
 from typing import Union
 import numpy.typing as npt
 import scipy.interpolate

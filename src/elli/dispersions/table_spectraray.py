@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Helper class to load spectraray's tabulated dielectric functions."""
+
 import pandas as pd
 
 from ..utils import conversion_wavelength_energy
