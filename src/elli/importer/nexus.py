@@ -5,12 +5,13 @@ other smaller labratory experiments to supply an agreed standard for data sharin
 For now only reading is supported but in the future there will also be a writer
 to store the whole optical model and fit inside the NeXus file."""
 
-from typing import Optional, Callable
 from dataclasses import dataclass
+from typing import Callable, Optional
+
 import h5py
 import numpy as np
-from numpy.lib.index_tricks import IndexExpression
 import pandas as pd
+from numpy.lib._index_tricks_impl import IndexExpression
 
 from elli.dispersions.formula import Formula, FormulaIndex
 from elli.dispersions.table_epsilon import TableEpsilon
