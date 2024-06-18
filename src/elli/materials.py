@@ -456,13 +456,15 @@ class BruggemanEMA(MixtureMaterial):
         mask_equal = np.nonzero(np.equal(e_h, e_g))
         mask_different = np.nonzero(np.not_equal(e_h, e_g))
 
-        p = sqrt(e_h[mask_different] / e_g[mask_different])
+        p = sqrt(e_h[mask_different]) / sqrt(e_g[mask_different])
         b = 0.25 * ((3 * f - 1) * (1 / p - p) + p)
-        z = b + sqrt(b**2 + 0.5)
+        z = b + sqrt(power(b, 2) + 0.5)
 
         e_mix = np.full_like(e_h, np.nan)
         e_mix[mask_equal] = e_h[mask_equal]
-        e_mix[mask_different] = z * sqrt(e_h[mask_different] * e_g[mask_different])
+        e_mix[mask_different] = (
+            z * sqrt(e_h[mask_different]) * sqrt(e_g[mask_different])
+        )
 
         return e_mix
 
