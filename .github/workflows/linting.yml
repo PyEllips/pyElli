@@ -16,7 +16,7 @@ jobs:
           python-version: "3.10"
       - name: Install deps
         run: |
-          pip install sphinx-lint
+          pip install sphinx-lint ruff==0.4.8
       - name: ruff
         run: |
           ruff src/pynxtools tests
