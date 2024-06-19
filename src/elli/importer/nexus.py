@@ -12,7 +12,7 @@ import h5py
 import numpy as np
 import pandas as pd
 
-if np.lib.NumpyVersion(np.__version__) >= "2.0.0":
+if np.lib.NumpyVersion(np.__version__) < "2.0.0":
     from numpy.lib.index_tricks import IndexExpression
 else:
     from numpy.lib._index_tricks_impl import IndexExpression
