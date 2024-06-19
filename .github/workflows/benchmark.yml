@@ -22,8 +22,7 @@ jobs:
       - name: Install deps
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv pip install --system -r requirements/fitting-requirements.txt
-          uv pip install --system pytest pytest-benchmark pytest-coverage
+          uv pip install --system -r requirements/dev-requirements.txt
       - name: Install module
         run: |
           uv pip install --system .
