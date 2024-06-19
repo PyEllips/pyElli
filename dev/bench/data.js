@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1717742071853,
+  "lastUpdate": 1718775939941,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -12898,6 +12898,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.001005244147815573",
             "extra": "mean: 4.831500899996399 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2fa65c855f5fe37346d7f80d14b26fcc9f8dacfc",
+          "message": "Upgrade and use `ruff==0.4.8` and support `numpy>=2.0.0` (#176)\n\n* Upgrade ruff and numpy\r\n\r\n* Adapt requirements and restrict numpy<2.0.0 for python <3.10\r\n\r\n* Install ruff for linting workflow\r\n\r\n* Fix index_tricks import\r\n\r\n* Fix linting workflow\r\n\r\n* Version switch for index_tricks\r\n\r\n* Don't support python 3.7 anymore\r\n\r\n* Add ruf badge\r\n\r\n* Add comment for numpy linting",
+          "timestamp": "2024-06-19T07:44:50+02:00",
+          "tree_id": "23f28bd0f29ed64a520b976c9d467a277bd0bc45",
+          "url": "https://github.com/PyEllips/pyElli/commit/2fa65c855f5fe37346d7f80d14b26fcc9f8dacfc"
+        },
+        "date": 1718775938833,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 147.7776509680792,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00028303578271990094",
+            "extra": "mean: 6.7669231000024865 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 1.7345574267679962,
+            "unit": "iter/sec",
+            "range": "stddev: 0.019385357529120954",
+            "extra": "mean: 576.5159368999974 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 34.776836587510545,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006021378317212175",
+            "extra": "mean: 28.754771800007006 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.7538321477965815,
+            "unit": "iter/sec",
+            "range": "stddev: 0.022770770085737205",
+            "extra": "mean: 570.1799920000013 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 186.23974359118617,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005781414564061628",
+            "extra": "mean: 5.369423199996959 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 195.26795449779303,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00025518292925988037",
+            "extra": "mean: 5.121168000002285 msec\nrounds: 10"
           }
         ]
       }
