@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1718783410850,
+  "lastUpdate": 1718790337903,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13162,6 +13162,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0005616907102127198",
             "extra": "mean: 5.130865900000003 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "adc607c0233ea6742eec2fa287bce5ebfe4c50d9",
+          "message": "Fix Bruggeman EMA (#173)\n\n* Fix documentation typos\r\n* Correct faulty comparison\r\n* Implement Rouseel-Vanhellemont-Meas algorithm\r\n* Fix RVM algorithm\r\n* Disable Jansson code for now\r\n* Include new tests for mixture materials\r\n* Remove commented-out code",
+          "timestamp": "2024-06-19T11:44:45+02:00",
+          "tree_id": "07e0e8724643f0563d6fa624a4797291141f0336",
+          "url": "https://github.com/PyEllips/pyElli/commit/adc607c0233ea6742eec2fa287bce5ebfe4c50d9"
+        },
+        "date": 1718790336674,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 146.47839856694222,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000203759757428486",
+            "extra": "mean: 6.826945199998136 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 1.7492733397846707,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006741016900671151",
+            "extra": "mean: 571.6659467999989 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 34.6891414283779,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006103022817992629",
+            "extra": "mean: 28.827464700003702 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.7635824944126526,
+            "unit": "iter/sec",
+            "range": "stddev: 0.009215391314798121",
+            "extra": "mean: 567.0276288000025 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 183.74569757166745,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005848998722327117",
+            "extra": "mean: 5.442304299995726 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 193.916054438087,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005032577747081983",
+            "extra": "mean: 5.156870600001184 msec\nrounds: 10"
           }
         ]
       }
