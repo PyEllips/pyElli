@@ -32,10 +32,8 @@ def RII():
 @pytest.mark.parametrize(
     "EMA",
     [
-        # elli.VCAMaterial,
         elli.LooyengaEMA,
         elli.MaxwellGarnettEMA,
-        # elli.BruggemanJanssonEMA,
     ],
 )
 def test_mixture_models(host_book, host_page, guest_book, guest_page, EMA, RII):
