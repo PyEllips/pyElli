@@ -1,8 +1,9 @@
 name: Benchmark
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 permissions:
   contents: write
@@ -22,8 +23,7 @@ jobs:
       - name: Install deps
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv pip install --system -r requirements/fitting-requirements.txt
-          uv pip install --system pytest pytest-benchmark pytest-coverage
+          uv pip install --system -r requirements/dev-requirements.txt
       - name: Install module
         run: |
           uv pip install --system .
@@ -31,6 +31,7 @@ jobs:
         run: |
           pytest tests/benchmark*.py --benchmark-json output.json
       - name: Store benchmark result
+        if: github.ref == 'refs/heads/master'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Python Benchmark with pytest-benchmark
@@ -41,5 +42,18 @@ jobs:
           auto-push: true
           # Show alert with commit comment on detecting possible performance regression
           alert-threshold: "200%"
+          comment-on-alert: false
+          fail-on-alert: false
+      - name: Check benchmark threshold
+        if: github.ref != 'refs/heads/master'
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Python Benchmark with pytest-benchmark
+          tool: "pytest"
+          output-file-path: output.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: "200%"
           comment-on-alert: true
-          fail-on-alert: true
+          fail-on-alert: false

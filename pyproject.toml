@@ -44,6 +44,7 @@ fitting = [
 ]
 dev = [
     "pytest",
+    "pytest-benchmark",
     "pytest-cov",
     "nbmake",
     "ruff==0.4.8",
