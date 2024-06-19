@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Lorentz dispersion law with parameters in units of wavelengths."""
+
 import numpy.typing as npt
 
 from .base_dispersion import Dispersion

@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Constant refractive index."""
+
 import numpy.typing as npt
 
 from .base_dispersion import IndexDispersion

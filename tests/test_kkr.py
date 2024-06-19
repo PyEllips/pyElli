@@ -1,9 +1,9 @@
 """Test Kramers Kronig relations"""
 
-import numpy as np
-from numpy.testing import assert_array_almost_equal
 import elli
+import numpy as np
 from elli.kkr import im2re, im2re_reciprocal
+from numpy.testing import assert_array_almost_equal
 
 
 def test_tauc_lorentz():

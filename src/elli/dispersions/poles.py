@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Dispersion law for an UV and IR pole."""
+
 import numpy.typing as npt
 
 from ..utils import conversion_wavelength_energy

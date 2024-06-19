@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Drude dispersion model with resistivity based parameters."""
+
 import numpy as np
 import numpy.typing as npt
 import scipy.constants as sc

@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Cody-Lorentz dispersion law. Model by Ferlauto et al."""
+
 from typing import Dict
 import numpy as np
 import numpy.typing as npt

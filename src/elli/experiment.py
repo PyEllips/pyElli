@@ -15,6 +15,7 @@ as an argument and an object will be created automatically.
 The experiment class is only needed in special cases an can be skipped by calling
 :meth:`elli.structure.Structure.evaluate`.
 """
+
 import numpy as np
 import numpy.typing as npt
 

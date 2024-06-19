@@ -22,6 +22,7 @@ to a ResultList object. It provides the same methods for data output as the sing
 The Output is returned as array over the list of results. If needed, these arrays can be
 averaged and used like a Result object for fitting.
 """
+
 from typing import List
 
 import numpy as np

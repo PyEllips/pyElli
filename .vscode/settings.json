@@ -1,0 +1,17 @@
+{
+  "editor.rulers": [90],
+  "editor.renderWhitespace": "all",
+  "editor.tabSize": 4,
+  "files.trimTrailingWhitespace": true,
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}

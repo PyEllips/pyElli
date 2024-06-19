@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Constant epsilon infinity."""
+
 from typing import Any, Dict
 import numpy.typing as npt
 

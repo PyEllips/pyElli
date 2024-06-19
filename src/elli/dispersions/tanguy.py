@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Fractional dimensional Tanguy model."""
+
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
