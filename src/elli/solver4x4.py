@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import numpy.typing as npt
 import scipy.constants as sc
+import torch
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 
@@ -71,7 +72,30 @@ class PropagatorExpm(Propagator):
         """
         mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        propagator = np.asarray([scipy_expm(mat) for mat in mats])
+        propagator = scipy_expm(mats)
+
+        return propagator
+
+
+class PropagatorExpmTorch(Propagator):
+    """Propagator class using the matrix exponential provided by PyTorch."""
+
+    def calculate_propagation(
+        self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
+    ) -> npt.NDArray:
+        """Calculates propagation for a given Delta matrix and layer thickness with the Padé approximation of the matrix exponential.
+
+        Args:
+            delta (npt.NDArray): Delta Matrix
+            thickness (float): Thickness of layer (nm)
+            lbda (npt.ArrayLike): Wavelengths to evaluate (nm)
+
+        Returns:
+            npt.NDArray: Propagator for the given layer
+        """
+        mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
+
+        propagator = torch.linalg.matrix_exp(torch.from_numpy(mats)).numpy()
 
         return propagator
 
