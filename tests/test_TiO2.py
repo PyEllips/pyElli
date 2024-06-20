@@ -5,11 +5,10 @@ from __future__ import unicode_literals
 import os
 from shutil import copytree, rmtree
 
-import numpy as np
-from pytest import fixture
-
 import elli
+import numpy as np
 from elli.fitting import ParamsHist
+from pytest import fixture
 
 
 @fixture
@@ -126,6 +125,21 @@ class TestTiO2:
                 70,
                 solver=elli.Solver4x4,
                 propagator=elli.PropagatorExpm(),
+            )
+            .rho
+        )
+
+        assert TestTiO2.chisqr(meas_data, sim_data) < 0.0456
+
+    def test_solver4x4_expm_torch(self, si_dispersion, meas_data):
+        """The solver4x4 with scipy propagator is within chi square accuracy"""
+        sim_data = (
+            elli.Structure(elli.AIR, self.Layer, si_dispersion)
+            .evaluate(
+                meas_data.index,
+                70,
+                solver=elli.Solver4x4,
+                propagator=elli.PropagatorExpmTorch(),
             )
             .rho
         )

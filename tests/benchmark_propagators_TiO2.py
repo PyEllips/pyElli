@@ -1,10 +1,9 @@
 """Testing benchmark for each solver"""
 
-from pytest import fixture
-import numpy as np
-
 import elli
+import numpy as np
 from elli.fitting import ParamsHist
+from pytest import fixture
 
 
 @fixture
@@ -80,6 +79,17 @@ def test_solver4x4_expm(benchmark, structure):
         structure.evaluate,
         args=(lbda, PHI),
         kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpm()},
+        iterations=1,
+        rounds=10,
+    )
+
+
+def test_solver4x4_expm_pytorch(benchmark, structure):
+    """Benchmarks expm-torch propagator with solver4x4"""
+    benchmark.pedantic(
+        structure.evaluate,
+        args=(lbda, PHI),
+        kwargs={"solver": elli.Solver4x4, "propagator": elli.PropagatorExpmTorch()},
         iterations=1,
         rounds=10,
     )
