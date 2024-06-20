@@ -4,7 +4,11 @@ from abc import ABC, abstractmethod
 import numpy as np
 import numpy.typing as npt
 import scipy.constants as sc
-import torch
+
+try:
+    import torch
+except ImportError:
+    ...
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 
