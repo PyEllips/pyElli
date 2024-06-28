@@ -29,6 +29,7 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv pip install --system ".[fitting,dev]"
+          uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu
       - name: Test with pytest
         run: |
           pytest --nbmake
