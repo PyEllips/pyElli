@@ -6,6 +6,7 @@ and misses some other features.
 import re
 
 import pandas as pd
+from packaging.version import Version, parse
 
 from ..utils import calc_rho
 
@@ -49,7 +50,10 @@ def read_spectraray_psi_delta(
     psi_delta_df.columns = index
 
     # reorder dataframe
-    psi_delta_df = psi_delta_df.stack(0)
+    if Version("2.2") <= parse(pd.__version__) < Version("3.0"):
+        psi_delta_df = psi_delta_df.stack(0, future_stack=True)
+    else:
+        psi_delta_df = psi_delta_df.stack(0)
     psi_delta_df = psi_delta_df.reorder_levels(["Angle of Incidence", "Wavelength"])
     psi_delta_df.sort_index(axis=0, inplace=True)
     psi_delta_df.sort_index(axis=1, ascending=False, inplace=True)
