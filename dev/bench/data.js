@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1718790337903,
+  "lastUpdate": 1719610923117,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13228,6 +13228,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0005032577747081983",
             "extra": "mean: 5.156870600001184 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "059cd9eb4343b8470f274086cc4a5c8638a0cf38",
+          "message": "Reenable pytorch 4x4solver (#181)\n\n* Re-implement PyTorch 4x4Solver\n* Include PyTorch solver in tests\n* Update dependencies and make torch optional\n* Update requirements.yml\n* Make solver math provider a parameter\n* Fix benchmarks",
+          "timestamp": "2024-06-28T23:41:06+02:00",
+          "tree_id": "8fb7b3364a2df44807eb45896d8dc5a606728d54",
+          "url": "https://github.com/PyEllips/pyElli/commit/059cd9eb4343b8470f274086cc4a5c8638a0cf38"
+        },
+        "date": 1719610921952,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 129.55834183157378,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002339330712212234",
+            "extra": "mean: 7.718530399995416 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 65.07627241731437,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005915931623199559",
+            "extra": "mean: 15.366583900001274 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.11722591586792,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00044162242918829566",
+            "extra": "mean: 25.56418499999893 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.7122305879972977,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007587530546786821",
+            "extra": "mean: 584.033486499996 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 46.93272556580468,
+            "unit": "iter/sec",
+            "range": "stddev: 0.023054849820694997",
+            "extra": "mean: 21.30709409999838 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 250.26099093084488,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010530704963689873",
+            "extra": "mean: 3.9958285000011533 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 255.9469530488641,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00007418037874650265",
+            "extra": "mean: 3.9070595999987745 msec\nrounds: 10"
           }
         ]
       }
