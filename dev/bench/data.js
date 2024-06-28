@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1719610923117,
+  "lastUpdate": 1719610954616,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13301,6 +13301,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00007418037874650265",
             "extra": "mean: 3.9070595999987745 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a644aa5f1a13eb8cc7b4f96959f9a6096e598430",
+          "message": "Fix deprecation warnings (#182)\n\n* Fix delim_whitespace warning\n\n* Avoid evaluating Sellmeier dispersion at resonance\n\n* Handle pandas future_stack warning\n\n* Woollam importer: use iloc indexing\n\n* Consistently use loc indexing\n\n* Minor example file fixes\n\n* removal of non notebook examples\n\n* Update GitHub actions to newest versions\n\n* Revert accidental solver change in basic example",
+          "timestamp": "2024-06-28T23:41:39+02:00",
+          "tree_id": "7a9c6a562dbdfbb98540cec253e924d8a93d28ce",
+          "url": "https://github.com/PyEllips/pyElli/commit/a644aa5f1a13eb8cc7b4f96959f9a6096e598430"
+        },
+        "date": 1719610953547,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 135.89231794887382,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002126415986209719",
+            "extra": "mean: 7.35876769999777 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 70.17860426718428,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005325522349000975",
+            "extra": "mean: 14.249357199992119 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 41.580806113614564,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005947411748603322",
+            "extra": "mean: 24.049557800000798 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.7763763245455995,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00776964422004292",
+            "extra": "mean: 562.9437783999975 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 49.521898997247554,
+            "unit": "iter/sec",
+            "range": "stddev: 0.022627093611111232",
+            "extra": "mean: 20.19308669999873 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 272.15901707042536,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00011786592806824467",
+            "extra": "mean: 3.674322500000926 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 273.4706604543007,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00011395562649314172",
+            "extra": "mean: 3.65669939999691 msec\nrounds: 10"
           }
         ]
       }
