@@ -3,12 +3,12 @@ A helper class to load data from Woollam ASCII Files.
 It supports loading of standard psi/delta values.
 """
 
-from typing import TextIO
-import re
 import logging
+import re
+from typing import TextIO
 
-from pint import UndefinedUnitError, DimensionalityError
 import pandas as pd
+from pint import DimensionalityError, UndefinedUnitError
 
 from ..units import ureg
 from ..utils import calc_rho
@@ -125,8 +125,9 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         header=None,
         names=["Wavelength", "Angle of Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
     )
+    print(dframe)
     dframe = (
-        dframe[dframe.apply(lambda x: is_float(x[0]), axis=1)]
+        dframe[dframe.apply(lambda x: is_float(x.iloc[0]), axis=1)]
         .set_index(["Wavelength", "Angle of Incidence"])
         .swaplevel(0, 1)
     )
