@@ -48,7 +48,7 @@ class TableSpectraRay:
 
         df = pd.read_csv(
             self.spectraray_path + fname,
-            delim_whitespace=True,
+            sep=r"\s+",
             skiprows=start,
             nrows=stop - start,
             index_col=0,
