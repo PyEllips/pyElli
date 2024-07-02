@@ -48,7 +48,7 @@ For analyzing materials, it is helpful to have a database of predefined models.
 PyElli includes the popular public domain database for optical constants [refractiveindex.info](https://refractiveindex.info) [@rii], allowing users to load literature dispersions with a single line of code.
 
 PyElli supports multiple solving algorithms with different characteristics.
-Currently, two algorithms using different formulations are available: a simple but fast algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and a more complex 4x4 formulation [@Berreman72].
+Currently, two algorithms using different formulations are available: a simple but fast algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and a more complex 4x4 formulation [@Berreman72; @castany].
 While the 2x2 algorithm splits the light into two perpendicular polarized beams and solves them separately, the 4x4 matrix approach solves the complete electromagnetic field, allowing for the solution of more complex problems, such as anisotropic materials or active media.
 
 For fast processing, PyElli's algorithms are fully vectorized for multiple wavelengths and leverage numerical algebra libraries like [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
@@ -158,7 +158,7 @@ structure = elli.Structure(
 )
 ```
 
-Finally, we trigger a calculation by calling `evaluation(...)` on the structure.
+Finally, we trigger a calculation by calling `evaluate(...)` on the structure.
 We use a `wavelengths` array from $210\;nm$ to $800\;nm$ for the calculation range and an angle of incidence of $70$ degree (second parameter of evaluate).
 
 ```python
