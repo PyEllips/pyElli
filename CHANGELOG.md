@@ -1,19 +1,78 @@
 # Changelog
 
+## Version 0.20.0
+
+### New
+
+- Vectorized KKR
+- NumPy 2.0.0 support
+
+### Bug fixes
+
+- Fix root selection mistakes for Bruggeman EMA
+
+### Known issues
+
+- Performance regression for newer SciPy versions of expm solver (#178)
+
+
+## Version 0.19.0
+
+### New
+
+- Python 3.12 Support
+- Averaging of ResultLists
+- Breaking change: Renamed RII.load_dispersion to RII.get_dispersion to be more consistent.
+
+
+## Version 0.18.1
+
+### Bug fixes
+
+- Bump pygments from 2.13.0 to 2.15.0
+- Bump tornado from 6.3.2 to 6.3.3
+- Fixes wvase importer
+
+
+## Version 0.18.0
+
+### What's Changed
+
+- Update spectraray importer
+- Update RII database and use new file structure
+- Bump scipy from 1.9.1 to 1.10.0
+- Adds woollam importer
+
+
+## Version 0.17.0
+
+### New
+
+- Support for NXopt based nexus definitions
+- Interpolation order for refractiveindex.info database
+- Speed up for formula dispersions
+
+### Bug fixes
+
+- Better error messages
+- Raise error when solver2x2 gets a negative k
+
+
 ## Version 0.16.0
 
-# New
+### New
 
 - Support for nexus dispersion files
 - Formula based dispersions
 - Cauchy Urbach dispersion
 - Filtering by range for the refractive index database
 
-# Bugfixes
+### Bug fixes
 
 - Fixed a bug where incompatible dispersions were created in refractive index database
 - Created separated index and dielectric dispersions
 - Fixed checks for DispersionSums when dispersions are entered via \*args
+
 
 ## Version 0.15.1
 
@@ -28,6 +87,7 @@
 - Don't allow adding of refractive index based dispersions
 - Don't allow adding of tabular dispersions
 
+
 ## Version 0.15.0
 
 ### New
@@ -36,11 +96,13 @@
 - Kramers-Kronig-Relationship conversions for dielectric functions
 - Add Cody-Lorentz dispersion model
 
+
 ## Version 0.14.1
 
 ### Bug fixes:
 
 - Installs the correct extra requirements in the docker container
+
 
 ## Version 0.14.0
 
@@ -54,6 +116,7 @@
 - Introduced proper dependency management
 - Changed the dependency of extra install requirements for fitting and testing
 
+
 ## Version 0.13.0
 
 ### Breaking Changes:
@@ -64,6 +127,7 @@
 
 - Fix error in eigenvalue sorting (PropergatorEig and non-isotropic backmaterials)
 - Pin version of ipywidgets to keep plotly working
+
 
 ## Version 0.12.0
 
@@ -84,19 +148,23 @@
 
 - Fix nan values in MaxwellGarnettEMA
 
+
 ## Version 0.11.0
 
 - Adds reading functionality for [NeXus files](https://fairmat-experimental.github.io/nexus-fairmat-proposal/50433d9039b3f33299bab338998acb5335cd8951/classes/contributed_definitions/NXellipsometry.html#nxellipsometry).
 
+
 ## Version 0.10.1
 
 - The fitting module is not imported at top-level anymore. It has now to be imported by `elli.fitting`.
+
 
 ## Version 0.10.0
 
 - Dispersions are now addressed by their name only (instead of Dispersion...)
 - Dispersions are initialized with two distinguished set of parameters for parameters which are set once and parameters which may be set multiple times (for oscillators etc). They can be added by invoking the `add` command on the respective class.
 - There is a new factory class `DispersionFactory` to get a dispersion from it's string name, i.e. `DispersionFactory.get_dispersion(...)`
+
 
 ## Version 0.9.2
 
@@ -106,13 +174,15 @@
 - Fixed Jones vector default
 - Included more documentation
 
+
 ## Version 0.9.1
 
 - Automated build of Docker images
 - Benchmarking setup
 - Added more documentation
 - Renamed a lot of functions for PEP8 compliance
-- More bugfixes
+- More Bug fixes
+
 
 ## Version 0.9.0
 
@@ -123,7 +193,8 @@
 - Improve fitting decorators
 - Added plotting and fitting for Mueller matrices
 - Added type hints
-- Various calculation bugfixes
+- Various calculation Bug fixes
+
 
 ## Version 0.1.0
 
