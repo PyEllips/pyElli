@@ -25,7 +25,9 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: python-package-distributions
-        path: dist/
+        path: |
+          dist/*.whl
+          dist/*.tar.gz
 
   publish-to-pypi:
     name: >-
