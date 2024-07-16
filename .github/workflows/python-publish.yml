@@ -25,13 +25,11 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: python-package-distributions
-        path: |
-          dist/*.whl
-          dist/*.tar.gz
+        path: dist/
 
   publish-to-pypi:
     name: >-
-      Publish Python 🐍 distribution 📦 to PyPI
+      Publish to PyPi
     if: startsWith(github.ref, 'refs/tags/')
     needs:
     - build
@@ -53,8 +51,7 @@ jobs:
 
   github-release:
     name: >-
-      Sign the Python 🐍 distribution 📦 with Sigstore
-      and upload them to GitHub Release
+      GitHub Release
     needs:
     - publish-to-pypi
     runs-on: ubuntu-latest
