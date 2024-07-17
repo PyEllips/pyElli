@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1720023563210,
+  "lastUpdate": 1721205024452,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13447,6 +13447,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00007000764956066845",
             "extra": "mean: 3.915729399994916 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e7cc018d9e04544ea5b80241ff6475246f708596",
+          "message": "Use OIDC for publishing (#184)\n\n* Updates publishing ci/cd according to https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/#configuring-trusted-publishing\r\n\r\n* Remove test pypi deployments\r\n\r\n* Upload packages directly\r\n\r\n* Just upload dist folder",
+          "timestamp": "2024-07-17T10:29:29+02:00",
+          "tree_id": "02630f1fd41e6b087d50f919bfaed547bde6dec7",
+          "url": "https://github.com/PyEllips/pyElli/commit/e7cc018d9e04544ea5b80241ff6475246f708596"
+        },
+        "date": 1721205023941,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 124.93672267328886,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011440072130014549",
+            "extra": "mean: 8.004051800006096 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 54.53095585491364,
+            "unit": "iter/sec",
+            "range": "stddev: 0.003939033911946336",
+            "extra": "mean: 18.338207799999395 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.2203489494953,
+            "unit": "iter/sec",
+            "range": "stddev: 0.002629532954567862",
+            "extra": "mean: 26.16407299999821 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.7219058746219975,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007118485449590061",
+            "extra": "mean: 580.7518370999958 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 47.94747457726943,
+            "unit": "iter/sec",
+            "range": "stddev: 0.030327460306332883",
+            "extra": "mean: 20.856155799998533 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 260.76670522333364,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000055367423477858303",
+            "extra": "mean: 3.834845400004383 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 269.14491717800934,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005301868546809188",
+            "extra": "mean: 3.715470500000606 msec\nrounds: 10"
           }
         ]
       }
