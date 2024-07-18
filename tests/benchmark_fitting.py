@@ -94,12 +94,12 @@ def test_fitting_structure_updates(benchmark, datadir):
 
     @fit(psi_delta, params)
     def model(lbda, params):
-        SiO2.single_params["n0"] = params["SiO2_n0"]
-        SiO2.single_params["n1"] = params["SiO2_n1"]
-        SiO2.single_params["n2"] = params["SiO2_n2"]
-        SiO2.single_params["k0"] = params["SiO2_k0"]
-        SiO2.single_params["k1"] = params["SiO2_k1"]
-        SiO2.single_params["k2"] = params["SiO2_k2"]
+        SiO2.single_params["n0"] = params["SiO2_n0"].value
+        SiO2.single_params["n1"] = params["SiO2_n1"].value
+        SiO2.single_params["n2"] = params["SiO2_n2"].value
+        SiO2.single_params["k0"] = params["SiO2_k0"].value
+        SiO2.single_params["k1"] = params["SiO2_k1"].value
+        SiO2.single_params["k2"] = params["SiO2_k2"].value
 
         layer.set_thickness(params["SiO2_d"])
 
