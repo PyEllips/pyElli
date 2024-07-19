@@ -298,7 +298,7 @@ class Result:
         r"""Returns the absolute transmittance for unpolarized light.
 
         .. math::
-            T = T_{pp} / T_{ss}
+            T = (T_{pp} / T_{ss}) / 2
         """
         return (self.T_matrix[:, 0, 0] + self.T_matrix[:, 1, 1]) / 2
 
