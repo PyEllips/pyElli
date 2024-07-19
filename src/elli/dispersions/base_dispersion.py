@@ -46,14 +46,6 @@ class BaseDispersion(ABC):
             raise InvalidParameters(f"Invalid parameter(s): {missing_param_strings}")
 
     @staticmethod
-    def _hash_params(params: dict | list[dict]) -> int:
-        """Creates an single_params_dict or the repeating_params_list."""
-        if isinstance(params, list):
-            return hash(tuple([self._hash_params(dictionary) for dictionary in params]))
-        else:
-            return hash(tuple([item for _, item in params.items()]))
-
-    @staticmethod
     def _fill_params_dict(template: dict, *args, **kwargs) -> dict:
         BaseDispersion._guard_invalid_params(list(kwargs.keys()), list(template.keys()))
 
@@ -97,6 +89,13 @@ class BaseDispersion(ABC):
         self.hash_single_params = None
         self.hash_rep_params = None
 
+    def _hash_params(self, params: dict | list[dict]) -> int:
+        """Creates an single_params_dict or the repeating_params_list."""
+        if isinstance(params, list):
+            return hash(tuple([self._hash_params(dictionary) for dictionary in params]))
+        else:
+            return hash(tuple([item for _, item in params.items()]))
+
     @abstractmethod
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         """Calculates the dielectric function in a given wavelength window.
@@ -134,9 +133,10 @@ class BaseDispersion(ABC):
 
         from .table_epsilon import TableEpsilon
         from .table_index import Table
+        from .pseudo_dielectric import PseudoDielectricFunction
 
         if not isinstance(self, (DispersionSum, IndexDispersionSum)):
-            if isinstance(self, (TableEpsilon, Table)):
+            if isinstance(self, (TableEpsilon, Table, PseudoDielectricFunction)):
                 if self.last_lbda is lbda:
                     return self.cached_diel
                 else:
