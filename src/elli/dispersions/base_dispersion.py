@@ -89,7 +89,7 @@ class BaseDispersion(ABC):
         self.hash_single_params = None
         self.hash_rep_params = None
 
-    def _hash_params(self, params: dict | list[dict]) -> int:
+    def _hash_params(self, params: Union[dict, List[dict]]) -> int:
         """Creates an single_params_dict or the repeating_params_list."""
         if isinstance(params, list):
             return hash(tuple([self._hash_params(dictionary) for dictionary in params]))
