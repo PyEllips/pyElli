@@ -46,7 +46,7 @@ def _convert_index(index: str) -> int:
     if index in ["s", "R"]:
         return 1
 
-    return ValueError("Wrong index given for variable.")
+    raise ValueError("Wrong index given for variable.")
 
 
 class Result:
