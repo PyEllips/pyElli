@@ -66,6 +66,14 @@ class PropagatorExpm(Propagator):
     """Propagator class using the Padé approximation of the matrix exponential."""
 
     def __init__(self, backend: Literal["torch", "scipy", "automatic"] = "automatic"):
+        """The Propagator can use two different backends: SciPy and PyTorch.
+        The default installation only provides SciPy.
+        PyTorch is faster by an factor of 20 and will be used automatically.
+        If you need to install PyTorch please follow the instructions at https://pytorch.org/get-started/locally/.
+
+        Args:
+            backend (Literal[&quot;torch&quot;, &quot;scipy&quot;, &quot;automatic&quot;], optional): _description_. Defaults to "automatic".
+        """
         backends = {
             "torch": lambda mats: torch.linalg.matrix_exp(
                 torch.from_numpy(mats)
