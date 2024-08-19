@@ -7,7 +7,7 @@ Interactive fitting
 PyElli offers several classes and decorators to make fitting easy.
 The central idea is to construct a class containing the measurement data and an optical model
 which is fitted to the data with `lmfit <https://lmfit.github.io/lmfit-py/index.html>`_.
-Since pyElli uses lmfit under the hood you may take advantage of it's vast capabilities.
+Since pyElli uses lmfit under the hood you may take advantage of its vast capabilities.
 
 To make creation of the fitting classes as easy as possible pyElli contains decorators to
 automatically instantiate the class by providing a function containing the optical model.
@@ -56,7 +56,7 @@ be inherited from in additional fitting classes.
 
 Parameter class
 ---------------
-The parameter class extending lmfits Parameter class by a history
+The parameter class extending lmfit's Parameter class by a history
 of parameter changes.
 
 .. automodule:: elli.fitting.params_hist
