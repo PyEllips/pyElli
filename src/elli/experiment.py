@@ -27,12 +27,6 @@ from .solver4x4 import Solver4x4
 class Experiment:
     """Description of a virtual experiment to simulate the behavior of a structure."""
 
-    structure = None
-    jones_vector = None
-    stokes_vector = None
-    theta_i = None
-    lbda = None
-
     def __init__(
         self,
         structure: "Structure",

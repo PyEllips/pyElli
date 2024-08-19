@@ -53,11 +53,6 @@ class AbstractLayer(ABC):
 class RepeatedLayers(AbstractLayer):
     """Repeated structure of layers."""
 
-    repetitions = None  # Number of repetitions
-    before = None  # additional layers before the first period
-    after = None  # additional layers after the last period
-    layers = None  # layers to repeat
-
     def __init__(
         self,
         layers: List[AbstractLayer],
@@ -147,8 +142,6 @@ class RepeatedLayers(AbstractLayer):
 class Layer(AbstractLayer):
     """Homogeneous layer of dielectric material."""
 
-    thickness = None
-
     def __init__(self, material: Material, thickness: float) -> None:
         """New layer of material 'material', with thickness 'thickness'
 
@@ -204,10 +197,6 @@ class Layer(AbstractLayer):
 
 class InhomogeneousLayer(AbstractLayer):
     """Abstract base class for inhomogeneous layers with varying properties in z-direction."""
-
-    thickness = None
-    material = None
-    div = None
 
     def set_thickness(self, thickness: float) -> None:
         """Defines the thickness of the layer in nm.
@@ -405,10 +394,6 @@ class Structure:
     * layer succession
     * back half-space (exit)
     """
-
-    front_material = None
-    back_material = None
-    layers = []  # list of layers
 
     def __init__(
         self, front: IsotropicMaterial, layers: List[Layer], back: Material

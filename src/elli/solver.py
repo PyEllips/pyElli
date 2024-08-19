@@ -15,13 +15,6 @@ class Solver(ABC):
     Therefore, this class should never be called directly.
     """
 
-    experiment = None
-    structure = None
-    lbda = None
-    theta_i = None
-    jones_vector = None
-    permittivity_profile = None
-
     @abstractmethod
     def calculate(self) -> Result:
         pass

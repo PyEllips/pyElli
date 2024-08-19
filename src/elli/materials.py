@@ -31,7 +31,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import numpy.typing as npt
-from numpy.lib.scimath import sqrt, power
+from numpy.lib.scimath import power, sqrt
 
 from .dispersions.base_dispersion import BaseDispersion
 
@@ -64,12 +64,6 @@ class Material(ABC):
 
 class SingleMaterial(Material):
     """Base class for non-mixed materials (abstract class)."""
-
-    dispersion_x = None
-    dispersion_y = None
-    dispersion_z = None
-    rotated = False
-    rotation_matrix = None
 
     @abstractmethod
     def set_dispersion(self) -> None:
@@ -125,6 +119,7 @@ class IsotropicMaterial(SingleMaterial):
             dispersion (Dispersion): Dispersion relation of all three crystal directions.
         """
         self.set_dispersion(dispersion)
+        self.rotated = False
 
     # pylint: disable=arguments-differ
     def set_dispersion(self, dispersion: BaseDispersion) -> None:
@@ -158,6 +153,7 @@ class UniaxialMaterial(SingleMaterial):
                 Dispersion relation for extraordinary crystal axis (z direction).
         """
         self.set_dispersion(dispersion_o, dispersion_e)
+        self.rotated = False
 
     # pylint: disable=arguments-differ
     def set_dispersion(
@@ -199,6 +195,7 @@ class BiaxialMaterial(SingleMaterial):
             dispersion_z (Dispersion): Dispersion relation for z crystal axes.
         """
         self.set_dispersion(dispersion_x, dispersion_y, dispersion_z)
+        self.rotated = False
 
     # pylint: disable=arguments-differ
     def set_dispersion(
@@ -227,10 +224,6 @@ class BiaxialMaterial(SingleMaterial):
 
 class MixtureMaterial(Material):
     """Abstract Class for mixed materials."""
-
-    host_material = None
-    guest_material = None
-    fraction = None
 
     def __init__(
         self, host_material: Material, guest_material: Material, fraction: float
