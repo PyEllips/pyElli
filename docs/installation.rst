@@ -17,7 +17,7 @@ If you don't want to have this functionality just drop the `[fitting]` in the en
 
 To increase performance of the 4x4 Solver by a factor of 20, it is recommended to
 install PyTorch CPU package manually, as it is too heavy to include in the standard installation.
-Installation information can be found at the `PyTorch Website <https://pytorch.org/get-started/locally/>`.
+Installation information can be found at the `PyTorch Website <https://pytorch.org/get-started/locally/>`_.
 
 A complete environment for pyElli is also available as a
 `Docker Container <https://hub.docker.com/r/domna/pyelli>`_.
