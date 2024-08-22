@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 # %%
 # Data import
 # -----------
-# %%
 data = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[
     (slice(None), slice(210, 800)), :
 ]
@@ -31,7 +30,6 @@ data
 # %%
 # Setting up invariant materials and fitting parameters
 # -----------------------------------------------------
-# %%
 rii_db = elli.db.RII()
 Si = rii_db.get_mat("Si", "Aspnes")
 
@@ -49,7 +47,6 @@ params.add("SiO2_d", value=20, min=0, max=40000, vary=True)
 # Model helper function
 # ---------------------
 # This model function is not strictly needed, but simplifies the fit function, as the model only needs to be defined once.
-# %%
 def model(lbda, angle, params):
     SiO2 = elli.Cauchy(
         params["SiO2_n0"],
@@ -74,7 +71,8 @@ def model(lbda, angle, params):
 # -------------------------
 # The fit function follows the protocol defined by the lmfit package and needs the parameters dictionary as first argument.
 # It has to return a residual value, which will be minimized. Here psi and delta are used to calculate the residual, but could be changed to transmission or reflection data.
-# %%
+
+
 def fit_function(params, lbda, data):
     residual = []
 
@@ -95,13 +93,14 @@ def fit_function(params, lbda, data):
 # ---------------
 # The fitting is performed by calling the minimize function with the fit_function and the needed arguments.
 # It is possible to change the underlying algorithm by providing the method kwarg.
-# %%
+
 out = minimize(fit_function, params, args=(lbda, data), method="leastsq")
 print(fit_report(out))
+
 # %%
 # Plotting the results
 # ----------------------------------------------
-# %%
+
 fit_50 = model(lbda, 50, out.params)
 fit_60 = model(lbda, 60, out.params)
 fit_70 = model(lbda, 70, out.params)
