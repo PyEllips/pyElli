@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1721380073076,
+  "lastUpdate": 1725441653567,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -13666,6 +13666,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00005084188723173101",
             "extra": "mean: 3.7020284999925934 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "422201ec43c1d3cf1c7a2ff5a50ef72a220dc8cc",
+          "message": "Bump actions/download-artifact from 3 to 4.1.7 in /.github/workflows (#189)\n\n* Bump actions/download-artifact from 3 to 4.1.7 in /.github/workflows\r\n\r\nBumps [actions/download-artifact](https://github.com/actions/download-artifact) from 3 to 4.1.7.\r\n- [Release notes](https://github.com/actions/download-artifact/releases)\r\n- [Commits](https://github.com/actions/download-artifact/compare/v3...v4.1.7)\r\n\r\n---\r\nupdated-dependencies:\r\n- dependency-name: actions/download-artifact\r\n  dependency-type: direct:production\r\n...\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\n\r\n* Avoid using specific versions\r\n\r\n---------\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\r\nCo-authored-by: Marius Müller <49639740+MarJMue@users.noreply.github.com>",
+          "timestamp": "2024-09-04T11:19:56+02:00",
+          "tree_id": "fc86f33ad9f82dade29c1f77eb0eb1b79d50cef4",
+          "url": "https://github.com/PyEllips/pyElli/commit/422201ec43c1d3cf1c7a2ff5a50ef72a220dc8cc"
+        },
+        "date": 1725441652405,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 126.8054882429552,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006792355623986856",
+            "extra": "mean: 7.886094000001265 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 35.48479930732452,
+            "unit": "iter/sec",
+            "range": "stddev: 0.039287780921718404",
+            "extra": "mean: 28.181080900000666 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.324405631107,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0015862233666729805",
+            "extra": "mean: 26.09303349999834 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.6964588584145972,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01821191568608742",
+            "extra": "mean: 589.4631603000008 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 52.07317770760501,
+            "unit": "iter/sec",
+            "range": "stddev: 0.015423396440117422",
+            "extra": "mean: 19.203744500001108 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 255.80161254777255,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0000648464624914632",
+            "extra": "mean: 3.9092795000001956 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 263.19034333572705,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000056414269277705195",
+            "extra": "mean: 3.7995315000003416 msec\nrounds: 10"
           }
         ]
       }
