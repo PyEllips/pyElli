@@ -15,9 +15,10 @@ To install the package in your current virtual environment execute
 This installs pyElli with the additional fitting capabilities and interactive widgets.
 If you don't want to have this functionality just drop the `[fitting]` in the end.
 
-To increase performance of the 4x4 Solver by a factor of 20, it is recommended to
-install PyTorch CPU package manually, as it is too heavy to include in the standard installation.
+To increase performance of the 4x4 Solver, it is recommended to
+install PyTorch manually, as it is too big to include in the standard installation.
 Installation information can be found at the `PyTorch Website <https://pytorch.org/get-started/locally/>`_.
+The CPU variant is sufficient, if you want to save some space.
 
 A complete environment for pyElli is also available as a
 `Docker Container <https://hub.docker.com/r/domna/pyelli>`_.
