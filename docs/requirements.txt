@@ -17,8 +17,6 @@ sphinx-plotly-directive
 sphinxcontrib-mermaid 
 matplotlib
 h5py
-importlib-resources
-h5py
 pyyaml
 importlib-resources
 rapidfuzz
