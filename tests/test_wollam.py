@@ -20,8 +20,8 @@ def test_reading_of_psi_delta_woollam(datadir):
     assert len(data_wvase.Wavelength) == 181
     assert len(data_cease.Wavelength) == 1088
 
-    np.testing.assert_array_equal(data_wvase["Angle of Incidence"], [65, 70, 75])
-    np.testing.assert_array_equal(data_cease["Angle of Incidence"], [50, 60, 70])
+    np.testing.assert_array_equal(data_wvase.Angle_of_Incidence, [65, 70, 75])
+    np.testing.assert_array_equal(data_cease.Angle_of_Incidence, [50, 60, 70])
 
 
 # pylint: disable=redefined-outer-name
@@ -36,8 +36,8 @@ def test_reading_and_conv_to_woollam(datadir):
     assert len(data_wvase.Wavelength) == 181
     assert len(data_cease.Wavelength) == 1088
 
-    np.testing.assert_array_equal(data_wvase["Angle of Incidence"], [65, 70, 75])
-    np.testing.assert_array_equal(data_cease["Angle of Incidence"], [50, 60, 70])
+    np.testing.assert_array_equal(data_wvase.Angle_of_Incidence, [65, 70, 75])
+    np.testing.assert_array_equal(data_cease.Angle_of_Incidence, [50, 60, 70])
 
 
 # pylint: disable=redefined-outer-name

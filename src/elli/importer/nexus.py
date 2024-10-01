@@ -74,7 +74,7 @@ def read_nexus_psi_delta(
             {},
             columns=["Ψ", "Δ"],
             index=pd.MultiIndex.from_product(
-                [aois, wavelength], names=["Angle of Incidence", "Wavelength"]
+                [aois, wavelength], names=["Angle_of_Incidence", "Wavelength"]
             ),
             dtype=float,
         )

@@ -124,12 +124,12 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         file_object,
         sep="\t",
         header=None,
-        names=["Wavelength", "Angle of Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
+        names=["Wavelength", "Angle_of_Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
     )
     print(dframe)
     dframe = (
         dframe[dframe.apply(lambda x: is_float(x.iloc[0]), axis=1)]
-        .set_index(["Wavelength", "Angle of Incidence"])
+        .set_index(["Wavelength", "Angle_of_Incidence"])
         .swaplevel(0, 1)
     )
     return dframe
@@ -152,7 +152,7 @@ def _read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
     dframe = pd.read_csv(file_object, sep="\t", header=None, index_col=(2, 1))
     dframe = dframe[dframe[0] == "E"]
     dframe = dframe.iloc[:, 1:]
-    dframe.index.names = ("Angle of Incidence", "Wavelength")
+    dframe.index.names = ("Angle_of_Incidence", "Wavelength")
     dframe.columns = ["Ψ", "Δ", "Ψ_err", "Δ_err"]
     return dframe
 

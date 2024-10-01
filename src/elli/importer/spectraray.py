@@ -46,7 +46,7 @@ def read_spectraray_psi_delta(
 
     aois = list(map(float, re.split(sep, header)[3::2]))
     index = pd.MultiIndex.from_product(
-        [aois, ["Ψ", "Δ"]], names=["Angle of Incidence", ""]
+        [aois, ["Ψ", "Δ"]], names=["Angle_of_Incidence", ""]
     )
     psi_delta_df.columns = index
 
@@ -55,7 +55,7 @@ def read_spectraray_psi_delta(
         psi_delta_df = psi_delta_df.stack(0, future_stack=True)
     else:
         psi_delta_df = psi_delta_df.stack(0)
-    psi_delta_df = psi_delta_df.reorder_levels(["Angle of Incidence", "Wavelength"])
+    psi_delta_df = psi_delta_df.reorder_levels(["Angle_of_Incidence", "Wavelength"])
     psi_delta_df.sort_index(axis=0, inplace=True)
     psi_delta_df.sort_index(axis=1, ascending=False, inplace=True)
 
