@@ -14,7 +14,7 @@ ipython
 ipywidgets
 sphinx-gallery
 sphinx-plotly-directive
-sphinxcontrib-mermaid 
+sphinxcontrib-mermaid
 matplotlib
 h5py
 pyyaml
@@ -22,3 +22,4 @@ importlib-resources
 rapidfuzz
 lark>=1.1.5
 pint
+chardet
