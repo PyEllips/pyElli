@@ -143,7 +143,7 @@ def read_nexus_psi_delta(
     return def_mapping.get(data_type)()
 
 
-def read_nexus_rho(nxs_filename: str) -> pd.DataFrame:
+def read_nexus_rho(nxs_filename: str) -> xr.DataArray:
     """Reads rho value from NeXus datafile.
     Currently, this works only with psi / delta representation in the NeXus file.
 

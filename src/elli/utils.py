@@ -3,6 +3,7 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import scipy.constants as sc
+import xarray as xr
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 
@@ -38,7 +39,7 @@ def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
     )
 
 
-def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
+def calc_rho(psi_delta: xr.Dataset) -> xr.DataArray:
     """Calculate rho from a Psi-Delta DataFrame.
     The Psi-Delta DataFrame should be structured as follows:
 
@@ -54,9 +55,10 @@ def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pandas.DataFrame: Frame containing rho as an imaginary number.
     """
-    return psi_delta.apply(
-        lambda x: np.tan(np.deg2rad(x["Ψ"])) * np.exp(-1j * np.deg2rad(x["Δ"])), axis=1
+    array = np.tan(np.deg2rad(psi_delta["Ψ"])) * np.exp(
+        -1j * np.deg2rad(psi_delta["Δ"])
     )
+    return array.rename("rho")
 
 
 def get_qwp_thickness(material: "Material", lbda: float) -> float:

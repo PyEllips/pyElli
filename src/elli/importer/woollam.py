@@ -207,7 +207,7 @@ def read_woollam_psi_delta(fname: str) -> xr.Dataset:
     return data.iloc[:, :-2].to_xarray()
 
 
-def read_woollam_rho(fname: str) -> pd.DataFrame:
+def read_woollam_rho(fname: str) -> xr.DataArray:
     r"""Read a psi/delta woollam ascii file and converts it to rho values.
 
     Args:

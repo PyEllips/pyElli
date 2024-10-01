@@ -111,7 +111,7 @@ def read_spectraray_mmatrix(
 
 def read_spectraray_rho(
     fname: str, sep: str = r"\s+", decimal: str = "."
-) -> pd.DataFrame:
+) -> xr.DataArray:
     r"""Read a psi/delta spectraray ascii file and converts it to rho values.
 
     Args:
