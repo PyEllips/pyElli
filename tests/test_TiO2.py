@@ -5,10 +5,11 @@ from __future__ import unicode_literals
 import os
 from shutil import copytree, rmtree
 
-import elli
 import numpy as np
-from elli.fitting import ParamsHist
 from pytest import fixture
+
+import elli
+from elli.fitting import ParamsHist
 
 
 @fixture
@@ -112,7 +113,7 @@ class TestTiO2:
         """The solver2x2 is within chi square accuracy"""
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
-            .evaluate(meas_data.index, 70, solver=elli.Solver2x2)
+            .evaluate(meas_data.Wavelength, 70, solver=elli.Solver2x2)
             .rho
         )
 
@@ -123,7 +124,7 @@ class TestTiO2:
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
-                meas_data.index,
+                meas_data.Wavelength,
                 70,
                 solver=elli.Solver4x4,
                 propagator=elli.PropagatorExpm(backend="scipy"),
@@ -138,7 +139,7 @@ class TestTiO2:
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
-                meas_data.index,
+                meas_data.Wavelength,
                 70,
                 solver=elli.Solver4x4,
                 propagator=elli.PropagatorExpm(backend="torch"),
@@ -153,7 +154,7 @@ class TestTiO2:
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
-                meas_data.index,
+                meas_data.Wavelength,
                 70,
                 solver=elli.Solver4x4,
                 propagator=elli.PropagatorEig(),
