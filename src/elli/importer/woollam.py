@@ -8,6 +8,7 @@ import re
 from typing import TextIO
 
 import pandas as pd
+import xarray as xr
 from pint import DimensionalityError, UndefinedUnitError
 
 from ..units import ureg
@@ -156,7 +157,7 @@ def _read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
     return dframe
 
 
-def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
+def read_woollam_psi_delta(fname: str) -> xr.Dataset:
     r"""Read a psi/delta woollam ascii file.
 
     Args:
@@ -203,7 +204,7 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
         data = reader_map.get(file_format)(fobj)
 
     data = scale_to_nm(metadata[-1], data)
-    return data.iloc[:, :-2]
+    return data.iloc[:, :-2].to_xarray()
 
 
 def read_woollam_rho(fname: str) -> pd.DataFrame:

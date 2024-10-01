@@ -6,6 +6,7 @@ and misses some other features.
 import re
 
 import pandas as pd
+import xarray as xr
 from packaging.version import Version, parse
 
 from ..utils import calc_rho
@@ -13,7 +14,7 @@ from ..utils import calc_rho
 
 def read_spectraray_psi_delta(
     fname: str, sep: str = r"\s+", decimal: str = "."
-) -> pd.DataFrame:
+) -> xr.Dataset:
     r"""Read a psi/delta spectraray ascii file.
 
     Args:
@@ -63,7 +64,7 @@ def read_spectraray_psi_delta(
         psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
     )
 
-    return psi_delta_df
+    return psi_delta_df.to_xarray()
 
 
 def read_spectraray_mmatrix(

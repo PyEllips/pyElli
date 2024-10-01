@@ -11,6 +11,7 @@ from typing import Callable, Optional
 import h5py
 import numpy as np
 import pandas as pd
+import xarray as xr
 
 if np.lib.NumpyVersion(np.__version__) < "2.0.0":
     from numpy.lib.index_tricks import IndexExpression
@@ -46,7 +47,7 @@ class NexusGroupNames:
 
 def read_nexus_psi_delta(
     nxs_filename: str, group_names: Optional[NexusGroupNames] = None
-) -> pd.DataFrame:
+) -> xr.Dataset:
     """Read a NeXus file containing Psi and Delta data.
 
     Args:
@@ -84,9 +85,9 @@ def read_nexus_psi_delta(
             psi_delta_df.loc[aoi, "Ψ"] = data[indexing(i, 0)]
             psi_delta_df.loc[aoi, "Δ"] = data[indexing(i, 1)]
 
-        return psi_delta_df
+        return psi_delta_df.to_xarray()
 
-    def read_legacy() -> pd.DataFrame:
+    def read_legacy() -> xr.Dataset:
         return read_data(
             wavelength_path=f"{group_names.full_instrument_path}/spectrometer/wavelength",
             aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
@@ -96,7 +97,7 @@ def read_nexus_psi_delta(
             ],
         )
 
-    def read_nx_opt_def() -> pd.DataFrame:
+    def read_nx_opt_def() -> xr.Dataset:
         return read_data(
             wavelength_path=f"{group_names.entry}/data_collection/wavelength_spectrum",
             aois_path=f"{group_names.full_instrument_path}/angle_of_incidence",
