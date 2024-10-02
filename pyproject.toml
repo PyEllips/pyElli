@@ -8,7 +8,7 @@ description = "An ellipsometry analysis tool for reproducible and comprehensible
 dynamic = ["version"]
 authors = [
     { name = "Marius Müller", email = "marius.mueller@physik.uni-giessen.de" },
-    { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" }
+    { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" },
 ]
 requires-python = ">=3.8"
 license = { file = "LICENSE.txt" }
@@ -19,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12"
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "scipy",
@@ -32,6 +32,7 @@ dependencies = [
     "rapidfuzz",
     "lark>=1.1.5",
     "pint",
+    "chardet",
 ]
 
 [project.optional-dependencies]
@@ -75,16 +76,16 @@ indent-width = 4
 
 [tool.ruff.lint]
 select = [
-    "E", # pycodestyle
-    "W", # pycodestyle
-    "PL", # pylint
+    "E",      # pycodestyle
+    "W",      # pycodestyle
+    "PL",     # pylint
     "NPY201", # numpy
 ]
 ignore = [
-    "E501", # Line too long ({width} > {limit} characters)
-    "E701", # Multiple statements on one line (colon)
-    "E731", # Do not assign a lambda expression, use a def
-    "E402",  # Module level import not at top of file
+    "E501",    # Line too long ({width} > {limit} characters)
+    "E701",    # Multiple statements on one line (colon)
+    "E731",    # Do not assign a lambda expression, use a def
+    "E402",    # Module level import not at top of file
     "PLR0911", # Too many return statements
     "PLR0912", # Too many branches
     "PLR0913", # Too many arguments in function definition
