@@ -12,7 +12,7 @@ from pint import DimensionalityError, UndefinedUnitError
 
 from ..units import ureg
 from ..utils import calc_rho
-from .encoding_detection import detect_encoding
+from . import detect_encoding
 
 logger = logging.getLogger(__name__)
 

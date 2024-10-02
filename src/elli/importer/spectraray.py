@@ -9,7 +9,7 @@ import pandas as pd
 from packaging.version import Version, parse
 
 from ..utils import calc_rho
-from .encoding_detection import detect_encoding
+from . import detect_encoding
 
 
 def read_spectraray_psi_delta(
