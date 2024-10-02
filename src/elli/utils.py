@@ -61,6 +61,79 @@ def calc_rho(psi_delta: xr.Dataset) -> xr.DataArray:
     return array.rename("rho")
 
 
+def convert_psi_delta_to_isotropic_mueller_matrix(psi_delta_df) -> pd.DataFrame:
+    r"""Extract aois and wavelengths values from psi_delta pandas.DataFrame and convert it to a Muellermatrix;
+    only works for isotropic media.
+
+    Args:
+            psi_delta_df (pd.DataFrame): dataFrame returned from data importers'
+
+    Returns:
+            pd.DataFrame: pyElli-compatible DataFrame of the Mueller matrix
+    """
+    aois = psi_delta_df.index.get_level_values("Angle of Incidence").unique().to_numpy()
+    wavelengths = psi_delta_df.index.get_level_values("Wavelength").unique().to_numpy()
+
+    # create empty Mueller matrix
+    MM = pd.DataFrame(
+        {},
+        columns=[
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M21",
+            "M22",
+            "M23",
+            "M24",
+            "M31",
+            "M32",
+            "M33",
+            "M34",
+            "M41",
+            "M42",
+            "M43",
+            "M44",
+        ],
+        index=pd.MultiIndex.from_product(
+            [aois, wavelengths], names=["Angle of Incidence", "Wavelength"]
+        ),
+        dtype=float,
+    )
+
+    # fill in the Mueller matrix coefficients for an isotropic material based equation in https://www.jawoollam.com/resources/ellipsometry-faq#toggle-id-15
+    for aoi in aois:
+        for λ in wavelengths:
+            Δ = psi_delta_df.loc[aoi, λ]["Δ"]
+            Ψ = psi_delta_df.loc[aoi, λ]["Ψ"]
+
+            N = np.cos(2 * Ψ)
+            C = np.sin(2 * Ψ) * np.cos(2 * Δ)
+            S = np.sin(2 * Ψ) * np.cos(2 * Δ)
+
+            MM.loc[(aoi, λ), "M11"] = 1
+            MM.loc[(aoi, λ), "M12"] = -N
+            MM.loc[(aoi, λ), "M13"] = 0
+            MM.loc[(aoi, λ), "M14"] = 0
+
+            MM.loc[(aoi, λ), "M21"] = -N
+            MM.loc[(aoi, λ), "M22"] = 1
+            MM.loc[(aoi, λ), "M23"] = 0
+            MM.loc[(aoi, λ), "M24"] = 0
+
+            MM.loc[(aoi, λ), "M31"] = 0
+            MM.loc[(aoi, λ), "M32"] = 0
+            MM.loc[(aoi, λ), "M33"] = C
+            MM.loc[(aoi, λ), "M34"] = S
+
+            MM.loc[(aoi, λ), "M41"] = 0
+            MM.loc[(aoi, λ), "M42"] = 0
+            MM.loc[(aoi, λ), "M43"] = -S
+            MM.loc[(aoi, λ), "M44"] = C
+
+    return MM
+
+
 def get_qwp_thickness(material: "Material", lbda: float) -> float:
     """Return the thickness of a material in nm for a quarter wave plate at wavelength 'lbda'.
 

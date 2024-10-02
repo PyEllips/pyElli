@@ -10,6 +10,7 @@ import xarray as xr
 from packaging.version import Version, parse
 
 from ..utils import calc_rho
+from . import detect_encoding
 
 
 def read_spectraray_psi_delta(
@@ -26,10 +27,13 @@ def read_spectraray_psi_delta(
         pd.DataFrame: DataFrame containing the psi/delta data in
         the format to be further processes inside pyElli.
     """
+    # detect encoding
+    encoding = detect_encoding(fname)
 
     # read data and drop empty column
     psi_delta_df = pd.read_csv(
         fname,
+        encoding=encoding,
         index_col=0,
         header=None,
         sep=sep,
@@ -83,9 +87,11 @@ def read_spectraray_mmatrix(
         pd.DataFrame: DataFrame containing the psi/delta data in
         the format to be further processes inside pyElli.
     """
-    mueller_matrix = pd.read_csv(fname, sep=sep, decimal=decimal, index_col=0).iloc[
-        :, -17:-1
-    ]
+    encoding = detect_encoding(fname)
+
+    mueller_matrix = pd.read_csv(
+        fname, encoding=encoding, sep=sep, decimal=decimal, index_col=0
+    ).iloc[:, -17:-1]
     mueller_matrix.index.name = "Wavelength"
     mueller_matrix.columns = [
         "M11",

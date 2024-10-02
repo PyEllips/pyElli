@@ -13,6 +13,7 @@ from pint import DimensionalityError, UndefinedUnitError
 
 from ..units import ureg
 from ..utils import calc_rho
+from . import detect_encoding
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +169,9 @@ def read_woollam_psi_delta(fname: str) -> xr.Dataset:
         the format to be further processes inside pyElli.
     """
 
-    with open(fname, encoding="utf-8") as fobj:
+    encoding = detect_encoding(fname)
+
+    with open(fname, encoding=encoding) as fobj:
         line_number = fobj.tell()
         metadata = []
         file_format = ""
