@@ -6,6 +6,7 @@ from .database.materials_db import AIR
 from .dispersions import *
 from .dispersions.base_dispersion import *
 from .experiment import Experiment
+from .importer.accurion import read_accurion_psi_delta
 from .importer.nexus import *
 from .importer.spectraray import *
 from .importer.woollam import read_woollam_psi_delta, read_woollam_rho, scale_to_nm
