@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 0.21.0
+
+### New
+- Reenable pytorch 4x4solver
+- Use OIDC for publishing
+- Add custom fitting example
+- Add chardet encoding detection
+- Add reader for accurion data
+ 
+### Bugfixes
+- Fix deprecation warnings
+
+
 ## Version 0.20.0
 
 ### New
