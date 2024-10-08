@@ -50,7 +50,7 @@ def read_spectraray_psi_delta(
 
     aois = list(map(float, re.split(sep, header)[3::2]))
     index = pd.MultiIndex.from_product(
-        [aois, ["Ψ", "Δ"]], names=["Angle_of_Incidence", ""]
+        [aois, ["psi", "delta"]], names=["Angle_of_Incidence", ""]
     )
     psi_delta_df.columns = index
 
@@ -64,8 +64,8 @@ def read_spectraray_psi_delta(
     psi_delta_df.sort_index(axis=1, ascending=False, inplace=True)
 
     # convert delta range
-    psi_delta_df.loc[:, "Δ"] = psi_delta_df.loc[:, "Δ"].where(
-        psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
+    psi_delta_df.loc[:, "delta"] = psi_delta_df.loc[:, "delta"].where(
+        psi_delta_df.loc[:, "delta"] <= 180, psi_delta_df.loc[:, "delta"] - 360
     )
 
     return psi_delta_df.to_xarray()

@@ -4,11 +4,12 @@ Typical files look like: Si3N4_on_4inBF33_W03_20240905-105631.ds.dat
 
 import numpy as np
 import pandas as pd
+import xarray as xr
 
 from . import detect_encoding
 
 
-def read_accurion_psi_delta(fname: str) -> pd.DataFrame:
+def read_accurion_psi_delta(fname: str) -> xr.Dataset:
     r"""Read a psi/delta Accurion dat file.
 
     Args:
@@ -26,15 +27,15 @@ def read_accurion_psi_delta(fname: str) -> pd.DataFrame:
         columns={
             "AOI": "Angle_of_Incidence",
             "Lambda": "Wavelength",
-            "Delta": "Δ",
-            "Psi": "Ψ",
+            "Delta": "delta",
+            "Psi": "psi",
         }
     )
     psi_delta_df = psi_delta_df.groupby(["Angle_of_Incidence", "Wavelength"]).sum()
 
     # wrap delta range
-    psi_delta_df.loc[:, "Δ"] = psi_delta_df.loc[:, "Δ"].where(
-        psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
+    psi_delta_df.loc[:, "delta"] = psi_delta_df.loc[:, "delta"].where(
+        psi_delta_df.loc[:, "delta"] <= 180, psi_delta_df.loc[:, "delta"] - 360
     )
 
     return psi_delta_df.to_xarray()

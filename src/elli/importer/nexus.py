@@ -72,7 +72,7 @@ def read_nexus_psi_delta(
         wavelength = np.array(h5file[wavelength_path]) / 10
         psi_delta_df = pd.DataFrame(
             {},
-            columns=["Ψ", "Δ"],
+            columns=["psi", "delta"],
             index=pd.MultiIndex.from_product(
                 [aois, wavelength], names=["Angle_of_Incidence", "Wavelength"]
             ),
@@ -82,8 +82,8 @@ def read_nexus_psi_delta(
         data = np.array(h5file[data_path])
 
         for i, aoi in enumerate(aois):
-            psi_delta_df.loc[aoi, "Ψ"] = data[indexing(i, 0)]
-            psi_delta_df.loc[aoi, "Δ"] = data[indexing(i, 1)]
+            psi_delta_df.loc[aoi, "psi"] = data[indexing(i, 0)]
+            psi_delta_df.loc[aoi, "delta"] = data[indexing(i, 1)]
 
         return psi_delta_df.to_xarray()
 

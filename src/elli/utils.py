@@ -44,8 +44,8 @@ def calc_rho(psi_delta: xr.Dataset) -> xr.DataArray:
     The Psi-Delta DataFrame should be structured as follows:
 
         :index: Wavelength
-        :column 'Ψ': Psi from measurement
-        :column 'Δ': Delta from measurement
+        :column 'psi': Psi from measurement
+        :column 'delta': Delta from measurement
 
     This format is as returned from SpectraRay.read_psi_delta_file(...).
 
@@ -55,8 +55,8 @@ def calc_rho(psi_delta: xr.Dataset) -> xr.DataArray:
     Returns:
         pandas.DataFrame: Frame containing rho as an imaginary number.
     """
-    array = np.tan(np.deg2rad(psi_delta["Ψ"])) * np.exp(
-        -1j * np.deg2rad(psi_delta["Δ"])
+    array = np.tan(np.deg2rad(psi_delta["psi"])) * np.exp(
+        -1j * np.deg2rad(psi_delta["delta"])
     )
     return array.rename("rho")
 
@@ -104,8 +104,8 @@ def convert_psi_delta_to_isotropic_mueller_matrix(psi_delta_df) -> pd.DataFrame:
     # fill in the Mueller matrix coefficients for an isotropic material based equation in https://www.jawoollam.com/resources/ellipsometry-faq#toggle-id-15
     for aoi in aois:
         for λ in wavelengths:
-            Δ = psi_delta_df.loc[aoi, λ]["Δ"]
-            Ψ = psi_delta_df.loc[aoi, λ]["Ψ"]
+            Δ = psi_delta_df.loc[aoi, λ]["delta"]
+            Ψ = psi_delta_df.loc[aoi, λ]["psi"]
 
             N = np.cos(2 * Ψ)
             C = np.sin(2 * Ψ) * np.cos(2 * Δ)

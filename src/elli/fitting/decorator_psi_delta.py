@@ -49,8 +49,8 @@ class FitRho(FitDecorator):
         self.fig.data[3].y = data.delta
 
         if update_exp:
-            self.fig.data[0].y = self.exp_data["Ψ"]
-            self.fig.data[1].y = self.exp_data["Δ"]
+            self.fig.data[0].y = self.exp_data.psi
+            self.fig.data[1].y = self.exp_data.delta
 
         if update_names:
             self.fig.data[0].name = "Ψ"
@@ -100,8 +100,8 @@ class FitRho(FitDecorator):
         self.fig.update_layout(yaxis_title="Residual")
 
         exp_rho = calc_rho(self.exp_data)
-        self.fig.data[0].y = self.exp_data["Ψ"] - data.psi
-        self.fig.data[1].y = self.exp_data["Δ"] - data.delta
+        self.fig.data[0].y = self.exp_data.psi - data.psi
+        self.fig.data[1].y = self.exp_data.delta - data.delta
         self.fig.data[2].y = np.real(exp_rho).values - data.rho.real
         self.fig.data[3].y = np.imag(exp_rho).values - data.rho.imag
 

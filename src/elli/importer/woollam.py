@@ -125,7 +125,14 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         file_object,
         sep="\t",
         header=None,
-        names=["Wavelength", "Angle_of_Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
+        names=[
+            "Wavelength",
+            "Angle_of_Incidence",
+            "psi",
+            "delta",
+            "psi_err",
+            "delta_err",
+        ],
     )
     print(dframe)
     dframe = (
@@ -154,7 +161,7 @@ def _read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
     dframe = dframe[dframe[0] == "E"]
     dframe = dframe.iloc[:, 1:]
     dframe.index.names = ("Angle_of_Incidence", "Wavelength")
-    dframe.columns = ["Ψ", "Δ", "Ψ_err", "Δ_err"]
+    dframe.columns = ["psi", "delta", "psi_err", "delta_err"]
     return dframe
 
 
