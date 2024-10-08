@@ -165,7 +165,7 @@ def _read_complete_ease_dataframe(file_object: TextIO) -> pd.DataFrame:
     return dframe
 
 
-def read_woollam_psi_delta(fname: str) -> xr.Dataset:
+def read_woollam(fname: str) -> xr.Dataset:
     r"""Read a psi/delta woollam ascii file.
 
     Args:
@@ -214,18 +214,4 @@ def read_woollam_psi_delta(fname: str) -> xr.Dataset:
         data = reader_map.get(file_format)(fobj)
 
     data = scale_to_nm(metadata[-1], data)
-    return data.iloc[:, :-2].to_xarray()
-
-
-def read_woollam_rho(fname: str) -> xr.DataArray:
-    r"""Read a psi/delta woollam ascii file and converts it to rho values.
-
-    Args:
-        fname (str): Filename of the measurement ascii file.
-
-    Returns:
-        pd.DataFrame: DataFrame containing the rho data in
-        the format to be further processes inside pyElli.
-    """
-    psi_delta = read_woollam_psi_delta(fname)
-    return calc_rho(psi_delta)
+    return calc_rho(data.iloc[:, :-2].to_xarray())

@@ -13,9 +13,7 @@ from ..utils import calc_rho
 from . import detect_encoding
 
 
-def read_spectraray_psi_delta(
-    fname: str, sep: str = r"\s+", decimal: str = "."
-) -> xr.Dataset:
+def read_spectraray(fname: str, sep: str = r"\s+", decimal: str = ".") -> xr.Dataset:
     r"""Read a psi/delta spectraray ascii file.
 
     Args:
@@ -68,7 +66,7 @@ def read_spectraray_psi_delta(
         psi_delta_df.loc[:, "delta"] <= 180, psi_delta_df.loc[:, "delta"] - 360
     )
 
-    return psi_delta_df.to_xarray()
+    return calc_rho(psi_delta_df.to_xarray())
 
 
 def read_spectraray_mmatrix(
@@ -113,21 +111,3 @@ def read_spectraray_mmatrix(
     ]
 
     return mueller_matrix
-
-
-def read_spectraray_rho(
-    fname: str, sep: str = r"\s+", decimal: str = "."
-) -> xr.DataArray:
-    r"""Read a psi/delta spectraray ascii file and converts it to rho values.
-
-    Args:
-        fname (str): Filename of the measurement ascii file.
-        sep (str, optional): Data separator in the datafile. Defaults to "\s+".
-        decimal (str, optional): Decimal separator in the datafile. Defaults to ".".
-
-    Returns:
-        pd.DataFrame: DataFrame containing the rho data in
-        the format to be further processes inside pyElli.
-    """
-    psi_delta = read_spectraray_psi_delta(fname, sep, decimal)
-    return calc_rho(psi_delta)

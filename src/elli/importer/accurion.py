@@ -6,10 +6,12 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+from elli.utils import calc_rho
+
 from . import detect_encoding
 
 
-def read_accurion_psi_delta(fname: str) -> xr.Dataset:
+def read_accurion(fname: str) -> xr.Dataset:
     r"""Read a psi/delta Accurion dat file.
 
     Args:
@@ -38,4 +40,4 @@ def read_accurion_psi_delta(fname: str) -> xr.Dataset:
         psi_delta_df.loc[:, "delta"] <= 180, psi_delta_df.loc[:, "delta"] - 360
     )
 
-    return psi_delta_df.to_xarray()
+    return calc_rho(psi_delta_df.to_xarray())

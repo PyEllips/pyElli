@@ -45,7 +45,7 @@ class NexusGroupNames:
         return f"{self.entry}/{self.sample}"
 
 
-def read_nexus_psi_delta(
+def read_nexus(
     nxs_filename: str, group_names: Optional[NexusGroupNames] = None
 ) -> xr.Dataset:
     """Read a NeXus file containing Psi and Delta data.
@@ -85,7 +85,7 @@ def read_nexus_psi_delta(
             psi_delta_df.loc[aoi, "psi"] = data[indexing(i, 0)]
             psi_delta_df.loc[aoi, "delta"] = data[indexing(i, 1)]
 
-        return psi_delta_df.to_xarray()
+        return calc_rho(psi_delta_df.to_xarray())
 
     def read_legacy() -> xr.Dataset:
         return read_data(
@@ -141,21 +141,6 @@ def read_nexus_psi_delta(
         )
 
     return def_mapping.get(data_type)()
-
-
-def read_nexus_rho(nxs_filename: str) -> xr.DataArray:
-    """Reads rho value from NeXus datafile.
-    Currently, this works only with psi / delta representation in the NeXus file.
-
-    Raises:
-        ValueError: Is raised when the data is not stored as psi / delta value.
-
-    Returns:
-        pd.DataFrame: DataFrame containing the measured data as imaginary rho value.
-        The index is a multiindex consisting of the angle of incidents as first column
-        and the wavelength as second column.
-    """
-    return calc_rho(read_nexus_psi_delta(nxs_filename))
 
 
 def read_nexus_materials(filename: str):

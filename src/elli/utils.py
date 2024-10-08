@@ -39,26 +39,24 @@ def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
     )
 
 
-def calc_rho(psi_delta: xr.Dataset) -> xr.DataArray:
-    """Calculate rho from a Psi-Delta DataFrame.
-    The Psi-Delta DataFrame should be structured as follows:
+def calc_rho(data: xr.Dataset) -> xr.Dataset:
+    """Calculate rho from a Psi-Delta Dataset.
+    The Psi-Delta Dataset should be structured as follows:
 
         :index: Wavelength
         :column 'psi': Psi from measurement
         :column 'delta': Delta from measurement
 
-    This format is as returned from SpectraRay.read_psi_delta_file(...).
-
     Args:
-        psi_delta (pandas.DataFrame): DataFrame containing Psi+Delta Measurement data
+        psi_delta (xarray.Dataset): Dataset containing Psi+Delta Measurement data
 
     Returns:
-        pandas.DataFrame: Frame containing rho as an imaginary number.
+        xarray.Dataset: Dataset appended with rho as an imaginary number.
     """
-    array = np.tan(np.deg2rad(psi_delta["psi"])) * np.exp(
-        -1j * np.deg2rad(psi_delta["delta"])
+    data["rho"] = np.tan(np.deg2rad(data["psi"])) * np.exp(
+        -1j * np.deg2rad(data["delta"])
     )
-    return array.rename("rho")
+    return data
 
 
 def convert_psi_delta_to_isotropic_mueller_matrix(psi_delta_df) -> pd.DataFrame:
