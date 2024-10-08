@@ -7,12 +7,13 @@ from typing import Callable
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+import xarray as xr
 
 try:
-    from lmfit import Parameters, minimize
     import plotly.graph_objects as go
     from IPython.display import display
     from ipywidgets import widgets
+    from lmfit import Parameters, minimize
 except ImportError as e:
     raise ImportError(
         "This module requires lmfit, plotly, ipywidgets and ipython to be installed.\n"
@@ -42,14 +43,14 @@ class FitRho(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.exp_data.Wavelength, self.params)
         self.fig.update_layout(yaxis_title="Ψ/Δ (°)")
         self.fig.data[2].y = data.psi
         self.fig.data[3].y = data.delta
 
         if update_exp:
-            self.fig.data[0].y = self.exp_data.loc[:, "Ψ"]
-            self.fig.data[1].y = self.exp_data.loc[:, "Δ"]
+            self.fig.data[0].y = self.exp_data["Ψ"]
+            self.fig.data[1].y = self.exp_data["Δ"]
 
         if update_names:
             self.fig.data[0].name = "Ψ"
@@ -66,15 +67,15 @@ class FitRho(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.exp_data.Wavelength, self.params)
         self.fig.update_layout(yaxis_title="ρ")
         self.fig.data[2].y = data.rho.real
         self.fig.data[3].y = data.rho.imag
 
         if update_exp:
             exp_rho = calc_rho(self.exp_data)
-            self.fig.data[0].y = exp_rho.apply(lambda x: x.real).values
-            self.fig.data[1].y = exp_rho.apply(lambda x: x.imag).values
+            self.fig.data[0].y = np.real(exp_rho).values
+            self.fig.data[1].y = np.imag(exp_rho).values
 
         if update_names:
             self.fig.data[0].name = "ρr"
@@ -95,14 +96,14 @@ class FitRho(FitDecorator):
             update_names (bool, optional):
                 Flag to change the label names. Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.exp_data.Wavelength, self.params)
         self.fig.update_layout(yaxis_title="Residual")
 
         exp_rho = calc_rho(self.exp_data)
-        self.fig.data[0].y = self.exp_data.loc[:, "Ψ"] - data.psi
-        self.fig.data[1].y = self.exp_data.loc[:, "Δ"] - data.delta
-        self.fig.data[2].y = exp_rho.apply(lambda x: x.real).values - data.rho.real
-        self.fig.data[3].y = exp_rho.apply(lambda x: x.imag).values - data.rho.imag
+        self.fig.data[0].y = self.exp_data["Ψ"] - data.psi
+        self.fig.data[1].y = self.exp_data["Δ"] - data.delta
+        self.fig.data[2].y = np.real(exp_rho).values - data.rho.real
+        self.fig.data[3].y = np.imag(exp_rho).values - data.rho.imag
 
         if update_names:
             self.fig.data[0].name = "Psi Res."
@@ -121,9 +122,10 @@ class FitRho(FitDecorator):
             update_names (bool, optional): Flag to change the label names.
                                            Defaults to False.
         """
-        data = self.model(self.exp_data.index, self.params)
+        data = self.model(self.exp_data.Wavelength, self.params)
         peps = calc_pseudo_diel(
-            pd.DataFrame(data.rho, index=self.exp_data.index).iloc[:, 0], self.angle
+            pd.DataFrame(data.rho, index=self.exp_data.Wavelength).iloc[:, 0],
+            self.angle,
         )
         self.fig.update_layout(yaxis_title="ϵ")
         self.fig.data[2].y = peps.loc[:, "ϵ1"]
@@ -272,7 +274,7 @@ class FitRho(FitDecorator):
         res = minimize(
             self.fit_function,
             self.params,
-            args=(rho.index.to_numpy(), rho.values.real, rho.values.imag),
+            args=(rho.Wavelength, rho.values.real, rho.values.imag),
             method=method,
         )
 
@@ -281,15 +283,15 @@ class FitRho(FitDecorator):
 
     def plot(self) -> go.Figure:
         """Plot the fit results as Psi/Delta"""
-        fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
+        fit_result = self.model(self.exp_data.Wavelength, self.fitted_params)
 
         return go.FigureWidget(
             pd.concat(
                 [
-                    self.exp_data,
+                    self.exp_data.to_dataframe(),
                     pd.DataFrame(
                         {"Ψ_fit": fit_result.psi, "Δ_fit": fit_result.delta},
-                        index=self.exp_data.index,
+                        index=self.exp_data.Wavelength,
                     ),
                 ]
             ).plot(backend="plotly")
@@ -298,17 +300,17 @@ class FitRho(FitDecorator):
     def plot_rho(self) -> go.Figure:
         """Plot the fit results as Rho"""
         rho = calc_rho(self.exp_data)
-        fit_result = self.model(rho.index.to_numpy(), self.fitted_params)
+        fit_result = self.model(rho.Wavelength, self.fitted_params)
 
         return go.FigureWidget(
             pd.DataFrame(
                 {
-                    "ρr": rho.apply(lambda x: x.real),
-                    "ρi": rho.apply(lambda x: x.imag),
+                    "ρr": rho.values.real,
+                    "ρi": rho.values.imag,
                     "ρcr": fit_result.rho.real,
                     "ρci": fit_result.rho.imag,
                 },
-                index=rho.index,
+                index=rho.Wavelength,
             ).plot(backend="plotly")
         )
 
@@ -341,10 +343,10 @@ class FitRho(FitDecorator):
             raise ValueError(f"Unexpected representation: {repr}")
 
         if params is None:
-            fit_result = self.model(self.exp_data.index.to_numpy(), self.fitted_params)
+            fit_result = self.model(self.exp_data.Wavelength, self.fitted_params)
             desc = "fit"
         else:
-            fit_result = self.model(self.exp_data.index.to_numpy(), params)
+            fit_result = self.model(self.exp_data.Wavelength, params)
             desc = "model"
 
         exp_data = {"psi-delta": self.exp_data, "rho": calc_rho(self.exp_data)}
@@ -352,10 +354,10 @@ class FitRho(FitDecorator):
         sim_data = {
             "psi-delta": pd.DataFrame(
                 {f"Ψ_{desc}": fit_result.psi, f"Δ_{desc}": fit_result.delta},
-                index=self.exp_data.index,
+                index=self.exp_data.Wavelength,
             ),
             "rho": pd.DataFrame(
-                {f"ρ_{desc}": fit_result.rho}, index=self.exp_data.index
+                {f"ρ_{desc}": fit_result.rho}, index=self.exp_data.Wavelength
             ),
         }
 
@@ -366,7 +368,7 @@ class FitRho(FitDecorator):
 
     def __init__(
         self,
-        exp_data: pd.DataFrame,
+        exp_data: xr.Dataset,
         params: Parameters,
         model: Callable[[npt.NDArray, Parameters], Result],
         angle: float = 70,
@@ -375,8 +377,8 @@ class FitRho(FitDecorator):
         """Intialize the psi/delta fitting class
 
         Args:
-            exp_data (pd.DataFrame):
-                The dataframe containing an experimental mueller matrix.
+            exp_data (xr.Dataset):
+                The dataset containing an experimental psi-delta measurement.
                 It should contain 2 columns with labels Ψ and Δ.
             params (Parameters): Fitting start parameters
             model (Callable[[npt.NDArray, Parameters], Result]):
@@ -402,13 +404,13 @@ class FitRho(FitDecorator):
         self.fig = go.FigureWidget(
             pd.concat(
                 [
-                    exp_data,
+                    exp_data.to_dataframe(),
                     pd.DataFrame(
                         {
-                            "Ψ_calc": model(exp_data.index, params).psi,
-                            "Δ_calc": model(exp_data.index, params).delta,
+                            "Ψ_calc": model(exp_data.Wavelength, params).psi,
+                            "Δ_calc": model(exp_data.Wavelength, params).delta,
                         },
-                        index=exp_data.index,
+                        index=exp_data.Wavelength,
                     ),
                 ]
             ).plot(backend="plotly")
