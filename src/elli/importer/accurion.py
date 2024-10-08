@@ -24,17 +24,17 @@ def read_accurion_psi_delta(fname: str) -> pd.DataFrame:
     psi_delta_df = psi_delta_df.reindex(columns=list(["AOI", "Lambda", "Delta", "Psi"]))
     psi_delta_df = psi_delta_df.rename(
         columns={
-            "AOI": "Angle of Incidence",
+            "AOI": "Angle_of_Incidence",
             "Lambda": "Wavelength",
             "Delta": "Δ",
             "Psi": "Ψ",
         }
     )
-    psi_delta_df = psi_delta_df.groupby(["Angle of Incidence", "Wavelength"]).sum()
+    psi_delta_df = psi_delta_df.groupby(["Angle_of_Incidence", "Wavelength"]).sum()
 
     # wrap delta range
     psi_delta_df.loc[:, "Δ"] = psi_delta_df.loc[:, "Δ"].where(
         psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
     )
 
-    return psi_delta_df
+    return psi_delta_df.to_xarray()

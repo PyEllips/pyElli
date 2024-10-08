@@ -1,5 +1,6 @@
 """Tests for reading accurion files"""
 
+import numpy as np
 import pytest
 from fixtures import datadir  # pylint: disable=unused-import
 
@@ -13,4 +14,5 @@ def test_reading_of_psi_delta_woollam(datadir):
         datadir / "Si3N4_on_4inBF33_W02_20240903-150451.ds.dat"
     )
 
-    assert data.shape == (114, 2)
+    assert len(data.Wavelength) == 57
+    np.testing.assert_array_equal(data.Angle_of_Incidence, [40, 50])
