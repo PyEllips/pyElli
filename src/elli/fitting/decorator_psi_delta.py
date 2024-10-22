@@ -73,9 +73,8 @@ class FitRho(FitDecorator):
         self.fig.data[3].y = data.rho.imag
 
         if update_exp:
-            exp_rho = calc_rho(self.exp_data)
-            self.fig.data[0].y = np.real(exp_rho).values
-            self.fig.data[1].y = np.imag(exp_rho).values
+            self.fig.data[0].y = np.real(self.exp_data.rho)
+            self.fig.data[1].y = np.imag(self.exp_data.rho)
 
         if update_names:
             self.fig.data[0].name = "ρr"
@@ -102,8 +101,8 @@ class FitRho(FitDecorator):
         exp_rho = calc_rho(self.exp_data)
         self.fig.data[0].y = self.exp_data.psi - data.psi
         self.fig.data[1].y = self.exp_data.delta - data.delta
-        self.fig.data[2].y = np.real(exp_rho).values - data.rho.real
-        self.fig.data[3].y = np.imag(exp_rho).values - data.rho.imag
+        self.fig.data[2].y = np.real(self.exp_data.rho) - data.rho.real
+        self.fig.data[3].y = np.imag(self.exp_data.rho) - data.rho.imag
 
         if update_names:
             self.fig.data[0].name = "Psi Res."
@@ -132,7 +131,7 @@ class FitRho(FitDecorator):
         self.fig.data[3].y = peps.loc[:, "ϵ2"]
 
         if update_exp:
-            exp_peps = calc_pseudo_diel(calc_rho(self.exp_data), self.angle)
+            exp_peps = calc_pseudo_diel(self.exp_data, self.angle)
             self.fig.data[0].y = exp_peps.loc[:, "ϵ1"]
             self.fig.data[1].y = exp_peps.loc[:, "ϵ2"]
 
@@ -270,11 +269,14 @@ class FitRho(FitDecorator):
         Returns:
             Result: The fitting result
         """
-        rho = calc_rho(self.exp_data)
         res = minimize(
             self.fit_function,
             self.params,
-            args=(rho.Wavelength, rho.values.real, rho.values.imag),
+            args=(
+                self.exp_data.Wavelength,
+                np.real(self.exp_data.rho),
+                np.imag(self.exp_data.rho),
+            ),
             method=method,
         )
 
@@ -288,7 +290,9 @@ class FitRho(FitDecorator):
         return go.FigureWidget(
             pd.concat(
                 [
-                    self.exp_data.to_dataframe(),
+                    self.exp_data[["psi", "delta"]]
+                    .reset_coords(drop=True)
+                    .to_dataframe(),
                     pd.DataFrame(
                         {"Ψ_fit": fit_result.psi, "Δ_fit": fit_result.delta},
                         index=self.exp_data.Wavelength,
@@ -299,18 +303,17 @@ class FitRho(FitDecorator):
 
     def plot_rho(self) -> go.Figure:
         """Plot the fit results as Rho"""
-        rho = calc_rho(self.exp_data)
-        fit_result = self.model(rho.Wavelength, self.fitted_params)
+        fit_result = self.model(self.exp_data.Wavelength, self.fitted_params)
 
         return go.FigureWidget(
             pd.DataFrame(
                 {
-                    "ρr": rho.values.real,
-                    "ρi": rho.values.imag,
+                    "ρr": np.real(self.exp_data.rho),
+                    "ρi": np.imag(self.exp_data.rho),
                     "ρcr": fit_result.rho.real,
                     "ρci": fit_result.rho.imag,
                 },
-                index=rho.Wavelength,
+                index=self.exp_data.Wavelength,
             ).plot(backend="plotly")
         )
 
@@ -349,7 +352,10 @@ class FitRho(FitDecorator):
             fit_result = self.model(self.exp_data.Wavelength, params)
             desc = "model"
 
-        exp_data = {"psi-delta": self.exp_data, "rho": calc_rho(self.exp_data)}
+        exp_data = {
+            "psi-delta": self.exp_data[["psi", "delta"]],
+            "rho": self.exp_data.rho,
+        }
 
         sim_data = {
             "psi-delta": pd.DataFrame(
@@ -404,7 +410,7 @@ class FitRho(FitDecorator):
         self.fig = go.FigureWidget(
             pd.concat(
                 [
-                    exp_data.to_dataframe(),
+                    exp_data[["psi", "delta"]].reset_coords(drop=True).to_dataframe(),
                     pd.DataFrame(
                         {
                             "Ψ_calc": model(exp_data.Wavelength, params).psi,
