@@ -31,5 +31,4 @@ class Solver(ABC):
         self.structure = self.experiment.structure
         self.lbda = self.experiment.lbda
         self.theta_i = self.experiment.theta_i
-        self.jones_vector = self.experiment.jones_vector
         self.permittivity_profile = self.structure.get_permittivity_profile(self.lbda)

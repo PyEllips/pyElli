@@ -73,8 +73,8 @@ class FitRho(FitDecorator):
         self.fig.data[3].y = data.rho.imag
 
         if update_exp:
-            self.fig.data[0].y = np.real(self.exp_data.rho)
-            self.fig.data[1].y = np.imag(self.exp_data.rho)
+            self.fig.data[0].y = self.exp_data.rho.real
+            self.fig.data[1].y = self.exp_data.rho.imag
 
         if update_names:
             self.fig.data[0].name = "ρr"
@@ -101,8 +101,8 @@ class FitRho(FitDecorator):
         exp_rho = calc_rho(self.exp_data)
         self.fig.data[0].y = self.exp_data.psi - data.psi
         self.fig.data[1].y = self.exp_data.delta - data.delta
-        self.fig.data[2].y = np.real(self.exp_data.rho) - data.rho.real
-        self.fig.data[3].y = np.imag(self.exp_data.rho) - data.rho.imag
+        self.fig.data[2].y = self.exp_data.rho.real - data.rho.real
+        self.fig.data[3].y = self.exp_data.rho.imag - data.rho.imag
 
         if update_names:
             self.fig.data[0].name = "Psi Res."
@@ -121,19 +121,17 @@ class FitRho(FitDecorator):
             update_names (bool, optional): Flag to change the label names.
                                            Defaults to False.
         """
-        data = self.model(self.exp_data.Wavelength, self.params)
-        peps = calc_pseudo_diel(
-            pd.DataFrame(data.rho, index=self.exp_data.Wavelength).iloc[:, 0],
-            self.angle,
-        )
-        self.fig.update_layout(yaxis_title="ϵ")
-        self.fig.data[2].y = peps.loc[:, "ϵ1"]
-        self.fig.data[3].y = peps.loc[:, "ϵ2"]
+        # TODO: Convert result to xarray and reenable pseudo diel calculation
+        # data = self.model(self.exp_data.Wavelength, self.params)
+        # peps = calc_pseudo_diel(data)
+        # self.fig.update_layout(yaxis_title="ϵ")
+        # self.fig.data[2].y = peps.loc[:, "ϵ1"]
+        # self.fig.data[3].y = peps.loc[:, "ϵ2"]
 
         if update_exp:
-            exp_peps = calc_pseudo_diel(self.exp_data, self.angle)
-            self.fig.data[0].y = exp_peps.loc[:, "ϵ1"]
-            self.fig.data[1].y = exp_peps.loc[:, "ϵ2"]
+            exp_peps = calc_pseudo_diel(self.exp_data)
+            self.fig.data[0].y = exp_peps.eps.real
+            self.fig.data[1].y = exp_peps.eps.imag
 
         if update_names:
             self.fig.data[0].name = "ϵ1"

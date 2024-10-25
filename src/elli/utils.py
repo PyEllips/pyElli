@@ -6,36 +6,33 @@ import scipy.constants as sc
 import xarray as xr
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
+from xarray.core.alignment import reindex, reindex_like
 
 
-def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
+def calc_pseudo_diel(data: xr.Dataset) -> xr.Dataset:
     """Calculates the pseudo dielectric function of a measurement from rho.
 
     Args:
-        rho (pandas.DataFrame):
+        rho (xarray.Dataset):
             Measurement DataFrame containing rho as complex number as column and wavelength as index
-        angle (float): Angle of measurement in degree
-        output (str, optional): Output format for dielectric function.
-            'n': refractive index,
-            'eps': Dielectric function as two-column pandas.DataFrame,
-            'epsi': Dielectric function as imaginary number.
-            Defaults to 'eps'.
 
     Returns:
-        pandas.DataFrame: Frame containing the pseudo dielectric function or refractive index.
+        xarray.Dataset: Dataset containing the pseudo dielectric function and refractive index.
     """
-    theta = angle * np.pi / 180
-    eps = np.sin(theta) ** 2 * (1 + np.tan(theta) ** 2 * ((1 - rho) / (1 + rho)) ** 2)
+    theta = data.Angle_of_Incidence * np.pi / 180
+    data["eps"] = np.sin(theta) ** 2 * (
+        1 + np.tan(theta) ** 2 * ((1 - data.rho) / (1 + data.rho)) ** 2
+    )
 
-    if output == "n":
-        n = sqrt(eps)
-        return pd.DataFrame({"n": n.real, "k": n.imag}, index=eps.index)
-
-    if output == "epsi":
-        return eps
-
-    return pd.concat(
-        {"ϵ1": eps.apply(lambda x: x.real), "ϵ2": eps.apply(lambda x: x.imag)}, axis=1
+    return data.assign(
+        {
+            "n": xr.DataArray(
+                np.real(sqrt(data.eps)), coords=data.coords, dims=data.dims
+            ),
+            "k": xr.DataArray(
+                np.imag(sqrt(data.eps)), coords=data.coords, dims=data.dims
+            ),
+        }
     )
 
 
