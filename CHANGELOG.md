@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.21.2
+
+### Bugfixes
+- Include the RII database submodule in the Pypi package again
+
+## Version 0.21.1
+
+### Bugfixes
+- Fix documentation generation
+
 ## Version 0.21.0
 
 ### New
@@ -8,7 +18,7 @@
 - Add custom fitting example
 - Add chardet encoding detection
 - Add reader for accurion data
- 
+
 ### Bugfixes
 - Fix deprecation warnings
 
