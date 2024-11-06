@@ -73,6 +73,11 @@ cd pyElli
 pip install -e ".[fitting]"
 ```
 
+## How to cite
+
+Until we have published a Paper on pyElli, we have prepared a Zenodo entry with DOIs for every pyElli Version. The can be found [here](https://zenodo.org/records/13903325).
+
+
 ## Acknowledgements
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
