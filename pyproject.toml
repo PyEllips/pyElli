@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "scipy",
@@ -36,19 +37,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-fitting = [
-    "ipython",
-    "ipywidgets",
-    "plotly",
-    "matplotlib",
-    "lmfit"
-]
+fitting = ["ipython", "ipywidgets", "plotly", "matplotlib", "lmfit"]
 dev = [
     "pytest",
     "pytest-benchmark",
     "pytest-cov",
     "nbmake",
-    "ruff==0.4.8",
+    "ruff==0.8.5",
     "uv",
     "pre-commit",
 ]
@@ -95,6 +90,7 @@ ignore = [
     "PLW2901", # redefined-loop-name
     "PLR1714", # consider-using-in
     "PLR5501", # else-if-used
+    "PLC2401", # temporary: Non-ASCII variable names
 ]
 fixable = ["ALL"]
 
