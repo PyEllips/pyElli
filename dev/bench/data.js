@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1732694835842,
+  "lastUpdate": 1735999715029,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -14542,6 +14542,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00007683603996342286",
             "extra": "mean: 3.7059194999983447 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "292d20b1e046c1899a52d6a171e44065901c9f0f",
+          "message": "Python 3.13 support (#197)\n\n* Include 3.13 in pytest workflow\n\n* housekeeping\n\n* include correct h5py version\n\n* try updated requirements\n\n* Drop EOL Python 3.8\n\n* Remove 3.8 test\n\n* Update ruff in pre-commit hook\n\n* Set linting python to 3.13\n\n* leave h5py without restrictions\n\n---------\n\nCo-authored-by: domna <florian.dobener@physik.hu-berlin.de>",
+          "timestamp": "2025-01-04T15:07:25+01:00",
+          "tree_id": "7656cba510050e12d3cdf3fa77993a64a533a60d",
+          "url": "https://github.com/PyEllips/pyElli/commit/292d20b1e046c1899a52d6a171e44065901c9f0f"
+        },
+        "date": 1735999714339,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 134.4319777758698,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001710263996217046",
+            "extra": "mean: 7.438706299979003 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 65.09076924041084,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008774186648206676",
+            "extra": "mean: 15.363161500005162 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.30214112089206,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005975591394309897",
+            "extra": "mean: 25.443906400010974 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 1.6845623693318812,
+            "unit": "iter/sec",
+            "range": "stddev: 0.023859459799942254",
+            "extra": "mean: 593.6259875000133 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 48.597709212880154,
+            "unit": "iter/sec",
+            "range": "stddev: 0.02411841859036641",
+            "extra": "mean: 20.57710159998578 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 264.27018010709253,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000040991758002366584",
+            "extra": "mean: 3.7840061999986574 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 275.7302280819036,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000124302340464878",
+            "extra": "mean: 3.6267332999955215 msec\nrounds: 10"
           }
         ]
       }
