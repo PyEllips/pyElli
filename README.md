@@ -40,7 +40,12 @@ pip install pyElli[fitting]
 ```
 
 This installs pyElli with the additional fitting capabilities and interactive widgets.
-If don't want to have this functionality just drop the `[fitting]` in the end.
+If you don't want to have this functionality just drop the `[fitting]` in the end.
+
+To increase performance of the 4x4 Solver, it is recommended to
+install PyTorch manually, as it is too big to include in the standard installation.
+Installation information can be found at the [PyTorch Website](https://pytorch.org/get-started/locally/).
+The CPU variant is sufficient, if you want to save some space.
 
 A complete environment for pyElli is also available as a [Docker Container](https://hub.docker.com/r/domna/pyelli).
 To pull and run it directly just execute
@@ -68,10 +73,15 @@ cd pyElli
 pip install -e ".[fitting]"
 ```
 
+## How to cite
+
+Until we have published a Paper on pyElli, we have prepared a Zenodo entry with DOIs for every pyElli Version. The can be found [here](https://zenodo.org/records/13903325).
+
+
 ## Acknowledgements
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
 - Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
 - Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database) and Pavel Dmitriev's [pyTMM](https://github.com/kitchenknif/PyTMM) for his importer script for the database
 
-[@MarJMue](https://github.com/MarJMue) recieves financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).
+[@MarJMue](https://github.com/MarJMue) receives financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).

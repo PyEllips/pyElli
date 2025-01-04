@@ -16,6 +16,7 @@ pyElli provides different implementations to be used in the calculation of the t
 The :class:`PropagatorEig<elli.solver4x4.PropagatorEig>` is based on solving the eigenvalues of the first order approximation of the matrix exponential.
 Although, it is very fast it is not very accurate.
 The :class:`PropagatorExpm<elli.solver4x4.PropagatorExpm>` is solving the matrix exponential by the Pade approximation.
+It can use SciPy as backend, but for performance-critical tasks, it is recommended to install PyTorch.
 
 .. rubric:: References
 

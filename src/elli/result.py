@@ -46,7 +46,7 @@ def _convert_index(index: str) -> int:
     if index in ["s", "R"]:
         return 1
 
-    return ValueError("Wrong index given for variable.")
+    raise ValueError("Wrong index given for variable.")
 
 
 class Result:
@@ -298,7 +298,7 @@ class Result:
         r"""Returns the absolute transmittance for unpolarized light.
 
         .. math::
-            T = T_{pp} / T_{ss}
+            T = (T_{pp} / T_{ss}) / 2
         """
         return (self.T_matrix[:, 0, 0] + self.T_matrix[:, 1, 1]) / 2
 

@@ -14,8 +14,8 @@ However, pyElli comes with batteries included and already offers a wide range
 of :doc:`dispersion models<dispersions>` and the material database of Refractiveindex.info.
 
 Most of the models presented in the
-comprehensive book of Fujiwara and Colllins [1]_ are present and additionally
-a lot of other models used by ellipsometry vendor softwares are included.
+comprehensive book of Fujiwara and Collins [1]_ are present and additionally
+a lot of other models used by ellipsometry vendor software are included.
 
 The material database offers the dispersions seen on the `website <https://refractiveindex.info/>`_
 and can be accessed by using the :class:`elli.db.RII<elli.db.RII>` module.
@@ -54,7 +54,7 @@ but can contain arbitrary more :class:`layers<elli.structure.Layer>` which are o
 The :class:`VaryingMixtureLayer<elli.structure.VaryingMixtureLayer>` class can also account for gradient changes of materials in z-direction
 of a layer, which is useful for gradient layers or roughness modeling.
 As the last step the :class:`Structure<elli.structure.Structure>` is plugged into an :class:`Experiment<elli.experiment.Experiment>`, which contains
-the experimental conditions, such as light polarizations.
+the experimental conditions, such as light polarization.
 By evaluating the experiment a :class:`Result<elli.result.Result>` class containing the calculated data is returned.
 The creation of an experiment can be skipped by calling the :meth:`evaluate<elli.structure.Structure.evaluate>` method directly
 on a :class:`Structure<elli.structure.Structure>` class if you want to use standard experimental settings.

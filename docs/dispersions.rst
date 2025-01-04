@@ -265,7 +265,7 @@ DispersionSum
 This object can be used to add an arbitrary number of dispersions.
 The overloaded `+` operator of the dispersion base class creates an instance
 of this object with two classes as parameters.
-If you want to chain a lot of dispersions it may be more performant to use
+If you want to chain a lot of dispersions, it may be more performant to use
 this class directly.
 
 .. autoclass:: elli.dispersions.base_dispersion.DispersionSum
@@ -274,6 +274,6 @@ this class directly.
 
 InvalidParameters
 -----------------
-This exception is thrown whenever a dispersions got invalid parameters.
+This exception is thrown whenever a dispersion got invalid parameters.
 
 .. autoexception:: elli.dispersions.base_dispersion.InvalidParameters
