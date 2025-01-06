@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.22.0
+
+### New
+- Python 3.13 support
+- Updated dependencies
+- Updated refractive index database
+
+### Bugfixes
+- SciPy performance regression fixed with Version 1.15
+
 ## Version 0.21.2
 
 ### Bugfixes
