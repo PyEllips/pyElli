@@ -36,7 +36,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-fitting = ["ipython", "ipywidgets", "plotly", "matplotlib", "lmfit"]
+fitting = [
+    "ipython",
+    "ipywidgets",
+    "anywidget",
+    "plotly",
+    "matplotlib",
+    "lmfit",
+]
 dev = [
     "pytest",
     "pytest-benchmark",
