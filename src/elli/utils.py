@@ -1,10 +1,55 @@
 # Encoding: utf-8
+from dataclasses import dataclass
+
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
+
+
+@dataclass(frozen=True)
+class DeltaRange:
+    lower: int
+    upper: int
+
+    def __post_init__(self):
+        if not (isinstance(self.lower, int) or isinstance(self.upper, int)):
+            raise TypeError("delta range values must be an integer")
+
+        if not -360 <= self.lower <= 0:
+            raise ValueError(
+                f"Lower bound ({self.lower}) is not in the valid range (-360, 0)."
+            )
+
+        if not 0 <= self.upper <= 360:
+            raise ValueError(
+                f"Upper bound ({self.upper}) is not in the valid range (0, 360)."
+            )
+
+        if not (
+            ((self.lower, self.upper) == (0, 180))
+            or abs(self.upper - self.lower) == 360
+        ):
+            raise ValueError(f"Invalid delta range ({self.lower}, {self.upper})")
+
+
+def convert_delta_range(
+    delta_values: npt.ArrayLike, lower: int, upper: int
+) -> npt.ArrayLike:
+    """Shifts the delta values to a given range.
+
+    Args:
+        delta_values (npt.ArrayLike): Delta values to be converted.
+        lower (int): The lower delta range. Should be in the range of -360 and 0.
+        upper (Optional[int]): The upper delta range. Should be in the range of 0 and 360.
+
+    Returns:
+        npt.ArrayLike: Delta values with shifted range.
+    """
+    delta_range = DeltaRange(lower, upper)
+    return np.mod((delta_values + delta_range.lower), 360) + delta_range.lower
 
 
 def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:

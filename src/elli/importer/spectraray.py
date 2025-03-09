@@ -8,7 +8,7 @@ import re
 import pandas as pd
 from packaging.version import Version, parse
 
-from ..utils import calc_rho
+from ..utils import calc_rho, convert_delta_range
 from . import detect_encoding
 
 
@@ -63,9 +63,7 @@ def read_spectraray_psi_delta(
     psi_delta_df.sort_index(axis=1, ascending=False, inplace=True)
 
     # convert delta range
-    psi_delta_df.loc[:, "Δ"] = psi_delta_df.loc[:, "Δ"].where(
-        psi_delta_df.loc[:, "Δ"] <= 180, psi_delta_df.loc[:, "Δ"] - 360
-    )
+    psi_delta_df.loc[:, "Δ"] = convert_delta_range(psi_delta_df.loc[:, "Δ"], -180, 180)
 
     return psi_delta_df
 
