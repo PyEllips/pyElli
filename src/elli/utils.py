@@ -43,7 +43,7 @@ def convert_delta_range(
     Args:
         delta_values (npt.ArrayLike): Delta values to be converted.
         lower (int): The lower delta range. Should be in the range of -360 and 0.
-        upper (Optional[int]): The upper delta range. Should be in the range of 0 and 360.
+        upper (int): The upper delta range. Should be in the range of 0 and 360.
 
     Returns:
         npt.ArrayLike: Delta values with shifted range.
