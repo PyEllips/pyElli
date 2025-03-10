@@ -40,11 +40,9 @@ Furthermore, data interchange is cumbersome, and results may be hard to reproduc
 Finally, limitations of the bundled software may stimulate scientists to use third-party software.
 For example, bundled software packages may not support specific kinds of analyses, such as including the response of optically anisotropic materials or simultaneous fitting of external experimental parameters.
 
-PyElli offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible:
-By providing importers for various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion), and having dispersion models
-
-Typical examples are implementations of custom experimental geometries not covered by other software [@eberheim2022] or as a full FAIR data [@Wilkinson2016] automated analysis pipeline for SE measurements.
-The code is designed with extensibility and adaptability in mind, enabling scientists to easily develop custom analysis pipelines.
+PyElli offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible, by providing data imports from various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion).
+The code is designed with extensibility and adaptability in mind, enabling scientists to implement their own models and evaluate them with custom tooling.
+Typical examples for advanced use-cases are implementations of custom experimental geometries not covered by other software [@eberheim2022], imaging ellipsommetry, or as a full FAIR data [@Wilkinson2016] automated analysis pipeline for SE measurements.
 PyElli also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data.
 
 PyElli aims to provide straight-forward availability of a database of predefined dispersion models for analyzing materials.
@@ -175,7 +173,7 @@ result = structure.evaluate(wavelengths, 70)
 The calculation is stored in the `result` variable, which is a [`Result` object](https://pyelli.readthedocs.io/en/stable/result.html).
 This object can hold all input parameters and the calculation results. You can call methods like `psi`, `delta`, `R`, etc., to get your desired output.
 We can also use the `@fit` decorator in `elli.fitting` to automatically show a widget-based fitting GUI for Jupyter notebooks.
-Figure \autoref{fig:fit_dec_example} shows the output when used with this example model and some experimental data.
+\autoref{fig:fit_dec_example} shows the output when used with this example model and some experimental data.
 
 ![The ipywidgets based fitting GUI.\label{fig:fit_dec_example}](fit_decorator_example.png)
 
