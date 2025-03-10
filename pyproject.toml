@@ -53,6 +53,15 @@ dev = [
     "uv",
     "pre-commit",
 ]
+docs = [
+    "sphinx!=5.1.0",
+    "sphinx_rtd_theme",
+    "sphinx-mdinclude",
+    "sphinx-gallery",
+    "sphinx-plotly-directive",
+    "sphinxcontrib-mermaid",
+    "myst_parser",
+]
 
 [project.urls]
 homepage = "https://github.com/PyEllips/pyElli/"
