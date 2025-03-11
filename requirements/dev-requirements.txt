@@ -6,10 +6,6 @@ anywidget==0.9.15 \
     # via
     #   -r requirements/fitting-requirements.txt
     #   pyelli (pyproject.toml)
-appnope==0.1.4 \
-    --hash=sha256:1de3860566df9caf38f01f86f65e0e13e379af54f9e4bee1e66b48f2efffd1ee \
-    --hash=sha256:502575ee11cd7a28c0205f379b525beefebab9d161b7c964670864014ed7213c
-    # via ipykernel
 asteval==1.0.6 \
     --hash=sha256:1aa8e7304b2e171a90d64dd269b648cacac4e46fe5de54ac0db24776c0c4a19f \
     --hash=sha256:5e119ed306e39199fd99c881cea0e306b3f3807f050c9be79829fe274c6378dc
@@ -543,12 +539,6 @@ matplotlib-inline==0.1.7 \
     #   -r requirements/fitting-requirements.txt
     #   ipykernel
     #   ipython
-narwhals==1.30.0 \
-    --hash=sha256:0c50cc67a5404da501302882838ec17dce51703d22cd8ad89162d6f60ea0bb19 \
-    --hash=sha256:443aa0a1abfae89bc65a6b888a7e310a03d1818bfb2ccd61c150199a5f954c17
-    # via
-    #   -r requirements/fitting-requirements.txt
-    #   plotly
 nbclient==0.10.2 \
     --hash=sha256:4ffee11e788b4a27fabeb7955547e4318a5298f34342a4bfd01f2e1faaeadc3d \
     --hash=sha256:90b7fc6b810630db87a6d0c2250b1f0ab4cf4d3c27a299b0cde78a4ed3fd9193
@@ -792,9 +782,9 @@ platformdirs==4.3.6 \
     #   jupyter-core
     #   pint
     #   virtualenv
-plotly==6.0.0 \
-    --hash=sha256:c4aad38b8c3d65e4a5e7dd308b084143b9025c2cc9d5317fc1f1d30958db87d3 \
-    --hash=sha256:f708871c3a9349a68791ff943a5781b1ec04de7769ea69068adcd9202e57653a
+plotly==5.24.1 \
+    --hash=sha256:dbc8ac8339d248a4bcc36e08a5659bacfe1b079390b8953533f4eb22169b4bae \
+    --hash=sha256:f67073a1e637eb0dc3e46324d9d51e2fe76e9727c892dde64ddf1e1b51f29089
     # via
     #   -r requirements/fitting-requirements.txt
     #   pyelli (pyproject.toml)
@@ -1379,6 +1369,12 @@ stack-data==0.6.3 \
     # via
     #   -r requirements/fitting-requirements.txt
     #   ipython
+tenacity==9.0.0 \
+    --hash=sha256:807f37ca97d62aa361264d497b0e31e92b8027044942bfa756160d908320d73b \
+    --hash=sha256:93de0c98785b27fcf659856aa9f54bfbd399e29969b0621bc7f762bd441b4539
+    # via
+    #   -r requirements/fitting-requirements.txt
+    #   plotly
 tomli==2.2.1 \
     --hash=sha256:023aa114dd824ade0100497eb2318602af309e5a55595f76b626d6d9f3b7b0a6 \
     --hash=sha256:02abe224de6ae62c19f090f68da4e27b10af2b93213d36cf44e6e1c5abd19fdd \
