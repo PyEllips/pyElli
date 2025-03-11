@@ -9,15 +9,13 @@ tags:
 authors:
   - name: Marius J. Müller
     orcid: 0009-0005-2187-0122
-    equal-contrib: true
     affiliation: 1
   - name: Florian Dobener
     orcid: 0000-0003-1987-6224
-    equal-contrib: true
 affiliations:
   - name: Institute of Experimental Physics I and Center for Materials Research (ZfM/LaMa), Justus Liebig University Giessen, Heinrich-Buff-Ring 16, Giessen, D-35392 Germany
     index: 1
-date: 24 April 2023
+date: 11 March 2025
 bibliography: paper.bib
 ---
 
@@ -28,7 +26,7 @@ The code primarily targets spectroscopic ellipsometry (SE) but is adaptable to v
 
 Various scientific fields use SE to determine the optical constants of materials and layered material stacks.
 The as-measured SE experimental requires numerical analysis to deduce commonly used, physically meaningful material parameters.
-A typical approach uses transfer-matrix methods (TMM) [@tompkins2005, @WVASEguide].
+A typical approach uses transfer-matrix methods (TMM) [@tompkins2005; @WVASEguide].
 Here, an interaction matrix describes the optical response of each individual material layer.
 The full optical response of a multilayer system is then determined by matrix multiplication of the layers' matrices.
 
@@ -89,11 +87,8 @@ Other notable Python open-source software for solving transfer-matrices is avail
 - [PyLlama](https://pyllama.readthedocs.io) [@Bay2022] focuses on the simulation of liquid crystals and uses non-vectorized TMM and a scattering matrix algorithm (rigorous coupled-wave analysis, RCWA).
 - [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021] is a complete toolkit to simulate the physical and electrical properties of solar cells. It provides the same 2x2 algorithm[@byrnes2020multilayer] and a scattering matrix approach (S4).
 - [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] is a vectorized variant of Byrnes' algorithm for artificial intelligence-based analysis of multilayer stacks.
-- Additional mentions:
-  - [refellips](https://refellips.readthedocs.io/en/latest/)
-  - [EMpy](http://lbolla.github.io/EMpy/)
-  - [dtmm](https://github.com/IJSComplexMatter/dtmm)
-  - [py_matrix](https://github.com/gevero/py_matrix)
+- [tmmax](https://github.com/bahremsd/tmmax) [tmmax] is a JIT-compilable version of the 2x2 matrix method, leveraging the JAX toolkit.
+- [PyMoosh](https://github.com/AnMoreau/PyMoosh) [Langevin:24]
 
 # Example: Building a model for an oxide layer on silicon
 
@@ -102,7 +97,7 @@ Here, we will demonstrate by creating a standard model for SiO$_2$ on Si.
 We will use a Cauchy dispersion function for SiO$_2$ and tabulated literature values for Si loaded from the refractiveindex.info database.
 
 We need to import the necessary libraries before building the model:
-PyElli is imported from the module `elli`, and we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from [lmfit](https://lmfit.github.io/lmfit-py/index.html) [@matt_newville_2023_7810964], adding history to it so you can revert your model to an earlier set of parameters.
+PyElli is imported from the module `elli`, and we want to use our parameters wrapper `ParamsHist`, which is imported from `elli.fitting`. `ParamsHist` is a wrapper around the `Parameters` class from [lmfit](https://lmfit.github.io/lmfit-py/index.html) [matt_newville_2024_12785036], adding history to it so you can revert your model to an earlier set of parameters.
 We also import `linspace` from `numpy` for generating a wavelength axis.
 
 ```python
