@@ -40,7 +40,7 @@ fitting = [
     "ipython",
     "ipywidgets",
     "anywidget",
-    "plotly",
+    "plotly<6",
     "matplotlib",
     "lmfit",
 ]
