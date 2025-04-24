@@ -73,7 +73,7 @@ Producing FAIR data and using a FAIR and open analysis pipeline is especially im
 
 An open-source toolkit has many inherent benefits over proprietary software.
 For SE, optical models vary between manufacturers and translation can be difficult without comprehensive documentation.
-**PyElli**'s open-source nature makes optical models extendable, auditable, and fully comprehensive.
+**PyElli's** open-source nature makes optical models extendable, auditable, and fully comprehensive.
 Each version of **PyElli** is associated with a DOI and a Zenodo upload, allowing for reliable referencing and reproducibility of analysis results.
 It supports [NXellipsometry](https://fairmat-experimental.github.io/nexus-fairmat-proposal/9636feecb79bb32b828b1a9804269573256d7696/classes/contributed_definitions/NXellipsometry.html#nxellipsometry), a recent advancement in SE data standardization.
 This standard is developed by the German consortium [FAIRmat](https://www.fair-di.eu/fairmat) within the German National Research Data Infrastructure (NFDI) and is accepted by the [NeXus International Advisory Committee (NIAC)](https://www.nexusformat.org/NIAC.html), which has been maintaining beamline standards in the [NeXus format](https://www.nexusformat.org) for over 20 years [@Konnecke2015].
@@ -167,7 +167,7 @@ Finally, we trigger a calculation by calling the `evaluate(...)` method of the `
 We use a `wavelengths` array from $210$ nm to $800$ nm for the calculation range and an angle of incidence of $70°$ degree (second parameter of evaluate).
 
 ```python
-wavelengths = np.linspace(210, 800, 100)
+wavelengths = linspace(210, 800, 100)
 result = structure.evaluate(wavelengths, 70)
 ```
 
