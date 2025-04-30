@@ -42,8 +42,8 @@ In addition, limitations of the bundled software may stimulate scientists to use
 
 **PyElli** offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible, by providing data imports from various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion).
 The code is designed with extensibility and adaptability in mind enabling the implementation of individually adapted models as well as data evaluation with custom tools.
-Typical examples for advanced use-cases are implementations of custom experimental geometries not covered by other software [@eberheim2022], imaging ellipsometry, or as a full FAIR data [@Wilkinson2016] automated analysis pipeline for SE measurements.
-**PyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data.
+Typical examples for advanced use-cases are implementations of custom experimental geometries not covered by other software [@eberheim2022], imaging ellipsometry, or as a full FAIR data automated analysis pipeline for SE measurements.
+**PyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data [@Wilkinson2016].
 
 **PyElli** aims to provide a straight-forward database of predefined dispersion models for analyzing materials.
 All optical models adhere closely to the literature [@Hilfiker2018].
@@ -52,7 +52,7 @@ This allows the inclusion of literature dispersions with a single line of code.
 Additional dispersion relations can be either hard coded, which is more efficient, or parsed from a text-based domain-specific language into a fittable dispersion.
 
 **PyElli** supports multiple solving algorithms with different characteristics.
-Currently, two algorithms using different formulations are available: a fast algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and a more complex 4x4 matrix formulation [@Berreman72; @castany].
+Currently, two algorithms using different formulations are available: a fast algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and a more complex 4x4 matrix formulation [@Berreman72; @berreman4x4_doku; @berreman4x4_software].
 The 2x2 matrix algorithm divides the light into two perpendicular linearly polarized beams, which are solved separately.
 One of its limitations is eliminating the possibility to include birefringent materials.
 The 4x4 matrix approach fully solves Maxwell's equations.
@@ -61,8 +61,8 @@ This allows finding solutions to more complex problems such as anisotropic mater
 
 **PyElli** ensures fast processing through fully vectorized algorithms for multiple wavelengths and by leveraging numerical algebra libraries like [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
 Together, these runtime advantages enable the practical use of advanced fitting algorithms such as global optimizers while maintaining reasonable evaluation times.
-Such advantages enable embedded in-situ monitoring and real-time data analysis of overlayer growth.
-Thus, the use of Python and vectorization libraries also facilitates the adoption of artificial intelligence-based analysis of SE data.
+As a result, they enable integrated in-situ monitoring and real-time data analysis of overlayer growth.
+Furthermore, the use of Python and vectorization libraries also facilitates the development of artificial intelligence-based SE data analysis.
 
 # Statement of need
 
@@ -89,8 +89,8 @@ Other notable Python open-source software for solving transfer-matrices is avail
 - [PyLlama](https://pyllama.readthedocs.io) [@Bay2022] focuses on the simulation of liquid crystals and uses non-vectorized TMM and a scattering matrix algorithm (rigorous coupled-wave analysis, RCWA).
 - [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021] is a complete toolkit to simulate the physical and electrical properties of solar cells. It provides the same 2x2 algorithm[@byrnes2020multilayer] and a scattering matrix approach (S4).
 - [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] is a vectorized variant of Byrnes' algorithm for artificial intelligence-based analysis of multilayer stacks.
-- [tmmax](https://github.com/bahremsd/tmmax) [tmmax] is a JIT-compilable version of the 2x2 matrix method, leveraging the _JAX_ toolkit.
-- [PyMoosh](https://github.com/AnMoreau/PyMoosh) [Langevin:24] is a comprehensive toolkit for computing the optical properties of multilayered structures, with a plethora of available scattering and transfer matrix algorithms.
+- [tmmax](https://github.com/bahremsd/tmmax) [@tmmax] is a JIT-compilable version of the 2x2 matrix method, leveraging the _JAX_ toolkit.
+- [PyMoosh](https://github.com/AnMoreau/PyMoosh) [@Langevin:24] is a comprehensive toolkit for computing the optical properties of multilayered structures, with a plethora of available scattering and transfer matrix algorithms.
 
 # Example: Building a model for an oxide layer on silicon
 
@@ -123,10 +123,9 @@ params.add("SiO2_thickness", value=20)
 ```
 
 Next, the Cauchy model is created using the `Cauchy` class and the defined parameters.
-All Cauchy coefficients are kept at their default value of zero in this particular case.
-Each dispersion has its own class.
-A list of different dispersions is given in the [documentation](https://pyelli.readthedocs.io/en/stable/dispersions.html).
+All undefined Cauchy coefficients are kept at their default value of zero in this particular case.
 Subsequently, the `.get_mat()` method is called on the created object to automatically convert the dispersion into an isotropic material.
+A list of different dispersion classes and their usage is given in the [documentation](https://pyelli.readthedocs.io/en/stable/dispersions.html).
 
 ```python
 SiO2 = elli.Cauchy(
@@ -164,11 +163,12 @@ structure = elli.Structure(
 ```
 
 Finally, we trigger a calculation by calling the `evaluate(...)` method of the `structure` object.
-We use a `wavelengths` array from $210$ nm to $800$ nm for the calculation range and an angle of incidence of $70°$ degree (second parameter of evaluate).
+We use a `wavelengths` array from $210$ nm to $800$ nm for the calculation range and an angle of incidence of $70°$ degree.
 
 ```python
 wavelengths = linspace(210, 800, 100)
-result = structure.evaluate(wavelengths, 70)
+angle = 70
+result = structure.evaluate(wavelengths, angle)
 ```
 
 The calculation is stored in the `result` variable, which is a [`Result` object](https://pyelli.readthedocs.io/en/stable/result.html).
