@@ -4,6 +4,7 @@ Mueller matrix
 
 Mueller matrix fit to a SiO2 on Si measurement.
 """
+
 # %%
 import elli
 from elli.fitting import ParamsHist, fit_mueller_matrix

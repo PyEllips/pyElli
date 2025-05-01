@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Cauchy dispersion with custom exponents."""
+
 import numpy.typing as npt
 
 from .base_dispersion import IndexDispersion

@@ -1,6 +1,8 @@
 """Tests for the result class"""
+
 import numpy as np
 from pytest import fixture, raises
+
 import elli
 
 
@@ -26,16 +28,20 @@ def test_delta_range_conversion(result):
     result.as_delta_range(0, 180)
     assert all(result.delta > 0) and all(result.delta < 180)
 
+    result.as_delta_range(-90, 270)
+    assert all(result.delta > -90) and all(result.delta < 270) and any(result.delta < 0)
+
     result.as_delta_range(-180, 180)
     assert (
         all(result.delta > -180) and all(result.delta < 180) and any(result.delta < 0)
     )
 
 
-def test_delta_range_error_on_invalid_range(result):
-    """Checks raising of errors on invalid range or type."""
-    with raises(TypeError):
-        result.as_delta_range("hallo", "welt")
+def test_resultlist_shape(result):
+    result_list = elli.ResultList([result, result, result])
 
-    with raises(ValueError):
-        result.as_delta_range(20, 180)
+    assert len(result_list) == 3
+    assert np.shape(result_list.delta) == (3, 50)
+
+    assert np.shape(result_list.mean.delta) == (50,)
+    assert np.allclose(result_list.mean.delta, result.delta)

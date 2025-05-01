@@ -4,7 +4,7 @@
 
 --------
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyElli) [![PyPI](https://img.shields.io/pypi/v/pyElli)](https://pypi.org/project/pyElli/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5702469.svg)](https://doi.org/10.5281/zenodo.5702469) [![Pytest](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml/badge.svg)](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/pyelli/badge/?version=latest)](https://pyelli.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyElli) [![PyPI](https://img.shields.io/pypi/v/pyElli)](https://pypi.org/project/pyElli/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5702469.svg)](https://doi.org/10.5281/zenodo.5702469) [![Pytest](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml/badge.svg)](https://github.com/PyEllips/pyElli/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/pyelli/badge/?version=latest)](https://pyelli.readthedocs.io/en/latest/?badge=latest) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 [![](https://dcbadge.vercel.app/api/server/zCBNMtBFAQ?compact=true)](https://discord.gg/zCBNMtBFAQ)
 
@@ -40,7 +40,12 @@ pip install pyElli[fitting]
 ```
 
 This installs pyElli with the additional fitting capabilities and interactive widgets.
-If don't want to have this functionality just drop the `[fitting]` in the end.
+If you don't want to have this functionality just drop the `[fitting]` in the end.
+
+To increase performance of the 4x4 Solver, it is recommended to
+install PyTorch manually, as it is too big to include in the standard installation.
+Installation information can be found at the [PyTorch Website](https://pytorch.org/get-started/locally/).
+The CPU variant is sufficient, if you want to save some space.
 
 A complete environment for pyElli is also available as a [Docker Container](https://hub.docker.com/r/domna/pyelli).
 To pull and run it directly just execute
@@ -68,8 +73,15 @@ cd pyElli
 pip install -e ".[fitting]"
 ```
 
+## How to cite
+
+Until we have published a Paper on pyElli, we have prepared a Zenodo entry with DOIs for every pyElli Version. The can be found [here](https://zenodo.org/records/13903325).
+
+
 ## Acknowledgements
 
 - Based on Olivier Castany's [Berreman4x4](https://github.com/Berreman4x4/Berreman4x4)
 - Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
 - Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database) and Pavel Dmitriev's [pyTMM](https://github.com/kitchenknif/PyTMM) for his importer script for the database
+
+[@MarJMue](https://github.com/MarJMue) receives financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).

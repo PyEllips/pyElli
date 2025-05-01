@@ -1,10 +1,11 @@
 """Test adding of dispersions"""
-import pytest
+
 import numpy as np
-from numpy.testing import assert_array_almost_equal
+import pytest
 from elli import Cauchy, Sellmeier
 from elli.dispersions.base_dispersion import DispersionSum, IndexDispersionSum
 from elli.dispersions.table_epsilon import TableEpsilon
+from numpy.testing import assert_array_almost_equal
 
 
 def test_adding_index_dispersion():
@@ -190,7 +191,7 @@ def test_adding_of_dispersion_function_and_table():
     """Dispersion function and table can be added"""
 
     table = TableEpsilon(lbda=np.linspace(200, 1000, 801), epsilon=np.ones(801))
-    sellmeier = Sellmeier().add(1, 1)
+    sellmeier = Sellmeier().add(1, 0.0001)
 
     assert_array_almost_equal(
         (table + sellmeier).get_dielectric(),

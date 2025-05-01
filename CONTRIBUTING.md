@@ -75,7 +75,7 @@ or **Miniconda**
 
 4.  You should run
 
-          pip install -U pip setuptools -e .[fitting,testing]
+          pip install -U pip setuptools -e .[fitting,dev]
 
     which installs the package in development mode and all extra requirements in your current virtualenv.
 

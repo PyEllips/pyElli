@@ -68,15 +68,18 @@ class RII:
 
     Shelfs are broad categories (inorganics, organics, glasses, other), and ignored in the following.
 
-    Book and Page are used to access entries with this helper: For inorganic and organic materials Book uses the
-    sum formula of the compound and Page is an identifier of the author of the publication.
+    Book and Page are used to access entries with this helper:
+    For inorganic and organic materials 'book' uses the sum formula of the compound and
+    'page' is an identifier of the author of the publication.
     In the case of glasses, book is the manufacturer and page the name of the glass.
 
-    Both field can be searched by the methods search_book and search_page.
-    They return a dataframe with results ordered by likelihood of matching the search term.
+    Materials can be searched by the RII.search() method.
+    Specific fields can be searched by providing a column keyword:
 
-    Additionally search_book has a longname option which allows to search
-    for full names (e.g. 'Gold') instead of the chemical symbol.
+    .. highlight:: python
+    .. code-block:: python
+
+        RII.search("Aspnes", column="author")
 
     Dispersions or respective materials can be loaded by calling these methods:
 
@@ -84,13 +87,13 @@ class RII:
     .. code-block:: python
 
         gold_material = RII.get_mat("Au", "Johnson")
-        gold_dispersion = RII.load_dispersion("Au", "Johnson")
+        gold_dispersion = RII.get_dispersion("Au", "Johnson")
     """
 
     def __init__(self) -> None:
         self.rii_path = files("elli.database.refractiveindexinfo-database.database")
 
-        with open(self.rii_path.joinpath("library.yml"), "r", encoding="utf8") as f:
+        with open(self.rii_path.joinpath("catalog-nk.yml"), "r", encoding="utf8") as f:
             yml_file = yaml.load(f, yaml.SafeLoader)
 
         pagename_pattern = re.compile(
@@ -127,7 +130,7 @@ class RII:
                                         None,
                                         None,
                                         os.path.join(
-                                            "data", os.path.normpath(p["data"])
+                                            "data-nk", os.path.normpath(p["data"])
                                         ),
                                     )
                                 )
@@ -155,7 +158,7 @@ class RII:
                                         infos.group("lower_range1"),
                                         infos.group("upper_range1"),
                                         os.path.join(
-                                            "data", os.path.normpath(p["data"])
+                                            "data-nk", os.path.normpath(p["data"])
                                         ),
                                     )
                                 )
@@ -176,83 +179,67 @@ class RII:
             self.catalog["upper_range"], errors="coerce"
         )
 
-        self.books = self.catalog["book"].unique()
-        self.book_longnames = self.catalog["book_longname"].unique()
-        self.pages = self.catalog["page"].unique()
+        book_div = self.catalog["book_divider"].drop_duplicates().dropna().values
+        books = self.catalog["book"].drop_duplicates().dropna().values
+        book_longnames = self.catalog["book_longname"].drop_duplicates().dropna().values
+        pages = self.catalog["page"].drop_duplicates().dropna().values
+        authors = self.catalog["author"].drop_duplicates().dropna().values
+        comments = self.catalog["comment"].drop_duplicates().dropna().values
 
-    def search_book(
+        self._filter_lists = {
+            "book_divider": book_div,
+            "book": books,
+            "book_longname": book_longnames,
+            "page": pages,
+            "author": authors,
+            "comment": comments,
+        }
+
+    def search(
         self,
-        query: str,
-        wavelength_filter: WavelengthFilterType = None,
-        longname: bool = False,
-        fuzzy: bool = True,
-    ) -> pd.DataFrame:
-        """Search the catalog by the query string in the book field.
-        Optionally able to search approximate entries and the book_longname field.
-
-        Args:
-            query (str): String to search.
-            wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
-            longname (bool, optional): Search book_longname instead. Defaults to False.
-            fuzzy (bool, optional): Search approximate entries. Defaults to True.
-
-        Returns:
-            pd.DataFrame: Filtered Catalog dataframe.
-        """
-
-        if longname:
-            name_list = "book_longnames"
-            subcatalog = "book_longname"
-        else:
-            name_list = "books"
-            subcatalog = "book"
-
-        return self._search(query, name_list, subcatalog, wavelength_filter, fuzzy)
-
-    def search_page(
-        self,
-        query: str,
+        query: Union[str, List[str]],
+        column: Union[str, List[str]] = "all",
         wavelength_filter: WavelengthFilterType = None,
         fuzzy: bool = True,
     ) -> pd.DataFrame:
-        """Search the catalog by the query string in the page field.
-        Optionally able to search approximate entries.
+        """Search the catalog by the query string in the requested column.
 
         Args:
-            query (str): String to search.
+            query (str, List[str]): String or list of strings to search.
+            column (str, optional): Column-strings or list of strings to search.
             wavelength_filter (float, int, List[float, int]): Wavelengths in nm included in the results. Default to None.
             fuzzy (bool, optional): Search approximate entries. Defaults to True.
 
         Returns:
             pd.DataFrame: Filtered Catalog dataframe.
         """
-        return self._search(query, "pages", "page", wavelength_filter, fuzzy)
+        if isinstance(query, str):
+            query = [query]
 
-    def _search(
-        self,
-        query: str,
-        name_list: str,
-        subcatalog: str,
-        wavelength_filter: WavelengthFilterType,
-        fuzzy: bool,
-    ) -> pd.DataFrame:
-        if fuzzy:
-            suggestions = process.extract(
-                query, getattr(self, name_list), limit=10, score_cutoff=80
-            )
+        if column == "all":
+            if fuzzy:
+                column = list(self._filter_lists.keys())
+            else:
+                column = self.catalog.columns
+        elif isinstance(column, str):
+            column = [column]
 
-            if len(suggestions) == 0:
-                return self.catalog.loc[self.catalog[subcatalog] == ""]
+        index = self.catalog["shelf"] == ""
 
-            result = pd.concat(
-                [
-                    self.catalog.loc[self.catalog[subcatalog] == s]
-                    for s, _, _ in suggestions
-                ]
-            )
+        for col in column:
+            for q in query:
+                if fuzzy:
+                    suggestions = process.extract(
+                        q, self._filter_lists[col], limit=10, score_cutoff=80
+                    )
 
-        else:
-            result = self.catalog.loc[self.catalog[subcatalog] == query]
+                    for s, _, _ in suggestions:
+                        index = np.logical_or(index, self.catalog[col] == s)
+
+                else:
+                    index = np.logical_or(index, self.catalog[col] == q)
+
+        result = self.catalog.loc[index]
 
         if wavelength_filter is None:
             return result
@@ -285,9 +272,9 @@ class RII:
         Returns:
             IsotropicMaterial: A material object build from the tabulated dispersion data.
         """
-        return IsotropicMaterial(self.load_dispersion(book, page))
+        return IsotropicMaterial(self.get_dispersion(book, page))
 
-    def load_dispersion(
+    def get_dispersion(
         self, book: str, page: str
     ) -> Union[Dispersion, IndexDispersion]:
         """Load a dispersion from the refractive index database.

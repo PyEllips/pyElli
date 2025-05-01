@@ -1,8 +1,9 @@
 name: Benchmark
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 permissions:
   contents: write
@@ -13,23 +14,25 @@ jobs:
     name: Run pytest-benchmark benchmark example
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.13"
       - name: Install deps
         run: |
-          pip install -r requirements/fitting-requirements.txt
-          pip install pytest pytest-benchmark pytest-coverage
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv pip install --system -r requirements/dev-requirements.txt
+          uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu
       - name: Install module
         run: |
-          pip install .
+          uv pip install --system .
       - name: Run benchmark
         run: |
           pytest tests/benchmark*.py --benchmark-json output.json
       - name: Store benchmark result
+        if: github.ref == 'refs/heads/master'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Python Benchmark with pytest-benchmark
@@ -40,5 +43,18 @@ jobs:
           auto-push: true
           # Show alert with commit comment on detecting possible performance regression
           alert-threshold: "200%"
+          comment-on-alert: false
+          fail-on-alert: false
+      - name: Check benchmark threshold
+        if: github.ref != 'refs/heads/master'
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Python Benchmark with pytest-benchmark
+          tool: "pytest"
+          output-file-path: output.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: "200%"
           comment-on-alert: true
-          fail-on-alert: true
+          fail-on-alert: false

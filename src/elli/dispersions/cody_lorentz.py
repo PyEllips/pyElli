@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Cody-Lorentz dispersion law. Model by Ferlauto et al."""
+
 from typing import Dict
 import numpy as np
 import numpy.typing as npt
@@ -11,7 +12,7 @@ from ..kkr import im2re_reciprocal
 
 
 class CodyLorentz(Dispersion):
-    """Tauc-Lorentz dispersion law. Model by Ferlauto et al.
+    """Cody-Lorentz dispersion law. Model by Ferlauto et al.
 
     Single parameters:
         :Eg: Bandgap energy (eV). Defaults to 1.6.
@@ -28,7 +29,7 @@ class CodyLorentz(Dispersion):
         --
 
     Output:
-        The Cody lorentz dispersion. Please refer to the references for a full formula.
+        The Cody-Lorentz dispersion. Please refer to the references for a full formula.
 
     References:
         * Ferlauto et al., J. Appl. Phys. 92, 2424 (2002)

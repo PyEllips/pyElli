@@ -26,11 +26,12 @@ to create mixtures or account for interface roughness.
    Chichester, UK, John Wiley & Sons, Ltd (2007).
    https://doi.org/10.1002/9780470060193
 """
+
 from abc import ABC, abstractmethod
 
 import numpy as np
 import numpy.typing as npt
-from numpy.lib.scimath import sqrt
+from numpy.lib.scimath import sqrt, power
 
 from .dispersions.base_dispersion import BaseDispersion
 
@@ -312,7 +313,7 @@ class VCAMaterial(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
@@ -345,7 +346,7 @@ class LooyengaEMA(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
 
     References:
         Looyenga, H. (1965). Physica, 31(3), 401–406.
@@ -383,7 +384,7 @@ class MaxwellGarnettEMA(MixtureMaterial):
     * :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     * :math:`\varepsilon_h` is the permittivity of the host mixture material,
     * :math:`\varepsilon_g` is the permittivity of the guest mixture material and
-    * :math:`f` is the volume fraction of material a in the guest material.
+    * :math:`f` is the volume fraction of the guest in the host material.
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
@@ -419,14 +420,14 @@ class MaxwellGarnettEMA(MixtureMaterial):
 
 class BruggemanEMA(MixtureMaterial):
     r"""Mixture Material approximated with the Bruggeman formula
-    for spherical inclusions.
+    for isotropic spherical inclusions.
 
     Returns one of the two analytical solutions to this quadratic equation:
 
     .. math::
        2 \varepsilon_\text{eff}^2 +
-       \varepsilon_\text{eff} [(3f - 2) \varepsilon_a
-       + (1 - 3f)\varepsilon_b] - \varepsilon_a \cdot \varepsilon_b = 0
+       [(3f - 2) \varepsilon_a + (1 - 3f)\varepsilon_b] \varepsilon_\text{eff}
+       - \varepsilon_a \cdot \varepsilon_b = 0
 
     where :math:`\varepsilon_\text{eff}` is the effective permittivity of host/mixture material,
     :math:`\varepsilon_a` is the permittivity of the first mixture material,
@@ -434,7 +435,7 @@ class BruggemanEMA(MixtureMaterial):
     and :math:`f` is the volume fraction of material a in the material b.
 
     References:
-        * Josef Humlicek in Ellipsometry at the Nanoscale, Springer-Verlag Berlin Heidelberg, 2013
+        * Ph.J. Rouseel; J. Vanhellemont; H.E. Maes. (1993) Thin Solid Films, 234, 423-427
     """
 
     def get_tensor_fraction(self, lbda: npt.ArrayLike, fraction: float) -> npt.NDArray:
@@ -452,106 +453,17 @@ class BruggemanEMA(MixtureMaterial):
         e_g = self.guest_material.get_tensor(lbda)
         f = fraction
 
-        # fmt: off
-        root1 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 - sqrt(
-            9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 +
-            18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
-        root2 = 3*e_g*f/4 - e_g/4 - 3*e_h*f/4 + e_h/2 + sqrt(
-            9*e_g**2*f**2 - 6*e_g**2*f + e_g**2 - 18*e_g*e_h*f**2 +
-            18*e_g*e_h*f + 4*e_g*e_h + 9*e_h**2*f**2 - 12*e_h**2*f + 4*e_h**2)/4
-        # fmt: on
+        mask_equal = np.nonzero(np.equal(e_h, e_g))
+        mask_different = np.nonzero(np.not_equal(e_h, e_g))
 
-        return self.jansson_algorithm(e_h, e_g, root1, root2)
+        p = sqrt(e_h[mask_different]) / sqrt(e_g[mask_different])
+        b = 0.25 * ((3 * f - 1) * (1 / p - p) + p)
+        z = b + sqrt(power(b, 2) + 0.5)
 
-    @staticmethod
-    def jansson_algorithm(
-        e_h: npt.ArrayLike,
-        e_g: npt.ArrayLike,
-        root1: npt.ArrayLike,
-        root2: npt.ArrayLike,
-    ):
-        """Use the algorithm proposed by Jansson and Arwin to find the correct root of
-        the solution to the Bruggeman formula.
-
-        References:
-            * Jansson R. , Arwin H. (1994) Optics Communications, 106, 4-6, 133-138,
-              https://doi.org/10.1016/0030-4018(94)90309-3.
-
-        Args:
-            e_h (npt.ArrayLike): Dielectric tensor of host material.
-            e_g (npt.ArrayLike): Dielectric tensor of host material.
-            root1 (npt.ArrayLike): Solution 1 for dielectric tensor of mixture.
-            root2 (npt.ArrayLike): Solution 2 for dielectric tensor of mixture.
-
-        Returns:
-            npt.NDArray: Physically correct permittivity tensor for the mixture.
-        """
-
-        # Catch calculation warnings
-        old_settings = np.geterr()
-        np.seterr(invalid="ignore", divide="ignore")
-
-        z0 = (
-            e_h
-            * e_g
-            * (np.conj(e_h) - np.conj(e_g))
-            / (np.conj(e_h) * e_g - e_h * np.conj(e_g))
-        )
-        scaling_factor = np.conj(e_g - e_h) / np.abs(e_g - e_h)
-
-        # Reset numpy settings
-        np.seterr(**old_settings)
-
-        # Find indices for the three cases
-        mask_equal = np.nonzero(np.isnan(z0.real))
-        mask_straight = np.nonzero(np.isinf(z0.real))
-        mask_general = np.nonzero(
-            np.logical_not(np.logical_or(np.isnan(z0.real), np.isinf(z0.real)))
+        e_mix = np.full_like(e_h, np.nan)
+        e_mix[mask_equal] = e_h[mask_equal]
+        e_mix[mask_different] = (
+            z * sqrt(e_h[mask_different]) * sqrt(e_g[mask_different])
         )
 
-        def check_straight_line():
-            def w(z):
-                return np.where(
-                    z0[mask_straight].real == np.inf,
-                    z[mask_straight] * scaling_factor[mask_straight],
-                    -1 * z[mask_straight] * scaling_factor[mask_straight],
-                )
-
-            return np.where(
-                np.logical_and(
-                    w(e_h).real < w(root1).real, w(root1).real < w(e_g).real
-                ),
-                root1[mask_straight],
-                root2[mask_straight],
-            )
-
-        def check_general_case():
-            def zeta(z):
-                return (
-                    (z[mask_general] - z0[mask_general])
-                    / np.abs(z0[mask_general])
-                    * scaling_factor[mask_general]
-                )
-
-            zeta_1, zeta_2, zeta_root1 = np.where(
-                np.logical_and(zeta(e_h).imag > 0, zeta(e_g).imag > 0),
-                (zeta(e_h), zeta(e_g), zeta(root1)),
-                (-zeta(e_h), -zeta(e_g), -zeta(root1)),
-            )
-
-            return np.where(
-                np.logical_and(
-                    np.abs(zeta_root1 <= 1),
-                    zeta_root1.imag >= np.imag((zeta_1 + zeta_2) / 2),
-                ),
-                root1[mask_general],
-                root2[mask_general],
-            )
-
-        # Create new array and write correct values into it
-        correct_root = np.full_like(e_h, np.nan)
-        correct_root[mask_equal] = e_h[mask_equal]
-        correct_root[mask_straight] = check_straight_line()
-        correct_root[mask_general] = check_general_case()
-
-        return correct_root
+        return e_mix

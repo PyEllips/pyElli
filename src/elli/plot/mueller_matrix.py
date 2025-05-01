@@ -1,4 +1,5 @@
 """Plotting functions for Mueller matrices"""
+
 # Encoding: utf-8
 from typing import List, Union, Optional
 

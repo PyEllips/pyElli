@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Cauchy dispersion."""
+
 import numpy.typing as npt
 
 from .base_dispersion import IndexDispersion

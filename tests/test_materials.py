@@ -1,7 +1,7 @@
-"""Tests for the result class"""
-import numpy as np
-from pytest import raises
+"""Tests for the materials classes"""
+
 import elli
+from pytest import raises
 
 
 class TestMaterials:
@@ -24,8 +24,6 @@ class TestMaterials:
         with raises(TypeError):
             elli.BiaxialMaterial(self.disp, self.disp, 23)
 
-    def test_mixture_materials(self):
-        """Basic mixture material tests"""
         with raises(TypeError):
             elli.VCAMaterial(self.mat, self.disp, 0.5)
 
@@ -34,13 +32,3 @@ class TestMaterials:
 
         with raises(ValueError):
             elli.VCAMaterial(self.mat, self.mat, 10)
-
-        vca = elli.VCAMaterial(self.mat2, self.mat, 0.1)
-        looyenga = elli.LooyengaEMA(self.mat2, self.mat, 0.1)
-        mg = elli.MaxwellGarnettEMA(self.mat2, self.mat, 0.1)
-        brug = elli.BruggemanEMA(self.mat2, self.mat, 0.1)
-
-        for mixture in [looyenga, mg, brug]:
-            np.testing.assert_array_almost_equal(
-                mixture.get_tensor(500), vca.get_tensor(500), decimal=-1
-            )

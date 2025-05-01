@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Drude dispersion model with parameters in units of energy."""
+
 import numpy.typing as npt
 
 from ..utils import conversion_wavelength_energy

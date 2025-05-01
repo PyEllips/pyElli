@@ -1,8 +1,9 @@
 """Tests for a TiO2/SiO2/Si reference layer"""
+
 from __future__ import unicode_literals
 
 import os
-from distutils import dir_util
+from shutil import copytree, rmtree
 
 import elli
 import numpy as np
@@ -21,7 +22,8 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        dir_util.copy_tree(test_dir, str(tmpdir))
+        rmtree(tmpdir)
+        copytree(test_dir, str(tmpdir))
 
     return tmpdir
 
@@ -29,7 +31,11 @@ def datadir(tmpdir, request):
 @fixture
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
-    return elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt")).loc[400:800]
+    return (
+        elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt"))
+        .loc[70.06]
+        .loc[400:800]
+    )
 
 
 @fixture
@@ -120,7 +126,22 @@ class TestTiO2:
                 meas_data.index,
                 70,
                 solver=elli.Solver4x4,
-                propagator=elli.PropagatorExpm(),
+                propagator=elli.PropagatorExpm(backend="scipy"),
+            )
+            .rho
+        )
+
+        assert TestTiO2.chisqr(meas_data, sim_data) < 0.0456
+
+    def test_solver4x4_expm_torch(self, si_dispersion, meas_data):
+        """The solver4x4 with pytorch propagator is within chi square accuracy"""
+        sim_data = (
+            elli.Structure(elli.AIR, self.Layer, si_dispersion)
+            .evaluate(
+                meas_data.index,
+                70,
+                solver=elli.Solver4x4,
+                propagator=elli.PropagatorExpm(backend="torch"),
             )
             .rho
         )

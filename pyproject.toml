@@ -8,22 +8,23 @@ description = "An ellipsometry analysis tool for reproducible and comprehensible
 dynamic = ["version"]
 authors = [
     { name = "Marius Müller", email = "marius.mueller@physik.uni-giessen.de" },
-    { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" }
+    { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" },
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 license = { file = "LICENSE.txt" }
 readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11"
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "scipy",
     "numpy>=1.20",
+    "numpy<2.0.0;python_version<'3.10'",
     "pandas>=1.0.0",
     "h5py",
     "pyyaml",
@@ -31,20 +32,26 @@ dependencies = [
     "rapidfuzz",
     "lark>=1.1.5",
     "pint",
+    "chardet",
 ]
 
 [project.optional-dependencies]
 fitting = [
     "ipython",
     "ipywidgets",
+    "anywidget",
     "plotly",
     "matplotlib",
-    "lmfit"
+    "lmfit",
 ]
-testing = [
+dev = [
     "pytest",
+    "pytest-benchmark",
     "pytest-cov",
-    "nbmake"
+    "nbmake",
+    "ruff==0.8.5",
+    "uv",
+    "pre-commit",
 ]
 
 [project.urls]
@@ -62,3 +69,43 @@ local_scheme = "node-and-date"
 [tool.setuptools.packages.find]
 where = ["src"]
 exclude = ["tests*"]
+
+[tool.ruff]
+include = ["src/*.py", "tests/*.py"]
+exclude = ["src/elli/database/refractiveindexinfo-database/*.py"]
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle
+    "W",      # pycodestyle
+    "PL",     # pylint
+    "NPY201", # numpy
+]
+ignore = [
+    "E501",    # Line too long ({width} > {limit} characters)
+    "E701",    # Multiple statements on one line (colon)
+    "E731",    # Do not assign a lambda expression, use a def
+    "E402",    # Module level import not at top of file
+    "PLR0911", # Too many return statements
+    "PLR0912", # Too many branches
+    "PLR0913", # Too many arguments in function definition
+    "PLR0915", # Too many statements
+    "PLR2004", # Magic value used instead of constant
+    "PLW0603", # Using the global statement
+    "PLW2901", # redefined-loop-name
+    "PLR1714", # consider-using-in
+    "PLR5501", # else-if-used
+    "PLC2401", # temporary: Non-ASCII variable names
+]
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "examples"]

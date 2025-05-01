@@ -1,10 +1,55 @@
 # Encoding: utf-8
+from dataclasses import dataclass
+
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import scipy.constants as sc
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
+
+
+@dataclass(frozen=True)
+class DeltaRange:
+    lower: int
+    upper: int
+
+    def __post_init__(self):
+        if not (isinstance(self.lower, int) or isinstance(self.upper, int)):
+            raise TypeError("delta range values must be an integer")
+
+        if not -360 <= self.lower <= 0:
+            raise ValueError(
+                f"Lower bound ({self.lower}) is not in the valid range (-360, 0)."
+            )
+
+        if not 0 <= self.upper <= 360:
+            raise ValueError(
+                f"Upper bound ({self.upper}) is not in the valid range (0, 360)."
+            )
+
+        if not (
+            ((self.lower, self.upper) == (0, 180))
+            or abs(self.upper - self.lower) == 360
+        ):
+            raise ValueError(f"Invalid delta range ({self.lower}, {self.upper})")
+
+
+def convert_delta_range(
+    delta_values: npt.ArrayLike, lower: int, upper: int
+) -> npt.ArrayLike:
+    """Shifts the delta values to a given range.
+
+    Args:
+        delta_values (npt.ArrayLike): Delta values to be converted.
+        lower (int): The lower delta range. Should be in the range of -360 and 0.
+        upper (int): The upper delta range. Should be in the range of 0 and 360.
+
+    Returns:
+        npt.ArrayLike: Delta values with shifted range.
+    """
+    delta_range = DeltaRange(lower, upper)
+    return np.mod((delta_values + delta_range.lower), 360) + delta_range.lower
 
 
 def calc_pseudo_diel(rho, angle: float, output: str = "eps") -> pd.DataFrame:
@@ -57,6 +102,79 @@ def calc_rho(psi_delta: pd.DataFrame) -> pd.DataFrame:
     return psi_delta.apply(
         lambda x: np.tan(np.deg2rad(x["Ψ"])) * np.exp(-1j * np.deg2rad(x["Δ"])), axis=1
     )
+
+
+def convert_psi_delta_to_isotropic_mueller_matrix(psi_delta_df) -> pd.DataFrame:
+    r"""Extract aois and wavelengths values from psi_delta pandas.DataFrame and convert it to a Muellermatrix;
+    only works for isotropic media.
+
+    Args:
+            psi_delta_df (pd.DataFrame): dataFrame returned from data importers'
+
+    Returns:
+            pd.DataFrame: pyElli-compatible DataFrame of the Mueller matrix
+    """
+    aois = psi_delta_df.index.get_level_values("Angle of Incidence").unique().to_numpy()
+    wavelengths = psi_delta_df.index.get_level_values("Wavelength").unique().to_numpy()
+
+    # create empty Mueller matrix
+    MM = pd.DataFrame(
+        {},
+        columns=[
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M21",
+            "M22",
+            "M23",
+            "M24",
+            "M31",
+            "M32",
+            "M33",
+            "M34",
+            "M41",
+            "M42",
+            "M43",
+            "M44",
+        ],
+        index=pd.MultiIndex.from_product(
+            [aois, wavelengths], names=["Angle of Incidence", "Wavelength"]
+        ),
+        dtype=float,
+    )
+
+    # fill in the Mueller matrix coefficients for an isotropic material based equation in https://www.jawoollam.com/resources/ellipsometry-faq#toggle-id-15
+    for aoi in aois:
+        for λ in wavelengths:
+            Δ = psi_delta_df.loc[aoi, λ]["Δ"]
+            Ψ = psi_delta_df.loc[aoi, λ]["Ψ"]
+
+            N = np.cos(2 * Ψ)
+            C = np.sin(2 * Ψ) * np.cos(2 * Δ)
+            S = np.sin(2 * Ψ) * np.cos(2 * Δ)
+
+            MM.loc[(aoi, λ), "M11"] = 1
+            MM.loc[(aoi, λ), "M12"] = -N
+            MM.loc[(aoi, λ), "M13"] = 0
+            MM.loc[(aoi, λ), "M14"] = 0
+
+            MM.loc[(aoi, λ), "M21"] = -N
+            MM.loc[(aoi, λ), "M22"] = 1
+            MM.loc[(aoi, λ), "M23"] = 0
+            MM.loc[(aoi, λ), "M24"] = 0
+
+            MM.loc[(aoi, λ), "M31"] = 0
+            MM.loc[(aoi, λ), "M32"] = 0
+            MM.loc[(aoi, λ), "M33"] = C
+            MM.loc[(aoi, λ), "M34"] = S
+
+            MM.loc[(aoi, λ), "M41"] = 0
+            MM.loc[(aoi, λ), "M42"] = 0
+            MM.loc[(aoi, λ), "M43"] = -S
+            MM.loc[(aoi, λ), "M44"] = C
+
+    return MM
 
 
 def get_qwp_thickness(material: "Material", lbda: float) -> float:

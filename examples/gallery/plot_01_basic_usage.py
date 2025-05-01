@@ -5,6 +5,7 @@ Basic usage
 Basic usage of building a model and fitting it to measurement data of SiO2 on Si.
 
 """
+
 # %%
 import elli
 from elli.fitting import ParamsHist, fit
@@ -25,7 +26,7 @@ from elli.fitting import ParamsHist, fit
 # This is because we're using literature values for Si,
 # which are only defined in this wavelength range.
 ANGLE = 70
-psi_delta = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE].loc[210:800]
+psi_delta = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE][210:800]
 
 # %%
 # Setting parameters
@@ -35,7 +36,7 @@ psi_delta = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE].loc[210:
 # Prior to defining our model, we have to set the parameters we want to use.
 # We're going to use a :ref:`Cauchy model <cauchy>` for SiO2 and load the Si values from
 # `literature values <https://refractiveindex.info/?shelf=main&book=Si&page=Aspnes>`_.
-# The parameter names can be choosen freely,
+# The parameter names can be chosen freely,
 # but you have to use the exact same name in the later model definition.
 # The package uses lmfit as fitting tool and you may refer to their
 # `documentation <https://lmfit.github.io/lmfit-py/parameters.html#lmfit.parameter.Parameters.add>`_
@@ -70,7 +71,7 @@ Si = rii_db.get_mat("Si", "Aspnes")
 # ------------------------
 #
 # For simple parameter estimation,
-# the fit decorator (**@fit**) in conjuction with the model definition is used.
+# the fit decorator (**@fit**) in conjunction with the model definition is used.
 # The fitting decorator takes a pandas dataframe containing
 # the psi/delta measurement data (**psi_delta**) and the model parameters (**params**) as an input.
 # It then passes the wavelength from measurement dataframe (**lbda**)
@@ -89,7 +90,7 @@ Si = rii_db.get_mat("Si", "Aspnes")
 # This is done by calling the :code:`elli.IsotropicMaterial(...)` function
 # with a dispersion model as a parameter
 # or simply calling :code:`.get_mat()` on a dispersion model.
-# These two approaches are equivalent.From these materials the layer is build,
+# These two approaches are equivalent. From these materials the layer is build,
 # which only consists of the SiO2 layer in this example.
 # The final structure consists of an incoming half-space,
 # the layers and an outgoing half space. Specifically,
@@ -108,7 +109,7 @@ Si = rii_db.get_mat("Si", "Aspnes")
 # Executing the cell below in a jupyter notebook displays a comparison of the simulated Ψ / Δ values
 # at the current parameter values with their measured counterparts.
 # Additionally, input fields for each model parameter are shown.
-# You may change the parameters and the calcualted data will change accordingly.
+# You may change the parameters and the calculated data will change accordingly.
 # For clarification the modeled data is shown with `_calc` postfix in the legend.
 @fit(psi_delta, params)
 def model(lbda, params):

@@ -17,6 +17,7 @@ There are also classes to approximate layers with varying properties along the z
 * :class:`TwistedLayer` is able to represent rotating materials, like twisted nematic materials.
 * :class:`VaryingMixtureLayer` takes an :class:`MixtureMaterial<elli.materials.MixtureMaterial>` and uses a gradient as mixture fraction.
 """
+
 from abc import ABC, abstractmethod
 from typing import Callable, List, Tuple
 

@@ -1,15 +1,122 @@
 # Changelog
 
+## Version 0.22.2
+
+### Bugfixes
+
+- Fix publishing workflow
+
+## Version 0.22.1
+
+### New
+
+- convert_delta_range function
+
+### Bugfixes
+
+- Allow all valid Delta ranges in the Result class
+
+## Version 0.22.0
+
+### New
+
+- Python 3.13 support
+- Updated dependencies
+- Updated refractive index database
+
+### Bugfixes
+
+- SciPy performance regression fixed with Version 1.15
+
+## Version 0.21.2
+
+### Bugfixes
+
+- Include the RII database submodule in the Pypi package again
+
+## Version 0.21.1
+
+### Bugfixes
+
+- Fix documentation generation
+
+## Version 0.21.0
+
+### New
+
+- Reenable pytorch 4x4solver
+- Use OIDC for publishing
+- Add custom fitting example
+- Add chardet encoding detection
+- Add reader for accurion data
+
+### Bugfixes
+
+- Fix deprecation warnings
+
+## Version 0.20.0
+
+### New
+
+- Vectorized KKR
+- NumPy 2.0.0 support
+
+### Bug fixes
+
+- Fix root selection mistakes for Bruggeman EMA
+
+### Known issues
+
+- Performance regression for newer SciPy versions of expm solver (#178)
+
+## Version 0.19.0
+
+### New
+
+- Python 3.12 Support
+- Averaging of ResultLists
+- Breaking change: Renamed RII.load_dispersion to RII.get_dispersion to be more consistent.
+
+## Version 0.18.1
+
+### Bug fixes
+
+- Bump pygments from 2.13.0 to 2.15.0
+- Bump tornado from 6.3.2 to 6.3.3
+- Fixes wvase importer
+
+## Version 0.18.0
+
+### What's Changed
+
+- Update spectraray importer
+- Update RII database and use new file structure
+- Bump scipy from 1.9.1 to 1.10.0
+- Adds woollam importer
+
+## Version 0.17.0
+
+### New
+
+- Support for NXopt based nexus definitions
+- Interpolation order for refractiveindex.info database
+- Speed up for formula dispersions
+
+### Bug fixes
+
+- Better error messages
+- Raise error when solver2x2 gets a negative k
+
 ## Version 0.16.0
 
-# New
+### New
 
 - Support for nexus dispersion files
 - Formula based dispersions
 - Cauchy Urbach dispersion
 - Filtering by range for the refractive index database
 
-# Bugfixes
+### Bug fixes
 
 - Fixed a bug where incompatible dispersions were created in refractive index database
 - Created separated index and dielectric dispersions
@@ -112,7 +219,7 @@
 - Benchmarking setup
 - Added more documentation
 - Renamed a lot of functions for PEP8 compliance
-- More bugfixes
+- More Bug fixes
 
 ## Version 0.9.0
 
@@ -123,7 +230,7 @@
 - Improve fitting decorators
 - Added plotting and fitting for Mueller matrices
 - Added type hints
-- Various calculation bugfixes
+- Various calculation Bug fixes
 
 ## Version 0.1.0
 

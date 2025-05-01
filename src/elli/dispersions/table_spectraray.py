@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Helper class to load spectraray's tabulated dielectric functions."""
+
 import pandas as pd
 
 from ..utils import conversion_wavelength_energy
@@ -47,7 +48,7 @@ class TableSpectraRay:
 
         df = pd.read_csv(
             self.spectraray_path + fname,
-            delim_whitespace=True,
+            sep=r"\s+",
             skiprows=start,
             nrows=stop - start,
             index_col=0,

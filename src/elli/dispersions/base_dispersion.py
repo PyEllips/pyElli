@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Abstract base class and utility classes for pyElli dispersion"""
+
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import List, Optional, Union
@@ -37,7 +38,7 @@ class BaseDispersion(ABC):
 
     @staticmethod
     def _guard_invalid_params(params1, params2):
-        missing_params = np.array(params1)[np.where(~np.in1d(params1, params2))]
+        missing_params = np.array(params1)[np.where(~np.isin(params1, params2))]
 
         if len(missing_params) > 0:
             missing_param_strings = ", ".join(f"{p}" for p in missing_params)

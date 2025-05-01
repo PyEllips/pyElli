@@ -1,4 +1,5 @@
 """Decorator functions for convenient fitting"""
+
 # Encoding: utf-8
 from sys import float_info
 from typing import Callable
@@ -174,12 +175,16 @@ class FitRho(FitDecorator):
             curr_checkbox.observe(self.set_vary_param, names="value")
             curr_widget = widgets.BoundedFloatText(
                 self.params[param],
-                min=float_info.min
-                if self.params[param].min == -float("inf")
-                else self.params[param].min,
-                max=float_info.max
-                if self.params[param].max == float("inf")
-                else self.params[param].max,
+                min=(
+                    float_info.min
+                    if self.params[param].min == -float("inf")
+                    else self.params[param].min
+                ),
+                max=(
+                    float_info.max
+                    if self.params[param].max == float("inf")
+                    else self.params[param].max
+                ),
                 description=param,
                 continuous_update=False,
             )

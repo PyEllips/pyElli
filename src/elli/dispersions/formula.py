@@ -1,4 +1,5 @@
 """A formula dispersion to parse dispersion values from a formula string."""
+
 from typing import Dict, List, Optional
 
 import numpy as np

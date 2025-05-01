@@ -19,13 +19,17 @@ numerical indices can be used (r/s or R/L or 1...4).
 
 To make handling multiple experiments easier, they can be grouped into a list and provided
 to a ResultList object. It provides the same methods for data output as the single Result.
-The Output is returned as array over the list of results.
+The Output is returned as array over the list of results. If needed, these arrays can be
+averaged and used like a Result object for fitting.
 """
+
 from typing import List
 
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
+
+from .utils import DeltaRange
 
 
 def _convert_index(index: str) -> int:
@@ -44,7 +48,7 @@ def _convert_index(index: str) -> int:
     if index in ["s", "R"]:
         return 1
 
-    return ValueError("Wrong index given for variable.")
+    raise ValueError("Wrong index given for variable.")
 
 
 class Result:
@@ -64,8 +68,8 @@ class Result:
         rho = np.dot(self.rho_matrix, self.experiment.jones_vector)
         rho = rho[:, 0] / rho[:, 1]
 
-        if self._delta_range == (0, 180):
-            rho.imag = -abs(rho.imag)
+        if self._delta_range.lower == 0 and self._delta_range.upper == 180:
+            rho.imag = -np.abs(rho.imag)
         return rho
 
     @property
@@ -73,8 +77,8 @@ class Result:
         r"""Returns the ellipsometric parameter :math:`\rho_\text{t}` in transmission direction."""
         rho_t = np.dot(self.rho_matrix_t, self.experiment.jones_vector)
         rho_t = rho_t[:, 0] / rho_t[:, 1]
-        if self._delta_range == (0, 180):
-            rho_t.imag = -abs(rho_t.imag)
+        if self._delta_range.lower == 0 and self._delta_range.upper == 180:
+            rho_t.imag = -np.abs(rho_t.imag)
         return rho_t
 
     @property
@@ -108,9 +112,10 @@ class Result:
         .. math::
             \rho = \tan \psi \exp(-i \Delta)
         """
-        if self._delta_range == (0, 360):
-            return np.mod(-np.angle(self.rho, deg=True), 360)
-        return -np.angle(self.rho, deg=True)
+        return (
+            np.mod(-np.angle(self.rho, deg=True) + self._delta_range.lower, 360)
+            + self._delta_range.lower
+        )
 
     @property
     def delta_t(self) -> npt.NDArray:
@@ -121,9 +126,10 @@ class Result:
         .. math::
             \rho_\text{t} = \tan \psi_\text{t} \exp(-i \Delta_\text{t})
         """
-        if self._delta_range == (0, 360):
-            return np.mod(-np.angle(self.rho_t, deg=True), 360)
-        return -np.angle(self.rho_t, deg=True)
+        return (
+            np.mod(-np.angle(self.rho_t, deg=True) + self._delta_range.lower, 360)
+            + self._delta_range.lower
+        )
 
     @property
     def rho_matrix(self) -> npt.NDArray:
@@ -191,7 +197,10 @@ class Result:
             \Delta_\text{pp} & \Delta_\text{ps} \\ \Delta_\text{sp} & 0°
             \end{bmatrix}
         """
-        return -np.angle(self.rho_matrix, deg=True)
+        return (
+            np.mod(-np.angle(self.rho_matrix, deg=True) + self._delta_range.lower, 360)
+            + self._delta_range.lower
+        )
 
     @property
     def delta_matrix_t(self) -> npt.NDArray:
@@ -203,7 +212,12 @@ class Result:
             \Delta_\text{t,pp} & \Delta_\text{t,ps} \\ \Delta_\text{t,sp} & 0°
             \end{bmatrix}
         """
-        return -np.angle(self.rho_matrix_t, deg=True)
+        return (
+            np.mod(
+                -np.angle(self.rho_matrix_t, deg=True) + self._delta_range.lower, 360
+            )
+            + self._delta_range.lower
+        )
 
     @property
     def mueller_matrix(self) -> npt.NDArray:
@@ -296,7 +310,7 @@ class Result:
         r"""Returns the absolute transmittance for unpolarized light.
 
         .. math::
-            T = T_{pp} / T_{ss}
+            T = (T_{pp} / T_{ss}) / 2
         """
         return (self.T_matrix[:, 0, 0] + self.T_matrix[:, 1, 1]) / 2
 
@@ -347,7 +361,7 @@ class Result:
         self.experiment = experiment
         self._jones_matrix_r = jones_matrix_r
         self._jones_matrix_t = jones_matrix_t
-        self._delta_range = (-180, 180)
+        self._delta_range = DeltaRange(-180, 180)
         if power_correction is None:
             self._power_correction = np.ones_like(self.experiment.lbda)
         else:
@@ -428,25 +442,16 @@ class Result:
         """Returns this result in another delta range
 
         Args:
-            lower (int): The lower delta range. Should either be -180 or 0.
-            upper (int): The upper delta range. Should either be 180 or 360.
+            lower (int): The lower delta range. Should be in the range of -360 and 0.
+            upper (int): The upper delta range. Should be in the range of 0 and 360.
 
         Raises:
             TypeError: Raised when either lower or upper is not an integer.
-            ValueError: Range must be (-180, 180), (0, 180) or (0, 360).
+            ValueError: Range must be (0, 180) or a 360 degree range.
                 Otherwise a ValueError is raised.
         """
-        if not isinstance(lower, int):
-            raise TypeError("lower delta range must be an integer")
 
-        if not isinstance(upper, int):
-            raise TypeError("upper delta range must be an integer")
-
-        if (lower, upper) not in [(-180, 180), (0, 180), (0, 360)]:
-            raise ValueError(f"Invalid delta range ({lower}, {upper})")
-
-        self._delta_range = (lower, upper)
-
+        self._delta_range = DeltaRange(lower, upper)
         return self
 
 
@@ -458,6 +463,7 @@ class ResultList:
 
         Args:
             results (List[Result], optional): List of results to store. Defaults to None.
+            mean (bool, optional): Returns the average of all results. Defaults to False.
         """
         if results is None:
             self.results = []
@@ -493,9 +499,46 @@ class ResultList:
                 'psi', 'delta', 'rho':
                     Reduced ellipsometry parameters,
                     the whole matrices are returned by 'psi_matrix'.
+                'mean.name' : Returns averaged values for the requested variable,
+                    e.g. 'mean.psi'.
 
         Returns:
             npt.NDArray: Array of data.
         """
 
+        if name == "mean":
+            return AveragedResultList(self.results)
+
         return np.squeeze(np.array([getattr(result, name) for result in self.results]))
+
+
+class AveragedResultList(ResultList):
+    """ResultList with averaging over all results.
+    Can be used as drop-in replacement for Result objects, if for example
+    thickness inhomogeneities need to be simulated.
+    """
+
+    def __getattr__(self, name: str) -> npt.NDArray:
+        """Returns the data for the requested variable 'name' of all results.
+
+        Args:
+            name (str): Variable name to return.
+                Examples for 'name'...
+                'r_sp' : Amplitude reflection coefficient from 's' to 'p' polarization.
+                'r_LR' : Reflection from circular right to circular left polarization.
+                'T_pp' : Power transmission coefficient from 'p' to 'p' polarization.
+                'Ψ_ps', 'Δ_pp' : Ellipsometry parameters.
+                'psi', 'delta', 'rho':
+                    Reduced ellipsometry parameters,
+                    the whole matrices are returned by 'psi_matrix'.
+
+        Returns:
+            npt.NDArray: Array of data.
+        """
+
+        if name == "mean":
+            raise ValueError(
+                "The ResultList is already averaged and can't be averaged again."
+            )
+
+        return np.mean(super().__getattr__(name), axis=0)

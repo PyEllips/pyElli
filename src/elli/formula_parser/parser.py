@@ -1,4 +1,5 @@
 """This modules creates a formula parser"""
+
 from functools import lru_cache
 import os
 from operator import add, mul, neg, sub, truediv

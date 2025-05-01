@@ -1,9 +1,18 @@
 # Encoding: utf-8
 from abc import ABC, abstractmethod
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
 import scipy.constants as sc
+
+try:
+    import torch
+except ImportError:
+    TORCH_AVAILABLE = False
+else:
+    TORCH_AVAILABLE = True
+
 from numpy.lib.scimath import sqrt
 from scipy.linalg import expm as scipy_expm
 
@@ -56,6 +65,38 @@ class PropagatorLinear(Propagator):
 class PropagatorExpm(Propagator):
     """Propagator class using the Padé approximation of the matrix exponential."""
 
+    def __init__(self, backend: Literal["torch", "scipy", "automatic"] = "automatic"):
+        """The Propagator can use two different backends: SciPy and PyTorch.
+        The default installation only provides SciPy.
+        PyTorch is faster and will be used automatically if available.
+        If you want to install PyTorch please follow the instructions at https://pytorch.org/get-started/locally/.
+
+        Args:
+            backend (Literal["torch", "scipy", "automatic"], optional): Setting to change the linear algebra provider. Defaults to "automatic".
+        """
+        backends = {
+            "torch": lambda mats: torch.linalg.matrix_exp(
+                torch.from_numpy(mats)
+            ).numpy(),
+            "scipy": lambda mats: scipy_expm(mats),
+        }
+
+        if backend == "automatic" and TORCH_AVAILABLE:
+            backend = "torch"
+        elif backend == "automatic" and not TORCH_AVAILABLE:
+            backend = "scipy"
+        elif backend == "torch" and not TORCH_AVAILABLE:
+            raise ImportError(
+                "PyTorch is not installed. If you want to use the PyTorch backend, \
+            please follow the install instructions on https://pytorch.org/get-started/locally/"
+            )
+        elif backend not in backends:
+            raise ValueError(
+                "Backend should be one of 'torch', 'scipy' or 'automatic'."
+            )
+
+        self.expm = backends[backend]
+
     def calculate_propagation(
         self, delta: npt.NDArray, thickness: float, lbda: npt.ArrayLike
     ) -> npt.NDArray:
@@ -71,7 +112,7 @@ class PropagatorExpm(Propagator):
         """
         mats = 1j * thickness * np.einsum("nij,n->nij", delta, 2 * sc.pi / lbda)
 
-        propagator = np.asarray([scipy_expm(mat) for mat in mats])
+        propagator = self.expm(mats)
 
         return propagator
 
@@ -144,9 +185,7 @@ class Solver4x4(Solver):
                 [zeros, zeros, -ones, zeros],
                 [
                     eps[:, 1, 2] * eps[:, 2, 0] / eps[:, 2, 2] - eps[:, 1, 0],
-                    k_x**2
-                    - eps[:, 1, 1]
-                    + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
+                    k_x**2 - eps[:, 1, 1] + eps[:, 1, 2] * eps[:, 2, 1] / eps[:, 2, 2],
                     zeros,
                     k_x * eps[:, 1, 2] / eps[:, 2, 2],
                 ],

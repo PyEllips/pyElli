@@ -1,5 +1,6 @@
 # Encoding: utf-8
 """Tauc-Lorentz dispersion law. Model by Jellison and Modine."""
+
 import numpy as np
 import numpy.typing as npt
 from numpy.lib.scimath import sqrt
@@ -35,11 +36,7 @@ class TaucLorentz(Dispersion):
     def eps1(E, Eg, Ai, Ei, Ci):
         gamma2 = sqrt(Ei**2 - Ci**2 / 2) ** 2
         alpha = sqrt(4 * Ei**2 - Ci**2)
-        aL = (
-            (Eg**2 - Ei**2) * E**2
-            + Eg**2 * Ci**2
-            - Ei**2 * (Ei**2 + 3 * Eg**2)
-        )
+        aL = (Eg**2 - Ei**2) * E**2 + Eg**2 * Ci**2 - Ei**2 * (Ei**2 + 3 * Eg**2)
         aA = (E**2 - Ei**2) * (Ei**2 + Eg**2) + Eg**2 * Ci**2
         zeta4 = (E**2 - gamma2) ** 2 + alpha**2 * Ci**2 / 4
 
@@ -65,10 +62,7 @@ class TaucLorentz(Dispersion):
                     * c.get("E")
                     * c.get("C")
                     * (energy - energy_g) ** 2
-                    / (
-                        (energy**2 - c.get("E") ** 2) ** 2
-                        + c.get("C") ** 2 * energy**2
-                    )
+                    / ((energy**2 - c.get("E") ** 2) ** 2 + c.get("C") ** 2 * energy**2)
                     / energy
                 )
                 * np.heaviside(energy - energy_g, 0)
