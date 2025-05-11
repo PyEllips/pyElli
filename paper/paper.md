@@ -79,9 +79,9 @@ An open-source toolkit, **PyElli** has many inherent benefits over proprietary s
 For SE, optical models vary between manufacturers and translation can be difficult without comprehensive documentation.
 **PyElli's** open-source nature makes optical models extendable, auditable, and fully comprehensive.
 Each version of **PyElli** is associated with a DOI and a Zenodo upload, allowing for reliable referencing and reproducibility of analysis results.
-It supports [NXellipsometry](https://fairmat-experimental.github.io/nexus-fairmat-proposal/9636feecb79bb32b828b1a9804269573256d7696/classes/contributed_definitions/NXellipsometry.html#nxellipsometry), a recent advancement in SE data standardization.
+It supports [NXellipsometry](https://manual.nexusformat.org/classes/contributed_definitions/NXellipsometry.html), a recent advancement in SE data standardization.
 This standard is developed by the German consortium [FAIRmat](https://www.fair-di.eu/fairmat) within the German National Research Data Infrastructure (NFDI) and is accepted by the [NeXus International Advisory Committee (NIAC)](https://www.nexusformat.org/NIAC.html), which has been maintaining beamline standards in the [NeXus format](https://www.nexusformat.org) for over 20 years [@Konnecke2015].
-**PyElli** is also available as an [example](https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-remote-tools-hub/-/tree/develop/docker/ellips/example) and a cloud-based [analysis tool](https://nomad-lab.eu/prod/v1/staging/gui/analyze/north) in the research data management software [NOMAD](https://nomad-lab.eu/nomad-lab/) [@Scheffler2022].
+**PyElli** is also available as an [example](https://gitlab.mpcdf.mpg.de/nomad-lab/north/ellips/-/tree/main/example?ref_type=heads) and a cloud-based [analysis tool](https://nomad-lab.eu/prod/v1/staging/gui/analyze/north) in the research data management software [NOMAD](https://nomad-lab.eu/nomad-lab/) [@Scheidgen2023].
 
 In summary, **PyElli** aims to provide the means of more straight-forward data analysis, reproducibility, and FAIR data management within the ellipsometry community.
 
