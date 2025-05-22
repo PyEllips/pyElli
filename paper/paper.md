@@ -24,7 +24,7 @@ bibliography: paper.bib
 
 # Summary
 
-**PyElli** is an open-source Python-based analysis tool for evaluating the linear optical interaction of layered materials.
+**pyElli** is an open-source Python-based analysis tool for evaluating the linear optical interaction of layered materials.
 The code primarily targets spectroscopic ellipsometry (SE).
 In addition, it is adaptable to various transmission and reflection experiments featuring spectral and polarization resolution.
 
@@ -43,18 +43,18 @@ For example, results may even be hard to reproduce on competitive systems due to
 In addition, limitations of the specific software included with each instrument may stimulate scientists to use third-party software:
 bundled software packages may not support specific desirable kinds of analyses, such as including the response of optically anisotropic materials or simultaneous fitting of external experimental parameters.
 
-**PyElli** offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible, by providing data imports from various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion).
+**pyElli** offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible, by providing data imports from various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion).
 The code is designed with extensibility and adaptability in mind enabling the implementation of individually adapted models as well as data evaluation with custom tools.
 Typical examples for advanced use-cases are implementations of custom experimental geometries not covered by other software [@eberheim2022], imaging ellipsometry, or as a full FAIR data automated analysis pipeline for SE measurements.
-**PyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data [@Wilkinson2016].
+**pyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data [@Wilkinson2016].
 
-**PyElli** aims to provide a straight-forward database of predefined dispersion models for analyzing materials.
+**pyElli** aims to provide a straight-forward database of predefined dispersion models for analyzing materials.
 All optical models adhere closely to the literature [@Hilfiker2018].
 The software easily includes the popular public-domain database for optical constants [refractiveindex.info](https://refractiveindex.info) [@rii].
 This allows the inclusion of literature dispersions with a single line of code.
 Additional dispersion relations can be either hard coded, which is more efficient, or parsed from a text-based domain-specific language into a dispersion which can be fitted, e.g., polynomially.
 
-**PyElli** supports multiple solving algorithms with different characteristics.
+**pyElli** supports multiple solving algorithms with different characteristics.
 Currently, two algorithms using different formulations are available: a fast algorithm based on a 2x2 matrix formulation [@byrnes2020multilayer] and a more complex 4x4 matrix formulation [@Berreman72; @berreman4x4_doku; @berreman4x4_software].
 The 2x2 matrix algorithm divides the light into two perpendicular linearly polarized beams, which are solved separately.
 One of its limitations is eliminating the possibility to include birefringent materials.
@@ -62,9 +62,9 @@ The 4x4 matrix approach fully solves Maxwell's equations.
 These equations describe the complete electromagnetic field inside each layer of the sample and couple these together using the matrix formalism.
 This allows finding solutions to more complex problems such as anisotropic materials, active media or magneto-optic samples.
 
-**PyElli** ensures fast processing through fully vectorized algorithms for multiple wavelengths and by leveraging numerical algebra libraries like [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
+**pyElli** ensures fast processing through fully vectorized algorithms for multiple wavelengths and by leveraging numerical algebra libraries like [NumPy](https://numpy.org) [@harris2020array] and [SciPy](https://scipy.org) [@2020SciPy-NMeth].
 Together, these runtime advantages enable the practical use of advanced fitting algorithms such as global optimizers while maintaining reasonable evaluation times.
-As a result, **PyElli** enables integrated in-situ monitoring and real-time data analysis of overlayer growth.
+As a result, **pyElli** enables integrated in-situ monitoring and real-time data analysis of overlayer growth.
 Furthermore, the use of Python and vectorization libraries also facilitates the development of artificial intelligence-based SE data analysis.
 
 # Statement of need
@@ -74,13 +74,13 @@ Many research journals already require authors to add supporting data, and there
 The FAIR principles have recently been extended to apply to research software as well since reproducing data requires not only the data itself but also the software used to create it [@Barker2022].
 Producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE, as the results are tightly related and dependent on the algorithms and models used for evaluation.
 
-An open-source toolkit, **PyElli** has many inherent benefits over proprietary software.
+An open-source toolkit, **pyElli** has many inherent benefits over proprietary software.
 For SE, optical models vary between manufacturers and translation can be difficult without comprehensive documentation.
-**PyElli's** open-source nature makes optical models extendable, auditable, and fully comprehensive.
-Each version of **PyElli** is associated with a DOI and a Zenodo upload, allowing for reliable referencing and reproducibility of analysis results.
+**pyElli's** open-source nature makes optical models extendable, auditable, and fully comprehensive.
+Each version of **pyElli** is associated with a DOI and a Zenodo upload, allowing for reliable referencing and reproducibility of analysis results.
 It supports reading and writing standardized files in the [nexus format](https://nexusformat.org) and is also integrated as an example in the research data management software NOMAD [@Scheidgen2023].
 
-In summary, **PyElli** aims to provide the means of more straight-forward data analysis, reproducibility, and FAIR data management within the ellipsometry community.
+In summary, **pyElli** aims to provide the means of more straight-forward data analysis, reproducibility, and FAIR data management within the ellipsometry community.
 
 # Software with similar functionalities
 
@@ -95,13 +95,13 @@ Other notable Python open-source software for solving transfer-matrices is avail
 
 # Example: Building a model for an oxide layer on silicon
 
-This example aims to illustrate the straight-forward implementation and building of an optical model in **PyElli**.
+This example aims to illustrate the straight-forward implementation and building of an optical model in **pyElli**.
 The chosen model system is a thin SiO$_2$ layer on bulk Si.
 A Cauchy dispersion function describes the SiO$_2$.
 Tabulated literature values for Si are loaded from the refractiveindex.info database.
 
 The necessary libraries are loaded before building the model:
-PyElli is imported from the module `elli`.
+**pyElli** is imported from the module `elli`.
 The `ParamsHist` wrapper around the `Parameters` class from [lmfit](https://lmfit.github.io/lmfit-py/index.html) [@matt_newville_2024_12785036] is imported from `elli.fitting`.
 It adds history functionality to revert any undesired model changes and to return to an earlier set of parameters.
 Importing `linspace` from `numpy` enables the generation of a wavelength axis.
@@ -114,7 +114,7 @@ from elli.fitting import ParamsHist, fit
 
 Initially, we define the fit parameters.
 The Cauchy model for SiO$_2$ is defined by the `SiO2_n0` and `SiO2_n1` parameters along with its layer thickness measured in nanometers.
-Optionally, additional settings for _lmfit_ parameters like constraints or bounds might be added; refer to _lmfit's_ documentation for a list of parameter arguments or consult our verbose [basic example](https://pyelli.readthedocs.io/en/stable/auto_examples/plot_01_basic_usage.html#sphx-glr-auto-examples-plot-01-basic-usage-py).
+Optionally, additional settings for _lmfit_ parameters like constraints or bounds might be added; refer to _lmfit's_ documentation for a list of parameter arguments or consult our verbose [basic example](https://pyElli.readthedocs.io/en/stable/auto_examples/plot_01_basic_usage.html#sphx-glr-auto-examples-plot-01-basic-usage-py).
 
 ```python
 params = ParamsHist()
@@ -126,7 +126,7 @@ params.add("SiO2_thickness", value=20)
 Next, the Cauchy model is created using the `Cauchy` class and the defined parameters.
 All undefined Cauchy coefficients are kept at their default value of zero in this particular case.
 Subsequently, the `.get_mat()` method is called on the created object to automatically convert the dispersion into an isotropic material.
-A list of different dispersion classes and their usage is given in the [documentation](https://pyelli.readthedocs.io/en/stable/dispersions.html).
+A list of different dispersion classes and their usage is given in the [documentation](https://pyElli.readthedocs.io/en/stable/dispersions.html).
 
 ```python
 SiO2 = elli.Cauchy(
@@ -138,7 +138,7 @@ SiO2 = elli.Cauchy(
 Next, tabulated literature values for silicon is read from a database.
 Therefor, the code instantiates the refractiveindex.info database and queries it for the material (`Si`) and author (`Aspnes`).
 It is also possible to search the database to get a list of matching entries.
-See the [documentation](https://pyelli.readthedocs.io/en/stable/database.html) for details.
+See the [documentation](https://pyElli.readthedocs.io/en/stable/database.html) for details.
 
 ```python
 rii_db = elli.db.RII()
@@ -172,7 +172,7 @@ angle = 70
 result = structure.evaluate(wavelengths, angle)
 ```
 
-The calculation is stored in the `result` variable, which is a [`Result` object](https://pyelli.readthedocs.io/en/stable/result.html).
+The calculation is stored in the `result` variable, which is a [`Result` object](https://pyElli.readthedocs.io/en/stable/result.html).
 This object can hold all input parameters and the calculation results.
 Methods like `psi`, `delta`, `R`, etc., will deliver the desired output.
 Alternatively, the `@fit` decorator in `elli.fitting` automatically calls a widget-based fitting GUI for Jupyter notebooks.
@@ -180,7 +180,7 @@ Alternatively, the `@fit` decorator in `elli.fitting` automatically calls a widg
 
 ![The ipywidgets based fitting GUI.\label{fig:fit_dec_example}](fit_decorator_example.png)
 
-The [examples](https://pyelli.readthedocs.io/en/stable/auto_examples/index.html) provide additional information.
+The [examples](https://pyElli.readthedocs.io/en/stable/auto_examples/index.html) provide additional information.
 
 # Acknowledgements
 
