@@ -15,7 +15,6 @@ authors:
     affiliation: 1
   - name: Florian Dobener
     orcid: 0000-0003-1987-6224
-    affiliation: 1
 affiliations:
   - name: Institute of Experimental Physics I and Center for Materials Research (ZfM/LaMa), Justus Liebig University Giessen, Heinrich-Buff-Ring 16, Giessen, D-35392 Germany
     index: 1
