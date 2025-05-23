@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1747642594090,
+  "lastUpdate": 1748029298638,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -16002,6 +16002,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0013062620006203242",
             "extra": "mean: 3.9694803000017482 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ae0ee6298a65d3c936f2f2b0942b5dbedf34a908",
+          "message": "Bump tornado from 6.4.2 to 6.5.1 in /requirements (#207)\n\nBumps [tornado](https://github.com/tornadoweb/tornado) from 6.4.2 to 6.5.1.\n- [Changelog](https://github.com/tornadoweb/tornado/blob/master/docs/releases.rst)\n- [Commits](https://github.com/tornadoweb/tornado/compare/v6.4.2...v6.5.1)\n\n---\nupdated-dependencies:\n- dependency-name: tornado\n  dependency-version: 6.5.1\n  dependency-type: direct:development\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2025-05-23T21:40:49+02:00",
+          "tree_id": "de550fccdf86b7e4bc8091722fbd2a7a868ecf73",
+          "url": "https://github.com/PyEllips/pyElli/commit/ae0ee6298a65d3c936f2f2b0942b5dbedf34a908"
+        },
+        "date": 1748029297988,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 150.45629708719886,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001713945586189358",
+            "extra": "mean: 6.6464483000032715 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 69.76226193141999,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005616386003256358",
+            "extra": "mean: 14.334397599995441 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.03071172215604,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00013130852378671613",
+            "extra": "mean: 24.98081990000003 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.607849442525552,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001068656301839483",
+            "extra": "mean: 50.99998359999631 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 58.79949287082194,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006858203502125073",
+            "extra": "mean: 17.0069494000046 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 264.6021699760971,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003482027735024967",
+            "extra": "mean: 3.7792584999976953 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 248.59510206964472,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012257667705431476",
+            "extra": "mean: 4.022605400004409 msec\nrounds: 10"
           }
         ]
       }
