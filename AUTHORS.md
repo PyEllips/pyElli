@@ -1,7 +1,7 @@
 # Contributors
 
-- Marius Müller <marius.mueller@physik.uni-giessen.de>
-- Florian Dobener <florian.dobener@physik.hu-berlin.de>
+- Marius Müller <marius.mueller@tutanota.de>
+- Florian Dobener <pyelli@schroedingerscat.org>
 
 # Acknowledgements
 

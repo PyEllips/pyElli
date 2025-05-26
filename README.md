@@ -84,4 +84,4 @@ Until we have published a Paper on pyElli, we have prepared a Zenodo entry with 
 - Solver2x2 based on Steve Byrnes' [tmm](https://github.com/sbyrnes321/tmm)
 - Mikhail Polyanskiy's [refractiveindex.info database](https://github.com/polyanskiy/refractiveindex.info-database) and Pavel Dmitriev's [pyTMM](https://github.com/kitchenknif/PyTMM) for his importer script for the database
 
-[@MarJMue](https://github.com/MarJMue) receives financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).
+[@MarJMue](https://github.com/MarJMue) received financial support from 2021 until 2025 by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), grant No. 398143140 (FOR 2824).

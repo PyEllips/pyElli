@@ -7,7 +7,7 @@ name = "pyElli"
 description = "An ellipsometry analysis tool for reproducible and comprehensible building of optical models."
 dynamic = ["version"]
 authors = [
-    { name = "Marius Müller", email = "marius.mueller@physik.uni-giessen.de" },
+    { name = "Marius Müller", email = "marius.mueller@tutanota.de" },
     { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" },
 ]
 requires-python = ">=3.9"
