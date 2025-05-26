@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.22.3
+
+### Bugfixes
+
+- Pin Plotly to a version smaller than 6, to avoid problems with the fitting widget (#203).
+
 ## Version 0.22.2
 
 ### Bugfixes
