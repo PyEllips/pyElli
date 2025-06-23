@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 is_float_regex = re.compile(r"[+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)")
 
 
-def is_float(line: str) -> bool:
+def is_float(line: float | int | str) -> bool:
     """Checks whether the given line is a float
 
     Args:
@@ -29,7 +29,11 @@ def is_float(line: str) -> bool:
     Returns:
         bool: True if it is a float, False otherwise
     """
-    return bool(is_float_regex.search(line))
+    if isinstance(line, (float, int)):
+        return True
+    if isinstance(line, str):
+        return bool(is_float_regex.search(line))
+    return False
 
 
 def _is_wvase_tabular(line: str) -> bool:
@@ -126,7 +130,7 @@ def _read_wvase_dataframe(file_object: TextIO) -> pd.DataFrame:
         header=None,
         names=["Wavelength", "Angle of Incidence", "Ψ", "Δ", "Ψ_err", "Δ_err"],
     )
-    print(dframe)
+
     dframe = (
         dframe[dframe.apply(lambda x: is_float(x.iloc[0]), axis=1)]
         .set_index(["Wavelength", "Angle of Incidence"])

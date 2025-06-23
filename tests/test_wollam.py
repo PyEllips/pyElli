@@ -2,6 +2,7 @@
 
 import pytest
 from fixtures import datadir  # pylint: disable=unused-import
+
 import elli
 
 
@@ -9,9 +10,13 @@ import elli
 def test_reading_of_psi_delta_woollam(datadir):
     """Psi/delta Spectraray file is read w/o errors"""
     data_wvase = elli.read_woollam_psi_delta(datadir / "wvase_example.dat")
+    data_wvase_wo_dpolE = elli.read_woollam_psi_delta(
+        datadir / "wvase_example_wo_dpolE.dat"
+    )
     data_cease = elli.read_woollam_psi_delta(datadir / "complete_ease_example.dat")
 
     assert data_wvase.shape == (542, 2)
+    assert data_wvase_wo_dpolE.shape == (542, 2)
     assert data_cease.shape == (3263, 2)
 
 
