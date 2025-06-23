@@ -5,7 +5,7 @@ It supports loading of standard psi/delta values.
 
 import logging
 import re
-from typing import TextIO
+from typing import TextIO, Union
 
 import pandas as pd
 from pint import DimensionalityError, UndefinedUnitError
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 is_float_regex = re.compile(r"[+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)")
 
 
-def is_float(line: float | int | str) -> bool:
+def is_float(line: Union[float, int, str]) -> bool:
     """Checks whether the given line is a float
 
     Args:
