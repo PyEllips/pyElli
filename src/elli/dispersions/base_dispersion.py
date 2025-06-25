@@ -239,8 +239,9 @@ class Dispersion(BaseDispersion):
         Please ensure that you know what you are doing as building dielectric
         and index based dispersions is normally mathematically wrong.
         """
-        AnonIndexDesp = type(
-            "AnonIndexDesp",
+
+        AnonymousIndexDispersion = type(
+            "AnonymousIndexDispersion",
             (IndexDispersion,),
             {
                 "rep_params_template": deepcopy(self.rep_params_template),
@@ -252,7 +253,7 @@ class Dispersion(BaseDispersion):
             },
         )
 
-        return AnonIndexDesp()
+        return AnonymousIndexDispersion()
 
 
 class IndexDispersion(BaseDispersion):
@@ -305,25 +306,6 @@ class IndexDispersion(BaseDispersion):
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.refractive_index(lbda) ** 2
-
-    def as_dielectric(self):
-        """
-        Returns this class as Dispersion.
-        This method may be used to add dielectric and index based dispersions.
-        Please ensure that you know what you are doing as building dielectric
-        and index based dispersions is normally mathematically wrong.
-        """
-        AnonDesp = type(
-            "AnonDesp",
-            (Dispersion,),
-            {
-                "rep_params_template": deepcopy(self.rep_params_template),
-                "single_params_template": deepcopy(self.single_params_template),
-                "dielectric_function": self.dielectric_function,
-            },
-        )
-
-        return AnonDesp()
 
 
 class DispersionFactory:
