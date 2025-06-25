@@ -1,6 +1,7 @@
 """Tests for dispersion models"""
 
 import os
+from copy import deepcopy
 from shutil import copytree, rmtree
 
 import numpy as np
@@ -11,6 +12,7 @@ from pytest import fixture, raises
 
 import elli
 from elli.dispersions.base_dispersion import InvalidParameters
+from elli.dispersions.sellmeier import Sellmeier
 
 
 @fixture
@@ -233,3 +235,10 @@ def test_correct_reconstruction_with_pseudo_dielectric():
         ).get_dielectric_df(check_lbda),
         gaussian.get_dielectric_df(check_lbda),
     )
+
+
+def test_deepcopy_of_index_dispersion():
+    sell = Sellmeier()
+    sell.add(1, 1)
+
+    deepcopy(sell.as_index())

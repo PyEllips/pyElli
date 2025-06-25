@@ -239,15 +239,20 @@ class Dispersion(BaseDispersion):
         Please ensure that you know what you are doing as building dielectric
         and index based dispersions is normally mathematically wrong.
         """
-        index_class = deepcopy(self)
-        # pylint: disable=attribute-defined-outside-init
-        index_class.refractive_index = lambda lbda: sqrt(
-            index_class.dielectric_function(lbda)
+        AnonIndexDesp = type(
+            "AnonIndexDesp",
+            (IndexDispersion,),
+            {
+                "rep_params_template": deepcopy(self.rep_params_template),
+                "single_params_template": deepcopy(self.single_params_template),
+                "dielectric_function": self.dielectric_function,
+                "refractive_index": lambda self, lbda: sqrt(
+                    self.dielectric_function(lbda)
+                ),
+            },
         )
-        index_class.__class__ = IndexDispersion  # pylint: disable=invalid-name
-        index_class.dielectric_function = self.dielectric_function
 
-        return index_class
+        return AnonIndexDesp()
 
 
 class IndexDispersion(BaseDispersion):
@@ -308,10 +313,17 @@ class IndexDispersion(BaseDispersion):
         Please ensure that you know what you are doing as building dielectric
         and index based dispersions is normally mathematically wrong.
         """
-        diel_disp = deepcopy(self)
-        diel_disp.__class__ = Dispersion  # pylint: disable=invalid-name
-        diel_disp.dielectric_function = self.dielectric_function
-        return diel_disp
+        AnonDesp = type(
+            "AnonDesp",
+            (Dispersion,),
+            {
+                "rep_params_template": deepcopy(self.rep_params_template),
+                "single_params_template": deepcopy(self.single_params_template),
+                "dielectric_function": self.dielectric_function,
+            },
+        )
+
+        return AnonDesp()
 
 
 class DispersionFactory:
