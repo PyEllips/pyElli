@@ -242,3 +242,22 @@ def test_deepcopy_of_index_dispersion():
     sell.add(1, 1)
 
     deepcopy(sell.as_index())
+
+
+def test_dispersion_conversion_to_other_type():
+    lbda = np.linspace(300, 900, 100)
+    RII = elli.db.RII()
+
+    disp = RII.get_dispersion("SCHOTT-BK", "N-BK7")
+
+    assert_array_equal(
+        disp.as_dielectric().get_dielectric(lbda),
+        disp.get_dielectric(lbda),
+    )
+
+    disp2 = RII.get_dispersion("AgCl", "Tilton")
+
+    assert_array_equal(
+        disp2.as_index().get_dielectric(lbda),
+        disp2.get_dielectric(lbda),
+    )
