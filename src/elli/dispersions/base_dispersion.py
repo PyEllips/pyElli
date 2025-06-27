@@ -2,7 +2,6 @@
 """Abstract base class and utility classes for pyElli dispersion"""
 
 from abc import ABC, abstractmethod
-from copy import deepcopy
 from typing import List, Optional, Union
 
 import numpy as np
@@ -239,15 +238,25 @@ class Dispersion(BaseDispersion):
         Please ensure that you know what you are doing as building dielectric
         and index based dispersions is normally mathematically wrong.
         """
-        index_class = deepcopy(self)
-        # pylint: disable=attribute-defined-outside-init
-        index_class.refractive_index = lambda lbda: sqrt(
-            index_class.dielectric_function(lbda)
-        )
-        index_class.__class__ = IndexDispersion  # pylint: disable=invalid-name
-        index_class.dielectric_function = self.dielectric_function
 
-        return index_class
+        AnonymousIndexDispersion = type(
+            "AnonymousIndexDispersion",
+            (IndexDispersion,),
+            {
+                "rep_params_template": self.rep_params_template,
+                "single_params_template": self.single_params_template,
+                "dielectric_function": self.dielectric_function,
+                "refractive_index": lambda self, lbda: sqrt(
+                    self.dielectric_function(lbda)
+                ),
+            },
+        )
+
+        idx_dispersion = AnonymousIndexDispersion()
+        idx_dispersion.rep_params = self.rep_params
+        idx_dispersion.single_params = self.single_params
+
+        return idx_dispersion
 
 
 class IndexDispersion(BaseDispersion):
@@ -300,18 +309,6 @@ class IndexDispersion(BaseDispersion):
 
     def dielectric_function(self, lbda: npt.ArrayLike) -> npt.NDArray:
         return self.refractive_index(lbda) ** 2
-
-    def as_dielectric(self):
-        """
-        Returns this class as Dispersion.
-        This method may be used to add dielectric and index based dispersions.
-        Please ensure that you know what you are doing as building dielectric
-        and index based dispersions is normally mathematically wrong.
-        """
-        diel_disp = deepcopy(self)
-        diel_disp.__class__ = Dispersion  # pylint: disable=invalid-name
-        diel_disp.dielectric_function = self.dielectric_function
-        return diel_disp
 
 
 class DispersionFactory:
