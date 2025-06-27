@@ -244,8 +244,8 @@ class Dispersion(BaseDispersion):
             "AnonymousIndexDispersion",
             (IndexDispersion,),
             {
-                "rep_params_template": deepcopy(self.rep_params_template),
-                "single_params_template": deepcopy(self.single_params_template),
+                "rep_params_template": self.rep_params_template,
+                "single_params_template": self.single_params_template,
                 "dielectric_function": self.dielectric_function,
                 "refractive_index": lambda self, lbda: sqrt(
                     self.dielectric_function(lbda)
@@ -253,7 +253,11 @@ class Dispersion(BaseDispersion):
             },
         )
 
-        return AnonymousIndexDispersion()
+        idx_dispersion = AnonymousIndexDispersion()
+        idx_dispersion.rep_params = self.rep_params
+        idx_dispersion.single_params = self.single_params
+
+        return idx_dispersion
 
 
 class IndexDispersion(BaseDispersion):
