@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1750685156810,
+  "lastUpdate": 1751044392494,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -16586,6 +16586,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00015428020496539431",
             "extra": "mean: 3.748659599999371 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "21dc4bd3ae139830789c410fcbd7d1d7596c7aa9",
+          "message": "Fix for wollam data without dpolE (#214)\n\n* Fix for wollam data without dpolE\n\n* Use union typing to support older py versions\n\n* Fix `as_index()` and `as_dielectric()`\n\n* Add test to check if values stay the same after dispersion conversion\n\n* Remove `as_dielectric()`\n\n* Fix tests\n\n* Set rep and single params\n\n* Remove unecessary import\n\n* Update changelog\n\n---------\n\nCo-authored-by: MarJMue <49639740+MarJMue@users.noreply.github.com>",
+          "timestamp": "2025-06-27T19:12:24+02:00",
+          "tree_id": "191b5e4b74c83197c49858623864acf711acebc9",
+          "url": "https://github.com/PyEllips/pyElli/commit/21dc4bd3ae139830789c410fcbd7d1d7596c7aa9"
+        },
+        "date": 1751044391691,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 147.57886540806743,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00014245244610926403",
+            "extra": "mean: 6.776037999986784 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 68.87137577047892,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006460331902661106",
+            "extra": "mean: 14.519820299983621 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.07147773882307,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012961607350288646",
+            "extra": "mean: 24.955406100013988 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 20.01580159466613,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016814224254098014",
+            "extra": "mean: 49.960527199993976 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 58.76136369115827,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00668145152792351",
+            "extra": "mean: 17.017984900007832 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 267.1162553788388,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004479218168369057",
+            "extra": "mean: 3.743688299994119 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 274.2980254084476,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009768225023716792",
+            "extra": "mean: 3.645669699994869 msec\nrounds: 10"
           }
         ]
       }
