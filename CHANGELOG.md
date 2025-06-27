@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.22.4
+
+### Bugfixes
+
+- Fix for an error when copying of an IndexDispersion created from a Dispersion
+- Fix for reading of woollam data if no dpolE is present
+
 ## Version 0.22.3
 
 ### Bugfixes
