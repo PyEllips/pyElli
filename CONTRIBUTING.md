@@ -70,12 +70,12 @@ or **Miniconda**
     page. This creates a copy of the code under your account on github.
 3.  Clone this copy to your local disk
 
-         git clone https://github.com:YourLogin/pyElli.git
+         git clone --recurse-submodules https://github.com/PyEllips/pyElli
          cd pyElli
 
 4.  You should run
 
-          pip install -U pip setuptools -e .[fitting,dev]
+          pip install -e ".[fitting,dev]"
 
     which installs the package in development mode and all extra requirements in your current virtualenv.
 
