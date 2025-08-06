@@ -5,10 +5,12 @@ from __future__ import unicode_literals
 import os
 from shutil import copytree, rmtree
 
-import elli
 import numpy as np
-from elli.fitting import ParamsHist
+import pytest
 from pytest import fixture
+
+import elli
+from elli.fitting import ParamsHist
 
 
 @fixture
@@ -135,6 +137,8 @@ class TestTiO2:
 
     def test_solver4x4_expm_torch(self, si_dispersion, meas_data):
         """The solver4x4 with pytorch propagator is within chi square accuracy"""
+
+        _ = pytest.importorskip("torch")
         sim_data = (
             elli.Structure(elli.AIR, self.Layer, si_dispersion)
             .evaluate(
