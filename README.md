@@ -34,7 +34,7 @@ The installers for all releases are available at the [Python Package Index (PyPI
 To install run:
 
 ```sh
-pip install pyElli[fitting]
+pip install "pyElli[fitting]"
 ```
 
 This installs pyElli with the additional fitting capabilities and interactive widgets.
@@ -66,7 +66,7 @@ The source code is hosted on [GitHub](https://github.com/PyEllips/pyElli), to ma
 the folder to install it in development mode:
 
 ```sh
-git clone https://github.com/PyEllips/pyElli
+git clone --recurse-submodules https://github.com/PyEllips/pyElli
 cd pyElli
 pip install -e ".[fitting]"
 ```

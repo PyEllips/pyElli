@@ -10,7 +10,7 @@ To install the package in your current virtual environment execute
 
     .. code-block:: shell
 
-        pip install pyElli[fitting]
+        pip install "pyElli[fitting]"
 
 This installs pyElli with the additional fitting capabilities and interactive widgets.
 If you don't want to have this functionality just drop the `[fitting]` in the end.
@@ -44,6 +44,6 @@ the folder to install it in development mode:
 
     .. code-block:: shell
 
-        git clone https://github.com/PyEllips/pyElli
+        git clone --recurse-submodules https://github.com/PyEllips/pyElli
         cd pyElli
         pip install -e .
