@@ -181,11 +181,9 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
         line = fobj.readline()
         while line:
             if _is_wvase_tabular(line):
-                line_number = fobj.tell()
                 file_format = "wvase"
                 break
             if _is_complete_ease_tabular(line):
-                line_number = fobj.tell()
                 file_format = "complete_ease"
                 break
             if _is_tan_cos_format(line):
@@ -194,6 +192,7 @@ def read_woollam_psi_delta(fname: str) -> pd.DataFrame:
                     "Please try using wvase's psi/delta format."
                 )
             metadata.append(line)
+            line_number = fobj.tell()
             line = fobj.readline()
         fobj.seek(line_number)
 
