@@ -46,7 +46,7 @@ def _is_wvase_tabular(line: str) -> bool:
     Returns:
         bool: True if the line is in wvase tabular layout.
     """
-    return bool(re.search(r"^(\d*\.\d*\s+){5}\d*\.\d*$", line))
+    return bool(re.search(r"^(-?\d*\.\d*\s+){5}\d*\.\d*$", line))
 
 
 def _is_complete_ease_tabular(line: str) -> bool:
