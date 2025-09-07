@@ -2,6 +2,7 @@
 
 import pytest
 from fixtures import datadir  # pylint: disable=unused-import
+from numpy.testing import assert_almost_equal
 
 import elli
 
@@ -27,7 +28,11 @@ def test_reading_and_conv_to_woollam(datadir):
     data_cease = elli.read_woollam_rho(datadir / "complete_ease_example.dat")
 
     assert data_wvase.shape == (543,)
+    assert data_wvase.index.get_level_values(1)[0] == 300
+    assert data_wvase.index.get_level_values(1)[-1] == 1200
     assert data_cease.shape == (3264,)
+    assert_almost_equal(data_cease.index.get_level_values(1)[0], 193)
+    assert_almost_equal(data_cease.index.get_level_values(1)[-1], 1700)
 
 
 # pylint: disable=redefined-outer-name
