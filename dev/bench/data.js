@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1758053444759,
+  "lastUpdate": 1758053499467,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -17316,6 +17316,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0014457127855709406",
             "extra": "mean: 4.040246899995736 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "36dd713dbbdcab3719a3dd7aa1b53759c569ab20",
+          "message": "Fixes for Woollam importer (#226)\n\n* Woollam: Fix importer regex for negative deltas\n* Woollam: read first data line of file\n* Add wavelength boundary check\n\n---------\n\nCo-authored-by: domna <github@schroedingerscat.org>",
+          "timestamp": "2025-09-16T22:10:45+02:00",
+          "tree_id": "4faca082220c7d8cdc957b50326c23837b5a0c6f",
+          "url": "https://github.com/PyEllips/pyElli/commit/36dd713dbbdcab3719a3dd7aa1b53759c569ab20"
+        },
+        "date": 1758053498192,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 149.22430520117547,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00018707836747772636",
+            "extra": "mean: 6.701321200000621 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 68.80014920276611,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000542775036882785",
+            "extra": "mean: 14.534852199997772 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.998361667111524,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000217937525797033",
+            "extra": "mean: 25.00102399999662 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.55311695338061,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00299954970074131",
+            "extra": "mean: 51.14274119999607 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 59.3556014023575,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006678845038975116",
+            "extra": "mean: 16.84760959999778 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 267.43012619035346,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003709277342989475",
+            "extra": "mean: 3.7392945000078726 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 278.2475369115364,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001423277449604369",
+            "extra": "mean: 3.5939221999939264 msec\nrounds: 10"
           }
         ]
       }
