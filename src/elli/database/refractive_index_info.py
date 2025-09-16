@@ -28,6 +28,7 @@ from ..dispersions.base_dispersion import (
     IndexDispersionSum,
 )
 from ..materials import IsotropicMaterial
+from ..utils import detect_encoding
 
 WavelengthFilterType = Union[
     None, float, int, List[Union[float, int]], Tuple[Union[float, int]]
@@ -287,18 +288,7 @@ class RII:
         Returns:
             Dispersion: A dispersion object containing the tabulated data.
         """
-
-        index = self.catalog.loc[
-            (self.catalog["book"] == book) & (self.catalog["page"] == page)
-        ].index
-
-        if len(index) != 1:
-            raise ValueError("No entry found.")
-
-        yml_file = yaml.load(
-            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
-            yaml.SafeLoader,
-        )
+        yml_file = self._open_file(book, page)
 
         dispersion_list = []
         contains_index_dispersion = False
@@ -441,18 +431,7 @@ class RII:
         Returns:
             str: Reference information.
         """
-
-        index = self.catalog.loc[
-            (self.catalog["book"] == book) & (self.catalog["page"] == page)
-        ].index
-
-        if len(index) != 1:
-            raise ValueError("No entry found.")
-
-        yml_file = yaml.load(
-            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
-            yaml.SafeLoader,
-        )
+        yml_file = self._open_file(book, page)
 
         return yml_file["REFERENCES"]
 
@@ -466,6 +445,20 @@ class RII:
         Returns:
             str: Dispersion information.
         """
+        yml_file = self._open_file(book, page)
+
+        return yml_file["COMMENTS"]
+
+    def _open_file(self, book: str, page: str) -> dict:
+        """Opens the selected dispersion file.
+
+        Args:
+            book (str): Name of the Material, named 'Book' on the website and the database. E.g. 'Au'
+            page (str): Name of the Source, named 'Page' on the website and the database. E.g. 'Johnson'
+
+        Returns:
+            dict: Content of the YAML file.
+        """
 
         index = self.catalog.loc[
             (self.catalog["book"] == book) & (self.catalog["page"] == page)
@@ -474,9 +467,15 @@ class RII:
         if len(index) != 1:
             raise ValueError("No entry found.")
 
-        yml_file = yaml.load(
-            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]).read_text(),
-            yaml.SafeLoader,
+        encoding = detect_encoding(
+            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"])
         )
 
-        return yml_file["COMMENTS"]
+        with open(
+            self.rii_path.joinpath(self.catalog.loc[index[0]]["path"]),
+            "r",
+            encoding=encoding,
+        ) as f:
+            yml_file = yaml.load(f, yaml.SafeLoader)
+
+        return yml_file

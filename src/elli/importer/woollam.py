@@ -11,8 +11,7 @@ import pandas as pd
 from pint import DimensionalityError, UndefinedUnitError
 
 from ..units import ureg
-from ..utils import calc_rho
-from . import detect_encoding
+from ..utils import calc_rho, detect_encoding
 
 logger = logging.getLogger(__name__)
 
