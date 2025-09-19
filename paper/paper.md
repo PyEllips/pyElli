@@ -30,7 +30,7 @@ The code primarily targets spectroscopic ellipsometry (SE).
 In addition, it is adaptable to various transmission and reflection experiments featuring spectral and polarization resolution.
 
 Various scientific fields use SE to determine the optical functions of materials and multiple-layer stacks often referred to simply as "optical constants" or "material parameters".
-The respective experimental "as-measured" SE data requires numerical analysis to deduce physically meaningful quantities.
+The experimental "as-measured" SE data requires numerical analysis to deduce physically meaningful quantities.
 Typical approaches apply transfer-matrix methods (TMM) [@tompkins2005; @WVASEguide].
 Here, an interaction matrix describes the optical response of each individual material layer.
 Determining the optical response of a multilayer system then requires matrix multiplication of the individual layers' matrices.
@@ -40,7 +40,7 @@ Unfortunately, each manufacturer supplies their own adapted software solution.
 This approach promises efficient laboratory workflows - if working flawlessly.
 However, it binds scientists to specific optical models available and limits experiments to the ones supported in the provided software.
 Furthermore, data interchange can be cumbersome.
-For example, results may even be hard to reproduce on competitive systems due to the use of other models or parameters.
+For example, results may even be hard to reproduce on competing systems due to the use of other models or parameters.
 In addition, limitations of the specific software included with each instrument may stimulate scientists to use third-party software:
 bundled software packages may not support specific desirable kinds of analyses, such as including the response of optically anisotropic materials or simultaneous fitting of external experimental parameters.
 
@@ -70,7 +70,7 @@ Furthermore, the use of Python and vectorization libraries also facilitates the 
 
 # Statement of need
 
-The importance of publishing data according to the FAIR principles is growing [@Wilkinson2016].
+The importance of publishing data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) principles is growing [@Wilkinson2016].
 Many research journals already require authors to add supporting data, and there is a growing expectation from sponsors for institutes and researchers to implement data governance.
 The FAIR principles have recently been extended to apply to research software as well since reproducing data requires not only the data itself but also the software used to create it [@Barker2022].
 Producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE, as the results are tightly related and dependent on the algorithms and models used for evaluation.
@@ -89,7 +89,7 @@ Other notable Python open-source software for solving transfer-matrices is avail
 
 - [PyGTM](https://pygtm.readthedocs.io) [@Passler17; @Passler19] provides a non-vectorized, extensive general transfer matrix approach. It allows calculation of additional parameters, like the local strength of the electric field at any position in the multilayer stack.
 - [PyLlama](https://pyllama.readthedocs.io) [@Bay2022] focuses on the simulation of liquid crystals and uses non-vectorized TMM and a scattering matrix algorithm (rigorous coupled-wave analysis, RCWA).
-- [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021] is a complete toolkit to simulate the physical and electrical properties of solar cells. It provides the same 2x2 algorithm[@byrnes2020multilayer] and a scattering matrix approach (S4).
+- [RayFlare](https://rayflare.readthedocs.io) [@Pearce2021] is a complete toolkit to simulate the physical and electrical properties of solar cells. It provides a vectorized version of the 2x2 algorithm[@byrnes2020multilayer] and a scattering matrix approach (S4).
 - [tmm_fast](https://github.com/MLResearchAtOSRAM/tmm_fast) [@Luce22] is a vectorized variant of Byrnes' algorithm for artificial intelligence-based analysis of multilayer stacks.
 - [tmmax](https://github.com/bahremsd/tmmax) [@tmmax] is a JIT-compilable version of the 2x2 matrix method, leveraging the _JAX_ toolkit.
 - [PyMoosh](https://github.com/AnMoreau/PyMoosh) [@Langevin:24] is a comprehensive toolkit for computing the optical properties of multilayered structures, with a plethora of available scattering and transfer matrix algorithms.
@@ -165,7 +165,7 @@ structure = elli.Structure(
 ```
 
 Finally, calling the `evaluate(...)` method of the `structure` object triggers the calculation.
-The example uses a `wavelengths` array from $210$ nm to $800$ nm for the calculation range and an angle of incidence of $70°$ degree.
+The example uses a `wavelengths` array from $210$ nm to $800$ nm for the calculation range and an angle of incidence of $70$ degree.
 
 ```python
 wavelengths = linspace(210, 800, 100)
