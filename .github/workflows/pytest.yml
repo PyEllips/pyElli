@@ -21,9 +21,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.ps1 | powershell -Command -
+          echo "$env:USERPROFILE\.cargo\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Install module
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
           uv pip install --system ".[fitting,dev]"
           uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu
       - name: Test with pytest
@@ -46,13 +51,10 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
-      - name: Install uv (prebuilt binary)
-        run: |
-          curl -LsSf https://astral.sh/uv/install.ps1 | powershell -Command -
-          echo "$env:USERPROFILE\.cargo\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Install module
         run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
           uv pip install --system ".[fitting,dev]"
           uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu
       - name: Test with pytest
