@@ -1,8 +1,9 @@
 """Tests the importing from the refractiveindex.info database."""
 
-import elli
 import numpy as np
 import pytest
+
+import elli
 
 
 class TestRefractiveIndexInfo:
@@ -12,6 +13,10 @@ class TestRefractiveIndexInfo:
 
     def test_get_mat(self):
         mat = self.RII.get_mat("Au", "Johnson")
+        assert isinstance(mat, elli.IsotropicMaterial)
+
+    def test_encoding(self):
+        mat = self.RII.get_mat("Ta2O5", "Franta")
         assert isinstance(mat, elli.IsotropicMaterial)
 
     def test_dispersion_error(self):
