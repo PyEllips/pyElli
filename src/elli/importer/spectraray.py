@@ -8,8 +8,7 @@ import re
 import pandas as pd
 from packaging.version import Version, parse
 
-from ..utils import calc_rho, convert_delta_range
-from . import detect_encoding
+from ..utils import calc_rho, convert_delta_range, detect_encoding
 
 
 def read_spectraray_psi_delta(

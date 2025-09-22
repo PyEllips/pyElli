@@ -5,8 +5,7 @@ Typical files look like: Si3N4_on_4inBF33_W03_20240905-105631.ds.dat
 import numpy as np
 import pandas as pd
 
-from ..utils import convert_delta_range
-from . import detect_encoding
+from ..utils import convert_delta_range, detect_encoding
 
 
 def read_accurion_psi_delta(fname: str) -> pd.DataFrame:
