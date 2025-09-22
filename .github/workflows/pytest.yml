@@ -48,8 +48,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python_version }}
-
-
       - name: Install module
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
