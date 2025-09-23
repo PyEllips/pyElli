@@ -10,6 +10,29 @@ on:
     branches: [master]
 
 jobs:
+  test_python_win:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install module
+        run: |
+          uv pip install --system ".[fitting,dev]"
+          uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Test with pytest
+        run: |
+          pytest --nbmake
+
   test_python:
     runs-on: ubuntu-latest
     strategy:

@@ -1,6 +1,7 @@
 # Encoding: utf-8
 from dataclasses import dataclass
 
+import chardet
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -361,3 +362,16 @@ def rotation_v_theta(v: npt.ArrayLike, theta: float) -> npt.NDArray:
         + m_w * np.sin(np.deg2rad(theta))
         + np.linalg.matrix_power(m_w, 2) * (1 - np.cos(np.deg2rad(theta)))
     )
+
+
+def detect_encoding(fname: str) -> str:
+    r"""Detects the encoding of file fname.
+    Args:
+      fname (str): Filename
+    Returns:
+      str: Encoding identifier string.
+    """
+    with open(fname, "rb") as f:
+        raw_data = f.read()
+    result = chardet.detect(raw_data)
+    return result["encoding"]
