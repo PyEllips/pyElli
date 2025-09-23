@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1758053499467,
+  "lastUpdate": 1758640063970,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -17389,6 +17389,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0001423277449604369",
             "extra": "mean: 3.5939221999939264 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ea10616061fe41ea3c6be5b5b42f290279440b8a",
+          "message": "Fix for rii encoding problems under windows + windows pytest (for 3.13 only) (#228)\n\n* Use chardet in RII scripts\n\n* Add windows pytest\n\n* Fix installation of uv\n\n* Us uv install action\n\n* Add dispersion with encoding errors\n\n* Cleanup diff\n\n---------\n\nCo-authored-by: MarJMue <49639740+MarJMue@users.noreply.github.com>",
+          "timestamp": "2025-09-23T17:06:54+02:00",
+          "tree_id": "31d3296ec4ddd0a1d11e635e3affd4a39c9dc428",
+          "url": "https://github.com/PyEllips/pyElli/commit/ea10616061fe41ea3c6be5b5b42f290279440b8a"
+        },
+        "date": 1758640062529,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 147.62529652753284,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017430863072447658",
+            "extra": "mean: 6.773906800000873 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 70.74417810078705,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005627752535782365",
+            "extra": "mean: 14.135438800000344 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.209662994009726,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001377555326814084",
+            "extra": "mean: 24.86964389999926 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 20.106143427499433,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00047549307915615744",
+            "extra": "mean: 49.73604230000106 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 57.954876495436075,
+            "unit": "iter/sec",
+            "range": "stddev: 0.008287985164734581",
+            "extra": "mean: 17.254803399999474 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 268.72272514727325,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000034566047406430345",
+            "extra": "mean: 3.721307899999715 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 280.97103702794465,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009592711055135082",
+            "extra": "mean: 3.559085699998832 msec\nrounds: 10"
           }
         ]
       }
