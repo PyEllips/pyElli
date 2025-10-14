@@ -26,7 +26,7 @@ from elli.fitting import ParamsHist, fit
 # This is because we're using literature values for Si,
 # which are only defined in this wavelength range.
 ANGLE = 70
-psi_delta = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE][210:800]
+psi_delta = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[ANGLE].loc[210:800]
 
 # %%
 # Setting parameters
