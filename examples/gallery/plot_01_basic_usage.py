@@ -1,12 +1,12 @@
 """
-Basic usage
-===========
+Basic usage of pyElli
+=====================
 
 Basic usage of building a model and fitting it to measurement data of SiO2 on Si.
 
 """
 
-# %%
+# %% Import required libraries
 import elli
 from elli.fitting import ParamsHist, fit
 

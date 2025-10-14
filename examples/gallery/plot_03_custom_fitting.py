@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 # %%
 # Data import
 # -----------
+# Read Ψ (psi) and Δ (delta) ellipsometric spectra for different angles from a NeXus file, limited to a wavelength range of 210–800 nm, to be compatible with a tabulated Silicon dispersion.
 data = elli.read_nexus_psi_delta("SiO2onSi.ellips.nxs").loc[
     (slice(None), slice(210, 800)), :
 ]
@@ -30,6 +31,7 @@ data
 # %%
 # Setting up invariant materials and fitting parameters
 # -----------------------------------------------------
+# Set up the optical constants for the substrate from RII and define initial fit parameters for the Cauchy SiO₂ layer.
 rii_db = elli.db.RII()
 Si = rii_db.get_mat("Si", "Aspnes")
 
@@ -69,8 +71,8 @@ def model(lbda, angle, params):
 # %%
 # Defining the fit function
 # -------------------------
-# The fit function follows the protocol defined by the lmfit package and needs the parameters dictionary as first argument.
-# It has to return a residual value, which will be minimized. Here psi and delta are used to calculate the residual, but could be changed to transmission or reflection data.
+# The fit function follows the protocol defined by the lmfit package and needs the parameters dictionary as first argument. It has to return a residual value, which will be minimized.
+# Here psi and delta are used across all angles to calculate the residual, but could be changed to any other measured quantity like transmission or reflection data.
 
 
 def fit_function(params, lbda, data):
@@ -93,6 +95,7 @@ def fit_function(params, lbda, data):
 # ---------------
 # The fitting is performed by calling the minimize function with the fit_function and the needed arguments.
 # It is possible to change the underlying algorithm by providing the method kwarg.
+# The fit_report function provides fitted values, uncertainties, and goodness-of-fit statistics.
 
 out = minimize(fit_function, params, args=(lbda, data), method="leastsq")
 print(fit_report(out))
@@ -100,6 +103,7 @@ print(fit_report(out))
 # %%
 # Plotting the results
 # ----------------------------------------------
+# The measurent results are displayed as scatter plot and the PyElli results are overlayed as solid lines.
 
 fit_50 = model(lbda, 50, out.params)
 fit_60 = model(lbda, 60, out.params)
