@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.22.5 - 2025-09-23
+
+### Added
+
+- Tests for windows
+
+### Fixed
+
+- Encoding problems of refractiveindex.info files under windows
+
 ## Version 0.22.4
 
 ### Bugfixes
