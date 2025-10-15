@@ -19,7 +19,7 @@ from elli.fitting import ParamsHist, fit
 #
 # The sample is an ALD grown TiO2 sample (with 400 cycles)
 # on commercially available SiO2 / Si substrate.
-tss = elli.read_spectraray_psi_delta("TiO2_400cycles.txt").loc[70.06][400:800]
+tss = elli.read_spectraray_psi_delta("TiO2_400cycles.txt").loc[70.06].loc[400:800]
 
 # %%
 # Set start parameters

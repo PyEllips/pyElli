@@ -2,7 +2,7 @@
 Mueller matrix
 ==============
 
-Mueller matrix fit to a SiO2 on Si measurement.
+Exemplary fit of the complete Mueller matrix of a SiO2 on Si measurement.
 """
 
 # %%
