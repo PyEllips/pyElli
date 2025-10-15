@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.22.6 - 2025-10-16
+
+### Added
+
+- Improved Examples
+- Updated refractiveindex.info database
+
 ## Version 0.22.5 - 2025-09-23
 
 ### Added
