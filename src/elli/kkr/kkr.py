@@ -151,9 +151,10 @@ def re2im(re: np.ndarray, x: np.ndarray) -> np.ndarray:
 
     The underlying formula reads:
 
-    .. math::
-        \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
-        \frac{2}{\pi} \int_0^\infty \frac{x_i \Re(x)}{x^2 - x_i^2} dx
+    $$
+    \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
+    \frac{2}{\pi} \int_0^\infty \frac{x_i \Re(x)}{x^2 - x_i^2} dx
+    $$
 
     Args:
         re (numpy.ndarray): The real values to transform.
@@ -173,9 +174,10 @@ def im2re(im: np.ndarray, x: np.ndarray) -> np.ndarray:
 
     The underlying formula reads:
 
-    .. math::
-        \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
-        \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{x^2 - x_i^2} dx
+    $$
+    \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
+    \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{x^2 - x_i^2} dx
+    $$
 
     Args:
         im (numpy.ndarray): The imaginary values to transform.
@@ -196,9 +198,10 @@ def re2im_reciprocal(re: np.ndarray, x: np.ndarray) -> np.ndarray:
 
     The underlying formula reads:
 
-    .. math::
-        \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
-        \frac{2}{\pi} \int_0^\infty \frac{\Re(x)}{x_i - \frac{x^2}{x_i}} dx
+    $$
+    \Delta \Im(x_i) = \Im(x_i) - \Im(\infty) =
+    \frac{2}{\pi} \int_0^\infty \frac{\Re(x)}{x_i - \frac{x^2}{x_i}} dx
+    $$
 
     Args:
         re (numpy.ndarray): The real values to transform.
@@ -219,9 +222,10 @@ def im2re_reciprocal(im: np.ndarray, x: np.ndarray) -> np.ndarray:
 
      The underlying formula reads:
 
-    .. math::
-        \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
-        \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{1 - \frac{x^2}{x_i^2}} dx
+    $$
+    \Delta \Re(x_i) = \Re(x_i) - \Re(\infty) =
+    \frac{2}{\pi} \int_0^\infty \frac{x \Im(x)}{1 - \frac{x^2}{x_i^2}} dx
+    $$
 
     Args:
         im (numpy.ndarray): The imaginary values to transform.

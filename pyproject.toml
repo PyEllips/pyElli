@@ -54,13 +54,9 @@ dev = [
     "pre-commit",
 ]
 docs = [
-    "sphinx!=5.1.0",
-    "sphinx_rtd_theme",
-    "sphinx-mdinclude",
-    "sphinx-gallery",
-    "sphinx-plotly-directive",
-    "sphinxcontrib-mermaid",
-    "myst_parser",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mike",
 ]
 
 [project.urls]

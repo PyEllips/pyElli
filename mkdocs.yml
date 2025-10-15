@@ -1,0 +1,29 @@
+site_name: PyElli
+site_url: https://pyellips.github.com/pyElli/docs
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      locale: en
+      handlers:
+        python:
+          options:
+            show_source: false
+
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - js/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
