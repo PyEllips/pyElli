@@ -108,65 +108,66 @@ class RII:
 
         entries = []
         for sh in yml_file:
-            b_div = pd.NA
-            for b in sh["content"]:
-                if "DIVIDER" not in b:
-                    p_div = pd.NA
-                    for p in b["content"]:
-                        if "DIVIDER" not in p:
-                            infos = pagename_pattern.match(p["name"])
-                            if infos is None:
-                                entries.append(
-                                    nt_entry(
-                                        sh["SHELF"],
-                                        sh["name"],
-                                        b_div,
-                                        b["BOOK"],
-                                        b["name"],
-                                        p["PAGE"],
-                                        p_div,
-                                        None,
-                                        None,
-                                        p["name"],
-                                        None,
-                                        None,
-                                        os.path.join(
-                                            "data-nk", os.path.normpath(p["data"])
-                                        ),
+            if "DIVIDER" not in sh:
+                b_div = pd.NA
+                for b in sh["content"]:
+                    if "DIVIDER" not in b:
+                        p_div = pd.NA
+                        for p in b["content"]:
+                            if "DIVIDER" not in p:
+                                infos = pagename_pattern.match(p["name"])
+                                if infos is None:
+                                    entries.append(
+                                        nt_entry(
+                                            sh["SHELF"],
+                                            sh["name"],
+                                            b_div,
+                                            b["BOOK"],
+                                            b["name"],
+                                            p["PAGE"],
+                                            p_div,
+                                            None,
+                                            None,
+                                            p["name"],
+                                            None,
+                                            None,
+                                            os.path.join(
+                                                "data", os.path.normpath(p["data"])
+                                            ),
+                                        )
                                     )
-                                )
+                                else:
+                                    entries.append(
+                                        nt_entry(
+                                            sh["SHELF"],
+                                            sh["name"],
+                                            b_div,
+                                            b["BOOK"],
+                                            b["name"],
+                                            p["PAGE"],
+                                            p_div,
+                                            infos.group("authors"),
+                                            infos.group("year"),
+                                            " ".join(
+                                                filter(
+                                                    None,
+                                                    (
+                                                        infos.group("comment1"),
+                                                        infos.group("comment2"),
+                                                    ),
+                                                )
+                                            ),
+                                            infos.group("lower_range1"),
+                                            infos.group("upper_range1"),
+                                            os.path.join(
+                                                "data", os.path.normpath(p["data"])
+                                            ),
+                                        )
+                                    )
                             else:
-                                entries.append(
-                                    nt_entry(
-                                        sh["SHELF"],
-                                        sh["name"],
-                                        b_div,
-                                        b["BOOK"],
-                                        b["name"],
-                                        p["PAGE"],
-                                        p_div,
-                                        infos.group("authors"),
-                                        infos.group("year"),
-                                        " ".join(
-                                            filter(
-                                                None,
-                                                (
-                                                    infos.group("comment1"),
-                                                    infos.group("comment2"),
-                                                ),
-                                            )
-                                        ),
-                                        infos.group("lower_range1"),
-                                        infos.group("upper_range1"),
-                                        os.path.join(
-                                            "data-nk", os.path.normpath(p["data"])
-                                        ),
-                                    )
-                                )
-                        else:
-                            p_div = p["DIVIDER"]
-                else:
-                    b_div = b["DIVIDER"]
+                                p_div = p["DIVIDER"]
+                    else:
+                        b_div = b["DIVIDER"]
 
         self.catalog = pd.DataFrame(entries, dtype=pd.StringDtype())
 

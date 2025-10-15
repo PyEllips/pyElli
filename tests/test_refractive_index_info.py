@@ -54,7 +54,7 @@ class TestRefractiveIndexInfo:
         )
 
     def test_formula_2_tabular_k(self):
-        disp = self.RII.get_dispersion("SCHOTT-BK", "N-BK7")  # Formula 2 + k
+        disp = self.RII.get_dispersion("BK7", "SCHOTT")  # Formula 2 + k
 
         np.testing.assert_almost_equal(
             disp.get_refractive_index(500), 1.5214 + 1j * 9.5781e-9, decimal=4
@@ -64,7 +64,7 @@ class TestRefractiveIndexInfo:
         )
 
     def test_formula_3(self):
-        disp = self.RII.get_dispersion("HOYA-NbF", "NBF1")  # Formula 3
+        disp = self.RII.get_dispersion("HOYA-optical", "NBF1")  # Formula 3
 
         np.testing.assert_almost_equal(
             disp.get_refractive_index(500), 1.7520 + 1j * 3.9809e-9, decimal=4
