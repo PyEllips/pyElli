@@ -1,13 +1,39 @@
 site_name: PyElli
-site_url: https://pyellips.github.com/pyElli/docs
+site_description: |
+  The documentation of pyElli
+repo_url: https://github.com/PyEllips/pyElli
+edit_uri: ""
 theme:
   name: material
   features:
     - navigation.instant
     - navigation.tabs
+    - navigation.indexes
+
+nav:
+  - Getting Started:
+    - index.md
+    - contributing.md
+  - Tutorials:
+    - tutorial/index.md
+    - tutorial/getting_started.md
+  - How-Tos:
+    - howto/index.md
+    - howto/custom_fitting.md
+    - howto/mueller_matrix.md
+  - Learning:
+    - explanation/index.md
+    - explanation/data_structure.md
+    - explanation/class_structure.md
+  - Reference:
+    - reference/index.md
+    - reference/changelog.md
 
 plugins:
   - search
+  - api-autonav:
+      modules: ['src/elli']
+      nav_section_title: "Reference"
   - mkdocstrings:
       default_handler: python
       locale: en
@@ -21,6 +47,7 @@ extra:
     provider: mike
 
 markdown_extensions:
+  - pymdownx.snippets
   - pymdownx.arithmatex:
       generic: true
 

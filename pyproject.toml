@@ -55,7 +55,8 @@ dev = [
 ]
 docs = [
     "mkdocs-material",
-    "mkdocstrings[python]",
+    "mkdocstrings[python]>=0.18",
+    "mkdocs-autoapi",
     "mike",
 ]
 
