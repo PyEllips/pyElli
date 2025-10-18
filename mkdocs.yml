@@ -16,7 +16,7 @@ nav:
     - contributing.md
   - Tutorials:
     - tutorial/index.md
-    - tutorial/getting_started.md
+    - tutorial/simple_fit.md
   - How-Tos:
     - howto/index.md
     - howto/custom_fitting.md
