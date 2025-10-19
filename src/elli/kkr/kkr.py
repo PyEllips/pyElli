@@ -1,8 +1,8 @@
-r"""Calculate Kramers-Kronig relations according to Maclaurin's formula [1]_.
+r"""Calculate Kramers-Kronig relations according to Maclaurin's formula[^1].
 Here, the differential formulation is used,
 which means that the transformation always diverges to zero at infinity,
 leaving a free infinity offset.
-This offset is typically referred to as :math:`\epsilon(\infty)` in spectroscopy.
+This offset is typically referred to as $\epsilon(\infty)$ in spectroscopy.
 
 Since the Kramers-Kronig relation integrates over the whole spectrum for each point,
 it is very sensitive to sampling changes and non-zero values.
@@ -16,15 +16,13 @@ Additionally, the discretisation steps of the x-axis should be kept constant.
 For the transformation of the real to imaginary part you need to be especially cautios.
 Typically, in spectroscopy the real part of the dielectric
 function is non-zero throughout the whole spectrum
-and especially :math:`\epsilon(\infty) \ne 0`.
+and especially $\epsilon(\infty) \ne 0$.
 This makes the Kramers-Kronig transformation virtually impossible in these cases
 as it suffers from major uncertanties.
 Hence, this transformation is included in pyElli only for completeness and for the
-special cases it may be applicable.
+special cases in which it may be applicable.
 
-.. rubric:: References
-
-.. [1] Ohta and Ishida, Appl. Spectroscopy 42, 952 (1988), https://doi.org/10.1366/0003702884430380
+[^1]: [Ohta and Ishida, Appl. Spectroscopy 42, 952 (1988)](https://doi.org/10.1366/0003702884430380)
 """
 
 # pylint: disable=invalid-name
@@ -60,7 +58,7 @@ def _integrate_im_reciprocal(
         x_i (numpy.ndarray): The current point around which to integrate. (shape (m, 1))
 
     Returns:
-        numpy.ndarray: The integral sum. (shape (m,))
+        The integral sum. (shape (m,))
     """
 
     return np.sum(im / (x * (1.0 - x * x / (x_i * x_i))), axis=1)
@@ -75,7 +73,7 @@ def _integrate_re(re: np.ndarray, x: np.ndarray, x_i: np.ndarray) -> np.ndarray:
         x_i (numpy.ndarray): The current point around which to integrate. (shape (m, 1))
 
     Returns:
-        numpy.ndarray: The real sum. (shape (m,))
+        The real sum. (shape (m,))
     """
     return np.sum(x_i * re / (x * x - x_i * x_i), axis=1)
 
@@ -92,7 +90,7 @@ def _integrate_re_reciprocal(
         x_i (float): The current point around which to integrate. (shape (m, 1))
 
     Returns:
-        numpy.ndarray: The real sum. (shape (m,))
+        The real sum. (shape (m,))
     """
 
     return np.sum(re / (x_i - x * x / x_i), axis=1)
@@ -116,7 +114,7 @@ def _calc_kkr(
         ValueError: y and x axis must have the same length.
 
     Returns:
-        np.ndarray: The kkr transformed y-axis
+        The kkr transformed y-axis
     """
 
     if len(t) != len(x):
@@ -161,7 +159,7 @@ def re2im(re: np.ndarray, x: np.ndarray) -> np.ndarray:
         x (numpy.ndarray): The axis on which to transform.
 
     Returns:
-        numpy.ndarray: The transformed imaginary part.
+        The transformed imaginary part.
     """
 
     return _calc_kkr(re, x, _integrate_re)
@@ -184,7 +182,7 @@ def im2re(im: np.ndarray, x: np.ndarray) -> np.ndarray:
         x (numpy.ndarray): The axis on which to transform.
 
     Returns:
-        numpy.ndarray: The transformed real part.
+        The transformed real part.
     """
 
     return _calc_kkr(im, x, _integrate_im)
@@ -208,7 +206,7 @@ def re2im_reciprocal(re: np.ndarray, x: np.ndarray) -> np.ndarray:
         x (numpy.ndarray): The reciprocal axis on which to transform.
 
     Returns:
-        numpy.ndarray: The transformed imaginary part.
+        The transformed imaginary part.
     """
 
     return _calc_kkr(re, x, _integrate_re_reciprocal)
@@ -232,7 +230,7 @@ def im2re_reciprocal(im: np.ndarray, x: np.ndarray) -> np.ndarray:
         x (numpy.ndarray): The reciprocal axis on which to transform.
 
     Returns:
-        numpy.ndarray: The transformed real part.
+        The transformed real part.
     """
 
     return _calc_kkr(im, x, _integrate_im_reciprocal)

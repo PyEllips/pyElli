@@ -1,4 +1,4 @@
-site_name: PyElli
+site_name: PyElli Documentation
 site_description: |
   The documentation of pyElli
 repo_url: https://github.com/PyEllips/pyElli
@@ -9,6 +9,9 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.indexes
+  palette:
+    primary: cyan
+    accent: teal
 
 nav:
   - Getting Started:
@@ -25,12 +28,16 @@ nav:
     - explanation/index.md
     - explanation/data_structure.md
     - explanation/class_structure.md
+    - explanation/formula_dispersions.md
   - Reference:
     - reference/index.md
+    - reference/solvers.md
+    - reference/kkr.md
     - reference/changelog.md
 
 plugins:
   - search
+  - plotly
   - api-autonav:
       modules: ['src/elli']
       nav_section_title: "Reference"
@@ -40,6 +47,7 @@ plugins:
       handlers:
         python:
           options:
+            show_root_heading: false
             show_source: false
 
 extra:
@@ -50,6 +58,12 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.arithmatex:
       generic: true
+  - footnotes
+  - pymdownx.superfences:
+      custom_fences:
+        - name: plotly
+          class: mkdocs-plotly
+          format: !!python/name:mkdocs_plotly_plugin.fences.fence_plotly
 
 extra_javascript:
   - js/mathjax.js
