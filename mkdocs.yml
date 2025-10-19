@@ -9,6 +9,7 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.indexes
+    - content.code.copy
   palette:
     primary: cyan
     accent: teal
@@ -22,7 +23,7 @@ nav:
     - tutorial/simple_fit.md
   - How-Tos:
     - howto/index.md
-    - howto/custom_fitting.md
+    - howto/fitting_multiple_angles.md
     - howto/mueller_matrix.md
   - Learning:
     - explanation/index.md
@@ -55,10 +56,17 @@ extra:
     provider: mike
 
 markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.arithmatex:
       generic: true
   - footnotes
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences:
       custom_fences:
         - name: plotly
