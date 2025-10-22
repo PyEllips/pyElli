@@ -21,6 +21,7 @@ nav:
   - Tutorials:
     - tutorial/index.md
     - tutorial/simple_fit.md
+    - tutorial/working_with_dispersions.md
   - How-Tos:
     - howto/index.md
     - howto/fitting_multiple_angles.md

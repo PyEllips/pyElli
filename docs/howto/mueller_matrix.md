@@ -1,3 +1,3 @@
-# Mueller Matrix
+# Mueller Matrix Fitting
 
 Mueller matrix

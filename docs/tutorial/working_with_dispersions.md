@@ -1,6 +1,7 @@
-# Working with Dispersions
+# Working with Dispersions Models
 
-TODO:
-- How to construct and add dispersions
-- Formula dispersions
-- How to load dispersions from rii
+## Adding Dispersions
+
+## Using a Formula Dispersion
+
+## Using Dispersions from refractiveindex.info
