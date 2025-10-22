@@ -56,3 +56,6 @@ MANIFEST
 
 # Ignore pyenv virtualenv python version
 .python-version
+
+# Mkdocs build
+site

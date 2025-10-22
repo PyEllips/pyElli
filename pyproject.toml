@@ -51,17 +51,14 @@ dev = [
     "pytest-cov",
     "nbmake",
     "ruff==0.8.5",
-    "uv",
     "pre-commit",
 ]
 docs = [
-    "sphinx!=5.1.0",
-    "sphinx_rtd_theme",
-    "sphinx-mdinclude",
-    "sphinx-gallery",
-    "sphinx-plotly-directive",
-    "sphinxcontrib-mermaid",
-    "myst_parser",
+    "mkdocs-material",
+    "mkdocstrings[python]>=0.18",
+    "mkdocs-api-autonav",
+    "mkdocs-plotly-plugin",
+    "mike",
 ]
 
 [project.urls]

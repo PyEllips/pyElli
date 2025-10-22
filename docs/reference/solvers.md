@@ -1,6 +1,4 @@
-*******
-Solvers
-*******
+# Solvers
 
 For calculation of light interaction in material stacks the transfer matrix method is used.
 In pyElli the :class:`Solver<elli.solver.Solver>` classes provide the necessary toolset for two kinds of transfer matrix algorithms.
@@ -18,32 +16,10 @@ Although, it is very fast it is not very accurate.
 The :class:`PropagatorExpm<elli.solver4x4.PropagatorExpm>` is solving the matrix exponential by the Pade approximation.
 It can use SciPy as backend, but for performance-critical tasks, it is recommended to install PyTorch.
 
-.. rubric:: References
+## Solver2x2
 
-.. [1] Dwight W. Berreman, "Optics in Stratified and Anisotropic Media: 4×4-Matrix Formulation," J. Opt. Soc. Am. 62, 502-510 (1972)
+::: elli.solver2x2.Solver2x2
 
+## Solver4x4
 
-
-Solver base class (Solver)
-==========================
-
-.. automodule:: elli.solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-2x2 Matrix Solver (Solver2x2)
-=============================
-
-.. automodule:: elli.solver2x2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-4x4 Matrix Solver (Solver4x4)
-=============================
-
-.. automodule:: elli.solver4x4
-   :members:
-   :undoc-members:
-   :show-inheritance:
+::: elli.solver4x4.Solver4x4
