@@ -45,9 +45,9 @@ In addition, limitations of the specific software included with each instrument 
 bundled software packages may not support specific desirable kinds of analyses, such as including the response of optically anisotropic materials or simultaneous fitting of external experimental parameters.
 
 **pyElli** offers an open-source alternative extending the capabilities of existing solutions, while aiming to remain as compatible as possible, by providing data imports from various manufacturers (Woollam VWASE, Woollam CompleteEASE, Sentech, Accurion).
+**pyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for findable, accessible, interoperable, and reusable (FAIR) data, as well as software [@Wilkinson2016; @Barker2022].
 The code is designed with extensibility and adaptability in mind enabling the implementation of individually adapted models as well as data evaluation with custom tools.
 Typical examples for advanced use-cases are implementations of custom experimental geometries not covered by other software [@eberheim2022], imaging ellipsometry, or as a full FAIR data automated analysis pipeline for SE measurements.
-**pyElli** also supports recent advances in the standardization of ellipsometry data and models, addressing the need for FAIR data [@Wilkinson2016].
 
 **pyElli** aims to provide a straight-forward database of predefined dispersion models for analyzing materials.
 All optical models adhere closely to the literature [@Hilfiker2018].
@@ -70,7 +70,7 @@ Furthermore, the use of Python and vectorization libraries also facilitates the 
 
 # Statement of need
 
-The importance of publishing data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) principles is growing [@Wilkinson2016].
+The importance of publishing data according to the FAIR principles is growing [@Wilkinson2016].
 Many research journals already require authors to add supporting data, and there is a growing expectation from sponsors for institutes and researchers to implement data governance.
 The FAIR principles have recently been extended to apply to research software as well since reproducing data requires not only the data itself but also the software used to create it [@Barker2022].
 Producing FAIR data and using a FAIR and open analysis pipeline is especially important for SE, as the results are tightly related and dependent on the algorithms and models used for evaluation.
