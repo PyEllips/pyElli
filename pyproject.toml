@@ -51,6 +51,7 @@ dev = [
     "nbmake",
     "ruff==0.8.5",
     "pre-commit",
+    "mktestdocs>=0.2.5",
 ]
 docs = [
     "mkdocs-material",

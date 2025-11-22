@@ -2165,6 +2165,15 @@ wheels = [
 ]
 
 [[package]]
+name = "mktestdocs"
+version = "0.2.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/04/aced274f9ea76dfdb7a36c1b729863ebbf61e94b60a0d1eefa2556a61df5/mktestdocs-0.2.5.tar.gz", hash = "sha256:7935d4e665b34b690cdf14749abb842723652485f67af12dce51099bcb98e105", size = 10519, upload-time = "2025-07-25T12:39:29.073Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4f/eb/3686be82dfeb12eb968f002254464e282722e4ac52c465c2998764583f34/mktestdocs-0.2.5-py3-none-any.whl", hash = "sha256:2b20d2387b2025597f3129773edef16d09b08b1b6d31da6cc51af5b693c10430", size = 9096, upload-time = "2025-07-25T12:39:27.985Z" },
+]
+
+[[package]]
 name = "nbclient"
 version = "0.10.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3031,6 +3040,7 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "mktestdocs" },
     { name = "nbmake" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -3073,6 +3083,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'" },
     { name = "mkdocs-plotly-plugin", marker = "extra == 'docs'" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.18" },
+    { name = "mktestdocs", marker = "extra == 'dev'", specifier = ">=0.2.5" },
     { name = "nbmake", marker = "extra == 'dev'" },
     { name = "numpy", specifier = ">=1.20" },
     { name = "numpy", marker = "python_full_version < '3.10'", specifier = "<2.0.0" },

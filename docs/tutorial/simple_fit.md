@@ -23,6 +23,7 @@ We'll also import the function `fit` from pyEllis fitting module.
 This is a function decorator, which we will use to display our interactive fitting widget.
 
 ```python
+import numpy as np
 import elli
 from elli.fitting import ParamsHist, fit
 ```
@@ -105,6 +106,7 @@ In the last step we just need to evaluate our model for a set of wavelengths (`l
 Additionally, we need the specify the solver (`elli.Solver2x2` in this case).
 
 ```python
+lbda = np.linspace(210, 800, 100)
 structure.evaluate(lbda, ANGLE, solver=elli.Solver2x2)
 ```
 
