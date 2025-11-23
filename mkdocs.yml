@@ -7,8 +7,12 @@ theme:
   name: material
   features:
     - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
     - navigation.tabs
     - navigation.indexes
+    - navigation.footer
+    - navigation.top
     - content.code.copy
   palette:
     primary: cyan
