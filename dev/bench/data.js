@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1764658262195,
+  "lastUpdate": 1765003355827,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -18849,6 +18849,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0001354012897826129",
             "extra": "mean: 3.1861194998782594 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3c59cfb1923d7dc725512c1f4616dade83ce32e0",
+          "message": "Bump urllib3 from 2.5.0 to 2.6.0 in /docs (#247)\n\nBumps [urllib3](https://github.com/urllib3/urllib3) from 2.5.0 to 2.6.0.\n- [Release notes](https://github.com/urllib3/urllib3/releases)\n- [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst)\n- [Commits](https://github.com/urllib3/urllib3/compare/2.5.0...2.6.0)\n\n---\nupdated-dependencies:\n- dependency-name: urllib3\n  dependency-version: 2.6.0\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2025-12-06T07:41:48+01:00",
+          "tree_id": "bfc4f43491d8b6ba95e647d3ca1340c55d4d61d1",
+          "url": "https://github.com/PyEllips/pyElli/commit/3c59cfb1923d7dc725512c1f4616dade83ce32e0"
+        },
+        "date": 1765003354860,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 151.82910419690387,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016019999793201423",
+            "extra": "mean: 6.586352499999748 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 69.22168713243833,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000591593139996897",
+            "extra": "mean: 14.44633959999777 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.3415154559737,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017392375073402018",
+            "extra": "mean: 24.788359800001558 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.889641330594838,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004768254266046852",
+            "extra": "mean: 50.27742750000073 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 55.58569720866899,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00853177091728069",
+            "extra": "mean: 17.990239400002395 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 267.7583567582786,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000052065774287814675",
+            "extra": "mean: 3.734710700001642 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 277.4909215376903,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012908249207365123",
+            "extra": "mean: 3.603721499999324 msec\nrounds: 10"
           }
         ]
       }
