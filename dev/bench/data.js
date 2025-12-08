@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1765003487393,
+  "lastUpdate": 1765183434285,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -18995,6 +18995,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00010108599985721976",
             "extra": "mean: 3.5736543999988157 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "68b9d4a0fc71b0f5e1819821a30a957a2a716750",
+          "message": "Bump sigstore/gh-action-sigstore-python from 3.1.0 to 3.2.0 (#249)\n\nBumps [sigstore/gh-action-sigstore-python](https://github.com/sigstore/gh-action-sigstore-python) from 3.1.0 to 3.2.0.\n- [Release notes](https://github.com/sigstore/gh-action-sigstore-python/releases)\n- [Changelog](https://github.com/sigstore/gh-action-sigstore-python/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/sigstore/gh-action-sigstore-python/compare/v3.1.0...v3.2.0)\n\n---\nupdated-dependencies:\n- dependency-name: sigstore/gh-action-sigstore-python\n  dependency-version: 3.2.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2025-12-08T09:43:09+01:00",
+          "tree_id": "68bb14d4902dd350084cc0dae03c5e8db1237733",
+          "url": "https://github.com/PyEllips/pyElli/commit/68b9d4a0fc71b0f5e1819821a30a957a2a716750"
+        },
+        "date": 1765183433479,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 150.59953599974548,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017857320888568882",
+            "extra": "mean: 6.640126700003179 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 68.83374998057636,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0007125382785913915",
+            "extra": "mean: 14.527757100000827 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.15950149207469,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001703793465402891",
+            "extra": "mean: 24.900707500000863 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.86316661780302,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0011718494402554974",
+            "extra": "mean: 50.344440000000645 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 59.21992038734285,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007044274126675321",
+            "extra": "mean: 16.88620980000053 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 266.18259764183256,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005833800140186959",
+            "extra": "mean: 3.756819600000938 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 274.5432389816978,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001267731280948463",
+            "extra": "mean: 3.6424134999975877 msec\nrounds: 10"
           }
         ]
       }
