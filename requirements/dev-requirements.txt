@@ -231,9 +231,9 @@ fastjsonschema==2.21.1 \
     --hash=sha256:794d4f0a58f848961ba16af7b9c85a3e88cd360df008c59aac6fc5ae9323b5d4 \
     --hash=sha256:c9e5b7e908310918cf494a434eeb31384dd84a98b57a30bcb1f535015b554667
     # via nbformat
-filelock==3.20.1 \
-    --hash=sha256:15d9e9a67306188a44baa72f569d2bfd803076269365fdea0934385da4dc361a \
-    --hash=sha256:b8360948b351b80f420878d8516519a2204b07aefcdcfd24912a5d33127f188c
+filelock==3.20.3 \
+    --hash=sha256:18c57ee915c7ec61cff0ecf7f0f869936c7c30191bb0cf406f1341778d0834e1 \
+    --hash=sha256:4b0dda527ee31078689fc205ec4f1c1bf7d56cf88b6dc9426c4f230e46c2dce1
     # via virtualenv
 flexcache==0.3 \
     --hash=sha256:18743bd5a0621bfe2cf8d519e4c3bfdf57a269c15d1ced3fb4b64e0ff4600656 \
