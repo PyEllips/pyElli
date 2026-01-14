@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1768396176949,
+  "lastUpdate": 1768396181361,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -19506,6 +19506,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00014410187442760722",
             "extra": "mean: 3.597301300004574 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f43cac2482f0c339695a6fb505efa888e546c3e7",
+          "message": "Bump filelock from 3.20.1 to 3.20.3 in /requirements (#257)\n\nBumps [filelock](https://github.com/tox-dev/py-filelock) from 3.20.1 to 3.20.3.\n- [Release notes](https://github.com/tox-dev/py-filelock/releases)\n- [Changelog](https://github.com/tox-dev/filelock/blob/main/docs/changelog.rst)\n- [Commits](https://github.com/tox-dev/py-filelock/compare/3.20.1...3.20.3)\n\n---\nupdated-dependencies:\n- dependency-name: filelock\n  dependency-version: 3.20.3\n  dependency-type: direct:development\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-01-14T14:08:54+01:00",
+          "tree_id": "064714c4491ad7a17a58aab5ea885c9de91220e1",
+          "url": "https://github.com/PyEllips/pyElli/commit/f43cac2482f0c339695a6fb505efa888e546c3e7"
+        },
+        "date": 1768396180055,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 146.6938384729129,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002116866297676175",
+            "extra": "mean: 6.816918900003088 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 67.87562614163078,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006600835258589017",
+            "extra": "mean: 14.732829099997957 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.66485246374817,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00020792399348836766",
+            "extra": "mean: 25.21123709999813 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.67725120701365,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00028158881693105247",
+            "extra": "mean: 50.82010640000192 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 56.43144653420011,
+            "unit": "iter/sec",
+            "range": "stddev: 0.008120684981003032",
+            "extra": "mean: 17.720616099995823 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 254.96874809798734,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002593944713020074",
+            "extra": "mean: 3.9220493000016177 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 274.7483113146408,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00020028914148862903",
+            "extra": "mean: 3.639694799997528 msec\nrounds: 10"
           }
         ]
       }
