@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1771163469527,
+  "lastUpdate": 1771165810564,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -19725,6 +19725,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0001112363752658875",
             "extra": "mean: 3.6957024000003003 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "02cf0b40b6f0bfc905f5d0d1d3b4277b927c17eb",
+          "message": "Bump virtualenv from 20.29.3 to 20.36.1 in /docs (#263)\n\nBumps [virtualenv](https://github.com/pypa/virtualenv) from 20.29.3 to 20.36.1.\n- [Release notes](https://github.com/pypa/virtualenv/releases)\n- [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst)\n- [Commits](https://github.com/pypa/virtualenv/compare/20.29.3...20.36.1)\n\n---\nupdated-dependencies:\n- dependency-name: virtualenv\n  dependency-version: 20.36.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-02-15T15:29:25+01:00",
+          "tree_id": "0a6bb9ea0a9f950323e6a67de20294f3bb2be4a6",
+          "url": "https://github.com/PyEllips/pyElli/commit/02cf0b40b6f0bfc905f5d0d1d3b4277b927c17eb"
+        },
+        "date": 1771165809911,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 146.79564699860336,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016964453514230573",
+            "extra": "mean: 6.812191099982101 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 65.41694098986997,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006627883624467128",
+            "extra": "mean: 15.286560100003044 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.03437969381801,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001395467938017868",
+            "extra": "mean: 25.618442200027403 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 20.002535081306032,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002988801855952575",
+            "extra": "mean: 49.99366309996276 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 59.32696723723523,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006303677641990494",
+            "extra": "mean: 16.85574110001653 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 267.7284276344672,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000043695587130341254",
+            "extra": "mean: 3.735128200003146 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 275.62903507297307,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00009699466177306532",
+            "extra": "mean: 3.6280647999774374 msec\nrounds: 10"
           }
         ]
       }
