@@ -7,11 +7,11 @@ import numpy.typing as npt
 import pandas as pd
 
 try:
-    from lmfit import Parameters, minimize
-    from lmfit.minimizer import MinimizerResult
     import plotly.graph_objects as go
     from IPython.display import display
     from ipywidgets import widgets
+    from lmfit import Parameters, minimize
+    from lmfit.minimizer import MinimizerResult
 except ImportError as e:
     raise ImportError(
         "This module requires lmfit, ipywidgets, plotly and ipython.\n"
@@ -48,8 +48,12 @@ def mmatrix_to_dataframe(
         columns = [f"{c}_{identifier}" for c in exp_df.columns]
     else:
         columns = exp_df.columns
-    mueller_df = pd.DataFrame(index=exp_df.index, columns=columns, dtype="float64")
-    mueller_df.values[:] = mueller_matrix.reshape(-1, 16)
+    mueller_df = pd.DataFrame(
+        mueller_matrix.reshape(-1, 16),
+        index=exp_df.index,
+        columns=columns,
+        dtype="float64",
+    )
 
     return mueller_df
 
