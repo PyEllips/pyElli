@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1768396220302,
+  "lastUpdate": 1771163469527,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -19652,6 +19652,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00013645232557422441",
             "extra": "mean: 3.650449999999239 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "github@schroedingerscat.org",
+            "name": "Florian Dobener",
+            "username": "domna"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "99d6cd426926ce5108fcc6c335bff4dc771f7b4b",
+          "message": "Fix error in dataframe assignment (#262)\n\n* Assign dataframe directly\n\n* Bump pillow from 11.1.0 to 12.1.1 in /docs (#261)\n\nBumps [pillow](https://github.com/python-pillow/Pillow) from 11.1.0 to 12.1.1.\n- [Release notes](https://github.com/python-pillow/Pillow/releases)\n- [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst)\n- [Commits](https://github.com/python-pillow/Pillow/compare/11.1.0...12.1.1)\n\n---\nupdated-dependencies:\n- dependency-name: pillow\n  dependency-version: 12.1.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\n\n* Bump pillow from 11.1.0 to 12.1.1 in /requirements (#260)\n\nBumps [pillow](https://github.com/python-pillow/Pillow) from 11.1.0 to 12.1.1.\n- [Release notes](https://github.com/python-pillow/Pillow/releases)\n- [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst)\n- [Commits](https://github.com/python-pillow/Pillow/compare/11.1.0...12.1.1)\n\n---\nupdated-dependencies:\n- dependency-name: pillow\n  dependency-version: 12.1.1\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\n\n* Bump docker/login-action from 3.6.0 to 3.7.0 (#259)\n\nBumps [docker/login-action](https://github.com/docker/login-action) from 3.6.0 to 3.7.0.\n- [Release notes](https://github.com/docker/login-action/releases)\n- [Commits](https://github.com/docker/login-action/compare/5e57cd118135c172c3672efd75eb46360885c0ef...c94ce9fb468520275223c153574b00df6fe4bcc9)\n\n---\nupdated-dependencies:\n- dependency-name: docker/login-action\n  dependency-version: 3.7.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\n\n---------\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-02-15T14:50:19+01:00",
+          "tree_id": "abdb67e31a3428ab5e05c5ad2ab4b70186e86d92",
+          "url": "https://github.com/PyEllips/pyElli/commit/99d6cd426926ce5108fcc6c335bff4dc771f7b4b"
+        },
+        "date": 1771163468235,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 145.15585798210546,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00019706340807569366",
+            "extra": "mean: 6.88914669997871 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 64.21500581265045,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000701063064554855",
+            "extra": "mean: 15.572684099998924 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.75658143434379,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0016604483605074506",
+            "extra": "mean: 25.802069299999175 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 18.936032470857906,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0027067736736118985",
+            "extra": "mean: 52.8093728999977 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 57.319465950867716,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006723652599771732",
+            "extra": "mean: 17.44608019999987 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 264.1209352709463,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010378363652120558",
+            "extra": "mean: 3.786144400004332 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 270.5845578907865,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001112363752658875",
+            "extra": "mean: 3.6957024000003003 msec\nrounds: 10"
           }
         ]
       }
