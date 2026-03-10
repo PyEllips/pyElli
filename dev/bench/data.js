@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1773122902947,
+  "lastUpdate": 1773123048649,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -19944,6 +19944,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00013396778940661603",
             "extra": "mean: 3.6834707000025446 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "060d793248d1374be9b5889655683ad69fff6437",
+          "message": "Bump docker/build-push-action from 6.19.2 to 7.0.0 (#268)\n\nBumps [docker/build-push-action](https://github.com/docker/build-push-action) from 6.19.2 to 7.0.0.\n- [Release notes](https://github.com/docker/build-push-action/releases)\n- [Commits](https://github.com/docker/build-push-action/compare/10e90e3645eae34f1e60eeb005ba3a3d33f178e8...d08e5c354a6adb9ed34480a06d141179aa583294)\n\n---\nupdated-dependencies:\n- dependency-name: docker/build-push-action\n  dependency-version: 7.0.0\n  dependency-type: direct:production\n  update-type: version-update:semver-major\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-03-10T07:07:46+01:00",
+          "tree_id": "c83b00549b261c73b29a10afdf7b2eb80eec5ac1",
+          "url": "https://github.com/PyEllips/pyElli/commit/060d793248d1374be9b5889655683ad69fff6437"
+        },
+        "date": 1773123047175,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 171.9762972635782,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016771883586849827",
+            "extra": "mean: 5.81475480000222 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 59.968091338418006,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005399168608446219",
+            "extra": "mean: 16.675534899997047 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.94630992184423,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0013149084731612654",
+            "extra": "mean: 25.676373499999272 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 17.87906693526461,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005337676556616268",
+            "extra": "mean: 55.93133039999998 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 52.46767269933888,
+            "unit": "iter/sec",
+            "range": "stddev: 0.009139932799069215",
+            "extra": "mean: 19.05935499999032 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 304.241182938216,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00005380964651180541",
+            "extra": "mean: 3.2868660000019645 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 318.29226270244453,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0002022971107367683",
+            "extra": "mean: 3.1417666000095323 msec\nrounds: 10"
           }
         ]
       }
