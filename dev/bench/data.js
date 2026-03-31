@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1774933445037,
+  "lastUpdate": 1774933470852,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -20455,6 +20455,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00025896191891509516",
             "extra": "mean: 3.7563333999983683 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "distinct": true,
+          "id": "6084830dabf53bfa81f71100ba194735b6c5ac4d",
+          "message": "Bump sigstore/gh-action-sigstore-python from 3.2.0 to 3.3.0\n\nBumps [sigstore/gh-action-sigstore-python](https://github.com/sigstore/gh-action-sigstore-python) from 3.2.0 to 3.3.0.\n- [Release notes](https://github.com/sigstore/gh-action-sigstore-python/releases)\n- [Changelog](https://github.com/sigstore/gh-action-sigstore-python/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/sigstore/gh-action-sigstore-python/compare/v3.2.0...v3.3.0)\n\n---\nupdated-dependencies:\n- dependency-name: sigstore/gh-action-sigstore-python\n  dependency-version: 3.3.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-03-31T07:03:36+02:00",
+          "tree_id": "6d4aed7a34fd941470714655ad33f09f59d39044",
+          "url": "https://github.com/PyEllips/pyElli/commit/6084830dabf53bfa81f71100ba194735b6c5ac4d"
+        },
+        "date": 1774933469850,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 168.51672188061127,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00022344045510474866",
+            "extra": "mean: 5.934129199999916 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 60.309927167219136,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0013628386158426261",
+            "extra": "mean: 16.581018199994446 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.02166459015357,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0012716738683327174",
+            "extra": "mean: 25.62678989999654 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 17.506273863415146,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0004283258767047718",
+            "extra": "mean: 57.1223783999983 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 52.31715367981463,
+            "unit": "iter/sec",
+            "range": "stddev: 0.008331421443388106",
+            "extra": "mean: 19.11418969999943 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 297.54094312187544,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00008983749898669757",
+            "extra": "mean: 3.360881999995513 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 313.86179729720277,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00014443238808519931",
+            "extra": "mean: 3.186115700003711 msec\nrounds: 10"
           }
         ]
       }
