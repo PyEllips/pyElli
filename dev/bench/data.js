@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1774933470852,
+  "lastUpdate": 1774933504966,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -20528,6 +20528,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00014443238808519931",
             "extra": "mean: 3.186115700003711 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "distinct": true,
+          "id": "1d9195488b2b237183f66bbdafb21e4ec7bb5852",
+          "message": "Bump pygments from 2.19.1 to 2.20.0 in /requirements\n\nBumps [pygments](https://github.com/pygments/pygments) from 2.19.1 to 2.20.0.\n- [Release notes](https://github.com/pygments/pygments/releases)\n- [Changelog](https://github.com/pygments/pygments/blob/master/CHANGES)\n- [Commits](https://github.com/pygments/pygments/compare/2.19.1...2.20.0)\n\n---\nupdated-dependencies:\n- dependency-name: pygments\n  dependency-version: 2.20.0\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-03-31T07:03:51+02:00",
+          "tree_id": "d17848a9ea283dcedefdda88ca393c85dbbbb732",
+          "url": "https://github.com/PyEllips/pyElli/commit/1d9195488b2b237183f66bbdafb21e4ec7bb5852"
+        },
+        "date": 1774933503395,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 157.69617992198832,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001405530490504042",
+            "extra": "mean: 6.341307700000698 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 57.88920747828284,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006224411020010614",
+            "extra": "mean: 17.274377100000038 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.686043690962634,
+            "unit": "iter/sec",
+            "range": "stddev: 0.001271024710588246",
+            "extra": "mean: 25.849115200001904 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 17.835912897420833,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005177277352960958",
+            "extra": "mean: 56.06665639999875 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 54.3006924956486,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00672779673264141",
+            "extra": "mean: 18.41597139999891 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 297.8765778781577,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00008917539550058003",
+            "extra": "mean: 3.3570951000015725 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 318.87878138822714,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012087650708129962",
+            "extra": "mean: 3.135987899999293 msec\nrounds: 10"
           }
         ]
       }
