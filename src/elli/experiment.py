@@ -126,7 +126,7 @@ class Experiment:
                 b = 1
             else:
                 a = np.sqrt((1 + Q) / 2)
-                b = U / (2 * a) - 1j * V / (2 * a)
+                b = U / (2 * a) + 1j * V / (2 * a)
 
             self.jones_vector = np.array([a, b])
 
