@@ -226,7 +226,7 @@ class Result:
 
         # Kronecker product of S and S*
         s_kron_s_star = np.einsum(
-            "aij,akl->aikjl", np.conjugate(self.rho_matrix), self.rho_matrix
+            "aij,akl->aikjl", self.rho_matrix, np.conjugate(self.rho_matrix)
         ).reshape([self.rho_matrix.shape[0], 4, 4])
 
         mueller_matrix = np.real(a @ s_kron_s_star @ np.linalg.inv(a))
