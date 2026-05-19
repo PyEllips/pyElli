@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1778519270151,
+  "lastUpdate": 1779216395188,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -21404,6 +21404,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00008130774651172002",
             "extra": "mean: 3.6151446000019405 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cbddd07a76061381e8ae17fa7a9ece12bfe60664",
+          "message": "Bump idna from 3.10 to 3.15 in /docs (#288)\n\nBumps [idna](https://github.com/kjd/idna) from 3.10 to 3.15.\n- [Release notes](https://github.com/kjd/idna/releases)\n- [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md)\n- [Commits](https://github.com/kjd/idna/compare/v3.10...v3.15)\n\n---\nupdated-dependencies:\n- dependency-name: idna\n  dependency-version: '3.15'\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-05-19T20:45:45+02:00",
+          "tree_id": "f34c5a558936fb5b95d6004e983d776a22619e97",
+          "url": "https://github.com/PyEllips/pyElli/commit/cbddd07a76061381e8ae17fa7a9ece12bfe60664"
+        },
+        "date": 1779216393883,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 144.31927024792515,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017087072446319833",
+            "extra": "mean: 6.929081599997744 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 64.56237360261598,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005159723150268003",
+            "extra": "mean: 15.48889769999846 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.724978886375276,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017509596700858156",
+            "extra": "mean: 25.173078199998145 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.632585507341574,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00017560617828088067",
+            "extra": "mean: 50.935726199998044 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 55.396456931247286,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007653299308502662",
+            "extra": "mean: 18.05169600000056 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 262.23777828350495,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00011218446255851177",
+            "extra": "mean: 3.8133331000040016 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 277.2952993621497,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000023817987167234247",
+            "extra": "mean: 3.60626380000042 msec\nrounds: 10"
           }
         ]
       }
