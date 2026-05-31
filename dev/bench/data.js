@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1779989526023,
+  "lastUpdate": 1780214429939,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -21696,6 +21696,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00004635634089464538",
             "extra": "mean: 3.642831999999885 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "49639740+MarJMue@users.noreply.github.com",
+            "name": "Marius Müller",
+            "username": "MarJMue"
+          },
+          "distinct": true,
+          "id": "925dfe957dcf925852d63dd012d1b2850123a363",
+          "message": "Bump uv from 0.11.6 to 0.11.15 in /docs\n\nBumps [uv](https://github.com/astral-sh/uv) from 0.11.6 to 0.11.15.\n- [Release notes](https://github.com/astral-sh/uv/releases)\n- [Changelog](https://github.com/astral-sh/uv/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/astral-sh/uv/compare/0.11.6...0.11.15)\n\n---\nupdated-dependencies:\n- dependency-name: uv\n  dependency-version: 0.11.15\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+          "timestamp": "2026-05-31T09:59:37+02:00",
+          "tree_id": "91dc9f00d14e0508ba45841b78bc722fd0e7102c",
+          "url": "https://github.com/PyEllips/pyElli/commit/925dfe957dcf925852d63dd012d1b2850123a363"
+        },
+        "date": 1780214427946,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 149.48359695557667,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00015558792304198434",
+            "extra": "mean: 6.6896972000023425 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 65.8402321716003,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005232349514838172",
+            "extra": "mean: 15.188281800004688 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 40.04413247822588,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00014297188805304067",
+            "extra": "mean: 24.972447600001146 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.33188312118825,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0008750774281615295",
+            "extra": "mean: 51.72801810000465 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 55.74708643984555,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00762071297250383",
+            "extra": "mean: 17.938157200001115 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 264.98177124168575,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00010097614643728223",
+            "extra": "mean: 3.773844499997381 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 274.536817267102,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000048166286480575034",
+            "extra": "mean: 3.6424987000089004 msec\nrounds: 10"
           }
         ]
       }
