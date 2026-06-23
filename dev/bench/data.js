@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781752491105,
+  "lastUpdate": 1782191739435,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -22207,6 +22207,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00006341105077834684",
             "extra": "mean: 3.383116399997732 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d81c816fc87fd837d31e9b5663b75478c1d125f2",
+          "message": "Bump actions/checkout from 6 to 7 (#299)\n\nBumps [actions/checkout](https://github.com/actions/checkout) from 6 to 7.\n- [Release notes](https://github.com/actions/checkout/releases)\n- [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/actions/checkout/compare/v6...v7)\n\n---\nupdated-dependencies:\n- dependency-name: actions/checkout\n  dependency-version: '7'\n  dependency-type: direct:production\n  update-type: version-update:semver-major\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-06-23T07:14:52+02:00",
+          "tree_id": "a250f7f53ea97d806c7b802e5a1193b6af8076f6",
+          "url": "https://github.com/PyEllips/pyElli/commit/d81c816fc87fd837d31e9b5663b75478c1d125f2"
+        },
+        "date": 1782191738681,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 159.0332458046118,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000164884117074753",
+            "extra": "mean: 6.287993400000147 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 61.802122323195384,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005134279987197557",
+            "extra": "mean: 16.180674100000658 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 38.67105825516484,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001690897976500514",
+            "extra": "mean: 25.859132000000074 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 22.053821933404933,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00014009590494889126",
+            "extra": "mean: 45.343614500001905 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 55.03413313246295,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006514902622890864",
+            "extra": "mean: 18.170541500001036 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 276.0470928611141,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012475714815620215",
+            "extra": "mean: 3.62257029999995 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 291.7103588012007,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00008229099688247137",
+            "extra": "mean: 3.428057899999004 msec\nrounds: 10"
           }
         ]
       }
