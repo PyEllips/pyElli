@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783328258092,
+  "lastUpdate": 1783328279336,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -22353,6 +22353,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.0000545354736409908",
             "extra": "mean: 3.496029500001896 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b1e065d24f09cdfeead341a07c03b5901b18cad1",
+          "message": "Bump docker/login-action from 4.2.0 to 4.4.0 (#301)\n\nBumps [docker/login-action](https://github.com/docker/login-action) from 4.2.0 to 4.4.0.\n- [Release notes](https://github.com/docker/login-action/releases)\n- [Commits](https://github.com/docker/login-action/compare/650006c6eb7dba73a995cc03b0b2d7f5ca915bee...af1e73f918a031802d376d3c8bbc3fe56130a9b0)\n\n---\nupdated-dependencies:\n- dependency-name: docker/login-action\n  dependency-version: 4.4.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-07-06T10:57:00+02:00",
+          "tree_id": "d24dfd2c5bd6d8c0bd9b51927f66438d3d5ff878",
+          "url": "https://github.com/PyEllips/pyElli/commit/b1e065d24f09cdfeead341a07c03b5901b18cad1"
+        },
+        "date": 1783328277495,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 146.21306694482223,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00015898093491905287",
+            "extra": "mean: 6.839334000000008 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 64.71231380526457,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00054920406460067",
+            "extra": "mean: 15.4530095000041 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.49823230994039,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016873893513655986",
+            "extra": "mean: 25.317588699996918 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 19.2895505377896,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006377817009777009",
+            "extra": "mean: 51.84153970000125 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 55.82095286467026,
+            "unit": "iter/sec",
+            "range": "stddev: 0.007639006152915246",
+            "extra": "mean: 17.914420099999973 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 261.4668578338074,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00008633200721784997",
+            "extra": "mean: 3.824576499999921 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 277.0885277620122,
+            "unit": "iter/sec",
+            "range": "stddev: 0.000050897287701149624",
+            "extra": "mean: 3.6089548999981957 msec\nrounds: 10"
           }
         ]
       }
