@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783328332172,
+  "lastUpdate": 1783750600703,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -22499,6 +22499,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00015744423269811064",
             "extra": "mean: 3.7445599000022867 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "728ee614875cfbddcad385850ac2093d7e62fb8d",
+          "message": "Bump mistune from 3.2.1 to 3.3.0 in /docs (#303)\n\nBumps [mistune](https://github.com/lepture/mistune) from 3.2.1 to 3.3.0.\n- [Release notes](https://github.com/lepture/mistune/releases)\n- [Changelog](https://github.com/lepture/mistune/blob/main/docs/changes.rst)\n- [Commits](https://github.com/lepture/mistune/compare/v3.2.1...v3.3.0)\n\n---\nupdated-dependencies:\n- dependency-name: mistune\n  dependency-version: 3.3.0\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-07-11T08:15:51+02:00",
+          "tree_id": "fac788e49c0241b7f33d09367527f7738f34291d",
+          "url": "https://github.com/PyEllips/pyElli/commit/728ee614875cfbddcad385850ac2093d7e62fb8d"
+        },
+        "date": 1783750599177,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 167.33617871773814,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00020835816179679128",
+            "extra": "mean: 5.975993999999218 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 56.946955385976395,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00042460229631382645",
+            "extra": "mean: 17.560201300002376 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.360851874637596,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00019925995038393398",
+            "extra": "mean: 25.405954199999314 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 17.42444540055102,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005069359968306331",
+            "extra": "mean: 57.3906357999995 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 51.24222976279119,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00824038876383195",
+            "extra": "mean: 19.515153899999405 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 291.7192174528801,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00015568016429023251",
+            "extra": "mean: 3.4279537999978515 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 307.9890764897471,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001419144555953912",
+            "extra": "mean: 3.246868400000835 msec\nrounds: 10"
           }
         ]
       }
