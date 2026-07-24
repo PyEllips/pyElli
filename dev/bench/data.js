@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784895849754,
+  "lastUpdate": 1784895880036,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -22718,6 +22718,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.000024454978308041517",
             "extra": "mean: 3.6282171000053154 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "203b9f169fb4e06e231f3449e4ab30b6118d943e",
+          "message": "Bump pillow from 12.2.0 to 12.3.0 in /docs (#305)\n\nBumps [pillow](https://github.com/python-pillow/Pillow) from 12.2.0 to 12.3.0.\n- [Release notes](https://github.com/python-pillow/Pillow/releases)\n- [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst)\n- [Commits](https://github.com/python-pillow/Pillow/compare/12.2.0...12.3.0)\n\n---\nupdated-dependencies:\n- dependency-name: pillow\n  dependency-version: 12.3.0\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-07-24T14:23:45+02:00",
+          "tree_id": "cba309227757970054920dbbe6004e9063b9c64e",
+          "url": "https://github.com/PyEllips/pyElli/commit/203b9f169fb4e06e231f3449e4ab30b6118d943e"
+        },
+        "date": 1784895878170,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 147.40407204610972,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016921075762653268",
+            "extra": "mean: 6.784073100010346 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 65.9410422065108,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0005618477584012807",
+            "extra": "mean: 15.165062099993065 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 39.427670614451394,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00012846913559546515",
+            "extra": "mean: 25.362898299994185 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 16.613581731989267,
+            "unit": "iter/sec",
+            "range": "stddev: 0.023111539126493903",
+            "extra": "mean: 60.191716399992856 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 49.82879473902125,
+            "unit": "iter/sec",
+            "range": "stddev: 0.01788327838333495",
+            "extra": "mean: 20.068717399999514 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 263.0361574494885,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00011818557320034206",
+            "extra": "mean: 3.8017587000069852 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 279.7825362253986,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00003052434776289964",
+            "extra": "mean: 3.574204500006317 msec\nrounds: 10"
           }
         ]
       }
