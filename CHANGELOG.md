@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 0.23.0 - 2026-07-26
+
+### Added
+
+- Python 3.14 Tests
+- EOL Python 3.9
+- Updated refractiveindex.info database
+
+### Bugfixes
+
+- Fixes to Sign Notation
+
 ## Version 0.22.6 - 2025-10-16
 
 ### Added
@@ -13,7 +25,7 @@
 
 - Tests for windows
 
-### Fixed
+### Bugfixes
 
 - Encoding problems of refractiveindex.info files under windows
 
