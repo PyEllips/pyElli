@@ -43,7 +43,7 @@ class TestBragg:
     n[2::2] = n_SiO2
     n[-1] = n_g
 
-    n.shape = (-1, 1)
+    n = np.reshape(n, (-1, 1))
 
     d = np.ones(N + 1)
     d[1::2] = L_TiO2.thickness  #  d[0] is not used
