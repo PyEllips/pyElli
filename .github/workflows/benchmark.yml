@@ -19,7 +19,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - name: Install deps
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
