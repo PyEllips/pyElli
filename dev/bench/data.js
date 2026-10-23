@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792770903770,
+  "lastUpdate": 1792770929996,
   "repoUrl": "https://github.com/PyEllips/pyElli",
   "entries": {
     "Python Benchmark with pytest-benchmark": [
@@ -23740,6 +23740,79 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.00006702542222483835",
             "extra": "mean: 3.607054499994433 msec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8e08e034a0572e8c6ef27e949c7a95cd2bd44ae8",
+          "message": "Bump pillow from 12.3.0 to 13.0.0 in /requirements (#320)",
+          "timestamp": "2026-10-23T17:54:39+02:00",
+          "tree_id": "04a37af2b3d084f3705def4830416ac04f2de3ff",
+          "url": "https://github.com/PyEllips/pyElli/commit/8e08e034a0572e8c6ef27e949c7a95cd2bd44ae8"
+        },
+        "date": 1792770928565,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver2x2",
+            "value": 202.59680890981136,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00016337915661658259",
+            "extra": "mean: 4.935911900000178 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_formula_dispersion.py::test_formula_solver4x4_expm",
+            "value": 73.06303803667724,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0006998802576943551",
+            "extra": "mean: 13.686811099998408 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_eig",
+            "value": 44.998936540137,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003233179603137371",
+            "extra": "mean: 22.2227473999979 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm",
+            "value": 22.907421322096383,
+            "unit": "iter/sec",
+            "range": "stddev: 0.010994669624728552",
+            "extra": "mean: 43.6539750999998 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_expm_pytorch",
+            "value": 56.396205541466166,
+            "unit": "iter/sec",
+            "range": "stddev: 0.006321187948465255",
+            "extra": "mean: 17.731689400002892 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver4x4_linear",
+            "value": 314.8672011369096,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0001938087223669131",
+            "extra": "mean: 3.175942100000384 msec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmark_propagators_TiO2.py::test_solver2x2",
+            "value": 375.2617122086134,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00006521994102859375",
+            "extra": "mean: 2.6648069000017927 msec\nrounds: 10"
           }
         ]
       }
