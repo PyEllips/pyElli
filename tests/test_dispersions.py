@@ -16,16 +16,16 @@ from elli.dispersions.sellmeier import Sellmeier
 
 
 @fixture
-def datadir(tmpdir, request):
+def datadir(tmp_path, request):
     """Fixture for providing the dispersion prototype folder"""
     filename = request.module.__file__
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        rmtree(tmpdir)
-        copytree(test_dir, str(tmpdir))
+        rmtree(tmp_path)
+        copytree(test_dir, str(tmp_path))
 
-    return tmpdir
+    return tmp_path
 
 
 def test_constant_refr_index():
@@ -68,7 +68,7 @@ def test_regression_dispersions_default(datadir):
     lbda = np.linspace(400, 1000, 500)
 
     for dispersion in dispersions:
-        prototype = pd.read_csv(datadir.join(f"{dispersion}_default.csv"), index_col=0)
+        prototype = pd.read_csv(datadir / f"{dispersion}_default.csv", index_col=0)
         disp = elli.DispersionFactory.get_dispersion(dispersion)
 
         assert_frame_equal(prototype, disp.get_dielectric_df(lbda))
@@ -196,9 +196,7 @@ def test_regression_dispersions_custom_values(datadir):
 
     for dispersion in dispersions:
         disp_name = dispersion.get("name")
-        prototype = pd.read_csv(
-            datadir.join(f"{disp_name}_custom_values.csv"), index_col=0
-        )
+        prototype = pd.read_csv(datadir / f"{disp_name}_custom_values.csv", index_col=0)
         disp = elli.DispersionFactory.get_dispersion(
             disp_name, **dispersion.get("single_params")
         )

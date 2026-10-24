@@ -14,7 +14,7 @@ from elli.fitting import ParamsHist
 
 
 @fixture
-def datadir(tmpdir, request):
+def datadir(tmp_path, request):
     """
     Fixture responsible for searching a folder with the same name of test
     module and, if available, moving all contents to a temporary directory so
@@ -24,26 +24,24 @@ def datadir(tmpdir, request):
     test_dir, _ = os.path.splitext(filename)
 
     if os.path.isdir(test_dir):
-        rmtree(tmpdir)
-        copytree(test_dir, str(tmpdir))
+        rmtree(tmp_path)
+        copytree(test_dir, str(tmp_path))
 
-    return tmpdir
+    return tmp_path
 
 
 @fixture
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
     return (
-        elli.read_spectraray_rho(datadir.join("TiO2_400cycles.txt"))
-        .loc[70.06]
-        .loc[400:800]
+        elli.read_spectraray_rho(datadir / "TiO2_400cycles.txt").loc[70.06].loc[400:800]
     )
 
 
 @fixture
 def si_dispersion(datadir):
     """Fixture to load the silicon dispersion from file."""
-    sr = elli.TableSpectraRay(datadir)
+    sr = elli.TableSpectraRay(f"{datadir}{os.sep}")
     silicon = elli.IsotropicMaterial(sr.load_dispersion_table(f"{os.sep}Si_Aspnes.mat"))
 
     return silicon
