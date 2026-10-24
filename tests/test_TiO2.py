@@ -34,9 +34,7 @@ def datadir(tmp_path, request):
 def meas_data(datadir):
     """Fixture for getting the reference measurement data from the file."""
     return (
-        elli.read_spectraray_rho(datadir / "TiO2_400cycles.txt")
-        .loc[70.06]
-        .loc[400:800]
+        elli.read_spectraray_rho(datadir / "TiO2_400cycles.txt").loc[70.06].loc[400:800]
     )
 
 
