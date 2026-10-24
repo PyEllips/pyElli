@@ -1772,9 +1772,9 @@ uv==0.13.4 \
     --hash=sha256:e90ab42825587821096cb0d071e387468da38cfa22818c91f9c0b3c0453048e8 \
     --hash=sha256:fb0e2028d9a8929884344afb7d91d0f65d9783f640d28aede89fca3602bedde9
     # via pyelli (pyproject.toml)
-virtualenv==21.14.5 \
-    --hash=sha256:b0651e0174982bba17cc6f0aaa2ef496730cb85a3f35eb5d1119d1c904f7d1da \
-    --hash=sha256:c4cb6c13e46b57225a999c7e22a09b163393878facc7ac4c059a57f46faa1647
+virtualenv==21.14.9 \
+    --hash=sha256:4d1bee354cd81c820da3bee56e38be3426490f8d1fc54e10ea5b2072ebad8ef8 \
+    --hash=sha256:ac51744da66ae56ff814b087d65096c94de698ec520adc624b108b679655809b
     # via pre-commit
 wcwidth==0.9.2 \
     --hash=sha256:0a47e03d8293590ecce66c45dc20ff7b4b885e3c78093722239585eca0d77ab2 \
