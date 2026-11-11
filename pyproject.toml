@@ -10,12 +10,11 @@ authors = [
     { name = "Marius Müller", email = "marius.mueller@tutanota.de" },
     { name = "Florian Dobener", email = "pyelli@schroedingerscat.org" },
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { file = "LICENSE.txt" }
 readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
